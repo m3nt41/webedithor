@@ -31,9 +31,9 @@ src/
   core/store.js        estado + mutate + subscribe + acciones
   blocks/              hero, services, footer + index.js (registro)
   render/renderer.js   árbol -> DOM
-  ui/                  sidebar.js, preview.js, inspector.js
+  ui/                  sidebar.js, preview.js (selección + edición de texto), inspector.js, fields.js (campos del panel), toolbar.js
   animations/          un módulo por animación (Etapa 4+)
-  export/              exportador a .html (Etapa 2)
+  export/exporter.js   árbol -> .html (una clase por nodo, @media para móvil)
 ```
 
 ## Reglas de trabajo

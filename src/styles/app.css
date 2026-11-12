@@ -5,12 +5,19 @@ html, body { height: 100%; margin: 0; }
 body { font: 14px system-ui, sans-serif; background: #1a1a1f; color: #e8e8ee; }
 
 /* 3 columnas: sidebar | preview | inspector */
-#app { display: grid; grid-template-columns: 240px 1fr 300px; height: 100vh; }
+#app { display: grid; grid-template-columns: 240px 1fr 300px; grid-template-rows: 44px 1fr; height: 100vh; }
+#toolbar { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; padding: 0 14px; background: #1f1f26; border-bottom: 1px solid #333; }
+#toolbar .espacio { flex: 1; }
+button.primario { background: #7c5cff; color: #fff; border: 0; border-radius: 6px; padding: 7px 14px; cursor: pointer; font-weight: 600; }
+button.primario:hover { background: #6a4aee; }
+.pagina { width: 100%; margin-bottom: 8px; padding: 7px; background: none; color: #bbb; border: 1px dashed #55555f; border-radius: 6px; cursor: pointer; }
+.pagina:hover { color: #fff; border-color: #7c5cff; }
 #sidebar, #inspector { background: #24242b; padding: 14px; overflow-y: auto; }
 #sidebar { border-right: 1px solid #333; }
 #inspector { border-left: 1px solid #333; }
-h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: #9a9aa8; margin: 16px 0 8px; }
-h2:first-child { margin-top: 0; }
+/* Acotado a los paneles: si no, se filtra a los títulos de la landing (preview != export) */
+#sidebar h2, #inspector h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: #9a9aa8; margin: 16px 0 8px; font-weight: 600; }
+#sidebar h2:first-child, #inspector h2:first-child { margin-top: 0; }
 
 /* Lista de secciones */
 .lista { list-style: none; margin: 0; padding: 0; }
@@ -28,11 +35,24 @@ h2:first-child { margin-top: 0; }
 
 /* Preview */
 #preview { overflow: auto; background: #111; padding: 20px; }
-.stage { background: #fff; margin: 0 auto; max-width: 100%; min-height: 100%; box-shadow: 0 0 0 1px #333; }
+/* font-size/line-height y img: iguales al HTML exportado (para que preview = resultado) */
+.stage { background: #fff; margin: 0 auto; max-width: 100%; min-height: 100%; box-shadow: 0 0 0 1px #333; font-size: 16px; line-height: normal; }
+.stage img { max-width: 100%; display: block; }
+.stage [contenteditable] { outline: 2px solid #ffb02e; outline-offset: 2px; cursor: text; }
 /* Selección y hover dentro de la landing (outline no altera el layout) */
 .stage .hov { outline: 1px dashed #7c5cff; outline-offset: -1px; }
 .stage .sel { outline: 2px solid #7c5cff; outline-offset: -2px; }
 
 /* Inspector */
 #inspector pre { background: #1a1a1f; padding: 10px; border-radius: 6px; font-size: 11px; overflow: auto; }
-#inspector small { color: #9a9aa8; }
+#inspector h3 { font-size: 12px; color: #b9a8ff; margin: 18px 0 6px; border-bottom: 1px solid #333; padding-bottom: 4px; }
+#inspector .modo { color: #9a9aa8; font-size: 12px; margin: 4px 0; }
+#inspector .campo { display: grid; grid-template-columns: 92px 1fr; gap: 6px; align-items: center; margin-bottom: 6px; }
+#inspector label { color: #9a9aa8; font-size: 12px; }
+#inspector input:not([type=color]):not([type=file]), #inspector select, #inspector textarea {
+  width: 100%; background: #1a1a1f; color: #e8e8ee; border: 1px solid #3a3a45; border-radius: 4px; padding: 5px 6px; font: inherit; font-size: 12px; }
+#inspector textarea { resize: vertical; }
+#inspector .color { display: flex; gap: 4px; }
+#inspector input[type=color] { width: 34px; height: 28px; padding: 0; border: 1px solid #3a3a45; background: none; flex: none; }
+#inspector input:focus, #inspector select:focus, #inspector textarea:focus { outline: 1px solid #7c5cff; }
+#inspector details { margin-top: 18px; color: #9a9aa8; font-size: 12px; }

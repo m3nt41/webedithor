@@ -7,12 +7,16 @@ import { BLOCKS, createBlock } from '../blocks/index.js';
 export function initSidebar(host) {
   host.innerHTML = `
     <h2>Secciones</h2>
+    <button id="btn-pagina" class="pagina">⚙ Ajustes de la página</button>
     <ul class="lista" id="lista-secciones"></ul>
     <h2>Añadir bloque</h2>
     <div class="bloques" id="botones-bloques"></div>
   `;
   const lista = host.querySelector('#lista-secciones');
   const botones = host.querySelector('#botones-bloques');
+
+  // Selecciona el nodo raíz (fondo, fuente y título de toda la página)
+  host.querySelector('#btn-pagina').addEventListener('click', () => select(getState().page.id));
 
   // Un botón por bloque registrado en src/blocks/index.js
   BLOCKS.forEach((b) => {

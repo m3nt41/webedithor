@@ -34,14 +34,16 @@ export function select(id) {
   emit('selection');
 }
 
-/** Modifica el árbol. fn recibe una COPIA de la página y puede mutarla. */
-export function mutate(fn) {
+/** Modifica el árbol. fn recibe una COPIA de la página y puede mutarla.
+ *  tipo = 'page' (el preview se redibuja entero) o 'text' (cambio silencioso:
+ *  el preview NO se redibuja; se usa mientras se escribe en el propio preview). */
+export function mutate(fn, tipo = 'page') {
   const copia = structuredClone(state.page);
   fn(copia);
   state.page = copia;
   // Si el nodo seleccionado ya no existe (se borró), deselecciona.
   if (state.selectedId && !findNode(copia, state.selectedId)) state.selectedId = null;
-  emit('page');
+  emit(tipo);
 }
 
 // ---- Acciones concretas (las usa la UI) ----
@@ -49,6 +51,34 @@ export function mutate(fn) {
 export function addSection(node) {
   mutate((page) => page.children.push(node));
   select(node.id);
+}
+
+/** Cambia una propiedad CSS. En vista móvil escribe en styles.mobile, si no en base.
+ *  value vacío = borra la propiedad. */
+export function setStyle(id, key, value) {
+  mutate((page) => {
+    const n = findNode(page, id);
+    if (!n) return;
+    const destino = state.viewMode === 'mobile' ? n.styles.mobile : n.styles.base;
+    if (value === '' || value == null) delete destino[key];
+    else destino[key] = value;
+  });
+}
+
+/** Cambia un dato de content (text, href, src, level...). */
+export function setContent(id, key, value, tipo = 'page') {
+  mutate((page) => {
+    const n = findNode(page, id);
+    if (n) n.content[key] = value;
+  }, tipo);
+}
+
+/** Cambia el nombre del nodo (solo se ve en el editor). */
+export function setName(id, name) {
+  mutate((page) => {
+    const n = findNode(page, id);
+    if (n) n.name = name;
+  }, 'text');
 }
 
 export function removeNode(id) {

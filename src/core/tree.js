@@ -60,6 +60,7 @@ export function walk(root, fn) {
 export function createPage() {
   return createNode('page', {
     name: 'Página',
+    content: { title: 'Mi landing' },
     styles: { fontFamily: 'system-ui, sans-serif', color: '#111', background: '#fff' },
   });
 }

@@ -1,10 +1,17 @@
 // RENDERER: convierte el árbol JSON en elementos DOM reales.
 // Cada elemento lleva data-id para poder seleccionarlo con un clic.
-// Los estilos van inline (más simple de editar en vivo). El exportador de la
-// Etapa 2 los convertirá a CSS con clases.
+// Los estilos van inline (más simple de editar en vivo). El exportador
+// (src/export/exporter.js) los convierte a CSS con clases.
 
-// Qué etiqueta HTML usa cada tipo de nodo
+// Qué etiqueta HTML usa cada tipo de nodo (también la usa el exportador)
 const TAGS = { page: 'div', section: 'section', container: 'div', heading: 'h2', text: 'p', button: 'a', image: 'img' };
+
+export function tagFor(node) {
+  return node.type === 'heading' ? `h${node.content.level ?? 2}` : TAGS[node.type] ?? 'div';
+}
+
+/** Tipos cuyo texto se edita directamente. */
+export const TIPOS_TEXTO = ['heading', 'text', 'button'];
 
 /** Estilos efectivos de un nodo según la vista: base + (mobile si toca). */
 export function effectiveStyles(node, viewMode) {
@@ -13,14 +20,13 @@ export function effectiveStyles(node, viewMode) {
 
 /** Construye el DOM de un nodo y sus hijos. */
 export function renderNode(node, viewMode = 'desktop') {
-  const tag = node.type === 'heading' ? `h${node.content.level ?? 2}` : TAGS[node.type] ?? 'div';
-  const el = document.createElement(tag);
+  const el = document.createElement(tagFor(node));
   el.dataset.id = node.id;
   el.dataset.type = node.type;
 
   Object.assign(el.style, effectiveStyles(node, viewMode));
 
-  if (node.type === 'heading' || node.type === 'text' || node.type === 'button') {
+  if (TIPOS_TEXTO.includes(node.type)) {
     el.textContent = node.content.text ?? '';
     if (node.type === 'button') el.setAttribute('href', node.content.href ?? '#');
   }

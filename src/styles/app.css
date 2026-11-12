@@ -1,0 +1,38 @@
+/* Estilos del EDITOR (no de la landing: esos van inline desde el árbol JSON). */
+
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body { font: 14px system-ui, sans-serif; background: #1a1a1f; color: #e8e8ee; }
+
+/* 3 columnas: sidebar | preview | inspector */
+#app { display: grid; grid-template-columns: 240px 1fr 300px; height: 100vh; }
+#sidebar, #inspector { background: #24242b; padding: 14px; overflow-y: auto; }
+#sidebar { border-right: 1px solid #333; }
+#inspector { border-left: 1px solid #333; }
+h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: #9a9aa8; margin: 16px 0 8px; }
+h2:first-child { margin-top: 0; }
+
+/* Lista de secciones */
+.lista { list-style: none; margin: 0; padding: 0; }
+.lista li { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; border-radius: 6px; cursor: pointer; }
+.lista li:hover { background: #2f2f38; }
+.lista li.activa { background: #3b3470; }
+.lista li span { flex: 1; }
+.lista .vacio, .vacio { color: #777; cursor: default; }
+.lista button { background: none; border: 0; color: #999; cursor: pointer; }
+.lista button:hover { color: #ff6b6b; }
+
+.bloques { display: grid; gap: 6px; }
+.bloques button { padding: 8px; background: #2f2f38; color: inherit; border: 1px solid #44444f; border-radius: 6px; cursor: pointer; }
+.bloques button:hover { background: #3b3470; }
+
+/* Preview */
+#preview { overflow: auto; background: #111; padding: 20px; }
+.stage { background: #fff; margin: 0 auto; max-width: 100%; min-height: 100%; box-shadow: 0 0 0 1px #333; }
+/* Selección y hover dentro de la landing (outline no altera el layout) */
+.stage .hov { outline: 1px dashed #7c5cff; outline-offset: -1px; }
+.stage .sel { outline: 2px solid #7c5cff; outline-offset: -2px; }
+
+/* Inspector */
+#inspector pre { background: #1a1a1f; padding: 10px; border-radius: 6px; font-size: 11px; overflow: auto; }
+#inspector small { color: #9a9aa8; }

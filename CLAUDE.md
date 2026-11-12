@@ -28,10 +28,10 @@ src/
   main.js              arranque
   styles/app.css       estilos del editor
   core/tree.js         crear/buscar nodos
-  core/store.js        estado + mutate + subscribe + acciones
+  core/store.js        estado + mutate(fn,tipo,clave) + historial undo/redo + autoguardado localStorage + acciones (setStyle, duplicateNode, moveSection, replacePage...)
   blocks/              hero, services, footer + index.js (registro)
   render/renderer.js   árbol -> DOM
-  ui/                  sidebar.js, preview.js (selección + edición de texto), inspector.js, fields.js (campos del panel), toolbar.js
+  ui/                  sidebar.js, preview.js (selección + edición de texto), inspector.js, fields.js (campos del panel), toolbar.js (undo/redo, escritorio/móvil, nuevo/abrir/guardar JSON, exportar)
   animations/          un módulo por animación (Etapa 4+)
   export/exporter.js   árbol -> .html (una clase por nodo, @media para móvil)
 ```

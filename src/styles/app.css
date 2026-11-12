@@ -8,6 +8,13 @@ body { font: 14px system-ui, sans-serif; background: #1a1a1f; color: #e8e8ee; }
 #app { display: grid; grid-template-columns: 240px 1fr 300px; grid-template-rows: 44px 1fr; height: 100vh; }
 #toolbar { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; padding: 0 14px; background: #1f1f26; border-bottom: 1px solid #333; }
 #toolbar .espacio { flex: 1; }
+#toolbar button { background: #2f2f38; color: inherit; border: 1px solid #44444f; border-radius: 6px; padding: 6px 11px; cursor: pointer; font: inherit; }
+#toolbar button:hover:not(:disabled) { background: #3b3470; }
+#toolbar button:disabled { opacity: .35; cursor: default; }
+#toolbar .grupo { display: flex; margin-left: 10px; }
+#toolbar .grupo button:first-child { border-radius: 6px 0 0 6px; }
+#toolbar .grupo button:last-child { border-radius: 0 6px 6px 0; border-left: 0; }
+#toolbar button.activo { background: #7c5cff; border-color: #7c5cff; color: #fff; }
 button.primario { background: #7c5cff; color: #fff; border: 0; border-radius: 6px; padding: 7px 14px; cursor: pointer; font-weight: 600; }
 button.primario:hover { background: #6a4aee; }
 .pagina { width: 100%; margin-bottom: 8px; padding: 7px; background: none; color: #bbb; border: 1px dashed #55555f; border-radius: 6px; cursor: pointer; }
@@ -27,7 +34,11 @@ button.primario:hover { background: #6a4aee; }
 .lista li span { flex: 1; }
 .lista .vacio, .vacio { color: #777; cursor: default; }
 .lista button { background: none; border: 0; color: #999; cursor: pointer; }
-.lista button:hover { color: #ff6b6b; }
+.lista button:hover { color: #fff; }
+.lista button.borrar:hover { color: #ff6b6b; }
+.lista li.arrastrando { opacity: .4; }
+.lista li.drop-antes { box-shadow: 0 -2px 0 #7c5cff; }
+.lista li.drop-despues { box-shadow: 0 2px 0 #7c5cff; }
 
 .bloques { display: grid; gap: 6px; }
 .bloques button { padding: 8px; background: #2f2f38; color: inherit; border: 1px solid #44444f; border-radius: 6px; cursor: pointer; }
@@ -37,6 +48,7 @@ button.primario:hover { background: #6a4aee; }
 #preview { overflow: auto; background: #111; padding: 20px; }
 /* font-size/line-height y img: iguales al HTML exportado (para que preview = resultado) */
 .stage { background: #fff; margin: 0 auto; max-width: 100%; min-height: 100%; box-shadow: 0 0 0 1px #333; font-size: 16px; line-height: normal; }
+.stage.movil { width: 390px; }
 .stage img { max-width: 100%; display: block; }
 .stage [contenteditable] { outline: 2px solid #ffb02e; outline-offset: 2px; cursor: text; }
 /* Selección y hover dentro de la landing (outline no altera el layout) */

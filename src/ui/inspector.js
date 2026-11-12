@@ -107,7 +107,7 @@ export function initInspector(host) {
   });
 
   subscribe((state, cambio) => {
-    if (cambio === 'selection') return dibujar();
+    if (cambio === 'selection' || cambio === 'view') return dibujar();
     if (cambio === 'text') return; // se escribe en el preview: no tocar el panel
     // Cambio de página: reconstruir solo si cambió el nodo, o se forzó, o el foco no está aquí
     const enfocado = host.contains(document.activeElement) && document.activeElement !== host;

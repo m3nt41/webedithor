@@ -3,7 +3,7 @@
 // - Cambia selección  -> solo se marca/desmarca la clase .sel (no re-renderiza).
 // - Mientras se escribe (cambio 'text') NO se re-renderiza, para no perder el cursor.
 
-import { getState, subscribe, select, setContent, mutate } from '../core/store.js';
+import { getState, subscribe, select, setContent, refresh } from '../core/store.js';
 import { renderNode, TIPOS_TEXTO } from '../render/renderer.js';
 
 export function initPreview(host) {
@@ -14,6 +14,7 @@ export function initPreview(host) {
 
   function dibujar() {
     const { page, viewMode } = getState();
+    stage.classList.toggle('movil', viewMode === 'mobile'); // ancho 390px en vista móvil
     stage.replaceChildren(renderNode(page, viewMode));
     marcarSeleccion();
   }
@@ -46,7 +47,7 @@ export function initPreview(host) {
       el.removeEventListener('blur', alTerminar);
       el.removeEventListener('keydown', alTecla);
       el.removeAttribute('contenteditable');
-      mutate(() => {}); // redibuja limpio con el texto ya guardado
+      refresh(); // redibuja limpio con el texto ya guardado
     };
     const alTecla = (e) => {
       // Enter termina la edición en títulos y botones; en párrafos hace salto de línea
@@ -88,7 +89,7 @@ export function initPreview(host) {
 
   subscribe((_, cambio) => {
     if (cambio === 'selection') marcarSeleccion();
-    else if (cambio === 'page') dibujar();
+    else if (cambio === 'page' || cambio === 'view') dibujar();
     // 'text': no hacer nada
   });
   dibujar();

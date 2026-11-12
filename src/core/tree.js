@@ -56,6 +56,33 @@ export function walk(root, fn) {
   root.children.forEach((h) => walk(h, fn));
 }
 
+/** Copia profunda de un nodo dándole ids nuevos a todo el subárbol (para duplicar). */
+export function cloneWithNewIds(node) {
+  const copia = structuredClone(node);
+  walk(copia, (n) => { n.id = newId(); });
+  return copia;
+}
+
+/** Valida y completa un objeto leído de un .json. Lanza Error si no es una página válida. */
+export function normalizePage(obj) {
+  const TIPOS = ['page', 'section', 'container', 'heading', 'text', 'button', 'image'];
+  function norm(n, esRaiz) {
+    if (!n || typeof n !== 'object') throw new Error('Nodo inválido');
+    if (!TIPOS.includes(n.type)) throw new Error(`Tipo desconocido: ${n.type}`);
+    if (esRaiz && n.type !== 'page') throw new Error('La raíz debe ser de tipo page');
+    return {
+      id: typeof n.id === 'string' ? n.id : newId(),
+      type: n.type,
+      name: n.name ?? n.type,
+      styles: { base: n.styles?.base ?? {}, mobile: n.styles?.mobile ?? {} },
+      content: n.content ?? {},
+      animation: n.animation ?? null,
+      children: (n.children ?? []).map((h) => norm(h, false)),
+    };
+  }
+  return norm(obj, true);
+}
+
 /** Página vacía: un nodo raíz sin secciones. */
 export function createPage() {
   return createNode('page', {

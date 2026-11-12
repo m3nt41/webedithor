@@ -1,7 +1,8 @@
 // SIDEBAR (izquierda): lista de secciones + botones para añadir bloques.
-// Etapa 1: seleccionar, borrar y añadir. Reordenar/duplicar llega en la Etapa 3.
+// Cada fila: clic = seleccionar, arrastrar = reordenar, ⧉ = duplicar, ✕ = borrar.
+// (Si te equivocas al borrar: Ctrl+Z.)
 
-import { getState, subscribe, select, addSection, removeNode } from '../core/store.js';
+import { getState, subscribe, select, addSection, removeNode, duplicateNode, moveSection } from '../core/store.js';
 import { BLOCKS, createBlock } from '../blocks/index.js';
 
 export function initSidebar(host) {
@@ -26,6 +27,64 @@ export function initSidebar(host) {
     botones.appendChild(btn);
   });
 
+  let origen = null; // índice de la fila que se está arrastrando
+
+  function limpiarMarcas() {
+    lista.querySelectorAll('.drop-antes, .drop-despues, .arrastrando').forEach((li) => li.classList.remove('drop-antes', 'drop-despues', 'arrastrando'));
+  }
+
+  function filaSeccion(sec, i, selectedId) {
+    const li = document.createElement('li');
+    li.className = sec.id === selectedId ? 'activa' : '';
+    li.draggable = true;
+
+    const nombre = document.createElement('span');
+    nombre.textContent = sec.name;
+    nombre.addEventListener('click', () => select(sec.id));
+
+    const dup = document.createElement('button');
+    dup.textContent = '⧉';
+    dup.title = 'Duplicar sección';
+    dup.addEventListener('click', () => duplicateNode(sec.id));
+
+    const borrar = document.createElement('button');
+    borrar.textContent = '✕';
+    borrar.title = 'Borrar sección';
+    borrar.className = 'borrar';
+    borrar.addEventListener('click', () => removeNode(sec.id));
+
+    li.append(nombre, dup, borrar);
+
+    // ---- Arrastrar y soltar ----
+    li.addEventListener('dragstart', (e) => {
+      origen = i;
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', String(i)); // Firefox exige setData
+      li.classList.add('arrastrando');
+    });
+    li.addEventListener('dragover', (e) => {
+      if (origen === null) return;
+      e.preventDefault();
+      const r = li.getBoundingClientRect();
+      const despues = e.clientY > r.top + r.height / 2;
+      limpiarMarcas();
+      li.classList.add(despues ? 'drop-despues' : 'drop-antes');
+    });
+    li.addEventListener('drop', (e) => {
+      if (origen === null) return;
+      e.preventDefault();
+      const r = li.getBoundingClientRect();
+      let destino = e.clientY > r.top + r.height / 2 ? i + 1 : i;
+      if (origen < destino) destino--; // al quitar el origen, los índices de después bajan 1
+      const desde = origen;
+      origen = null;
+      limpiarMarcas();
+      moveSection(desde, destino);
+    });
+    li.addEventListener('dragend', () => { origen = null; limpiarMarcas(); });
+    return li;
+  }
+
   function dibujar() {
     const { page, selectedId } = getState();
     lista.replaceChildren();
@@ -33,19 +92,7 @@ export function initSidebar(host) {
       lista.innerHTML = '<li class="vacio">Aún no hay secciones. Añade un bloque.</li>';
       return;
     }
-    page.children.forEach((sec) => {
-      const li = document.createElement('li');
-      li.className = sec.id === selectedId ? 'activa' : '';
-      const nombre = document.createElement('span');
-      nombre.textContent = sec.name;
-      nombre.addEventListener('click', () => select(sec.id));
-      const borrar = document.createElement('button');
-      borrar.textContent = '✕';
-      borrar.title = 'Borrar sección';
-      borrar.addEventListener('click', () => removeNode(sec.id));
-      li.append(nombre, borrar);
-      lista.appendChild(li);
-    });
+    page.children.forEach((sec, i) => lista.appendChild(filaSeccion(sec, i, selectedId)));
   }
 
   subscribe(dibujar);

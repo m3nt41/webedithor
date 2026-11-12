@@ -6,6 +6,30 @@
 - Bloques base Hero / Servicios / Footer con 1 variante (`blocks/`).
 - Renderer árbol -> DOM con `data-id` (`render/renderer.js`), soporta `styles.mobile`.
 
+## Etapa 3 — Secciones, vista móvil, JSON y undo/redo  ✅
+
+### Hecho
+- **Undo/redo** (`core/store.js`): historial de hasta 100 versiones del árbol. Botones ↶ ↷ y Ctrl+Z / Ctrl+Y (Ctrl+Shift+Z). Cambios seguidos al mismo campo dentro de 1 s se agrupan en un solo paso (`clave` en `mutate`). Dentro de inputs/textarea/texto editable se deja el undo nativo del navegador.
+- **Sidebar**: reordenar secciones arrastrando (línea morada indica dónde cae), duplicar (⧉) con ids nuevos, borrar (✕, se recupera con Ctrl+Z).
+- **Vista escritorio / móvil** (barra superior): el preview móvil mide 390 px y aplica `styles.mobile`. En vista móvil, todo cambio del panel se guarda SOLO en `styles.mobile`; dejar un campo vacío en móvil borra el override y vuelve al valor de escritorio. El panel indica "editando móvil/escritorio".
+- **Guardar / Abrir JSON / Nuevo**: el archivo es `{ app, version:1, page }`; al abrir se valida y completa con `normalizePage` (acepta también la página sola). Abrir y Nuevo se pueden deshacer.
+- **Autoguardado** en localStorage (clave `editor-landings:pagina`, 300 ms de debounce); se restaura al recargar.
+- Verificado en `npm run dev`: undo/redo de añadir, duplicar, mover y estilos (agrupados), arrastrar y soltar (eventos DragEvent sintéticos), vista móvil (390 px, grid a 1 columna), JSON inválido rechazado, persistencia tras recargar. Sin errores de consola.
+
+### Pendiente
+- Etapa 4: motor de animaciones (appear, hover, transiciones, texto). Etapa 5: scroll, 3D, drag, marquee, cursor. Etapa 6: más bloques y variantes.
+- No hay reordenar elementos dentro de una sección (solo secciones), ni añadir/borrar elementos sueltos; si lo quieres, entra en una etapa posterior.
+
+### Decisiones
+- El historial NO se guarda en localStorage ni en el JSON (al recargar, undo empieza vacío); la página sí.
+- La selección y la vista (escritorio/móvil) tampoco se guardan.
+- El breakpoint móvil del export es 768 px y el preview móvil mide 390 px.
+
+### Bugs conocidos
+- Ver Etapa 2 (imágenes data URL pesadas, Firefox sin probar). El problema de "un estado por tecla" quedó resuelto con el agrupado.
+- Arrastrar y soltar solo se probó con eventos sintéticos en Chromium; probar con mouse real (sobre todo en Firefox).
+- Las mediciones en el panel de pruebas dan 0 si la ventana está oculta; no es un bug del editor.
+
 ## Etapa 2 — Propiedades, edición de texto y exportar HTML  ✅
 
 ### Hecho

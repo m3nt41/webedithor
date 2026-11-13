@@ -1,6 +1,6 @@
 # PROGRESS
 
-Etapas hechas: 1, 2, 3, 4, 5 y 5.5 (navbar y anclas). Próxima: 6 (transiciones y estados). El reparto completo está en `CLAUDE.md` y la lista de funciones en `FEATURES.md`.
+Etapas hechas: 1, 2, 3, 4, 5, 5.5 (navbar y anclas) y 6 (transiciones y estados). Próxima: 7 (scroll). El reparto completo está en `CLAUDE.md` y la lista de funciones en `FEATURES.md`.
 
 ## Etapa 1 — Estructura, árbol JSON, preview y selección  ✅
 - Proyecto Vite + vanilla JS, `motion` instalado (sin usar todavía).
@@ -98,7 +98,7 @@ Chrome no reemplaza a Firefox (el navegador de m3nt41). Lo de la lista funciona 
 - [ ] Drag y drop de capas (sidebar) con mouse real.
 - [ ] Vista móvil real (ancho de teléfono): navbar en dos filas, sin scroll horizontal.
 
-## Etapa 6 — Transiciones y estados  (en curso)
+## Etapa 6 — Transiciones y estados  ✅ (todas las funciones de FEATURES.md de la etapa hechas)
 
 ### Bloque 1: rotación, al cargar, press, focus  ✅
 **Hecho**
@@ -136,6 +136,29 @@ Chrome no reemplaza a Firefox (el navegador de m3nt41). Lo de la lista funciona 
 - [ ] "Por línea (medida)": que la cascada siga las líneas reales en Firefox, y el re-medido al redimensionar con la ventana real (en Chrome de pruebas el `requestAnimationFrame` no corre con la pestaña en segundo plano; se probó forzándolo).
 - [ ] Re-medido tras `document.fonts.ready` con una fuente web real (el export usa solo fuentes del sistema, así que apenas aplica hoy).
 - [ ] Cascada de hijos con scroll real y animación a ojo (Chrome y Firefox); preview del editor con ▶ Reproducir en los 3 modos nuevos.
+
+### Bloque 4: variants (estados con nombre)  ✅
+**Hecho**
+- Módulo `animations/variants.js` + sección **"Estados (variants)"** en el inspector (botones, texto, títulos, imágenes, contenedores y secciones). Datos: `node.animation.variants = [{ id, name, trigger, duration, delay, ease (+bezier/spring), props }]`. `reposo` no se guarda (es el aspecto normal). Cada estado cambia solo lo que se rellene: opacidad, mover X/Y, escala, rotación, desenfoque, brillo, color de texto, fondo y borde, radio y sombra. Orden de la lista = prioridad (gana el de más abajo); botones ↑ ↓ ✕ y **"Ver"** (fija el estado en el preview; no se guarda ni se exporta).
+- **Disparos**: pasar el mouse (`:hover`), presionar (`:active`), enfocar (`:focus-visible`, solo botones), clic (alterna `.on`), al cargar y al entrar en pantalla (reusa el `.in` del script de scroll existente).
+- **Script nuevo (aprobado por m3nt41)**: `SCRIPT_CLIC` (3 líneas, alterna `.on`; hace `preventDefault` si el `href` es vacío o `#`). Solo viaja en el export si algún estado usa clic (`data-vc`).
+- **Riesgo resuelto: "al cargar" que se queda fijo vs hover/press.** Una animación con `forwards` le gana a un `:hover` normal. Solución: los estados interactivos (hover, presionar, enfocar, clic) se emiten con `!important` (un `!important` de autor sí le gana a una animación), y los de cargar/scroll son `@keyframes` con solo el `to` y `forwards`. Así al salir del hover vuelve al valor del estado "al cargar". El `!important` también les da prioridad sobre el hover/press/focus viejos y sobre los estilos inline del preview ("el variant gana").
+- Si el elemento tiene "Al aparecer" y un estado de cargar/scroll, ambas animaciones van en la misma lista `animation:` (es una sola propiedad CSS).
+- Store: `addVariant`, `removeVariant`, `moveVariant`, `setVariant`, `setVariantProp`, `verEstado`. Preview: con **▶ Reproducir** los estados por clic se alternan al hacer clic.
+
+**Verificado en Chrome real** (HTML exportado en un servidor local, mouse real):
+- Elemento con estado "cargar" (fondo azul, +40px) + hover (rojo, escala 1,2): al cargar queda azul y la animación termina `finished`; al pasar el mouse pasa a rojo y escala 1,2 (el hover gana); al salir vuelve a azul.
+- Clic: alterna `.on` (verde y 45°) y el segundo clic vuelve a reposo.
+- Al entrar en pantalla: antes del scroll la animación está `paused` en reposo; tras hacer scroll real pasa a naranja y +60px; el hover sobre esa caja pasa a magenta y al salir vuelve a naranja.
+- En el editor (`npm run dev`): "+ Añadir estado" crea el estado, el hover del preview escala 1,05, "Ver" lo fija y "Dejar de ver" lo quita, cambiar el disparo a clic + ▶ Reproducir + clic real alterna `.on`/rotación 30°. Sin errores de consola. `npm run build` OK.
+
+**Limitaciones / no verificado**
+- **Hover/press sobre una propiedad que un estado "al cargar" o "al entrar" mantiene fija: entra de golpe, sin transición** (Chrome no anima una propiedad retenida por una animación `forwards`; sí anima las demás, p. ej. la escala). Si interesa que sea suave, habría que cambiar cargar/scroll a transición con clase (al cargar pediría un script o `@starting-style`). No se hizo.
+- **Presionar (`:active`) y enfocar (`:focus-visible`) no se probaron con mouse/teclado real** (las herramientas no mantienen el clic ni usan Tab); solo se comprobó que las reglas se generan. Probar a mano, también en Firefox.
+- Con `prefers-reduced-motion` o sin JS, los estados de cargar/scroll no se aplican (queda el reposo, igual que el resto de entradas). Un elemento con "Al aparecer" + estado de cargar/scroll y reduced-motion también queda en reposo.
+- El estado por clic en un elemento que no es botón no se activa con teclado. Varios estados por clic en el mismo elemento se activan juntos (gana el de más abajo).
+- "Color de fondo" usa `background-color`: no se ve sobre un fondo con degradado/imagen.
+- Sin probar en Firefox (transiciones de `translate/scale/rotate` y `!important` vs animaciones).
 
 ## Etapa 5 — Elementos y bloques  ✅
 

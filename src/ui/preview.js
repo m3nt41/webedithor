@@ -24,7 +24,7 @@ export function initPreview(host) {
     const play = reproducir;
     reproducir = false;
     stage.classList.toggle('movil', viewMode === 'mobile'); // ancho 390px en vista móvil
-    estilo.textContent = cssPagina(page, { scroll: play });
+    estilo.textContent = cssPagina(page, { scroll: play, forzar: getState().verEstado });
     stage.replaceChildren(estilo, renderNode(page, viewMode, { play }));
     marcarSeleccion();
     medirLineas(stage);
@@ -85,6 +85,7 @@ export function initPreview(host) {
   stage.addEventListener('click', (e) => {
     e.preventDefault(); // evita seguir enlaces de los botones
     if (e.target.isContentEditable) return; // clic dentro del texto que se edita
+    e.target.closest('[data-vc]')?.classList.toggle('on'); // estados por clic (solo existen tras ▶ Reproducir)
     const el = e.target.closest('[data-id]');
     const id = el?.dataset.id;
     // Clic en la raíz o en el vacío = deseleccionar
@@ -116,7 +117,7 @@ export function initPreview(host) {
   subscribe((_, cambio) => {
     if (cambio === 'selection') marcarSeleccion();
     else if (cambio === 'play') { reproducir = true; dibujar(); }
-    else if (cambio === 'page' || cambio === 'view') dibujar();
+    else if (cambio === 'page' || cambio === 'view' || cambio === 'verestado') dibujar();
     // 'text': no hacer nada
   });
   dibujar();

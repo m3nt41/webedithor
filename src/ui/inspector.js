@@ -5,19 +5,67 @@
 //   página mientras el foco está dentro (salvo que cambie la selección o un
 //   select altere qué campos se muestran: ahí se fuerza).
 
-import { getState, subscribe, setStyle, setContent, setName, setAnimation, moveBy, duplicateNode, removeNode } from '../core/store.js';
+import { getState, subscribe, setStyle, setContent, setName, setAnimation, moveBy, duplicateNode, removeNode, addVariant, removeVariant, moveVariant, setVariant, setVariantProp, verEstado } from '../core/store.js';
 import { findNode, findParent, anchorValido, contarAncla } from '../core/tree.js';
 import { effectiveStyles, TIPOS_TEXTO } from '../render/renderer.js';
 import { GRUPOS } from './fields.js';
 import { GRUPOS_ANIM } from '../animations/index.js';
+import { DISPAROS_VARIANT, CAMPOS_PROPS, CAMPOS_TIEMPO, DEF_TIEMPO } from '../animations/variants.js';
 
-const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+const esc =(s) => String(s ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 
 /** '#abc' -> '#aabbcc'; si no es hex devuelve null (el picker no admite rgba/gradientes). */
 function aHex(v) {
   if (/^#[0-9a-f]{6}$/i.test(v)) return v;
   if (/^#[0-9a-f]{3}$/i.test(v)) return '#' + [...v.slice(1)].map((c) => c + c).join('');
   return null;
+}
+
+/** Sección "Estados (variants)": lista de estados con su disparo, lo que cambian y su tiempo. */
+function htmlEstados(nodo, verActual) {
+  const lista = nodo.animation?.variants ?? [];
+  // "Enfocar" solo tiene sentido en botones (los únicos que reciben foco de teclado)
+  const disparos = DISPAROS_VARIANT.filter(([v]) => v !== 'focus' || nodo.type === 'button');
+  let h = `<h3>Estados (variants)</h3>
+    <p class="modo"><strong>reposo</strong> = el aspecto normal del elemento. Cada estado cambia solo lo que rellenes; si dos coinciden, gana el de más abajo.</p>`;
+  lista.forEach((s, i) => {
+    const viendo = verActual?.id === nodo.id && verActual.estado === s.id;
+    const opts = disparos.map(([v, t]) => `<option value="${v}" ${v === s.trigger ? 'selected' : ''}>${t}</option>`).join('');
+    h += `<div class="variante" data-vs="${esc(s.id)}">
+      <div class="vhead">
+        <input data-v="name" value="${esc(s.name)}" title="Nombre del estado">
+        <button data-vact="ver" class="${viendo ? 'on' : ''}" title="Ver este estado en el preview (no se exporta)">${viendo ? 'Dejar de ver' : 'Ver'}</button>
+        <button data-vact="vup" title="Subir" ${i === 0 ? 'disabled' : ''}>↑</button>
+        <button data-vact="vdown" title="Bajar" ${i === lista.length - 1 ? 'disabled' : ''}>↓</button>
+        <button data-vact="vdel" class="borrar" title="Borrar estado">✕</button>
+      </div>
+      <div class="campo"><label>Se dispara</label><select data-v="trigger">${opts}</select></div>
+      <p class="modo">Qué cambia (vacío = no cambia)</p>`;
+    for (const f of CAMPOS_PROPS) {
+      const v = s.props?.[f.key] ?? '';
+      if (f.kind === 'color') {
+        h += `<div class="campo"><label>${f.label}</label><span class="color"><input type="color" data-vpick="${f.key}" value="${aHex(v) ?? '#000000'}"><input data-vp="${f.key}" value="${esc(v)}" placeholder="sin cambio"></span></div>`;
+      } else if (f.kind === 'text') {
+        h += `<div class="campo"><label>${f.label}</label><input data-vp="${f.key}" value="${esc(v)}" placeholder="${esc(f.placeholder)}"></div>`;
+      } else {
+        h += `<div class="campo"><label>${f.label}</label><input type="number" data-vp="${f.key}" data-num step="${f.step ?? 1}" value="${v}" placeholder="sin cambio"></div>`;
+      }
+    }
+    h += '<p class="modo">Cómo viaja</p>';
+    for (const f of CAMPOS_TIEMPO) {
+      if (f.cuando && !f.cuando(s)) continue;
+      const v = s[f.key] ?? DEF_TIEMPO[f.key] ?? '';
+      if (f.kind === 'select') {
+        const o = f.options.map(([val, t]) => `<option value="${esc(val)}" ${val === String(v) ? 'selected' : ''}>${t}</option>`).join('');
+        h += `<div class="campo"><label>${f.label}</label><select data-v="${f.key}">${o}</select></div>`;
+      } else {
+        h += `<div class="campo"><label>${f.label}</label><input type="number" data-v="${f.key}" data-num step="${f.step ?? 1}" min="${f.min ?? 0}" value="${v}"></div>`;
+      }
+    }
+    if (s.trigger === 'click') h += '<p class="modo">Un clic activa el estado y otro clic vuelve a reposo. El .html exportado lleva un script de unas líneas.</p>';
+    h += '</div>';
+  });
+  return h + '<button class="vadd" data-vact="add">+ Añadir estado</button>';
 }
 
 /** Mensaje de validación del ancla (vacío si todo bien). */
@@ -98,6 +146,7 @@ export function initInspector(host) {
     // ---- Animaciones (los grupos viven en src/animations/) ----
     for (const g of GRUPOS_ANIM) {
       if (!g.tipos.includes(nodo.type)) continue;
+      if (g.propio) { html += htmlEstados(nodo, getState().verEstado); continue; } // los estados tienen su propia sección
       const datos = nodo.animation?.[g.id]; // undefined = grupo apagado
       html += `<h3>${g.titulo}</h3>`;
       for (const f of g.campos) {
@@ -129,7 +178,21 @@ export function initInspector(host) {
     const id = idDibujado;
     if (!id) return;
     // Un select puede mostrar/ocultar campos: pedimos reconstruir el panel (antes del cambio)
-    if (t.tagName === 'SELECT' && (t.dataset.s || t.dataset.a)) forzar = true;
+    if (t.tagName === 'SELECT' && (t.dataset.s || t.dataset.a || t.dataset.v)) forzar = true;
+    // Estados (variants): los campos viven dentro de un [data-vs] con el id del estado
+    const vs = t.closest('[data-vs]')?.dataset.vs;
+    if (vs) {
+      const num = t.dataset.num !== undefined;
+      if (t.dataset.vpick) { // el selector de color rellena la caja de texto vecina
+        t.nextElementSibling.value = t.value;
+        setVariantProp(id, vs, t.dataset.vpick, t.value);
+      } else if (t.dataset.vp) {
+        const pick = t.previousElementSibling;
+        if (pick?.dataset.vpick && aHex(t.value)) pick.value = aHex(t.value);
+        setVariantProp(id, vs, t.dataset.vp, num ? (t.value === '' ? '' : +t.value) : t.value.trim());
+      } else if (t.dataset.v) setVariant(id, vs, t.dataset.v, num ? (t.value === '' ? '' : +t.value) : t.value);
+      return;
+    }
     if (t.dataset.anchor !== undefined) {
       // Ancla: solo se guarda si es válida (o vacía); siempre se muestra el aviso
       const v = t.value.trim();
@@ -168,6 +231,24 @@ export function initInspector(host) {
     else if (act === 'del') removeNode(id);
   });
 
+  // Botones de los estados: añadir, ver, subir, bajar, borrar
+  host.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-vact]');
+    const id = idDibujado;
+    if (!b || !id || b.disabled) return;
+    const vs = b.closest('[data-vs]')?.dataset.vs;
+    forzar = true;
+    const act = b.dataset.vact;
+    if (act === 'add') addVariant(id);
+    else if (act === 'vup') moveVariant(id, vs, -1);
+    else if (act === 'vdown') moveVariant(id, vs, 1);
+    else if (act === 'vdel') removeVariant(id, vs);
+    else if (act === 'ver') {
+      const ya = getState().verEstado;
+      verEstado(id, ya?.id === id && ya.estado === vs ? null : vs);
+    }
+  });
+
   host.addEventListener('change', (e) => {
     const t = e.target;
     if (t.tagName === 'SELECT' && t.dataset.c) return; // ya manejado en 'input'
@@ -180,7 +261,7 @@ export function initInspector(host) {
   });
 
   subscribe((state, cambio) => {
-    if (cambio === 'selection' || cambio === 'view') return dibujar();
+    if (cambio === 'selection' || cambio === 'view' || cambio === 'verestado') return dibujar();
     if (cambio === 'text') return; // se escribe en el preview: no tocar el panel
     // Cambio de página: reconstruir solo si cambió el nodo, o se forzó, o el foco no está aquí
     const enfocado = host.contains(document.activeElement) && document.activeElement !== host;

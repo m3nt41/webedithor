@@ -34,7 +34,7 @@ src/
   blocks/              hero, services, gallery, testimonials, pricing, contact, footer (4 variantes c/u) + elements.js (elementos sueltos) + util.js (atajos) + index.js (registro)
   render/renderer.js   árbol -> DOM
   ui/                  sidebar.js, preview.js (selección + edición de texto), inspector.js, fields.js (campos del panel), toolbar.js (undo/redo, escritorio/móvil, nuevo/abrir/guardar JSON, exportar)
-  animations/          un módulo por animación: appear, hover, text + base (efectos/curvas/keyframes) + index (registro GRUPOS_ANIM)
+  animations/          un módulo por animación: appear, hover, press, focus, text, stagger, variants (estados con nombre; propio: true = sección propia en el inspector) + base (efectos/curvas/keyframes) + index (registro GRUPOS_ANIM)
   export/exporter.js   árbol -> .html (una clase por nodo, @media para móvil)
 ```
 
@@ -59,8 +59,9 @@ Cada función de `FEATURES.md` tiene una etapa asignada (se indica allí con `�
 4. Motor de animaciones base (CSS puro): appear (fade, slide, zoom, blur, voltear, al entrar en pantalla), hover, revelado de texto por letra y palabra, delay, stagger de texto. ✅
 5. Elementos y bloques: árbol de capas con arrastrar entre contenedores, añadir/borrar/duplicar/mover elementos, atajos, 7 bloques × 4 variantes. ✅
 
+6. Transiciones y estados: rotación, al cargar, press/focus, tween bezier, spring real, stagger entre hijos, texto por línea y variants (estados con nombre). ✅
+
 **Pendientes**
-6. **Transiciones y estados.** Rotación en appear; "al cargar" como disparador; press y focus con transición; variants (estados con nombre + animación entre ellos); spring real (rigidez, amortiguación, masa); tween con cubic-bezier editable; stagger entre hijos; texto por línea.
 7. **Scroll.** Parallax, scroll-linked, sticky, escenas por scroll, scroll suave.
 8. **Movimiento avanzado.** Layout animations, drag con límites y rebote, inercia, 3D transforms (perspectiva, rotación X/Y).
 9. **Extras.** Marquee/ticker, cursor personalizado, page transitions.

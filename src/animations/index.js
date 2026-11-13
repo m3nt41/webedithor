@@ -8,6 +8,7 @@ import press from './press.js';
 import focus from './focus.js';
 import text from './text.js';
 import stagger from './stagger.js';
+import variants, { estadosEntrada, usaClic, SCRIPT_CLIC } from './variants.js';
 import { KEYFRAMES, transicion, cargaInmediata } from './base.js';
 import { walk } from '../core/tree.js';
 
@@ -24,7 +25,17 @@ export const GRUPOS_ANIM = [
   { ...focus, tipos: ['button'] }, // solo los enlaces/botones reciben foco de teclado
   { ...text, tipos: TIPOS_TEXTO },
   { ...stagger, tipos: ['section', 'container'] },
+  { ...variants, tipos: ['section', 'container', 'heading', 'text', 'button', 'image'] }, // al final: sus !important y su `animation` ganan
 ];
+
+export { usaClic, SCRIPT_CLIC };
+
+/** ¿Hay estados por clic en la página? (el export lleva el script mínimo solo entonces) */
+export function paginaUsaClic(page) {
+  let usa = false;
+  walk(page, (n) => { if (usaClic(n)) usa = true; });
+  return usa;
+}
 
 export const DEFAULTS = Object.fromEntries(GRUPOS_ANIM.map((g) => [g.id, g.defaults]));
 export const PRINCIPAL = Object.fromEntries(GRUPOS_ANIM.map((g) => [g.id, g.principal]));
@@ -33,7 +44,8 @@ export const PRINCIPAL = Object.fromEntries(GRUPOS_ANIM.map((g) => [g.id, g.prin
 // Entradas del nodo: appear, texto y cascada de hijos (esta última solo cuenta si hay hijos)
 const entradas = (node) => {
   const a = node.animation;
-  return [a?.appear?.effect && a.appear, a?.text?.mode && a.text, a?.stagger?.effect && node.children?.length && a.stagger].filter(Boolean);
+  // los estados "al cargar" / "al entrar en pantalla" también cuentan (llevan su propio `trigger`)
+  return [a?.appear?.effect && a.appear, a?.text?.mode && a.text, a?.stagger?.effect && node.children?.length && a.stagger, ...estadosEntrada(node)].filter(Boolean);
 };
 const tieneEntrada = (node) => entradas(node).length > 0;
 
@@ -71,18 +83,19 @@ function transicionBase(anim, sel) {
 }
 
 /** CSS de las animaciones de un nodo. */
-export function cssNodo(node, sel, { scroll = true } = {}) {
+export function cssNodo(node, sel, { scroll = true, forzar = null } = {}) {
   if (!node.animation) return '';
   return [transicionBase(node.animation, sel),
-    ...GRUPOS_ANIM.filter((g) => scroll || g.estado).map((g) => g.css(node.animation[g.id], sel, node)),
+    ...GRUPOS_ANIM.filter((g) => scroll || g.estado).map((g) => g.css(node.animation[g.id], sel, node, { scroll, forzar })),
   ].filter(Boolean).join('\n');
 }
 
-/** CSS de toda la página para el PREVIEW (selector por data-id). scroll=false → solo hover. */
-export function cssPagina(page, { scroll = false } = {}) {
+/** CSS de toda la página para el PREVIEW (selector por data-id). scroll=false → solo hover.
+ *  forzar = { id, estado }: muestra fijo ese estado de un nodo ("Ver este estado"). */
+export function cssPagina(page, { scroll = false, forzar = null } = {}) {
   const reglas = [];
   walk(page, (n) => {
-    const r = cssNodo(n, `[data-id="${n.id}"]`, { scroll });
+    const r = cssNodo(n, `[data-id="${n.id}"]`, { scroll, forzar });
     if (r) reglas.push(r);
   });
   return (scroll ? KEYFRAMES + '\n' : '') + reglas.join('\n');

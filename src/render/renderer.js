@@ -3,7 +3,7 @@
 // Los estilos van inline (más simple de editar en vivo). El exportador
 // (src/export/exporter.js) los convierte a CSS con clases.
 
-import { splitText, usaScroll, esMedida } from '../animations/index.js';
+import { splitText, usaScroll, esMedida, usaClic } from '../animations/index.js';
 import { anchorValido } from '../core/tree.js';
 
 // Qué etiqueta HTML usa cada tipo de nodo (también la usa el exportador)
@@ -32,6 +32,7 @@ export function renderNode(node, viewMode = 'desktop', opts = {}) {
   if (anchorValido(node.content?.anchor)) el.id = node.content.anchor;
   if (opts.play && usaScroll(node)) el.dataset.rv = '';
   if (opts.play && esMedida(node.animation?.text?.mode)) el.dataset.lm = '';
+  if (opts.play && usaClic(node)) el.dataset.vc = ''; // estado por clic: el preview alterna .on (con ▶ Reproducir)
 
   Object.assign(el.style, effectiveStyles(node, viewMode));
 

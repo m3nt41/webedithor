@@ -6,6 +6,7 @@
 
 import { createPage, createNode, findNode, findParent, cloneWithNewIds, normalizePage, canContain } from './tree.js';
 import { DEFAULTS, PRINCIPAL } from '../animations/index.js';
+import { crearEstado } from '../animations/variants.js';
 
 const CLAVE_LS = 'editor-landings:pagina';
 const MAX_HISTORIAL = 100;
@@ -25,6 +26,7 @@ const state = {
   page: cargarGuardado() ?? createPage(),
   selectedId: null, // id del nodo seleccionado
   viewMode: 'desktop', // 'desktop' | 'mobile'
+  verEstado: null, // { id (nodo), estado (id del variant) }: "Ver este estado" en el preview; no se guarda
 };
 
 const pasado = []; // versiones anteriores de la página (undo)
@@ -68,8 +70,17 @@ function programarGuardado() {
 /** Cambia la selección (null = deseleccionar). */
 export function select(id) {
   if (state.selectedId === id) return;
+  const habiaVer = state.verEstado;
+  state.verEstado = null; // al cambiar de elemento se deja de "ver" el estado
   state.selectedId = id;
   emit('selection');
+  if (habiaVer) emit('verestado');
+}
+
+/** Fuerza en el preview el estado `estadoId` del nodo `nodeId` (null = volver a lo normal). Solo editor. */
+export function verEstado(nodeId, estadoId) {
+  state.verEstado = estadoId ? { id: nodeId, estado: estadoId } : null;
+  emit('verestado');
 }
 
 /** 'desktop' o 'mobile'. En móvil, los cambios de estilo se guardan en styles.mobile. */
@@ -175,6 +186,64 @@ export function setAnimation(id, grupo, key, value) {
     }
     if (!Object.keys(anim).length) n.animation = null;
   }, 'play', `a:${id}:${grupo}:${key}`);
+}
+
+// ---- Variants (estados con nombre) ----
+// Se guardan en node.animation.variants (lista; el orden importa: el de más abajo gana).
+
+/** Cambia node.animation.variants con fn(lista); deja la animación en null si queda vacía. */
+function editarVariants(id, fn, clave = null) {
+  mutate((page) => {
+    const n = findNode(page, id);
+    if (!n) return;
+    const anim = n.animation ?? (n.animation = {});
+    const lista = anim.variants ?? (anim.variants = []);
+    fn(lista);
+    if (!lista.length) delete anim.variants;
+    if (!Object.keys(anim).length) n.animation = null;
+  }, 'play', clave);
+}
+
+/** Añade un estado nuevo (hover, con escala 1.05 de ejemplo) y devuelve su id. */
+export function addVariant(id) {
+  let nuevo = null;
+  editarVariants(id, (lista) => { nuevo = crearEstado(lista); lista.push(nuevo); });
+  return nuevo?.id;
+}
+
+export function removeVariant(id, estadoId) {
+  editarVariants(id, (lista) => { const i = lista.findIndex((s) => s.id === estadoId); if (i >= 0) lista.splice(i, 1); });
+  if (state.verEstado?.estado === estadoId) verEstado(null, null);
+}
+
+/** Sube (-1) o baja (+1) un estado en la lista (el de más abajo gana si coinciden). */
+export function moveVariant(id, estadoId, delta) {
+  editarVariants(id, (lista) => {
+    const i = lista.findIndex((s) => s.id === estadoId), j = i + delta;
+    if (i < 0 || j < 0 || j >= lista.length) return;
+    [lista[i], lista[j]] = [lista[j], lista[i]];
+  });
+}
+
+/** Cambia un dato del estado (name, trigger, duration, delay, ease, curva...). '' = borra (vuelve al valor por defecto). */
+export function setVariant(id, estadoId, key, value) {
+  editarVariants(id, (lista) => {
+    const s = lista.find((x) => x.id === estadoId);
+    if (!s) return;
+    if ((value === '' || value == null) && key !== 'name') delete s[key];
+    else s[key] = value;
+  }, `v:${id}:${estadoId}:${key}`);
+}
+
+/** Cambia una propiedad que el estado modifica (opacity, x, scale, color...). '' = ya no la cambia. */
+export function setVariantProp(id, estadoId, prop, value) {
+  editarVariants(id, (lista) => {
+    const s = lista.find((x) => x.id === estadoId);
+    if (!s) return;
+    s.props = s.props ?? {};
+    if (value === '' || value == null) delete s.props[prop];
+    else s.props[prop] = value;
+  }, `vp:${id}:${estadoId}:${prop}`);
 }
 
 /** Pide al preview que reproduzca las animaciones de la página. */

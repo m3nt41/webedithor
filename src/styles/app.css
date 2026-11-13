@@ -90,3 +90,14 @@ details.bloque .variantes button:hover { background: #3b3470; }
 #inspector input[type=color] { width: 34px; height: 28px; padding: 0; border: 1px solid #3a3a45; background: none; flex: none; }
 #inspector input:focus, #inspector select:focus, #inspector textarea:focus { outline: 1px solid #7c5cff; }
 #inspector details { margin-top: 18px; color: #9a9aa8; font-size: 12px; }
+
+/* Estados (variants) en el inspector */
+#inspector .variante { border: 1px solid #3a3a45; border-radius: 8px; padding: 8px; margin: 8px 0; background: #202026; }
+#inspector .vhead { display: flex; gap: 4px; margin-bottom: 8px; }
+#inspector .vhead input { flex: 1; min-width: 0; font-weight: 600; }
+#inspector .vhead button, #inspector .vadd { padding: 4px 8px; background: #2f2f38; color: inherit; border: 1px solid #44444f; border-radius: 6px; cursor: pointer; font-size: 12px; }
+#inspector .vhead button:hover:not(:disabled), #inspector .vadd:hover { background: #3b3470; }
+#inspector .vhead button.on { background: #5b47c9; }
+#inspector .vhead button.borrar:hover { background: #7a2a2a; }
+#inspector .vhead button:disabled { opacity: .35; cursor: default; }
+#inspector .vadd { width: 100%; padding: 8px; margin-top: 4px; }

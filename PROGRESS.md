@@ -91,6 +91,13 @@ Etapas hechas: 1, 2, 3, 4, 5 y 5.5 (navbar y anclas). Próxima: 6 (transiciones 
 - No se midió el salto con scroll real ni el aspecto visual del navbar en móvil (el panel de pruebas es diminuto/oculto y da 0 en mediciones): revisarlo en el navegador con Exportar HTML.
 - Páginas ya guardadas antes de esto no tienen anclas: se ponen a mano en el inspector.
 
+## Pendiente de probar en Firefox
+Chrome no reemplaza a Firefox (el navegador de m3nt41). Lo de la lista funciona en Chrome o solo se probó con eventos sintéticos; falta confirmarlo en Firefox:
+- [ ] Sticky del navbar (`position: sticky; top: 0`) en el preview y en el HTML exportado.
+- [ ] Saltos de ancla con `scroll-margin-top` (que la sección quede debajo del navbar y no tapada).
+- [ ] Drag y drop de capas (sidebar) con mouse real.
+- [ ] Vista móvil real (ancho de teléfono): navbar en dos filas, sin scroll horizontal.
+
 ## Etapa 6 — Transiciones y estados  (en curso)
 
 ### Bloque 1: rotación, al cargar, press, focus  ✅

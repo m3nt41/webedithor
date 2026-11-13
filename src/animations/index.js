@@ -8,7 +8,10 @@ import press from './press.js';
 import focus from './focus.js';
 import text from './text.js';
 import stagger from './stagger.js';
+import parallax from './parallax.js';
+import scrolllink from './scrolllink.js';
 import variants, { estadosEntrada, usaClic, SCRIPT_CLIC } from './variants.js';
+export { motorScroll, SCRIPT_SCROLLMOTOR } from './scrollmotor.js';
 import { KEYFRAMES, transicion, cargaInmediata } from './base.js';
 import { walk } from '../core/tree.js';
 
@@ -25,10 +28,22 @@ export const GRUPOS_ANIM = [
   { ...focus, tipos: ['button'] }, // solo los enlaces/botones reciben foco de teclado
   { ...text, tipos: TIPOS_TEXTO },
   { ...stagger, tipos: ['section', 'container'] },
+  { ...parallax, tipos: ['section', 'container', 'heading', 'text', 'button', 'image'] }, // solo con el motor de scroll (.sc)
+  { ...scrolllink, tipos: ['section', 'container', 'heading', 'text', 'button', 'image'] },
   { ...variants, tipos: ['section', 'container', 'heading', 'text', 'button', 'image'] }, // al final: sus !important y su `animation` ganan
 ];
 
 export { usaClic, SCRIPT_CLIC };
+
+/** ¿El nodo usa parallax o "ligado al scroll"? (necesita el motor de scroll: data-sc) */
+export const usaScrollLink = (node) => Boolean(node.animation?.parallax?.effect || node.animation?.scrolllink?.effect);
+
+/** ¿Hay parallax o scroll-linked en la página? (el export lleva el motor solo entonces) */
+export function paginaUsaScrollLink(page) {
+  let usa = false;
+  walk(page, (n) => { if (usaScrollLink(n)) usa = true; });
+  return usa;
+}
 
 /** ¿Hay estados por clic en la página? (el export lleva el script mínimo solo entonces) */
 export function paginaUsaClic(page) {

@@ -196,6 +196,22 @@ Chrome no reemplaza a Firefox (el navegador de m3nt41). Lo de la lista funciona 
 **Límites (CSS, no bugs)**: un sticky solo se mueve dentro de su contenedor (si el padre mide lo mismo que él, no se nota); no funciona si un ancestro tiene `overflow` distinto de visible (el editor no lo pone).
 **Pendiente de probar en Firefox**: sticky en elementos sueltos (preview y export), `bottom`, vista móvil.
 
+### Bloque 2: parallax y scroll-linked  ✅
+**Hecho** (script propio mínimo, aprobado por m3nt41; sin Motion)
+- Grupos nuevos en el inspector (todos los tipos menos la página): **"Parallax (scroll)"** (`parallax.js`: dirección vertical/horizontal + recorrido en px; positivo = más lento que el scroll, negativo = más rápido) y **"Ligado al scroll"** (`scrolllink.js`: aparecer, desaparecer, crecer, encoger o girar hasta enderezarse; intensidad; "empieza/termina" en % del recorrido: 0 % = asoma por abajo, 100 % = sale por arriba).
+- **Motor** `animations/scrollmotor.js` (`motorScroll`, el mismo código en el preview y en el export vía `toString`): marca los elementos `data-sc`, calcula su progreso 0..1 y lo escribe en `--sp`. El movimiento lo hace el CSS (`translate`, `scale`, `rotate`, `opacity`, solo con la clase `.sc`), así que no recoloca el layout.
+- Condiciones de m3nt41: **IntersectionObserver** (solo se actualizan los visibles, margen 50 %); listener de scroll **pasivo** y como mucho un cálculo por cuadro (rAF), leyendo todo antes de escribir; posición medida con `offsetTop` (ignora transform, así el parallax no se "persigue"); **`prefers-reduced-motion`: no corre y no pone `.sc`** (el CSS no vale sin esa clase; sin JS tampoco: queda todo en reposo). Tras un salto grande de scroll (ancla, volver arriba) los de fuera se recolocan en su extremo.
+- Exportador: `data-sc` en los nodos y el `<script>` **solo si algún nodo usa parallax o scroll-linked** (verificado: sin ellos no viaja ni `motorScroll` ni `data-sc`).
+- Preview: igual que las demás animaciones de scroll, solo se ve con **▶ Reproducir** (o al cambiar un ajuste); el scroll del preview es el de `#preview`.
+**Verificado en Chrome**: en el editor (reproducir + scroll de `#preview`) y en el HTML exportado cargado en un iframe con scroll de ventana: parallax -100 → +100 px según el scroll, fade-in 0 → 1, zoom 0,6 → 1, saltos de scroll (0 ↔ 1300) dejan cada uno en su extremo, inspector con los grupos y campos que aparecen/desaparecen, 0 errores de consola, build OK. Bug encontrado y arreglado en la prueba: al salir de pantalla un elemento quedaba en 0 en vez de 1 (comparaba con un borde que no sirve en iframes/margen); ahora compara con el centro de la zona observada.
+**Limitaciones**
+- No combinar con "Al aparecer" sobre la misma propiedad (su `@keyframes` pisa a esta; con `translate`, `scale`, `rotate` u `opacity`). Parallax y "ligado" entre sí sí se pueden: usan propiedades distintas, salvo zoom/giro/opacidad repetidos.
+- El editor no tiene `overflow:hidden`: una imagen con parallax se sale de su marco al moverse; hay que dejar margen o usar un contenedor con `overflow` en el CSS exportado a mano.
+- `reducir movimiento` no se pudo emular en la prueba; se revisó solo por código (el motor devuelve antes de añadir `.sc`).
+- Medición con `offsetTop`: un elemento con `position:sticky` mide su sitio "normal" (el progreso es el de su hueco, no el de donde está pegado).
+- La pestaña de pruebas de Chrome limita `requestAnimationFrame` (pocos cuadros por segundo): se esperó 1,5 s tras cada scroll; en un navegador normal es continuo.
+**Pendiente de probar en Firefox**: parallax/ligado en el preview y en el export (`translate`, `scale`, `rotate` individuales, `clamp()` dentro de `calc()`, IntersectionObserver con root = elemento), suavidad con scroll real, vista móvil, y `reducir movimiento` desde los ajustes del sistema.
+
 ## Etapa 5 — Elementos y bloques  ✅
 
 ### Hecho

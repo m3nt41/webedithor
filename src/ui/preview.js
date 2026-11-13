@@ -5,7 +5,7 @@
 
 import { getState, subscribe, select, setContent, refresh } from '../core/store.js';
 import { renderNode, TIPOS_TEXTO } from '../render/renderer.js';
-import { cssPagina, medirLineas } from '../animations/index.js';
+import { cssPagina, medirLineas, motorScroll } from '../animations/index.js';
 
 export function initPreview(host) {
   // 'stage' es la "pantalla"; en la Etapa 3 cambiará de ancho (móvil/escritorio)
@@ -19,16 +19,21 @@ export function initPreview(host) {
   let reproducir = false;
   const estilo = document.createElement('style');
 
+  let pararMotor = null; // parallax / ligado al scroll: solo corre tras ▶ Reproducir; se apaga al redibujar
+
   function dibujar() {
     const { page, viewMode, selectedId } = getState();
     const play = reproducir;
     reproducir = false;
+    pararMotor?.();
+    pararMotor = null;
     stage.classList.toggle('movil', viewMode === 'mobile'); // ancho 390px en vista móvil
     estilo.textContent = cssPagina(page, { scroll: play, forzar: getState().verEstado });
     stage.replaceChildren(estilo, renderNode(page, viewMode, { play }));
     marcarSeleccion();
     medirLineas(stage);
     if (play) {
+      pararMotor = motorScroll(host, stage, stage); // el scroll del preview es el de `host`
       // asegura que lo animado se vea y, en dos cuadros (para que el navegador
       // pinte antes el estado inicial), dispara todas las animaciones
       if (selectedId) stage.querySelector(`[data-id="${selectedId}"]`)?.scrollIntoView({ block: 'nearest' });

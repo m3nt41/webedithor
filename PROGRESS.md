@@ -120,13 +120,22 @@ Chrome no reemplaza a Firefox (el navegador de m3nt41). Lo de la lista funciona 
 **Verificado**: build OK; `resorte` da curvas que terminan en 1 (con rebote si amortiguación baja, sin rebote si es alta); en el editor los campos aparecen/desaparecen al cambiar la curva y el CSS del preview lleva el `linear()` generado.
 **No verificado**: no se vio la animación en vivo (panel en segundo plano). Probar en Firefox. Limitación: el spring no se interrumpe con continuidad de velocidad (para eso haría falta Motion).
 
-### Bloque 3: stagger entre hijos  ✅ · texto por línea  ⏸ (esperando decisión)
-**Hecho**
-- Nuevo módulo `animations/stagger.js`, grupo **"Cascada de hijos"** (solo section y container): efecto, "Se dispara" (scroll/carga), cascada entre hijos (s), duración, retraso, curva (incluye bezier y spring), distancia, ángulo. CSS puro: una regla `sel > :nth-child(k)` por hijo con `animation-delay: calc(retraso + k*cascada)`; en scroll, `sel.in > :nth-child(k)` la despausa. Los hijos con su propia animación (Al aparecer / texto) se saltan: la suya manda.
-- `index.js`: `usaScroll`/`usaCarga`/`paginaUsaEntrada` cuentan el stagger (solo si el nodo tiene hijos); `cssNodo` pasa el nodo a `css(g, sel, node)`. Exportador: reduced-motion y `<noscript>` también apagan `[data-rv]>*`/`[data-ld]>*`.
-**Verificado en Chrome** (editor en vivo + HTML exportado en iframe): al cargar, retrasos 0/0.5/1/1.5 s corriendo; por scroll, hijos en `paused` hasta que el padre recibe `.in` (IntersectionObserver) y luego `running`; sin `<script>` si es solo "al cargar"; build OK.
-**Límites / pendiente**: si se añaden o quitan hijos, las reglas se recalculan solas al exportar. Si se reordenan, el retraso sigue la posición. No visto a ojo ni en Firefox (pendiente de probar en Firefox: la cascada con scroll real).
-**Texto por línea: NO implementado a propósito.** En CSS puro no se puede saber dónde parte el navegador cada línea automáticamente. Opciones propuestas a m3nt41: (A) partir solo por los saltos de línea que él escriba (Enter en el texto), CSS puro, sin script; (B) script mínimo (~10 líneas) que mide la posición de cada palabra al cargar/redimensionar y agrupa por línea, con ajuste automático real; (C) ambas (A por defecto, B opcional).
+### Bloque 3: stagger entre hijos y texto por línea  ✅
+**Stagger entre hijos**
+- Nuevo módulo `animations/stagger.js`, grupo **"Cascada de hijos"** (solo section y container): efecto, "Se dispara" (scroll/carga), cascada entre hijos (s), duración, retraso, curva (incluye bezier y spring), distancia, ángulo. CSS puro: una regla `sel > :nth-child(k)` por hijo con retraso = retraso + k×cascada; en scroll, `sel.in > :nth-child(k)` la despausa. Los hijos con su propia animación (Al aparecer / texto) quedan fuera: la suya manda.
+- `index.js`: `usaScroll`/`usaCarga`/`paginaUsaEntrada` cuentan el stagger (solo con hijos); `cssNodo` pasa el nodo a `css(g, sel, node)`. Exportador: reduced-motion y `<noscript>` también apagan `[data-rv]>*`/`[data-ld]>*`.
+- Verificado en Chrome (HTML exportado en iframe): al cargar, retrasos 0/0.5/1/1.5 s corriendo; por scroll, hijos `paused` hasta que el padre recibe `.in` y luego `running`.
+
+**Texto por línea** (select "Partir por" de Animación de texto; decisión de m3nt41: opción C)
+- **"Por línea (mis saltos)"** (`mode: 'lines'`): CSS puro, sin script. Cada línea escrita con Enter (campo Texto del inspector) es una pieza `<span class="w ln">` en bloque; las líneas vacías no se animan. No sigue el ajuste automático de línea.
+- **"Por línea (medida)"** (`mode: 'linesm'`): el HTML lleva palabras `.w` (con `--i` = nº de palabra como respaldo sin JS) y `data-lm`; el script `SCRIPT_LINEAS` (función `medirLineas` de `text.js`, la misma que usa el preview) agrupa las palabras por `offsetTop` y pone `--i` = nº de línea visual. **Solo se incluye en el exportado si algún texto usa este modo** (`paginaUsaMedida`). Mide al cargar, al redimensionar (con rAF) y cuando `document.fonts.ready` resuelve. El preview la llama al dibujar y en resize/fonts.
+- Verificado en Chrome (exportado en iframe): modo A → spans `ln` en bloque con `--i` 0/1 y línea vacía sin animar, sin `<script>`; modo B → 16 palabras: a 500 px 2 líneas (14+2), tras reducir a 160 px y resize 5 líneas; el script va una sola vez y no aparece con words/lines.
+- Con "al cargar" el re-medido cambia `--i` con la animación ya corriendo (puede haber un salto pequeño en el primer cuadro si las fuentes cargan tarde); con scroll no se nota.
+
+**Pendiente de probar en Firefox / a mano**
+- [ ] "Por línea (medida)": que la cascada siga las líneas reales en Firefox, y el re-medido al redimensionar con la ventana real (en Chrome de pruebas el `requestAnimationFrame` no corre con la pestaña en segundo plano; se probó forzándolo).
+- [ ] Re-medido tras `document.fonts.ready` con una fuente web real (el export usa solo fuentes del sistema, así que apenas aplica hoy).
+- [ ] Cascada de hijos con scroll real y animación a ojo (Chrome y Firefox); preview del editor con ▶ Reproducir en los 3 modos nuevos.
 
 ## Etapa 5 — Elementos y bloques  ✅
 

@@ -7,7 +7,7 @@
 
 import { anchorValido, walk } from '../core/tree.js';
 import { tagFor, TIPOS_TEXTO } from '../render/renderer.js';
-import { cssNodo, usaScroll, usaCarga, paginaUsaScroll, paginaUsaEntrada, splitText, KEYFRAMES, SCRIPT_SCROLL } from '../animations/index.js';
+import { cssNodo, usaScroll, usaCarga, paginaUsaScroll, paginaUsaEntrada, paginaUsaMedida, esMedida, splitText, KEYFRAMES, SCRIPT_SCROLL, SCRIPT_LINEAS } from '../animations/index.js';
 
 export const BREAKPOINT_MOVIL = 768;
 
@@ -21,6 +21,7 @@ function textoPartidoHtml(texto, modo) {
   return splitText(texto, modo).map((p) => {
     if (p.t === 'br') return '<br>';
     if (p.t === 'sp') return ' ';
+    if (p.t === 'ln') return p.i < 0 ? '<span class="ln">&#8203;</span>' : `<span class="w ln" style="--i:${p.i}">${escHtml(p.s)}</span>`;
     const spans = p.units.map((u) => `<span class="w" style="--i:${u.i}">${escHtml(u.s)}</span>`).join('');
     return p.chars ? `<span class="ww">${spans}</span>` : spans;
   }).join('');
@@ -42,7 +43,7 @@ export function exportHTML(page) {
     if (anim) cssAnim.push(anim);
     // data-rv: el script de scroll le pone .in · data-ld: corre sola al cargar (solo para reduced-motion)
     const idAttr = anchorValido(node.content?.anchor) ? ` id="${node.content.anchor}"` : '';
-    const rv = (usaScroll(node) ? ' data-rv' : '') + (usaCarga(node) ? ' data-ld' : '');
+    const rv = (usaScroll(node) ? ' data-rv' : '') + (usaCarga(node) ? ' data-ld' : '') + (esMedida(node.animation?.text?.mode) ? ' data-lm' : '');
 
     const tag = tagFor(node);
     const sangria = '  '.repeat(nivel);
@@ -80,7 +81,9 @@ export function exportHTML(page) {
     usaEntrada ? '@media (prefers-reduced-motion:reduce){[data-rv],[data-ld],[data-rv] .w,[data-ld] .w,[data-rv]>*,[data-ld]>*{animation:none!important}}' : '',
   ].filter(Boolean).join('\n');
   const noscript = usaRv ? '<noscript><style>[data-rv],[data-rv] .w,[data-rv]>*{animation:none!important}</style></noscript>\n' : '';
-  const script = usaRv ? `<script>\n${SCRIPT_SCROLL}\n</script>\n` : '';
+  // El script de medición solo viaja si algún texto usa "Por línea (medida)"
+  const scripts = [paginaUsaMedida(page) ? SCRIPT_LINEAS : '', usaRv ? SCRIPT_SCROLL : ''].filter(Boolean).join('\n');
+  const script = scripts ? `<script>\n${scripts}\n</script>\n` : '';
 
   return `<!doctype html>
 <html lang="es">

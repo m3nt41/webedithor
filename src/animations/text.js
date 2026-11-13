@@ -11,7 +11,7 @@ export default {
   principal: 'mode',
   defaults: { mode: 'words', effect: 'up', trigger: 'scroll', duration: 0.7, delay: 0, stagger: 0.06, ease: 'suave', ...DEF_CURVA, distance: 30, angle: -90 },
   campos: [
-    { key: 'mode', label: 'Partir por', kind: 'select', options: [['', 'Ninguna'], ['words', 'Palabras'], ['chars', 'Letras']] },
+    { key: 'mode', label: 'Partir por', kind: 'select', options: [['', 'Ninguna'], ['words', 'Palabras'], ['chars', 'Letras'], ['lines', 'Por línea (mis saltos)'], ['linesm', 'Por línea (medida)']] },
     { key: 'effect', label: 'Efecto', kind: 'select', options: EFECTOS.slice(1) },
     campoDisparo,
     { key: 'stagger', label: 'Cascada (s)', kind: 'num', step: 0.01, min: 0 },
@@ -25,20 +25,28 @@ export default {
     const de = t.delay ?? 0;
     const st = t.stagger ?? 0.06;
     const base = `${sel} .w{display:inline-block;--ad:${t.distance ?? 30}px;--ar:${t.angle ?? -90}deg;animation:${animEntrada(efecto, d, curva(t), `calc(${de}s + var(--i)*${st}s)`, t)}}
-${sel} .ww{display:inline-block;white-space:nowrap}`;
+${sel} .ww{display:inline-block;white-space:nowrap}${t.mode === 'lines' ? `
+${sel} .ln{display:block}` : ''}`;
     return cargaInmediata(t) ? base : `${base}\n${sel}.in .w{animation-play-state:running}`;
   },
 };
 
 /**
  * Parte un texto en piezas para animarlo. Devuelve una lista de:
- *   { t:'br' } | { t:'sp' } | { t:'w', chars:bool, units:[{ s, i }] }
+ *   { t:'br' } | { t:'sp' } | { t:'w', chars:bool, units:[{ s, i }] } | { t:'ln', s, i }
  * `i` = posición en la cascada (variable CSS --i). Lo usan el preview y el exportador.
+ * Modos: words, chars, lines (cada línea escrita por el usuario = una pieza; { t:'ln', s:'' } = línea vacía
+ * sin animar) y linesm (como words; el script de medición reasigna --i por línea visual).
  */
 export function splitText(texto, mode) {
   const piezas = [];
   let i = 0;
-  String(texto ?? '').split('\n').forEach((linea, n) => {
+  const lineas = String(texto ?? '').split('\n');
+  if (mode === 'lines') {
+    lineas.forEach((linea) => piezas.push(linea.trim() ? { t: 'ln', s: linea, i: i++ } : { t: 'ln', s: '', i: -1 }));
+    return piezas;
+  }
+  lineas.forEach((linea, n) => {
     if (n > 0) piezas.push({ t: 'br' });
     linea.split(/\s+/).filter(Boolean).forEach((palabra, k) => {
       if (k > 0) piezas.push({ t: 'sp' });
@@ -49,3 +57,25 @@ export function splitText(texto, mode) {
   });
   return piezas;
 }
+
+export const esMedida = (mode) => mode === 'linesm';
+
+/**
+ * Medición de líneas (modo "Por línea (medida)"). Función AUTÓNOMA (no usa nada de fuera):
+ * el exportador la mete tal cual en un <script>, y el preview la llama directo.
+ * Agrupa las palabras (.w) de cada [data-lm] por su posición vertical y pone --i = nº de línea.
+ * offsetTop ignora transforms, así que da igual si la animación está a medias.
+ */
+export function medirLineas(raiz) {
+  raiz.querySelectorAll('[data-lm]').forEach((el) => {
+    let linea = -1, ultimo = null;
+    el.querySelectorAll('.w').forEach((w) => {
+      if (ultimo === null || Math.abs(w.offsetTop - ultimo) > 2) { linea++; ultimo = w.offsetTop; }
+      if (w.style.getPropertyValue('--i') !== String(linea)) w.style.setProperty('--i', linea);
+    });
+  });
+}
+
+/** Script del exportador: mide al cargar, al redimensionar y cuando terminan de cargar las fuentes. */
+export const SCRIPT_LINEAS = `const medir=${medirLineas.toString()};let tm;const run=()=>{cancelAnimationFrame(tm);tm=requestAnimationFrame(()=>medir(document))};
+medir(document);addEventListener('resize',run);if(document.fonts&&document.fonts.ready)document.fonts.ready.then(run);`;

@@ -11,7 +11,8 @@ import stagger from './stagger.js';
 import { KEYFRAMES, transicion, cargaInmediata } from './base.js';
 import { walk } from '../core/tree.js';
 
-export { splitText } from './text.js';
+export { splitText, esMedida, medirLineas, SCRIPT_LINEAS } from './text.js';
+import { esMedida } from './text.js';
 
 export const TIPOS_TEXTO = ['heading', 'text', 'button'];
 
@@ -41,6 +42,13 @@ export const usaScroll = (node) => entradas(node).some((g) => !cargaInmediata(g)
 
 /** ¿Alguna animación de entrada del nodo corre al cargar? */
 export const usaCarga = (node) => entradas(node).some((g) => cargaInmediata(g));
+
+/** ¿Hay texto con "Por línea (medida)"? (solo entonces el export lleva el script de medición) */
+export function paginaUsaMedida(page) {
+  let usa = false;
+  walk(page, (n) => { if (esMedida(n.animation?.text?.mode)) usa = true; });
+  return usa;
+}
 
 /** ¿Hay animaciones de scroll en toda la página? (el exportador decide si incluye el script) */
 export function paginaUsaScroll(page) {

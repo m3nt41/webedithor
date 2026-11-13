@@ -3,7 +3,7 @@
 // Los estilos van inline (más simple de editar en vivo). El exportador
 // (src/export/exporter.js) los convierte a CSS con clases.
 
-import { splitText, usaScroll } from '../animations/index.js';
+import { splitText, usaScroll, esMedida } from '../animations/index.js';
 import { anchorValido } from '../core/tree.js';
 
 // Qué etiqueta HTML usa cada tipo de nodo (también la usa el exportador)
@@ -31,6 +31,7 @@ export function renderNode(node, viewMode = 'desktop', opts = {}) {
   // Ancla (content.anchor) -> id="..." solo si es válida (mismo criterio que el exportador)
   if (anchorValido(node.content?.anchor)) el.id = node.content.anchor;
   if (opts.play && usaScroll(node)) el.dataset.rv = '';
+  if (opts.play && esMedida(node.animation?.text?.mode)) el.dataset.lm = '';
 
   Object.assign(el.style, effectiveStyles(node, viewMode));
 
@@ -61,6 +62,10 @@ function textoPartido(texto, modo) {
   return splitText(texto, modo).map((p) => {
     if (p.t === 'br') return document.createElement('br');
     if (p.t === 'sp') return document.createTextNode(' ');
+    if (p.t === 'ln') {
+      const l = span(p.i < 0 ? 'ln' : 'w ln', p.s || '​', p.i < 0 ? null : p.i);
+      return l;
+    }
     if (!p.chars) return span('w', p.units[0].s, p.units[0].i);
     const ww = span('ww');
     p.units.forEach((u) => ww.appendChild(span('w', u.s, u.i)));

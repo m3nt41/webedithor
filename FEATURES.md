@@ -39,7 +39,7 @@ Motion vs CSS puro: m3nt41 ya decidió la opción (a), CSS puro donde se pueda y
 ## Texto
 - [x] Revelado por letra (Etapa 4)
 - [x] Revelado por palabra (Etapa 4)
-- [ ] Revelado por línea → Etapa 6
+- [x] Revelado por línea: "Por línea (mis saltos)" (CSS puro, cada línea escrita con Enter) y "Por línea (medida)" (script de medición solo si se usa; re-mide al redimensionar y al cargar las fuentes) (Etapa 6)
 
 ## Layout animations
 - [ ] Elementos que se mueven suave al cambiar de lugar o tamaño → Etapa 8

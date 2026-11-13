@@ -5,7 +5,7 @@
 
 import { getState, subscribe, select, setContent, refresh } from '../core/store.js';
 import { renderNode, TIPOS_TEXTO } from '../render/renderer.js';
-import { cssPagina } from '../animations/index.js';
+import { cssPagina, medirLineas } from '../animations/index.js';
 
 export function initPreview(host) {
   // 'stage' es la "pantalla"; en la Etapa 3 cambiará de ancho (móvil/escritorio)
@@ -27,6 +27,7 @@ export function initPreview(host) {
     estilo.textContent = cssPagina(page, { scroll: play });
     stage.replaceChildren(estilo, renderNode(page, viewMode, { play }));
     marcarSeleccion();
+    medirLineas(stage);
     if (play) {
       // asegura que lo animado se vea y, en dos cuadros (para que el navegador
       // pinte antes el estado inicial), dispara todas las animaciones
@@ -105,6 +106,12 @@ export function initPreview(host) {
     if (el && el.dataset.type !== 'page') el.classList.add('hov');
   });
   stage.addEventListener('mouseleave', () => stage.querySelector('.hov')?.classList.remove('hov'));
+
+  // "Por línea (medida)": volver a medir al redimensionar y cuando terminan de cargar las fuentes
+  let tm;
+  const remedir = () => { cancelAnimationFrame(tm); tm = requestAnimationFrame(() => medirLineas(stage)); };
+  addEventListener('resize', remedir);
+  document.fonts?.ready.then(remedir);
 
   subscribe((_, cambio) => {
     if (cambio === 'selection') marcarSeleccion();

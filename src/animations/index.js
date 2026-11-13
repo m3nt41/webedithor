@@ -10,6 +10,8 @@ import text from './text.js';
 import stagger from './stagger.js';
 import parallax from './parallax.js';
 import scrolllink from './scrolllink.js';
+import scene, { CSS_ESCENA, usaEscena, varsEscena } from './scene.js';
+import scenestep from './scenestep.js';
 import variants, { estadosEntrada, usaClic, SCRIPT_CLIC } from './variants.js';
 export { motorScroll, SCRIPT_SCROLLMOTOR } from './scrollmotor.js';
 import { KEYFRAMES, transicion, cargaInmediata } from './base.js';
@@ -30,10 +32,23 @@ export const GRUPOS_ANIM = [
   { ...stagger, tipos: ['section', 'container'] },
   { ...parallax, tipos: ['section', 'container', 'heading', 'text', 'button', 'image'] }, // solo con el motor de scroll (.sc)
   { ...scrolllink, tipos: ['section', 'container', 'heading', 'text', 'button', 'image'] },
+  { ...scene, tipos: ['section'] },
+  // solo se muestra en el inspector si el padre es una escena (ver `soloEnEscena`)
+  { ...scenestep, tipos: ['container', 'heading', 'text', 'button', 'image'], soloEnEscena: true },
   { ...variants, tipos: ['section', 'container', 'heading', 'text', 'button', 'image'] }, // al final: sus !important y su `animation` ganan
 ];
 
-export { usaClic, SCRIPT_CLIC };
+export { usaClic, SCRIPT_CLIC, CSS_ESCENA, usaEscena, varsEscena };
+
+/** ¿Hay escenas por scroll en la página? */
+export function paginaUsaEscena(page) {
+  let usa = false;
+  walk(page, (n) => { if (usaEscena(n)) usa = true; });
+  return usa;
+}
+
+/** ¿Es una SECCIÓN pegada arriba (navbar)? El motor mide su alto para que las escenas lo respeten. */
+export const esNavPegado = (n) => n.type === 'section' && !usaEscena(n) && n.styles.base.position === 'sticky' && !!n.styles.base.top;
 
 /** ¿El nodo usa parallax o "ligado al scroll"? (necesita el motor de scroll: data-sc) */
 export const usaScrollLink = (node) => Boolean(node.animation?.parallax?.effect || node.animation?.scrolllink?.effect);
@@ -41,7 +56,7 @@ export const usaScrollLink = (node) => Boolean(node.animation?.parallax?.effect 
 /** ¿Hay parallax o scroll-linked en la página? (el export lleva el motor solo entonces) */
 export function paginaUsaScrollLink(page) {
   let usa = false;
-  walk(page, (n) => { if (usaScrollLink(n)) usa = true; });
+  walk(page, (n) => { if (usaScrollLink(n) || usaEscena(n)) usa = true; }); // las escenas también usan el motor
   return usa;
 }
 
@@ -113,7 +128,7 @@ export function cssPagina(page, { scroll = false, forzar = null } = {}) {
     const r = cssNodo(n, `[data-id="${n.id}"]`, { scroll, forzar });
     if (r) reglas.push(r);
   });
-  return (scroll ? KEYFRAMES + '\n' : '') + reglas.join('\n');
+  return (scroll ? KEYFRAMES + '\n' + (paginaUsaEscena(page) ? CSS_ESCENA + '\n' : '') : '') + reglas.join('\n');
 }
 
 export { KEYFRAMES };

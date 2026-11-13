@@ -148,9 +148,12 @@ export function initInspector(host) {
     // ---- Animaciones (los grupos viven en src/animations/) ----
     for (const g of GRUPOS_ANIM) {
       if (!g.tipos.includes(nodo.type)) continue;
+      // "Paso de escena" solo se ofrece a hijos directos de una escena (o si ya lo tienen puesto)
+      if (g.soloEnEscena && !nodo.animation?.[g.id] && !findParent(page, nodo.id)?.animation?.scene?.steps) continue;
       if (g.propio) { html += htmlEstados(nodo, getState().verEstado); continue; } // los estados tienen su propia sección
       const datos = nodo.animation?.[g.id]; // undefined = grupo apagado
       html += `<h3>${g.titulo}</h3>`;
+      if (g.id === 'scene' && datos) html += '<p class="modo">La sección se queda fija y sus hijos se apilan en el mismo lugar: se respetan Alineación y Justificar (y su fondo, borde y padding); Dirección, Separación y Columnas no se usan. Una vez creada, cada hijo directo tiene su "Paso de escena". Solo se ve con ▶ Reproducir y en el exportado. Un navbar pegado arriba se mide solo (o escribe "Espacio arriba").</p>';
       for (const f of g.campos) {
         if (f.key !== g.principal && !datos) continue; // apagado: solo se ve el selector principal
         if (f.cuando && !f.cuando(datos, datos?.effect)) continue;

@@ -7,7 +7,7 @@
 
 import { anchorValido, walk } from '../core/tree.js';
 import { tagFor, TIPOS_TEXTO } from '../render/renderer.js';
-import { usaScrollLink, paginaUsaScrollLink, SCRIPT_SCROLLMOTOR, cssNodo, usaScroll, usaCarga, usaClic, paginaUsaScroll, paginaUsaEntrada, paginaUsaMedida, paginaUsaClic, esMedida, splitText, KEYFRAMES, SCRIPT_SCROLL, SCRIPT_LINEAS, SCRIPT_CLIC } from '../animations/index.js';
+import { usaEscena, varsEscena, esNavPegado, paginaUsaEscena, CSS_ESCENA, usaScrollLink, paginaUsaScrollLink, SCRIPT_SCROLLMOTOR, cssNodo, usaScroll, usaCarga, usaClic, paginaUsaScroll, paginaUsaEntrada, paginaUsaMedida, paginaUsaClic, esMedida, splitText, KEYFRAMES, SCRIPT_SCROLL, SCRIPT_LINEAS, SCRIPT_CLIC } from '../animations/index.js';
 
 export const BREAKPOINT_MOVIL = 768;
 
@@ -43,7 +43,8 @@ export function exportHTML(page) {
     if (anim) cssAnim.push(anim);
     // data-rv: el script de scroll le pone .in · data-ld: corre sola al cargar (solo para reduced-motion)
     const idAttr = anchorValido(node.content?.anchor) ? ` id="${node.content.anchor}"` : '';
-    const rv = (usaScroll(node) ? ' data-rv' : '') + (usaCarga(node) ? ' data-ld' : '') + (esMedida(node.animation?.text?.mode) ? ' data-lm' : '') + (usaClic(node) ? ' data-vc' : '') + (usaScrollLink(node) ? ' data-sc' : '');
+    const esc = usaEscena(node);
+    const rv = (esc ? ' data-es' : '') + (usaEscena0 && esNavPegado(node) ? ' data-nav' : '') + (usaScroll(node) ? ' data-rv' : '') + (usaCarga(node) ? ' data-ld' : '') + (esMedida(node.animation?.text?.mode) ? ' data-lm' : '') + (usaClic(node) ? ' data-vc' : '') + (usaScrollLink(node) ? ' data-sc' : '');
 
     const tag = tagFor(node);
     const sangria = '  '.repeat(nivel);
@@ -60,9 +61,14 @@ export function exportHTML(page) {
       return `${sangria}${abre}${interior}</${tag}>`;
     }
     const hijos = node.children.map((h) => nodoAHtml(h, nivel + 1)).join('\n');
-    return `${sangria}${abre}\n${hijos}\n${sangria}</${tag}>`;
+    const html = `${sangria}${abre}\n${hijos}\n${sangria}</${tag}>`;
+    if (!esc) return html;
+    // escena: contenedor alto (da el recorrido de scroll) + la sección como capa pegada
+    const v = varsEscena(node);
+    return `${sangria}<div data-ew${v.auto ? ' data-auto' : ''} style="${v.style}">\n${html}\n${sangria}</div>`;
   }
 
+  const usaEscena0 = paginaUsaEscena(page);
   const cuerpo = nodoAHtml(page, 2);
 
   // Si hay una SECCIÓN pegada arriba (navbar, position:sticky + top), las anclas dejan un margen para no quedar tapadas
@@ -77,6 +83,7 @@ export function exportHTML(page) {
   const usaEntrada = paginaUsaEntrada(page); // scroll o carga: hacen falta los keyframes
   const animaciones = [
     usaEntrada ? KEYFRAMES : '',
+    usaEscena0 ? CSS_ESCENA : '',
     ...cssAnim,
     // "Reducir movimiento": sin animaciones de entrada y sin transiciones (hover/press/focus/estados cambian de golpe)
     usaEntrada ? '@media (prefers-reduced-motion:reduce){[data-rv],[data-ld],[data-rv] .w,[data-ld] .w,[data-rv]>*,[data-ld]>*{animation:none!important}}' : '',

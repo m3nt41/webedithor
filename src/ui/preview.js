@@ -19,6 +19,12 @@ export function initPreview(host) {
   let reproducir = false;
   const estilo = document.createElement('style');
 
+  // Alto de pantalla del preview: las escenas miden "100svh"; aquí 100svh sería el de la ventana del navegador,
+  // así que se fija el alto real del panel (menos el padding de arriba, donde se pega el sticky) para verse igual que el export.
+  const ajustarAlto = () => stage.style.setProperty('--alto-v', Math.max(200, host.clientHeight - 20) + 'px');
+  new ResizeObserver(ajustarAlto).observe(host);
+  ajustarAlto();
+
   let pararMotor = null; // parallax / ligado al scroll: solo corre tras ▶ Reproducir; se apaga al redibujar
 
   function dibujar() {

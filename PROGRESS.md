@@ -1,6 +1,6 @@
 # PROGRESS
 
-Etapas hechas: 1, 2, 3, 4, 5, 5.5 (navbar y anclas) y 6 (transiciones y estados). Próxima: 7 (scroll). El reparto completo está en `CLAUDE.md` y la lista de funciones en `FEATURES.md`.
+Etapas hechas: 1, 2, 3, 4, 5, 5.5 (navbar y anclas) y 6 (transiciones y estados). Etapa 7 (scroll) en curso: hechos sticky, parallax, scroll-linked y escenas; falta scroll suave. El reparto completo está en `CLAUDE.md` y la lista de funciones en `FEATURES.md`.
 
 ## Etapa 1 — Estructura, árbol JSON, preview y selección  ✅
 - Proyecto Vite + vanilla JS, `motion` instalado (sin usar todavía).
@@ -211,6 +211,23 @@ Chrome no reemplaza a Firefox (el navegador de m3nt41). Lo de la lista funciona 
 - Medición con `offsetTop`: un elemento con `position:sticky` mide su sitio "normal" (el progreso es el de su hueco, no el de donde está pegado).
 - La pestaña de pruebas de Chrome limita `requestAnimationFrame` (pocos cuadros por segundo): se esperó 1,5 s tras cada scroll; en un navegador normal es continuo.
 **Pendiente de probar en Firefox**: parallax/ligado en el preview y en el export (`translate`, `scale`, `rotate` individuales, `clamp()` dentro de `calc()`, IntersectionObserver con root = elemento), suavidad con scroll real, vista móvil, y `reducir movimiento` desde los ajustes del sistema.
+
+### Bloque 3: escenas por scroll + Recortar contenido  ✅
+**Recortar contenido**: campo nuevo en "Layout (hijos)" de contenedores y secciones (`overflow: hidden`; los campos de `fields.js` admiten ahora `tipos` y `kind: 'nota'`). Con "Sí" el inspector avisa que un contenedor que recorta rompe el sticky de lo que tenga adentro.
+
+**Escenas** (`animations/scene.js`, `scenestep.js`, bloque `blocks/scene.js`)
+- Sección con grupo **"Escena por scroll"** (`animation.scene = { steps: 2|3|4, length (pantallas de scroll), top? }`) y, en cada hijo directo, **"Paso de escena"** (`animation.scenestep = { effect: in|out|inout, step, move, distance }`; solo se ofrece en el inspector a hijos de una escena). El scroll se reparte en `steps` tramos iguales; el cambio de un paso ocupa la primera mitad de su tramo. `in` = aparece en el paso y se queda; `out` = está desde el inicio y se va en el paso; `inout` = aparece y se va al llegar el siguiente. Movimiento: solo fundido, subir, bajar, izquierda, derecha o zoom.
+- **Estructura** (el árbol no cambia; solo con ▶ Reproducir y en el export): `<div data-ew style="--len;--n;--arr"><section data-es>…</section></div>`. El contenedor alto mide `len × --alto-v` (`--alto-v` = `100svh` en el export; el preview lo fija al alto real de su panel menos 20 px de padding, para verse igual). La sección es la capa pegada: `position:sticky; top:--arr; height: --alto-v − --arr`, y sus hijos se apilan en la **misma celda de un grid** (`grid-area:1/1`), sin position absoluta. Alineación: si la sección era flex, su Alineación/Justificar se traducen al grid (según la dirección); Dirección, Separación, Columnas y Envolver no se usan; fondo, borde y padding sí. Todo vale solo con la clase `.sc` (la pone el motor): con "reducir movimiento" o sin JS el contenedor es `display:contents` y la sección sale normal con todo visible.
+- **Navbar**: el motor mide el alto de las secciones pegadas arriba (`data-nav`, solo si hay escenas) y lo escribe en `--arr`, así la capa queda justo debajo. El campo "Espacio arriba (px)" lo fija a mano.
+- **Motor** (`scrollmotor.js`): los contenedores `data-ew` escriben `--ep` (0..1 = lo que ha corrido la capa pegada dentro del contenedor alto, leído con rects: exacto aunque haya padding); mismo IntersectionObserver, scroll pasivo y rAF. Sigue sin viajar si la página no usa parallax/ligado/escenas.
+- **Bloque "Escena"** (panel de bloques): "Tres mensajes" (3 títulos) y "Texto + imagen".
+**Verificado en Chrome**: export con navbar + escena + hero en un iframe de 900×600: contenedor 1790 px (= 3 × 597), capa 527 (= 597 − 70 del navbar), capa pegada a 70 px durante todo el recorrido, `--ep` = 0, .2, .4, .6, .8, 1 y opacidades de los 3 hijos tal como se diseñó (fundido cruzado a la mitad de cada tramo). En el editor (▶ Reproducir, scroll de `#preview`): contenedor 1830 = 3 × 610, capa 538 = 610 − 72, pegada a 92 px (20 de padding + 72 de navbar), los 3 pasos correctos; el inspector ofrece "Escena por scroll"/"Recortar contenido" en la sección y "Paso de escena" solo en sus hijos; `normalizePage` conserva ambos grupos. `npm run build` OK.
+**Limitaciones**
+- Los hijos invisibles siguen recibiendo clics (opacidad 0 sin `pointer-events:none`): un botón de un paso futuro tapa lo que esté debajo.
+- La opacidad propia de un hijo de escena se ignora (la opacidad la manda el paso); en el estado "al cargar/entrar" de variants, no mezclar con escenas.
+- Mobile: la traducción de alineación usa los estilos de escritorio; el `--alto-v` del preview en vista móvil es el alto del panel, no el de un teléfono.
+- No combinar parallax/ligado en la misma sección de una escena.
+**Pendiente de probar en Firefox**: escenas completas (sticky + grid apilado + `calc()`/`clamp()` con variables, `translate`/`scale` individuales), `100svh` en el navegador móvil real (barra de direcciones), `reducir movimiento`, vista móvil, y que el navbar medido encaje tras cargar fuentes.
 
 ## Etapa 5 — Elementos y bloques  ✅
 

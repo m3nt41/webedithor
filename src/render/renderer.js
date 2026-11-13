@@ -3,7 +3,7 @@
 // Los estilos van inline (más simple de editar en vivo). El exportador
 // (src/export/exporter.js) los convierte a CSS con clases.
 
-import { splitText, usaScroll, esMedida, usaClic, usaScrollLink } from '../animations/index.js';
+import { splitText, usaScroll, esMedida, usaClic, usaScrollLink, usaEscena, varsEscena, esNavPegado } from '../animations/index.js';
 import { anchorValido } from '../core/tree.js';
 
 // Qué etiqueta HTML usa cada tipo de nodo (también la usa el exportador)
@@ -49,6 +49,20 @@ export function renderNode(node, viewMode = 'desktop', opts = {}) {
   }
 
   node.children.forEach((hijo) => el.appendChild(renderNode(hijo, viewMode, opts)));
+
+  // Escena por scroll (solo con ▶ Reproducir, como el resto de animaciones de scroll): la sección va dentro de un
+  // contenedor alto que da el recorrido; la sección es la capa pegada (ver animations/scene.js). El árbol no cambia.
+  if (opts.play && usaEscena(node)) {
+    const v = varsEscena(node);
+    const w = document.createElement('div');
+    w.dataset.ew = '';
+    if (v.auto) w.dataset.auto = '';
+    w.style.cssText = v.style;
+    el.dataset.es = '';
+    w.appendChild(el);
+    return w;
+  }
+  if (opts.play && esNavPegado(node)) el.dataset.nav = '';
   return el;
 }
 

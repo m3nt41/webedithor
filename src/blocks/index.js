@@ -10,8 +10,9 @@ import pricing from './pricing.js';
 import contact from './contact.js';
 import footer from './footer.js';
 import navbar from './navbar.js';
+import scene from './scene.js';
 
-export const BLOCKS = [navbar, hero, services, gallery, testimonials, pricing, contact, footer];
+export const BLOCKS = [navbar, hero, services, gallery, testimonials, pricing, scene, contact, footer];
 
 /** Crea un bloque nuevo. variant opcional (por defecto la primera). */
 export function createBlock(blockId, variant) {

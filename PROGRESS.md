@@ -71,7 +71,7 @@ Etapas hechas: 1, 2, 3, 4 y 5. Próxima: 6 (transiciones y estados). El reparto 
 - Del alcance original de la Etapa 4 quedaron para la Etapa 6 (ver `FEATURES.md`): rotación en appear, "al cargar", press/focus, variants, spring real, cubic-bezier editable, stagger entre hijos y texto por línea.
 
 ### Decisiones
-- Motion (npm) no se usó a propósito: todo lo hecho salió en CSS. Ver la sección siguiente.
+- Motion (npm) no se usó a propósito: todo lo hecho salió en CSS. Ver "Decisión tomada (m3nt41)" al final de este archivo.
 
 ## Etapa 5 — Elementos y bloques  ✅
 
@@ -91,6 +91,20 @@ Etapas hechas: 1, 2, 3, 4 y 5. Próxima: 6 (transiciones y estados). El reparto 
 - No se puede arrastrar desde el preview ni desde la paleta (solo desde el árbol de capas).
 - Las imágenes de relleno son data URL (SVG pequeñas); el número de WhatsApp de ejemplo (`50600000000`) se cambia en el campo "Enlace" del botón.
 - Con muchas secciones el árbol es largo: se puede plegar cada nodo, pero no hay "plegar todo".
+
+### Ronda de bugs de la Etapa 5
+**Arreglado**
+- Capas: no se podía plegar una capa que contenía el elemento seleccionado (`dibujar()` la desplegaba en cada redibujo). Ahora los ancestros solo se despliegan cuando CAMBIA la selección (`reveladoId` en `sidebar.js`); plegar a mano se respeta.
+- `normalizePage` valida el anidado con `canContain` al abrir un `.json` (y al restaurar de localStorage, donde un fallo = empezar de cero). Rechaza con mensaje claro, p. ej. `Anidado inválido: "X" (section) no puede estar dentro de "Y" (section)`; también exige que `children` sea una lista. El mensaje sale en el `alert` de Abrir.
+- Documentación: comentario de `animation` en `tree.js`, lista de acciones del store y de `tree.js` en `CLAUDE.md`, referencia a "sección final" en `FEATURES.md` y "sección siguiente" en la Etapa 4.
+
+**Probado en `npm run dev`** (con 58 secciones / ~590 filas): los 6 elementos y las 28 variantes de bloque se añaden, deshacen y rehacen dejando el JSON idéntico y pasan `normalizePage`; mover entre contenedores + undo/redo; sección dentro de contenedor rechazada; arrastre con DragEvent sintéticos (marca "dentro"); vista móvil aplica `.stage.movil`; el HTML exportado cargado en un iframe suelto tiene 58 secciones, sin scripts (no hay animaciones) y 0 imágenes rotas; sin errores de consola. JSONs con anidado inválido rechazados.
+
+**Rendimiento del árbol de capas**: el árbol se reconstruye entero en cada cambio (incluida cada selección). Medido: ~6 ms por redibujo con ~590 filas, o sea ~1 ms con 15 secciones: no se nota. Si algún día pesara (cientos de secciones o texto escribiéndose en vivo), mejoras posibles: (1) no redibujar el árbol en cambios `text`/`view`/`play` y solo actualizar la clase `activa` en `selection`; (2) actualizar solo el nombre de la fila al renombrar; (3) añadir "plegar todo". No se tocó.
+
+**Pendiente**
+- Arrastrar con ratón real (sobre todo Firefox) y exportar abierto en Firefox real: solo probado con eventos sintéticos/Chromium.
+- Medidas del preview móvil no fiables en el panel de pruebas (ancho 0 con ventana oculta/estrecha); solo se comprobó que se aplica la clase.
 
 ### Decisiones
 - Motion vs CSS puro: m3nt41 eligió la opción (a): CSS puro donde se pueda y Motion solo en lo que obliga (drag con rebote, inercia, layout animations, scroll suave, scroll-linked en Firefox). No se tocó ninguna animación en esta etapa.

@@ -2,7 +2,7 @@
 
 Esta es la lista oficial de lo que el editor debe poder hacer (estilo Framer). **No se recorta ni se cambia sin preguntar a m3nt41.**
 `[x]` = hecho · `[ ]` = pendiente · `→ Etapa N` = dónde está planificado (ver `CLAUDE.md`).
-"Tecnología" es solo una propuesta: **la decisión de usar Motion o CSS puro es de m3nt41** (ver sección final).
+Motion vs CSS puro: m3nt41 ya decidió la opción (a), CSS puro donde se pueda y Motion solo en lo que obliga (análisis en `PROGRESS.md`, sección "Decisión tomada").
 
 ## Appear
 - [x] Fade (Etapa 4)

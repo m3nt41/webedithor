@@ -6,7 +6,7 @@
 // - styles.base: estilos CSS (camelCase) para escritorio (y como base de todo)
 // - styles.mobile: SOLO lo que cambia en móvil (se superpone a base)
 // - content: datos propios del tipo ({ text }, { src, alt }, { href }...)
-// - animation: null por ahora (Etapa 4). Aquí irá { appear:{...}, hover:{...} }
+// - animation: null o { appear?, hover?, text? } (ver src/animations/)
 // - children: nodos hijos (layout flex/grid, NUNCA posiciones absolutas)
 
 let contador = 0;
@@ -74,10 +74,14 @@ export function cloneWithNewIds(node) {
 /** Valida y completa un objeto leído de un .json. Lanza Error si no es una página válida. */
 export function normalizePage(obj) {
   const TIPOS = ['page', 'section', 'container', 'heading', 'text', 'button', 'image'];
-  function norm(n, esRaiz) {
+  function norm(n, esRaiz, padre) {
     if (!n || typeof n !== 'object') throw new Error('Nodo inválido');
     if (!TIPOS.includes(n.type)) throw new Error(`Tipo desconocido: ${n.type}`);
     if (esRaiz && n.type !== 'page') throw new Error('La raíz debe ser de tipo page');
+    if (padre && !canContain(padre.type, n.type)) {
+      throw new Error(`Anidado inválido: "${n.name ?? n.type}" (${n.type}) no puede estar dentro de "${padre.name ?? padre.type}" (${padre.type})`);
+    }
+    if (n.children != null && !Array.isArray(n.children)) throw new Error(`"children" de "${n.name ?? n.type}" debe ser una lista`);
     return {
       id: typeof n.id === 'string' ? n.id : newId(),
       type: n.type,
@@ -85,10 +89,10 @@ export function normalizePage(obj) {
       styles: { base: n.styles?.base ?? {}, mobile: n.styles?.mobile ?? {} },
       content: n.content ?? {},
       animation: n.animation ?? null,
-      children: (n.children ?? []).map((h) => norm(h, false)),
+      children: (n.children ?? []).map((h) => norm(h, false, n)),
     };
   }
-  return norm(obj, true);
+  return norm(obj, true, null);
 }
 
 /** Página vacía: un nodo raíz sin secciones. */

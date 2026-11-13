@@ -29,8 +29,8 @@ index.html, vite.config.js, package.json
 src/
   main.js              arranque
   styles/app.css       estilos del editor
-  core/tree.js         crear/buscar nodos
-  core/store.js        estado + mutate(fn,tipo,clave) + historial undo/redo + autoguardado localStorage + acciones (setStyle, duplicateNode, moveSection, replacePage...)
+  core/tree.js         crear/buscar nodos, canContain (reglas de anidado), normalizePage (valida .json, incluido el anidado)
+  core/store.js        estado + mutate(fn,tipo,clave) + historial undo/redo + autoguardado localStorage + acciones (select, setViewMode, setStyle, setContent, setAnimation, setName, addSection, addNode, addElement, removeNode, duplicateNode, moveNode, moveBy, puedeMover, moveSection, replacePage, newPage, undo/redo, play, refresh)
   blocks/              hero, services, gallery, testimonials, pricing, contact, footer (4 variantes c/u) + elements.js (elementos sueltos) + util.js (atajos) + index.js (registro)
   render/renderer.js   árbol -> DOM
   ui/                  sidebar.js, preview.js (selección + edición de texto), inspector.js, fields.js (campos del panel), toolbar.js (undo/redo, escritorio/móvil, nuevo/abrir/guardar JSON, exportar)

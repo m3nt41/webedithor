@@ -57,6 +57,7 @@ export function initSidebar(host) {
   // ---- Árbol de capas ----
   const plegados = new Set(); // ids de nodos plegados (solo vista, no se guarda)
   let arrastrado = null; // id del nodo que se arrastra
+  let reveladoId = null; // última selección cuyos ancestros se desplegaron
 
   function limpiarMarcas() {
     arbol.querySelectorAll('.drop-antes, .drop-despues, .drop-dentro, .arrastrando').forEach((li) => li.classList.remove('drop-antes', 'drop-despues', 'drop-dentro', 'arrastrando'));
@@ -151,8 +152,12 @@ export function initSidebar(host) {
 
   function dibujar() {
     const { page, selectedId } = getState();
-    // el nodo seleccionado siempre debe verse: se despliegan sus ancestros
-    if (selectedId) for (let p = findParent(page, selectedId); p; p = findParent(page, p.id)) plegados.delete(p.id);
+    // Al CAMBIAR la selección se despliegan sus ancestros para que se vea.
+    // Si la selección es la misma (p. ej. al plegar a mano), se respeta lo plegado.
+    if (selectedId && selectedId !== reveladoId) {
+      for (let p = findParent(page, selectedId); p; p = findParent(page, p.id)) plegados.delete(p.id);
+    }
+    reveladoId = selectedId;
 
     arbol.replaceChildren();
     if (!page.children.length) {

@@ -87,4 +87,29 @@ t('posición: static explícito en móvil sale dentro del @media y el margen de 
   const c = mk({}, { position: 'sticky', top: '0' }); // solo móvil
   assert.ok(/@media \(max-width:768px\)[\s\S]*\[id\]\{scroll-margin-top:90px\}/.test(c));
 });
+t('proporción: valores inválidos se descartan al abrir un .json y nada se cuela en el export', () => {
+  const pg = n('page', {}); const s = n('section', {});
+  const g = n('container', { styles: { display: 'grid', hijosAspectRatio: '1 / 1;}body{x:y' }, mobile: { hijosAspectRatio: '4 / 5' } });
+  const im = n('image', { content: { src: 'x', alt: '' }, styles: { aspectRatio: 'url(x)' }, mobile: { aspectRatio: 'auto' } });
+  g.children.push(im); s.children.push(g); pg.children.push(s);
+  const q = normalizePage(JSON.parse(JSON.stringify(pg))).children[0].children[0];
+  assert.equal(q.styles.base.hijosAspectRatio, undefined); assert.equal(q.styles.mobile.hijosAspectRatio, '4 / 5');
+  assert.equal(q.children[0].styles.base.aspectRatio, undefined); assert.equal(q.children[0].styles.mobile.aspectRatio, 'auto');
+  const g2 = n('container', { styles: { display: 'grid', hijosAspectRatio: '4 / 3', gap: '8px' } });
+  g2.children.push(n('image', { content: { src: 'x', alt: '' } })); const p2 = n('page', {}); const s2 = n('section', {}); s2.children.push(g2); p2.children.push(s2);
+  const h = exportHTML(p2);
+  assert.ok(h.includes(':where(.n2>img){aspect-ratio:4 / 3;object-fit:cover}'), 'regla para los hijos');
+  assert.ok(!h.includes('hijos-aspect-ratio'), 'la clave interna no sale como CSS');
+  assert.ok(h.includes('.n2{display:grid;gap:8px}'), h.slice(h.indexOf('.n2')));
+  // invalido directo (sin pasar por el normalizador, p. ej. tecleado en el panel): no se emite
+  g2.styles.base.hijosAspectRatio = '4 /'; assert.ok(!exportHTML(p2).includes(':where('));
+  // sin display:grid no se aplica
+  g2.styles.base.hijosAspectRatio = '4 / 3'; g2.styles.base.display = 'flex'; assert.ok(!exportHTML(p2).includes(':where('));
+});
+t('galería: las 4 variantes nacen con Proporción de los hijos', () => {
+  for (const v of ['cuadricula', 'destacada', 'fila', 'oscura']) {
+    const grid = createBlock('gallery', v).children[1];
+    assert.ok(/^\d \/ \d$/.test(grid.styles.base.hijosAspectRatio), v);
+  }
+});
 console.log(`${ok} pruebas ok`);

@@ -5,7 +5,7 @@
 // se añade un <script> de ~3 líneas que pone la clase .in al entrar en pantalla.
 // (Motion se reserva para lo que el CSS no pueda: scroll-linked, drag... Etapa 5.)
 
-import { anchorValido, walk } from '../core/tree.js';
+import { anchorValido, walk, aspectoValido, CLAVES_PROPIAS } from '../core/tree.js';
 import { tagFor, TIPOS_TEXTO } from '../render/renderer.js';
 import { usaEscena, varsEscena, esNavPegado, paginaUsaEscena, CSS_ESCENA, usaScrollLink, paginaUsaScrollLink, SCRIPT_SCROLLMOTOR, SCRIPT_SCROLLSUAVE, paginaUsaScrollSuave, cssNodo, usaScroll, usaCarga, usaClic, paginaUsaScroll, paginaUsaEntrada, paginaUsaMedida, paginaUsaClic, esMedida, splitText, KEYFRAMES, SCRIPT_SCROLL, SCRIPT_LINEAS, SCRIPT_CLIC } from '../animations/index.js';
 
@@ -14,7 +14,7 @@ export const BREAKPOINT_MOVIL = 768;
 const escHtml = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const escAttr = (s) => escHtml(s).replace(/"/g, '&quot;');
 const kebab = (k) => k.replace(/[A-Z]/g, (m) => '-' + m.toLowerCase());
-const declaraciones = (obj) => Object.entries(obj).map(([k, v]) => `${kebab(k)}:${v}`).join(';');
+const declaraciones = (obj) => Object.entries(obj).filter(([k]) => !CLAVES_PROPIAS.includes(k)).map(([k, v]) => `${kebab(k)}:${v}`).join(';');
 
 /** Texto con animación -> HTML con <span class="w" style="--i:N"> por palabra/letra. */
 function textoPartidoHtml(texto, modo) {
@@ -36,8 +36,14 @@ export function exportHTML(page) {
 
   function nodoAHtml(node, nivel, padre = null) {
     const clase = `n${contador++}`;
-    if (Object.keys(node.styles.base).length) css.push(`.${clase}{${declaraciones(node.styles.base)}}`);
-    if (Object.keys(node.styles.mobile).length) cssMovil.push(`.${clase}{${declaraciones(node.styles.mobile)}}`);
+    const dBase = declaraciones(node.styles.base), dMovil = declaraciones(node.styles.mobile);
+    if (dBase) css.push(`.${clase}{${dBase}}`);
+    if (dMovil) cssMovil.push(`.${clase}{${dMovil}}`);
+    // "Proporción de los hijos" (contenedor grid): CSS puro para las imágenes hijas directas. :where() deja la
+    // especificidad en 0, así que la foto que tenga su propia proporción o ajuste (clase .nN) siempre gana.
+    const asp = (st) => (node.type !== 'image' && aspectoValido(st.hijosAspectRatio) ? `:where(.${clase}>img){aspect-ratio:${st.hijosAspectRatio.trim()};object-fit:cover}` : '');
+    if (asp(node.styles.base) && node.styles.base.display === 'grid') css.push(asp(node.styles.base));
+    if (asp(node.styles.mobile) && { ...node.styles.base, ...node.styles.mobile }.display === 'grid') cssMovil.push(asp(node.styles.mobile));
 
     const anim = cssNodo(node, `.${clase}`, { padre });
     if (anim) cssAnim.push(anim);

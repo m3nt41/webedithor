@@ -308,3 +308,18 @@ test('scroll suave (Lenis): termina en un valor estable y sin retroceder', opts,
   assert.ok(fin > 100, `llegó lejos (${fin})`);
   assert.ok(mov.slice(-10).every((v) => Math.abs(v - fin) < 0.01), 'los últimos frames están quietos (valor estable)');
 });
+
+// Proporción de los hijos (grid): mide el ancho/alto reales de cada foto en escritorio y en móvil
+const razon = (id) => driver.executeScript('const r=document.querySelector(`img[alt="${arguments[0]}"]`).getBoundingClientRect();return r.width/r.height', id);
+test('proporción de los hijos: fotos de tamaños distintos quedan parejas y la que tiene proporción propia mantiene la suya', opts, async () => {
+  await ventana(1000, 700);
+  await abrir('proporcion');
+  for (const id of ['f1', 'f2', 'f3']) cerca(await razon(id), 1, 0.02); // 1 / 1 en escritorio
+  cerca(await razon('f4'), 16 / 9, 0.02); // la suya propia
+  assert.equal(await driver.executeScript('return getComputedStyle(document.querySelector(\'img[alt="f1"]\')).objectFit'), 'cover');
+  await ventana(390, 700); // móvil: el override de la proporción (4 / 3) y una columna
+  await abrir('proporcion');
+  for (const id of ['f1', 'f2', 'f3']) cerca(await razon(id), 4 / 3, 0.02);
+  cerca(await razon('f4'), 16 / 9, 0.02);
+  await ventana(900, 600);
+});

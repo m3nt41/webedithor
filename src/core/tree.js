@@ -84,6 +84,19 @@ export function cloneWithNewIds(node) {
   return copia;
 }
 
+/** Proporción válida para aspect-ratio: "auto", "4 / 3", "1/1", "1.5" o "auto 4 / 3". Todo lo demás se descarta (nada se cuela como CSS). */
+export const aspectoValido = (v) => typeof v === 'string' && /^(auto|(auto\s+)?\d{1,3}(\.\d{1,3})?(\s*\/\s*\d{1,3}(\.\d{1,3})?)?)$/.test(v.trim());
+
+/** Claves de estilo que NO son CSS directo del elemento (el exportador las convierte en una regla para los hijos). */
+export const CLAVES_PROPIAS = ['hijosAspectRatio'];
+
+/** Quita de un objeto de estilos las proporciones inválidas (aspectRatio y hijosAspectRatio). */
+function limpiarProporciones(st) {
+  const r = { ...st };
+  for (const k of ['aspectRatio', 'hijosAspectRatio']) if (k in r && !aspectoValido(r[k])) delete r[k];
+  return r;
+}
+
 /** Objeto plano o {} (evita que un string/array/null en el JSON rompa lo que lo lea). */
 const objeto = (v) => (v !== null && typeof v === 'object' && !Array.isArray(v) ? v : {});
 
@@ -110,7 +123,7 @@ export function normalizePage(obj) {
       id: typeof n.id === 'string' ? n.id : newId(),
       type: n.type,
       name: n.name ?? n.type,
-      styles: { base: objeto(n.styles?.base), mobile: objeto(n.styles?.mobile) },
+      styles: { base: limpiarProporciones(objeto(n.styles?.base)), mobile: limpiarProporciones(objeto(n.styles?.mobile)) },
       content: limpiarContenido(n),
       animation: normalizarAnimacion(n.animation, n.type), // validada: ver animations/normalizar.js
       children: (n.children ?? []).map((h) => norm(h, false, n)),

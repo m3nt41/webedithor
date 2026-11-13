@@ -92,3 +92,12 @@ guardar('posicion', pagina(sec('Alta', {}, [caja('Contenedor', 2500, { display: 
 // 12. Escena con Transición 40 y con 50 (sin navbar): el paso queda quieto más tiempo con 40
 for (const tr of [40, 50]) { const e = createBlock('scene', 'textos'); e.animation.scene.transition = tr; guardar('escena-t' + tr, pagina(e)); }
 console.log('Páginas generadas en tests/out');
+
+// Proporción de los hijos (grid): fotos de tamaños distintos terminan parejas; una con proporción propia mantiene la suya
+{
+  const svg = (w, h) => `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="100%" height="100%" fill="#99c"/></svg>`)}`;
+  const foto = (id, w, h, styles = {}) => n('image', { name: id, content: { src: svg(w, h), alt: id }, styles });
+  const grid = n('container', { name: 'Grid', styles: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', hijosAspectRatio: '1 / 1' }, mobile: { gridTemplateColumns: '1fr', hijosAspectRatio: '4 / 3' },
+    children: [foto('f1', 600, 300), foto('f2', 300, 600), foto('f3', 500, 500), foto('f4', 800, 200, { aspectRatio: '16 / 9' })] });
+  guardar('proporcion', pagina(sec('Galería', { padding: '10px' }, [grid])));
+}

@@ -3,7 +3,7 @@
 // Los estilos van inline (más simple de editar en vivo). El exportador
 // (src/export/exporter.js) los convierte a CSS con clases.
 
-import { anchorValido } from '../core/tree.js';
+import { anchorValido, aspectoValido, CLAVES_PROPIAS } from '../core/tree.js';
 
 // Qué etiqueta HTML usa cada tipo de nodo (también la usa el exportador)
 const TAGS = { page: 'div', section: 'section', container: 'div', heading: 'h2', text: 'p', button: 'a', image: 'img' };
@@ -27,7 +27,8 @@ export function renderNode(node, viewMode = 'desktop') {
   el.dataset.type = node.type;
   // Ancla (content.anchor) -> id="..." solo si es válida (mismo criterio que el exportador)
   if (anchorValido(node.content?.anchor)) el.id = node.content.anchor;
-  Object.assign(el.style, effectiveStyles(node, viewMode));
+  const est = effectiveStyles(node, viewMode);
+  Object.assign(el.style, Object.fromEntries(Object.entries(est).filter(([k]) => !CLAVES_PROPIAS.includes(k))));
 
   if (TIPOS_TEXTO.includes(node.type)) {
     el.textContent = node.content.text ?? '';
@@ -38,7 +39,18 @@ export function renderNode(node, viewMode = 'desktop') {
     el.alt = node.content.alt ?? '';
   }
 
-  node.children.forEach((hijo) => el.appendChild(renderNode(hijo, viewMode)));
+  // "Proporción de los hijos" (solo grid): las imágenes hijas directas la heredan, salvo lo que ya tengan propio
+  // (en el export es la regla :where(.cls>img), aquí se hace inline porque el preview usa estilos inline)
+  const hijosAspecto = node.type !== 'image' && est.display === 'grid' && aspectoValido(est.hijosAspectRatio) ? est.hijosAspectRatio.trim() : null;
+  node.children.forEach((hijo) => {
+    const h = renderNode(hijo, viewMode);
+    if (hijosAspecto && hijo.type === 'image') {
+      const own = effectiveStyles(hijo, viewMode);
+      if (!own.aspectRatio) h.style.aspectRatio = hijosAspecto;
+      if (!own.objectFit) h.style.objectFit = 'cover';
+    }
+    el.appendChild(h);
+  });
 
   return el;
 }

@@ -6,9 +6,10 @@
 //   select altere qué campos se muestran: ahí se fuerza).
 
 import { getState, subscribe, setStyle, setContent, setName, setAnimation, moveBy, duplicateNode, removeNode, addVariant, removeVariant, moveVariant, setVariant, setVariantProp, verEstado } from '../core/store.js';
-import { findNode, findParent, anchorValido, contarAncla } from '../core/tree.js';
+import { findNode, findParent, anchorValido, contarAncla, aspectoValido } from '../core/tree.js';
 import { effectiveStyles, TIPOS_TEXTO } from '../render/renderer.js';
 import { GRUPOS } from './fields.js';
+import { modeloControl, columnasAuto, kebab, KINDS_CONTROL } from './controles.js';
 import { GRUPOS_ANIM } from '../animations/index.js';
 import { DISPAROS_VARIANT, CAMPOS_PROPS, CAMPOS_TIEMPO, DEF_TIEMPO } from '../animations/variants.js';
 
@@ -19,6 +20,34 @@ function aHex(v) {
   if (/^#[0-9a-f]{6}$/i.test(v)) return v;
   if (/^#[0-9a-f]{3}$/i.test(v)) return '#' + [...v.slice(1)].map((c) => c + c).join('');
   return null;
+}
+
+/** Aviso si un valor CSS no sirve (vacío = todo bien). El valor se guarda igual: solo se avisa. */
+function avisoCss(key, v) {
+  v = String(v ?? '').trim();
+  if (!v) return '';
+  const ok = key === 'aspectRatio' || key === 'hijosAspectRatio' ? aspectoValido(v) : typeof CSS === 'undefined' || CSS.supports(kebab(key), v);
+  return ok ? '' : '⚠ El navegador no entiende este valor y lo ignora (¿falta la unidad? ej. 900px).';
+}
+
+/** Etiqueta de un campo; en móvil marca con ● los que tienen un valor propio (pisan el de escritorio). */
+const etiqueta = (texto, ov) => `<label${ov ? ' class="ov" title="Solo en móvil: este valor pisa el de escritorio"' : ''}>${texto}</label>`;
+
+/** Campo de texto con valor CSS crudo + su aviso de validez. */
+function htmlTexto(key, v, placeholder, texto, ov) {
+  const av = avisoCss(key, v);
+  return `<div class="campo">${etiqueta(texto, ov)}<input data-s="${key}" class="${av ? 'invalido' : ''}" value="${esc(v)}" placeholder="${esc(placeholder)}"></div>` +
+    `<p class="aviso-css" data-aviso-css${av ? '' : ' hidden'}>${av}</p>`;
+}
+
+/** Control visual (botones) de un campo con kind de controles.js. Escribe los mismos strings CSS de siempre. */
+function htmlControl(f, v, modo, ov, tieneValor) {
+  const m = modeloControl(f, v, modo);
+  const botones = m.opciones.map((o) => `<button type="button" data-ctl="${f.key}" data-val="${esc(o.val)}" class="${o.on ? 'on' : ''}">${o.txt}</button>`).join('');
+  const otro = `<button type="button" data-ctl-otro="${f.key}" class="${m.personalizado ? 'on' : ''}" title="Escribir otro valor CSS (en Avanzado)">Otro</button>`;
+  const min = m.min != null ? `<span class="mini">mín. <input type="number" min="50" step="10" data-ctl-min="${f.key}" value="${m.min}"> px</span>` : '';
+  const quitar = tieneValor ? `<button type="button" class="quitar" data-ctl="${f.key}" data-val="">${modo === 'mobile' ? '↺ igual que escritorio' : '✕ quitar'}</button>` : '';
+  return `<div class="campo ctl">${etiqueta(f.label, ov)}<div class="botones${modo === 'mobile' && !ov ? ' heredado' : ''}">${botones}${otro}${min}${quitar}</div></div>`;
 }
 
 /** Sección "Estados (variants)": lista de estados con su disparo, lo que cambian y su tiempo. */
@@ -79,10 +108,12 @@ function avisoAncla(page, nodo, valor) {
 export function initInspector(host) {
   let idDibujado = null; // id del nodo para el que está construido el panel
   let forzar = false; // un select pidió reconstruir el panel
+  const abiertos = new Set(); // grupos cuyo "Avanzado" el usuario abrió (se conservan al reconstruir el panel)
 
   function dibujar() {
     const { page, selectedId, viewMode } = getState();
     const nodo = selectedId ? findNode(page, selectedId) : null;
+    if ((nodo?.id ?? null) !== idDibujado) abiertos.clear();
     idDibujado = nodo?.id ?? null;
     if (!nodo) {
       host.innerHTML = '<h2>Propiedades</h2><p class="vacio">Haz clic en un elemento del preview.<br><br>Doble clic en un texto para escribir directamente.</p>';
@@ -134,9 +165,15 @@ export function initInspector(host) {
       if (!g.tipos.includes(nodo.type)) continue;
       const visibles = g.campos.filter((f) => (!f.tipos || f.tipos.includes(nodo.type)) && (!f.cuando || f.cuando(estilos)));
       html += `<h3>${g.titulo}</h3>`;
+      const conControl = []; // campos con control visual: su valor CSS crudo va en "Avanzado" al final del grupo
       for (const f of visibles) {
         const v = estilos[f.key] ?? '';
-        if (f.kind === 'nota') {
+        const ov = viewMode === 'mobile' && f.key in nodo.styles.mobile; // en móvil: ¿tiene valor propio?
+        if (KINDS_CONTROL.includes(f.kind)) {
+          const tieneValor = viewMode === 'mobile' ? ov : f.key in nodo.styles.base;
+          html += htmlControl(f, v, viewMode, ov, tieneValor);
+          conControl.push({ f, v, ov, personalizado: modeloControl(f, v, viewMode).personalizado });
+        } else if (f.kind === 'nota') {
           html += `<p class="modo">${f.texto}</p>`;
         } else if (f.kind === 'select') {
           // En móvil, un select cuyo '' es un valor real (vacioMovil) separa dos cosas: '' = "Igual que escritorio"
@@ -147,12 +184,18 @@ export function initInspector(host) {
             vSel = nodo.styles.mobile[f.key] ?? '';
           }
           const opts = opciones.map(([val, txt]) => `<option value="${esc(val)}" ${val === String(vSel) ? 'selected' : ''}>${txt}</option>`).join('');
-          html += `<div class="campo"><label>${f.label}</label><select data-s="${f.key}">${opts}</select></div>`;
+          html += `<div class="campo">${etiqueta(f.label, ov)}<select data-s="${f.key}">${opts}</select></div>`;
         } else if (f.kind === 'color') {
-          html += `<div class="campo"><label>${f.label}</label><span class="color"><input type="color" data-pick="${f.key}" value="${aHex(v) ?? '#000000'}"><input data-s="${f.key}" value="${esc(v)}" placeholder="#ffffff"></span></div>`;
+          const av = avisoCss(f.key, v);
+          html += `<div class="campo">${etiqueta(f.label, ov)}<span class="color"><input type="color" data-pick="${f.key}" value="${aHex(v) ?? '#000000'}"><input data-s="${f.key}" class="${av ? 'invalido' : ''}" value="${esc(v)}" placeholder="#ffffff"></span></div><p class="aviso-css" data-aviso-css${av ? '' : ' hidden'}>${av}</p>`;
         } else {
-          html += `<div class="campo"><label>${f.label}</label><input data-s="${f.key}" value="${esc(v)}" placeholder="${esc(f.placeholder)}"></div>`;
+          html += htmlTexto(f.key, v, f.placeholder, f.label, ov);
         }
+      }
+      if (conControl.length) {
+        const abrir = abiertos.has(g.titulo) || conControl.some((c) => c.personalizado || avisoCss(c.f.key, c.v));
+        html += `<details class="avanzado" data-g="${esc(g.titulo)}"${abrir ? ' open' : ''}><summary>Avanzado (valor CSS)</summary>` +
+          conControl.map((c) => htmlTexto(c.f.key, c.v, c.f.placeholder, c.f.crudo ?? c.f.label, c.ov)).join('') + '</details>';
       }
     }
 
@@ -193,6 +236,11 @@ export function initInspector(host) {
     const t = e.target;
     const id = idDibujado;
     if (!id) return;
+    // Mínimo (px) del modo Auto de Columnas: escribe repeat(auto-fit, minmax(Npx, 1fr)); no se reconstruye el panel (se pierde el foco)
+    if (t.dataset.ctlMin) {
+      if (+t.value > 0) setStyle(id, t.dataset.ctlMin, columnasAuto(+t.value));
+      return;
+    }
     // Un select puede mostrar/ocultar campos: pedimos reconstruir el panel (antes del cambio)
     if (t.tagName === 'SELECT' && (t.dataset.s || t.dataset.a || t.dataset.v)) forzar = true;
     // Estados (variants): los campos viven dentro de un [data-vs] con el id del estado
@@ -232,8 +280,37 @@ export function initInspector(host) {
       const pick = t.previousElementSibling;
       if (pick?.dataset.pick && aHex(t.value)) pick.value = aHex(t.value);
       setStyle(id, t.dataset.s, t.value.trim());
+      // Aviso en rojo si el navegador no entiende el valor (se guarda igual)
+      const av = t.closest('.campo')?.nextElementSibling;
+      if (t.tagName === 'INPUT' && av?.matches('[data-aviso-css]')) {
+        const msg = avisoCss(t.dataset.s, t.value);
+        t.classList.toggle('invalido', !!msg);
+        av.hidden = !msg;
+        av.textContent = msg;
+      }
     }
   });
+
+  // Controles visuales (botones de Columnas, Ancho máx., Centrar, Proporción): escriben el mismo string CSS que escribirías a mano.
+  host.addEventListener('click', (e) => {
+    const otro = e.target.closest('[data-ctl-otro]');
+    if (otro) { // "Otro": abre Avanzado y deja el cursor en el campo de texto (no escribe nada)
+      const campo = host.querySelector(`details.avanzado [data-s="${otro.dataset.ctlOtro}"]`);
+      if (campo) { campo.closest('details').open = true; campo.focus(); }
+      return;
+    }
+    const b = e.target.closest('[data-ctl]');
+    if (!b || !idDibujado) return;
+    forzar = true; // reconstruir el panel para marcar el botón activo
+    setStyle(idDibujado, b.dataset.ctl, b.dataset.val);
+  });
+
+  // Recuerda qué "Avanzado" abrió el usuario (el evento toggle no burbujea: se escucha en captura)
+  host.addEventListener('toggle', (e) => {
+    const det = e.target;
+    if (!det.matches?.('details.avanzado')) return;
+    if (det.open) abiertos.add(det.dataset.g); else abiertos.delete(det.dataset.g);
+  }, true);
 
   // Botones ↑ ↓ ⧉ ✕ del elemento seleccionado
   host.addEventListener('click', (e) => {

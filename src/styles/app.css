@@ -116,3 +116,20 @@ details.bloque .variantes button:hover { background: #3b3470; }
 #vista-previa .vp-escenario { flex: 1; min-height: 0; display: flex; justify-content: center; background: #0e0e12; }
 #vista-previa iframe { width: 100%; height: 100%; border: 0; background: #fff; }
 #vista-previa.movil iframe { width: 390px; flex: none; }
+
+/* ---- Controles visuales del inspector (Fase 1) ---- */
+#inspector [hidden] { display: none; }
+#inspector .campo.ctl { align-items: start; }
+#inspector .botones { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+#inspector .botones button { padding: 3px 8px; background: #2f2f38; color: inherit; border: 1px solid #44444f; border-radius: 6px; cursor: pointer; font-size: 12px; }
+#inspector .botones button:hover { background: #3b3470; }
+#inspector .botones button.on { background: #5b47c9; border-color: #7c5cff; }
+#inspector .botones.heredado button.on { background: #3b3a52; border: 1px dashed #7c5cff; } /* en móvil: valor heredado de escritorio, sin override */
+#inspector .botones button.quitar { background: none; border-color: transparent; color: #9a9aa8; text-decoration: underline; }
+#inspector .botones .mini { font-size: 12px; color: #9a9aa8; display: flex; align-items: center; gap: 4px; }
+#inspector .botones .mini input { width: 60px; }
+#inspector details.avanzado { margin-top: 8px; }
+#inspector details.avanzado summary { cursor: pointer; }
+#inspector label.ov::before { content: '● '; color: #7c5cff; }
+#inspector input.invalido { outline: 1px solid #e5484d; border-color: #e5484d; }
+#inspector .aviso-css { color: #ff8a8a; font-size: 11px; margin: -2px 0 6px 98px; }

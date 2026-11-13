@@ -6,6 +6,9 @@
 //     En vista movil, '' pasa a significar "Igual que escritorio" (borra el override) y aparece una opcion
 //     extra con este valor explicito (ej. 'static') para poder volver al valor normal en movil.
 //     vacioTexto: nombre de esa opcion explicita (por defecto, el texto de la primera opcion).
+//   Controles visuales (src/ui/controles.js): kind 'columnas' | 'anchoMax' | 'centrar' | 'proporcion'. Escriben los MISMOS
+//     strings CSS de siempre. El campo de texto del valor queda en "Avanzado" del grupo (crudo = su etiqueta ahi).
+//     autoVacio (solo proporcion): "Auto" = quitar la proporcion en vez de escribir 'auto' (para "Proporcion de los hijos").
 
 const TEXTO = ['heading', 'text', 'button'];
 const CONTENEDOR = ['section', 'container'];
@@ -48,13 +51,13 @@ export const GRUPOS = [
     tipos: [...TEXTO, ...CONTENEDOR, 'image'],
     campos: [
       { key: 'padding', label: 'Padding', kind: 'text', placeholder: '24px 32px' },
-      { key: 'margin', label: 'Margen', kind: 'text', placeholder: '0' },
+      { key: 'margin', label: 'Centrar', crudo: 'Margen', kind: 'centrar', placeholder: '0 auto' },
       { key: 'width', label: 'Ancho', kind: 'text', placeholder: '100%' },
-      { key: 'maxWidth', label: 'Ancho máx.', kind: 'text', placeholder: '600px' },
+      { key: 'maxWidth', label: 'Ancho máx.', kind: 'anchoMax', placeholder: '600px' },
       { key: 'minHeight', label: 'Alto mín.', kind: 'text', placeholder: '60vh' },
       { key: 'height', label: 'Alto', kind: 'text', placeholder: 'auto' },
       // Proporción = aspect-ratio (ej. 4 / 3, 1 / 1). Solo imágenes. En móvil, escribe "auto" para volver a la proporción natural.
-      { key: 'aspectRatio', label: 'Proporción', kind: 'text', placeholder: '4 / 3', tipos: ['image'] },
+      { key: 'aspectRatio', label: 'Proporción', kind: 'proporcion', placeholder: '4 / 3', tipos: ['image'] },
     ],
   },
   {
@@ -84,11 +87,11 @@ export const GRUPOS = [
       { key: 'flexWrap', label: 'Envolver', kind: 'select', options: [['', '—'], ['wrap', 'Sí'], ['nowrap', 'No']], cuando: (s) => s.display === 'flex' },
       { key: 'justifyContent', label: 'Justificar', kind: 'select', options: [['', '—'], ['flex-start', 'Inicio'], ['center', 'Centro'], ['flex-end', 'Fin'], ['space-between', 'Espaciado']], cuando: (s) => s.display === 'flex' },
       { key: 'alignItems', label: 'Alinear', kind: 'select', options: [['', '—'], ['flex-start', 'Inicio'], ['center', 'Centro'], ['flex-end', 'Fin'], ['stretch', 'Estirar']], cuando: (s) => s.display === 'flex' || s.display === 'grid' },
-      { key: 'gridTemplateColumns', label: 'Columnas', kind: 'text', placeholder: 'repeat(3, 1fr)', cuando: (s) => s.display === 'grid' },
+      { key: 'gridTemplateColumns', label: 'Columnas', kind: 'columnas', placeholder: 'repeat(3, 1fr)', cuando: (s) => s.display === 'grid' },
       { key: 'gap', label: 'Separación', kind: 'text', placeholder: '20px', cuando: (s) => s.display === 'flex' || s.display === 'grid' },
       // Proporción de los hijos: todas las imágenes de este grid (hijas directas) quedan con la misma proporción y recortadas (cover).
       // Una foto con su propia Proporción mantiene la suya.
-      { key: 'hijosAspectRatio', label: 'Proporción de los hijos', kind: 'text', placeholder: '1 / 1', cuando: (s) => s.display === 'grid' },
+      { key: 'hijosAspectRatio', label: 'Proporción de los hijos', kind: 'proporcion', autoVacio: true, placeholder: '1 / 1', cuando: (s) => s.display === 'grid' },
       // Recortar contenido = overflow:hidden. Útil para que una imagen con parallax quede dentro de su marco.
       // Solo contenedores y secciones (en la página recortaría todo el scroll).
       { key: 'overflow', label: 'Recortar contenido', kind: 'select', options: [['', 'No (normal)'], ['hidden', 'Sí (recortar)']], tipos: CONTENEDOR, vacioMovil: 'visible' },

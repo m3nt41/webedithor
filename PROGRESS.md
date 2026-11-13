@@ -5,7 +5,7 @@ Estado al día. El detalle de las etapas 1 a 7 (qué se hizo, cómo se verificó
 ## Estado actual
 - **Hechas las etapas 1 a 7**: estructura/árbol/preview, inspector y export, secciones/móvil/JSON/undo, animaciones base, elementos y bloques, navbar y anclas (5.5), transiciones y estados (6), y scroll (7: sticky, parallax, scroll-linked, escenas por scroll y scroll suave opcional).
 - **Tests**: `npm run test:selenium` (17 pruebas en tu Firefox real, perfil temporal, sobre el HTML exportado; ruta cambiable con `FIREFOX_BIN`) y `node tests/ronda7.mjs` (validación de datos y export, en Node). `npm run build` compila. Playwright (`npm run test:firefox`) está configurado pero su Firefox propio no arranca en este PC; aquí sirve Selenium.
-- Último commit: scroll suave (`1c44f26`) más esta reorganización de docs.
+- Últimos cambios: ver `git log`.
 
 ## Próxima etapa
 **Etapa 8 — Movimiento avanzado**: layout animations, drag con límites y rebote, inercia, 3D transforms (perspectiva, rotación X/Y). Después, **Etapa 9 — Extras**: marquee/ticker, cursor personalizado, page transitions. Asignación en `FEATURES.md`. Una etapa a la vez; al terminar: revisar bugs, actualizar este archivo, commit y detenerse.
@@ -14,6 +14,9 @@ Estado al día. El detalle de las etapas 1 a 7 (qué se hizo, cómo se verificó
 ## Pendientes y bugs conocidos
 **Decisiones abiertas**
 - `!important` en los estados (variants): aplicar o no la alternativa (a) (estados cargar/entrar como transición con clase en vez de `@keyframes … forwards`; arreglaría el "entra de golpe" y quitaría el `!important`, pero cambia el export). Análisis en `docs/historial.md`, Etapa 6.
+**Bugs abiertos**
+- **Posición en móvil**: si en escritorio un elemento es sticky y en móvil elijo "Normal", se quita el override móvil y hereda el sticky de escritorio. No se puede tener sticky en escritorio y normal en móvil. Probablemente pasa igual con otros selects que tienen opción vacía ("—"): Envolver, Justificar, Alinear.
+- **Scroll suave en Firefox**: al terminar el scroll se ve escalonado, incluso con general.smoothScroll=false. Hipótesis sin medir: el `scrollTo` se redondea a píxel entero en la cola subpíxel, y posible dt negativo en el primer frame (`t - t0`). Sin scroll suave va bien.
 **Limitaciones conocidas (no son bugs de la lista)**
 - Imágenes subidas son data URL: pueden inflar el `.html` y el JSON.
 - Arrastrar capas solo se probó con eventos sintéticos en Chromium; no se puede arrastrar desde el preview ni desde la paleta; el árbol de capas no tiene "plegar todo".
@@ -32,7 +35,7 @@ Estado al día. El detalle de las etapas 1 a 7 (qué se hizo, cómo se verificó
 - En vista móvil todo cambio del panel se guarda solo en `styles.mobile`; vacío = vuelve al valor de escritorio.
 - El historial de undo, la selección y la vista no se guardan (la página sí: localStorage `editor-landings:pagina` + `.json`).
 - Anclas: válidas = empiezan con letra y solo letras sin tildes/ñ, números y guiones; el export añade `[id]{scroll-margin-top:90px}` solo si hay una sección pegada arriba con `top`.
-- Navbar sticky nace con `position:sticky; top:0; z-index:50`; "Posición" sirve para quitarlo.
+- Navbar sticky nace con `position:sticky; top:0; z-index:50`; "Posición" → "Normal" lo quita en escritorio, pero hoy **NO funciona en móvil** cuando escritorio es sticky (ver bug abierto en "Pendientes y bugs conocidos").
 - `prefers-reduced-motion`: apaga animaciones de entrada y transiciones; parallax/ligado/escenas quedan en reposo y visibles; sticky (CSS puro) no se apaga; scroll suave no corre. Sin JS (`<noscript>`) todo se ve quieto.
 - "Al aparecer" por defecto es por scroll; "al cargar" va sin script. Estados interactivos con `!important` (ver decisión abierta).
 - Todo lo marcado `[x]` en `FEATURES.md` es cierto; no se recorta ni cambia esa lista sin preguntar.

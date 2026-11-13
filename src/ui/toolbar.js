@@ -3,6 +3,7 @@
 
 import { getState, subscribe, undo, redo, puedeDeshacer, puedeRehacer, setViewMode, replacePage, newPage, play, salirReproducir } from '../core/store.js';
 import { exportHTML, descargar } from '../export/exporter.js';
+import { abrirVistaPrevia } from './vistaprevia.js';
 
 export function initToolbar(host) {
   host.innerHTML = `
@@ -15,6 +16,7 @@ export function initToolbar(host) {
     </span>
     <button id="btn-play" title="Reproducir las animaciones de scroll y de texto en el preview (pulsa otra vez o Esc para volver a editar)">▶ Reproducir</button>
     <span id="etiqueta-play" class="etiqueta-play" hidden>● Reproduciendo</span>
+    <button id="btn-vista-previa" title="Ver la página real (el HTML exportado) a pantalla completa">👁 Vista previa</button>
     <span class="espacio"></span>
     <button id="btn-nuevo">Nuevo</button>
     <button id="btn-abrir">Abrir JSON</button>
@@ -27,6 +29,7 @@ export function initToolbar(host) {
   $('#btn-undo').addEventListener('click', undo);
   $('#btn-redo').addEventListener('click', redo);
   $('#btn-play').addEventListener('click', play);
+  $('#btn-vista-previa').addEventListener('click', abrirVistaPrevia);
   $('#vista-desktop').addEventListener('click', () => setViewMode('desktop'));
   $('#vista-mobile').addEventListener('click', () => setViewMode('mobile'));
 

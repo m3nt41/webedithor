@@ -120,6 +120,14 @@ Chrome no reemplaza a Firefox (el navegador de m3nt41). Lo de la lista funciona 
 **Verificado**: build OK; `resorte` da curvas que terminan en 1 (con rebote si amortiguación baja, sin rebote si es alta); en el editor los campos aparecen/desaparecen al cambiar la curva y el CSS del preview lleva el `linear()` generado.
 **No verificado**: no se vio la animación en vivo (panel en segundo plano). Probar en Firefox. Limitación: el spring no se interrumpe con continuidad de velocidad (para eso haría falta Motion).
 
+### Bloque 3: stagger entre hijos  ✅ · texto por línea  ⏸ (esperando decisión)
+**Hecho**
+- Nuevo módulo `animations/stagger.js`, grupo **"Cascada de hijos"** (solo section y container): efecto, "Se dispara" (scroll/carga), cascada entre hijos (s), duración, retraso, curva (incluye bezier y spring), distancia, ángulo. CSS puro: una regla `sel > :nth-child(k)` por hijo con `animation-delay: calc(retraso + k*cascada)`; en scroll, `sel.in > :nth-child(k)` la despausa. Los hijos con su propia animación (Al aparecer / texto) se saltan: la suya manda.
+- `index.js`: `usaScroll`/`usaCarga`/`paginaUsaEntrada` cuentan el stagger (solo si el nodo tiene hijos); `cssNodo` pasa el nodo a `css(g, sel, node)`. Exportador: reduced-motion y `<noscript>` también apagan `[data-rv]>*`/`[data-ld]>*`.
+**Verificado en Chrome** (editor en vivo + HTML exportado en iframe): al cargar, retrasos 0/0.5/1/1.5 s corriendo; por scroll, hijos en `paused` hasta que el padre recibe `.in` (IntersectionObserver) y luego `running`; sin `<script>` si es solo "al cargar"; build OK.
+**Límites / pendiente**: si se añaden o quitan hijos, las reglas se recalculan solas al exportar. Si se reordenan, el retraso sigue la posición. No visto a ojo ni en Firefox (pendiente de probar en Firefox: la cascada con scroll real).
+**Texto por línea: NO implementado a propósito.** En CSS puro no se puede saber dónde parte el navegador cada línea automáticamente. Opciones propuestas a m3nt41: (A) partir solo por los saltos de línea que él escriba (Enter en el texto), CSS puro, sin script; (B) script mínimo (~10 líneas) que mide la posición de cada palabra al cargar/redimensionar y agrupa por línea, con ajuste automático real; (C) ambas (A por defecto, B opcional).
+
 ## Etapa 5 — Elementos y bloques  ✅
 
 ### Hecho

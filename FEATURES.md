@@ -34,7 +34,7 @@ Motion vs CSS puro: m3nt41 ya decidió la opción (a), CSS puro donde se pueda y
 - [ ] Inercia → Etapa 8 (va con Drag)
 - [x] Delay (Etapa 4)
 - [x] Stagger entre letras/palabras del mismo texto (Etapa 4)
-- [ ] Stagger entre hijos (los elementos de un contenedor entran en cascada) → Etapa 6
+- [x] Stagger entre hijos (grupo "Cascada de hijos" en secciones/contenedores; CSS puro con `:nth-child`; los hijos con su propia animación de entrada quedan fuera) (Etapa 6)
 
 ## Texto
 - [x] Revelado por letra (Etapa 4)

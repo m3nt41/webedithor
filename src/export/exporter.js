@@ -77,9 +77,9 @@ export function exportHTML(page) {
   const animaciones = [
     usaEntrada ? KEYFRAMES : '',
     ...cssAnim,
-    usaEntrada ? '@media (prefers-reduced-motion:reduce){[data-rv],[data-ld],[data-rv] .w,[data-ld] .w{animation:none!important}}' : '',
+    usaEntrada ? '@media (prefers-reduced-motion:reduce){[data-rv],[data-ld],[data-rv] .w,[data-ld] .w,[data-rv]>*,[data-ld]>*{animation:none!important}}' : '',
   ].filter(Boolean).join('\n');
-  const noscript = usaRv ? '<noscript><style>[data-rv],[data-rv] .w{animation:none!important}</style></noscript>\n' : '';
+  const noscript = usaRv ? '<noscript><style>[data-rv],[data-rv] .w,[data-rv]>*{animation:none!important}</style></noscript>\n' : '';
   const script = usaRv ? `<script>\n${SCRIPT_SCROLL}\n</script>\n` : '';
 
   return `<!doctype html>

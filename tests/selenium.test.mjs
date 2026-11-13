@@ -157,3 +157,15 @@ test('escena por scroll: sticky + grid + pasos', opts, async () => {
   assert.deepEqual(res[2].op, [0, 1, 0]);
   assert.ok(res[3].op[2] > 0.8);
 });
+
+test('parallax + estado hover en el mismo elemento: el scroll no se suaviza con transición', opts, async () => {
+  await abrir('combo');
+  const tp = await css('PARALLAX-HOVER', 'transitionProperty');
+  assert.ok(!tp.split(',').map((x) => x.trim()).includes('translate'), tp);
+  assert.ok(tp.includes('scale'), tp); // lo demás sí transiciona
+  await irA(1100); await esperar(100); // sin esperar a ninguna transición: debe estar ya en su sitio
+  const y = parseFloat(((await css('PARALLAX-HOVER', 'translate')) ?? '').split(' ')[1] ?? '0');
+  await esperar(600);
+  const y2 = parseFloat(((await css('PARALLAX-HOVER', 'translate')) ?? '').split(' ')[1] ?? '0');
+  cerca(y, y2, 3);
+});

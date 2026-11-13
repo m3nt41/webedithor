@@ -1,0 +1,41 @@
+// Ronda de bugs de la Etapa 7: validación de datos de scroll/escena en normalizePage y combinaciones. Ejecutar: node tests/ronda7.mjs
+import assert from 'node:assert/strict';
+import { normalizarAnimacion } from '../src/animations/normalizar.js';
+import { createNode as n } from '../src/core/tree.js';
+import { exportHTML } from '../src/export/exporter.js';
+let ok = 0; const t = (nombre, f) => { f(); ok++; console.log('✔', nombre); };
+
+t('parallax/scrolllink/scene/scenestep: basura se limpia y nada se cuela como CSS', () => {
+  const a = normalizarAnimacion({
+    parallax: { effect: 'y', amount: '40px;}body{x:y' }, scrolllink: { effect: 'evil', amount: 5 },
+    scene: { steps: '9', length: 'x' }, scenestep: { effect: 'in', step: 'a;}', move: 'up', distance: -4 },
+  }, 'heading');
+  assert.deepEqual(a.parallax, { effect: 'y' });
+  assert.equal(a.scrolllink, undefined);   // efecto desconocido: el grupo cae entero
+  assert.equal(a.scene, undefined);        // scene no va en títulos
+  assert.equal(a.scenestep.effect, 'in'); assert.equal(a.scenestep.step, undefined); assert.equal(a.scenestep.distance, 0);
+  const s = normalizarAnimacion({ scene: { steps: 9 } }, 'section'); assert.equal(s, null);
+  const s2 = normalizarAnimacion({ scene: { steps: 3, length: 0, top: '' } }, 'section'); assert.deepEqual(s2.scene, { steps: '3', length: 1 });
+  assert.equal(normalizarAnimacion({ scenestep: { effect: 'in' } }, 'section'), null); // paso de escena no va en secciones
+  assert.equal(normalizarAnimacion({ parallax: { effect: 'y', amount: 1e999 } }, 'text').parallax.amount, undefined);
+});
+
+t('export: parallax + estado hover no deja que la transición suavice el scroll', () => {
+  const p = n('page', {}); const s = n('section', {}); const h = n('heading', { content: { text: 'X', level: 2 } });
+  h.animation = { parallax: { effect: 'y', amount: 50 }, variants: [{ id: 'a', name: 'h', trigger: 'hover', props: { scale: 1.1 } }] };
+  s.children.push(h); p.children.push(s);
+  const html = exportHTML(p);
+  const base = html.match(/\.n2\{transition-property:([^;]*);/)[1];
+  assert.ok(!base.split(',').includes('translate'), base);
+  assert.ok(base.includes('scale'), base); // lo demás sigue transicionando
+});
+
+t('export: escena + reduced-motion y sin JS: la regla de escena vale solo con .sc', () => {
+  const p = n('page', {}); const s = n('section', {}); s.animation = { scene: { steps: '2', length: 2 } };
+  const h = n('heading', { content: { text: 'A', level: 2 } }); h.animation = { scenestep: { effect: 'out', step: 2, move: 'up', distance: 30 } };
+  s.children.push(h); p.children.push(s);
+  const html = exportHTML(p);
+  for (const l of html.split('\n').filter((x) => /data-es\]/.test(x))) assert.ok(l.startsWith('.sc ') || l.startsWith('[data-ew]'), l);
+  assert.ok(html.includes("matchMedia('(prefers-reduced-motion:reduce)')"));
+});
+console.log(`${ok} pruebas ok`);

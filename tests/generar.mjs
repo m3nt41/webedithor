@@ -59,6 +59,11 @@ guardar('lineas', pagina(
   ]),
 ));
 
+// 8. Combinación: parallax + estado hover en el MISMO elemento (la transición no debe suavizar el scroll)
+guardar('combo', pagina(sec('Arriba', { height: '1400px' }), sec('Zona', { height: '600px' }, [
+  tit('PARALLAX-HOVER', { height: '80px', background: '#fecaca' }, { parallax: { effect: 'y', amount: 100 }, variants: [{ id: 'h', name: 'Hover', trigger: 'hover', duration: 0.5, delay: 0, ease: 'suave', props: { scale: 1.2 } }] }),
+]), sec('Abajo', { height: '1800px' })));
+
 // 7. Escena por scroll (con navbar pegado)
 guardar('escena', pagina(createBlock('navbar', 'oscuro'), createBlock('scene', 'textos'), createBlock('hero', 'oscuro')));
 console.log('Páginas generadas en tests/out');

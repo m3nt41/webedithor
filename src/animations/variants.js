@@ -103,6 +103,19 @@ export function crearEstado(lista) {
 
 // Todo lo que un estado puede transicionar (incluye lo que usan hover/press/focus, para no pisarlos)
 const PROPS_TRANS = 'opacity,translate,scale,rotate,filter,color,background-color,border-color,border-radius,box-shadow,transform,outline-color,outline-offset';
+// Lo que mueve el motor de scroll (parallax, ligado, paso de escena) NO debe suavizarse con la transición del
+// estado: el valor ya cambia con cada cuadro de scroll y la transición lo haría ir "arrastrando" (lag).
+const propsTrans = (node) => {
+  const a = node?.animation ?? {};
+  const quitar = new Set();
+  if (a.parallax?.effect) quitar.add('translate');
+  const e = a.scrolllink?.effect;
+  if (e === 'fade-in' || e === 'fade-out') quitar.add('opacity');
+  if (e === 'zoom-in' || e === 'zoom-out') quitar.add('scale');
+  if (e === 'rotate') quitar.add('rotate');
+  if (a.scenestep?.effect) { quitar.add('opacity'); ['translate', 'scale'].forEach((p) => quitar.add(p)); }
+  return PROPS_TRANS.split(',').filter((p) => !quitar.has(p)).join(',');
+};
 const SEL_ESTADO = { hover: ':hover', press: ':active', focus: ':focus-visible', click: '.on' };
 const seguro = (s) => String(s).replace(/[^\w-]/g, '');
 
@@ -127,7 +140,7 @@ export default {
     const out = [];
 
     const trTiempo = (s, retraso) =>
-      `transition-property:${PROPS_TRANS};transition-duration:${duracion(s, DEF_TIEMPO.duration)}s;transition-timing-function:${curva(s)};transition-delay:${retraso}s`;
+      `transition-property:${propsTrans(node)};transition-duration:${duracion(s, DEF_TIEMPO.duration)}s;transition-timing-function:${curva(s)};transition-delay:${retraso}s`;
 
     // ---- Interactivos: hover, presionar, enfocar, clic ----
     const inter = activos.filter((s) => SEL_ESTADO[s.trigger] && (scroll || s.trigger !== 'click'));

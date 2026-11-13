@@ -25,6 +25,27 @@ Etapas hechas: 1, 2, 3, 4, 5, 5.5 (navbar y anclas) y 6 (transiciones y estados)
 
 **Playwright**: también quedó configurado (`npm run test:firefox`, mismas 8 pruebas, validadas en Chromium con `PW_BROWSER=chromium`), pero su Firefox propio (builds 1555 y 1572, con `@playwright/test` 1.64.1) **no arranca en este PC** ("configuración en paralelo incorrecta": no resuelve la referencia a `mozglue`; el Firefox 160 normal sí funciona). Se dejó por si en otro equipo funciona; aquí la vía que sirve es Selenium.
 
+### Prueba de sensibilidad de los tests (¿detectan de verdad un fallo?)
+Se rompió a propósito, una a una y temporalmente, 3 funciones, se corrió `npm run test:selenium` en Firefox 160 y luego se restauró todo con `git checkout -- src` (git quedó limpio y volvieron a pasar 8/8):
+| Sabotaje | Resultado |
+|---|---|
+| Sticky: el exportador deja de escribir `position` | ❌ falla "sticky" (como se esperaba) |
+| Parallax: el `calc` ignora `--sp` (translate siempre 0) | ❌ falla "parallax" |
+| Estado por clic: se quita el `classList.toggle('on')` del script | ❌ falla "estado por clic" |
+Los otros 5 tests siguieron en verde en las 3 rondas (no hay falsos positivos cruzados). Límite honesto: el sabotaje del sticky no rompió "escena por scroll" porque la escena genera su propio `position:sticky` (no usa el campo "Posición"); el sticky de la escena queda cubierto por su propio test, no por el de sticky.
+
+### Ronda de bugs de la Etapa 7 (sticky, parallax, ligado, escenas)
+**Arreglado**
+- **Transición que arrastraba el scroll (bug real).** Un elemento con parallax / ligado / paso de escena + un estado (variant) interactivo recibía `transition-property: …translate,scale,rotate,opacity…` en su regla base, así que cada valor que el motor escribe al hacer scroll se "suavizaba" con la duración del estado (el elemento iba atrasado respecto al scroll). Ahora `variants.js` (`propsTrans`) quita de esa lista lo que mueve el motor para ese nodo (translate con parallax; opacity/scale/rotate según el efecto ligado; opacity/translate/scale con paso de escena). Matiz: un estado que cambie justo esa propiedad entra de golpe, sin transición. Test nuevo en Firefox (`parallax + estado hover en el mismo elemento`).
+**Revisado y correcto (sin cambios)**
+- `normalizePage`: parallax, ligado, escena y paso de escena ya se validan solos porque `normalizarAnimacion` usa los `campos` de cada grupo. Probado con `node tests/ronda7.mjs`: efecto desconocido → el grupo cae; `steps: 9` → cae; `length: 0` → 1; `distance` negativa → 0; CSS inyectado en números (`"40px;}body{…"`) o `1e999` → se descarta el campo; `scene` en un título y `scenestep` en una sección → se descartan.
+- `prefers-reduced-motion`: el motor sale antes de poner `.sc`; todo lo de parallax/ligado/escena está bajo `.sc`, así que queda en reposo y visible (la escena es `display:contents`); el sticky (CSS puro) no se apaga, a propósito (no es movimiento animado). Comprobado por código y por el test de reglas (`tests/ronda7.mjs`); desde los ajustes reales del sistema sigue sin probarse.
+- Combinaciones: parallax + ligado en el mismo elemento (propiedades distintas, conviven; test existente), sticky + parallax (el motor mide `offsetTop`, ok), escena + navbar pegado (test existente), parallax/ligado sobre un hijo de escena: gana el paso de escena (mayor especificidad), ya documentado como "no combinar".
+- Vista móvil: las reglas de escena usan `!important` y `100svh`; los `styles.mobile` de padding/fondo sí valen, los de dirección/separación/columnas no (límite documentado). Sin cambios.
+**FEATURES.md**: todo lo marcado `[x]` de la Etapa 7 es cierto; "Scroll suave" sigue `[ ]` (no se empezó).
+
+**Qué queda pendiente de Firefox a la luz de los tests** (ver tabla de arriba): ya confirmado en Firefox 160 sobre el HTML exportado → sticky (arriba/abajo), parallax, ligado, press, focus, estado por clic, texto por línea y escena completa. **Sigue pendiente**: `prefers-reduced-motion` real del sistema, ancho/`100svh` de un teléfono real, el **preview del editor** (el editor en sí) en Firefox —incluido arrastre de capas con mouse real, sticky del navbar en el preview, saltos de ancla y vista móvil del editor—, "estado por clic" por teclado, fluidez a ojo y otras versiones de Firefox.
+
 ## Etapa 1 — Estructura, árbol JSON, preview y selección  ✅
 - Proyecto Vite + vanilla JS, `motion` instalado (sin usar todavía).
 - Árbol JSON (`core/tree.js`), store con `mutate`/`subscribe` (`core/store.js`).

@@ -82,4 +82,9 @@ guardar('suave-off', paginaSuave(false));
 // 10. Escena por scroll con scroll suave activado (convivencia)
 const esc = pagina(createBlock('navbar', 'oscuro'), createBlock('scene', 'textos'), createBlock('hero', 'oscuro')); esc.content.smoothScroll = true;
 guardar('escena-suave', esc);
+// 11. Posición: sticky en escritorio y "Normal" (static explícito) en móvil; y un navbar así con una ancla
+const pegado = tit('POS-MOVIL-NORMAL', { position: 'sticky', top: '10px', zIndex: '50', height: '60px', background: '#fde68a' });
+pegado.styles.mobile = { position: 'static' };
+const destino = sec('Destino', { height: '300px' }, [tit('DESTINO')]); destino.content.anchor = 'destino';
+guardar('posicion', pagina(sec('Alta', {}, [caja('Contenedor', 2500, { display: 'block' }, [pegado, caja('Hueco', 2000)])]), destino));
 console.log('Páginas generadas en tests/out');

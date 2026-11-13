@@ -4,7 +4,7 @@ Estado al día. El detalle de las etapas 1 a 7 (qué se hizo, cómo se verificó
 
 ## Estado actual
 - **Hechas las etapas 1 a 7**: estructura/árbol/preview, inspector y export, secciones/móvil/JSON/undo, animaciones base, elementos y bloques, navbar y anclas (5.5), transiciones y estados (6), y scroll (7: sticky, parallax, scroll-linked, escenas por scroll y scroll suave opcional).
-- **Tests**: `npm run test:selenium` (17 pruebas en tu Firefox real, perfil temporal, sobre el HTML exportado; ruta cambiable con `FIREFOX_BIN`) y `node tests/ronda7.mjs` (validación de datos y export, en Node). `npm run build` compila. Playwright (`npm run test:firefox`) está configurado pero su Firefox propio no arranca en este PC; aquí sirve Selenium.
+- **Tests**: `npm run test:selenium` (18 pruebas en tu Firefox real, perfil temporal, sobre el HTML exportado; ruta cambiable con `FIREFOX_BIN`) y `node tests/ronda7.mjs` (validación de datos y export, en Node). `npm run build` compila. Playwright (`npm run test:firefox`) está configurado pero su Firefox propio no arranca en este PC; aquí sirve Selenium.
 - Últimos cambios: ver `git log`.
 
 ## Próxima etapa
@@ -15,7 +15,6 @@ Estado al día. El detalle de las etapas 1 a 7 (qué se hizo, cómo se verificó
 **Decisiones abiertas**
 - `!important` en los estados (variants): aplicar o no la alternativa (a) (estados cargar/entrar como transición con clase en vez de `@keyframes … forwards`; arreglaría el "entra de golpe" y quitaría el `!important`, pero cambia el export). Análisis en `docs/historial.md`, Etapa 6.
 **Bugs abiertos**
-- **Posición en móvil**: si en escritorio un elemento es sticky y en móvil elijo "Normal", se quita el override móvil y hereda el sticky de escritorio. No se puede tener sticky en escritorio y normal en móvil. Probablemente pasa igual con otros selects que tienen opción vacía ("—"): Envolver, Justificar, Alinear.
 - **Scroll suave en Firefox**: al terminar el scroll se ve escalonado, incluso con general.smoothScroll=false. Hipótesis sin medir: el `scrollTo` se redondea a píxel entero en la cola subpíxel, y posible dt negativo en el primer frame (`t - t0`). Sin scroll suave va bien.
 **Limitaciones conocidas (no son bugs de la lista)**
 - Imágenes subidas son data URL: pueden inflar el `.html` y el JSON.
@@ -32,10 +31,12 @@ Estado al día. El detalle de las etapas 1 a 7 (qué se hizo, cómo se verificó
 - **Motion vs CSS puro (m3nt41): opción (a)**: CSS puro donde se pueda; script propio mínimo o Motion solo en lo que obliga (drag con rebote, inercia, layout animations). `motion` está instalado pero sin usar. Un script solo viaja en el export si la página lo usa y m3nt41 lo aprobó.
 - **Scroll suave**: opción (b), script propio aislado (`animations/scrollsuave.js`), opcional por página y apagado por defecto; solo rueda de mouse en escritorio; sin Lenis salvo que la ronda de afinación no convenza.
 - Valores CSS del panel como texto libre; fuentes solo del sistema (el export no depende de internet); preview en `div` (no iframe); breakpoint móvil del export 768 px y preview móvil de 390 px.
-- En vista móvil todo cambio del panel se guarda solo en `styles.mobile`; vacío = vuelve al valor de escritorio.
+- En vista móvil todo cambio del panel se guarda solo en `styles.mobile`; vacío = borra el override y vuelve al valor de escritorio (para volver a un valor "normal" en móvil hay que elegir el valor explícito, ver abajo).
 - El historial de undo, la selección y la vista no se guardan (la página sí: localStorage `editor-landings:pagina` + `.json`).
 - Anclas: válidas = empiezan con letra y solo letras sin tildes/ñ, números y guiones; el export añade `[id]{scroll-margin-top:90px}` solo si hay una sección pegada arriba con `top`.
-- Navbar sticky nace con `position:sticky; top:0; z-index:50`; "Posición" → "Normal" lo quita en escritorio, pero hoy **NO funciona en móvil** cuando escritorio es sticky (ver bug abierto en "Pendientes y bugs conocidos").
+- Navbar sticky nace con `position:sticky; top:0; z-index:50`; "Posición" → "Normal" lo quita en escritorio. En móvil hay dos opciones: "Igual que escritorio" (sin override) y "Normal" (`position:static` explícito en `styles.mobile`), así se puede tener sticky en escritorio y normal en móvil.
+- **Selects con opción vacía en móvil**: solo los que tienen `vacioMovil` en `fields.js` (Posición→static, Tipo/display→block, Recortar→visible, Fuente→inherit, Ajuste de imagen→fill) muestran "Igual que escritorio" + el valor explícito. Los demás (grosor, alineación, dirección, envolver, justificar, alinear) ya tienen todos sus valores como opciones reales, así que no lo necesitan.
+- Anclas: el export pone `[id]{scroll-margin-top:90px}` solo en las vistas donde de verdad hay un navbar pegado (global si lo está en ambas; dentro de `@media (min-width:769px)` si solo en escritorio; dentro del `@media` móvil si solo en móvil). El offset de escenas (`scrollmotor.js`) solo cuenta navbars cuyo `position` calculado sea `sticky` en ese momento.
 - `prefers-reduced-motion`: apaga animaciones de entrada y transiciones; parallax/ligado/escenas quedan en reposo y visibles; sticky (CSS puro) no se apaga; scroll suave no corre. Sin JS (`<noscript>`) todo se ve quieto.
 - "Al aparecer" por defecto es por scroll; "al cargar" va sin script. Estados interactivos con `!important` (ver decisión abierta).
 - Todo lo marcado `[x]` en `FEATURES.md` es cierto; no se recorta ni cambia esa lista sin preguntar.

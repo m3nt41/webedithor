@@ -139,7 +139,14 @@ export function initInspector(host) {
         if (f.kind === 'nota') {
           html += `<p class="modo">${f.texto}</p>`;
         } else if (f.kind === 'select') {
-          const opts = f.options.map(([val, txt]) => `<option value="${esc(val)}" ${val === String(v) ? 'selected' : ''}>${txt}</option>`).join('');
+          // En móvil, un select cuyo '' es un valor real (vacioMovil) separa dos cosas: '' = "Igual que escritorio"
+          // (sin override) y el valor explícito (ej. static) = "Normal en móvil". El valor mostrado es solo el override móvil.
+          let opciones = f.options, vSel = v;
+          if (viewMode === 'mobile' && f.vacioMovil) {
+            opciones = [['', 'Igual que escritorio'], [f.vacioMovil, f.vacioTexto ?? f.options[0][1]], ...f.options.slice(1)];
+            vSel = nodo.styles.mobile[f.key] ?? '';
+          }
+          const opts = opciones.map(([val, txt]) => `<option value="${esc(val)}" ${val === String(vSel) ? 'selected' : ''}>${txt}</option>`).join('');
           html += `<div class="campo"><label>${f.label}</label><select data-s="${f.key}">${opts}</select></div>`;
         } else if (f.kind === 'color') {
           html += `<div class="campo"><label>${f.label}</label><span class="color"><input type="color" data-pick="${f.key}" value="${aHex(v) ?? '#000000'}"><input data-s="${f.key}" value="${esc(v)}" placeholder="#ffffff"></span></div>`;

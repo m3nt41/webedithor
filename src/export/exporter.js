@@ -72,10 +72,21 @@ export function exportHTML(page) {
   const cuerpo = nodoAHtml(page, 2);
 
   // Si hay una SECCIÓN pegada arriba (navbar, position:sticky + top), las anclas dejan un margen para no quedar tapadas
-  let hayFijo = false;
-  walk(page, (n) => { if (n.type === 'section' && n.styles.base.position === 'sticky' && n.styles.base.top) hayFijo = true; });
-  const reset = '*{box-sizing:border-box}body{margin:0}img{max-width:100%;display:block}' + (hayFijo ? '[id]{scroll-margin-top:90px}' : '');
-  const media = cssMovil.length ? `@media (max-width:${BREAKPOINT_MOVIL}px){\n${cssMovil.join('\n')}\n}` : '';
+  // El margen solo vale en la vista donde de verdad hay un navbar pegado: si en móvil es "Normal" (static), no se pone ahí.
+  let fijoEscr = false, fijoMovil = false;
+  const MARGEN = '[id]{scroll-margin-top:90px}';
+  walk(page, (n) => {
+    if (n.type !== 'section') return;
+    const m = { ...n.styles.base, ...n.styles.mobile };
+    if (n.styles.base.position === 'sticky' && n.styles.base.top) fijoEscr = true;
+    if (m.position === 'sticky' && m.top) fijoMovil = true;
+  });
+  const margenGlobal = fijoEscr && fijoMovil;
+  const reset = '*{box-sizing:border-box}body{margin:0}img{max-width:100%;display:block}' + (margenGlobal ? MARGEN : '');
+  const reglasMedia = [...cssMovil];
+  if (fijoMovil && !fijoEscr) reglasMedia.push(MARGEN); // solo móvil
+  const media = reglasMedia.length ? `@media (max-width:${BREAKPOINT_MOVIL}px){\n${reglasMedia.join('\n')}\n}` : '';
+  const margenEscr = fijoEscr && !fijoMovil ? `@media (min-width:${BREAKPOINT_MOVIL + 1}px){${MARGEN}}\n` : ''; // solo escritorio
 
   // Animaciones: keyframes + reglas por nodo. Si hay de scroll/texto, el script mínimo
   // (IntersectionObserver) y dos salvaguardas: sin JS y con "reducir movimiento" se ve todo quieto.
@@ -103,7 +114,7 @@ export function exportHTML(page) {
 <title>${escHtml(page.content.title || 'Landing')}</title>
 <style>
 ${reset}
-${css.join('\n')}
+${margenEscr}${css.join('\n')}
 ${media}
 ${animaciones}
 </style>

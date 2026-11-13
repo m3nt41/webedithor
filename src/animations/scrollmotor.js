@@ -45,7 +45,8 @@ export function motorScroll(vista, raiz, marca) {
   // Escenas: la capa pegada deja libre arriba el alto de un navbar pegado (los que tengan data-nav), medido aquí.
   const navs = [...raiz.querySelectorAll('[data-nav]')];
   const medirNav = () => {
-    const h = Math.max(0, ...navs.map((n) => n.offsetHeight + (parseFloat(getComputedStyle(n).top) || 0)));
+    // solo cuenta un navbar que de verdad esté pegado ahora (en móvil puede ser "Normal" = static)
+    const h = Math.max(0, ...navs.filter((n) => getComputedStyle(n).position === 'sticky').map((n) => n.offsetHeight + (parseFloat(getComputedStyle(n).top) || 0)));
     els.forEach((el) => { if (esc(el) && el.hasAttribute('data-auto')) el.style.setProperty('--arr', h + 'px'); });
   };
   const tick = () => { if (!raf) raf = requestAnimationFrame(calcular); };

@@ -45,4 +45,17 @@ t('scroll suave: solo smoothScroll === true cuenta; sin él el export no lleva s
   assert.ok(!exportHTML(mk('true')).includes('scrollSuave'));
   assert.ok(exportHTML(mk(true)).includes('scrollSuave('));
 });
+t('posición: static explícito en móvil sale dentro del @media y el margen de anclas respeta cada vista', () => {
+  const mk = (base, mobile) => { const p = n('page', {}); const s = n('section', { styles: base, mobile }); p.children.push(s); return exportHTML(p); };
+  const pegado = { position: 'sticky', top: '0' };
+  const a = mk(pegado, { position: 'static' });
+  const movil = a.slice(a.indexOf('@media (max-width:768px)'));
+  assert.ok(/position:static/.test(movil), 'static va dentro del @media');
+  assert.ok(!a.includes('display:block}[id]{scroll-margin-top:90px}'), 'sin margen global');
+  assert.ok(a.includes('@media (min-width:769px){[id]{scroll-margin-top:90px}}'), 'margen solo en escritorio');
+  const b = mk(pegado, {}); // sticky en ambos: margen global, sin @media extra
+  assert.ok(b.includes('img{max-width:100%;display:block}[id]{scroll-margin-top:90px}'));
+  const c = mk({}, { position: 'sticky', top: '0' }); // solo móvil
+  assert.ok(/@media \(max-width:768px\)[\s\S]*\[id\]\{scroll-margin-top:90px\}/.test(c));
+});
 console.log(`${ok} pruebas ok`);

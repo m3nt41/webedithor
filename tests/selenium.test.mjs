@@ -54,6 +54,20 @@ test('sticky: pegado arriba y abajo dentro de su contenedor', opts, async () => 
   assert.ok((await rect('PEGADO-ARRIBA')).top < 20);
 });
 
+test('posición: sticky en escritorio (1200px) y Normal explícito en móvil (390px)', opts, async () => {
+  await ventana(1200, 700);
+  await abrir('posicion');
+  assert.equal(await css('POS-MOVIL-NORMAL', 'position'), 'sticky');
+  await irA(800);
+  cerca((await rect('POS-MOVIL-NORMAL')).top, 10); // pegado a 10px del borde
+  await ventana(390, 700);
+  await abrir('posicion');
+  assert.equal(await css('POS-MOVIL-NORMAL', 'position'), 'static');
+  await irA(800);
+  assert.ok((await rect('POS-MOVIL-NORMAL')).top < 0, 'en móvil se va con el scroll'); // ya no se queda pegado
+  await ventana(900, 600);
+});
+
 test('parallax: se mueve distinto al scroll (con scroll real)', opts, async () => {
   await abrir('scroll');
   assert.match(await driver.executeScript('return document.documentElement.className'), /sc/); // el motor arrancó

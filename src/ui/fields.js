@@ -2,6 +2,10 @@
 // Para añadir un control: agrega una línea en el grupo que corresponda.
 //   key: propiedad CSS (camelCase) · kind: 'text' | 'color' | 'select'
 //   cuando(estilos): opcional, el campo solo aparece si devuelve true
+//   vacioMovil: solo para selects cuya primera opcion ('') es un valor CSS real distinto del de escritorio.
+//     En vista movil, '' pasa a significar "Igual que escritorio" (borra el override) y aparece una opcion
+//     extra con este valor explicito (ej. 'static') para poder volver al valor normal en movil.
+//     vacioTexto: nombre de esa opcion explicita (por defecto, el texto de la primera opcion).
 
 const TEXTO = ['heading', 'text', 'button'];
 const CONTENEDOR = ['section', 'container'];
@@ -20,7 +24,7 @@ export const GRUPOS = [
     titulo: 'Tipografía',
     tipos: [...TEXTO, 'page'],
     campos: [
-      { key: 'fontFamily', label: 'Fuente', kind: 'select', options: FUENTES },
+      { key: 'fontFamily', label: 'Fuente', kind: 'select', options: FUENTES, vacioMovil: 'inherit' },
       { key: 'fontSize', label: 'Tamaño', kind: 'text', placeholder: '24px' },
       { key: 'fontWeight', label: 'Grosor', kind: 'select', options: [['', '—'], ['400', 'Normal'], ['600', 'Seminegrita'], ['800', 'Negrita'], ['900', 'Extra']] },
       { key: 'lineHeight', label: 'Interlínea', kind: 'text', placeholder: '1.2' },
@@ -58,7 +62,7 @@ export const GRUPOS = [
       // "Pegado" = position:sticky (CSS puro, sin script). Se queda fijo al hacer scroll mientras
       // su contenedor siga a la vista. Escribe una distancia arriba (ej. 0) y/o abajo; vacío = no se pega por ese lado.
       // Para quitarlo: elige "Normal".
-      { key: 'position', label: 'Posición', kind: 'select', options: [['', 'Normal'], ['sticky', 'Pegado (sticky)']] },
+      { key: 'position', label: 'Posición', kind: 'select', options: [['', 'Normal'], ['sticky', 'Pegado (sticky)']], vacioMovil: 'static' },
       { key: 'top', label: 'Pegar arriba (distancia)', kind: 'text', placeholder: '0', cuando: (s) => s.position === 'sticky' },
       { key: 'bottom', label: 'Pegar abajo (distancia)', kind: 'text', placeholder: '0', cuando: (s) => s.position === 'sticky' },
       { key: 'zIndex', label: 'z-index', kind: 'text', placeholder: '50', cuando: (s) => s.position === 'sticky' },
@@ -67,13 +71,13 @@ export const GRUPOS = [
   {
     titulo: 'Imagen',
     tipos: ['image'],
-    campos: [{ key: 'objectFit', label: 'Ajuste', kind: 'select', options: [['', '—'], ['cover', 'Cover'], ['contain', 'Contain']] }],
+    campos: [{ key: 'objectFit', label: 'Ajuste', kind: 'select', options: [['', '—'], ['cover', 'Cover'], ['contain', 'Contain']], vacioMovil: 'fill', vacioTexto: 'Rellenar (fill)' }],
   },
   {
     titulo: 'Layout (hijos)',
     tipos: [...CONTENEDOR, 'page'],
     campos: [
-      { key: 'display', label: 'Tipo', kind: 'select', options: [['', 'Bloque'], ['flex', 'Flex'], ['grid', 'Grid']] },
+      { key: 'display', label: 'Tipo', kind: 'select', options: [['', 'Bloque'], ['flex', 'Flex'], ['grid', 'Grid']], vacioMovil: 'block' },
       { key: 'flexDirection', label: 'Dirección', kind: 'select', options: [['', '—'], ['row', 'Fila'], ['column', 'Columna']], cuando: (s) => s.display === 'flex' },
       { key: 'flexWrap', label: 'Envolver', kind: 'select', options: [['', '—'], ['wrap', 'Sí'], ['nowrap', 'No']], cuando: (s) => s.display === 'flex' },
       { key: 'justifyContent', label: 'Justificar', kind: 'select', options: [['', '—'], ['flex-start', 'Inicio'], ['center', 'Centro'], ['flex-end', 'Fin'], ['space-between', 'Espaciado']], cuando: (s) => s.display === 'flex' },
@@ -82,7 +86,7 @@ export const GRUPOS = [
       { key: 'gap', label: 'Separación', kind: 'text', placeholder: '20px', cuando: (s) => s.display === 'flex' || s.display === 'grid' },
       // Recortar contenido = overflow:hidden. Útil para que una imagen con parallax quede dentro de su marco.
       // Solo contenedores y secciones (en la página recortaría todo el scroll).
-      { key: 'overflow', label: 'Recortar contenido', kind: 'select', options: [['', 'No (normal)'], ['hidden', 'Sí (recortar)']], tipos: CONTENEDOR },
+      { key: 'overflow', label: 'Recortar contenido', kind: 'select', options: [['', 'No (normal)'], ['hidden', 'Sí (recortar)']], tipos: CONTENEDOR, vacioMovil: 'visible' },
       { kind: 'nota', tipos: CONTENEDOR, cuando: (s) => s.overflow === 'hidden',
         texto: '⚠ Un contenedor que recorta rompe el sticky de lo que tenga adentro (el sticky deja de pegarse). Si necesitas sticky dentro, no recortes aquí.' },
     ],

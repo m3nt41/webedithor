@@ -1,7 +1,7 @@
 // ANIMACIÓN "AL PASAR EL MOUSE": CSS puro (transition + :hover), sin JS.
 // Datos en node.animation.hover = { effect, duration, ease, color }
 
-import { EASES, transicion } from './base.js';
+import { EASES, transicion, camposCurva, sinSpring, DEF_CURVA } from './base.js';
 
 const EFECTOS = [
   ['', 'Ninguno'],
@@ -28,11 +28,12 @@ export default {
   estado: true, // se ve siempre en el preview
   titulo: 'Al pasar el mouse',
   principal: 'effect',
-  defaults: { effect: 'lift', duration: 0.25, ease: 'suave', color: '#7c5cff' },
+  defaults: { effect: 'lift', duration: 0.25, ease: 'suave', ...DEF_CURVA, color: '#7c5cff' },
   campos: [
     { key: 'effect', label: 'Efecto', kind: 'select', options: EFECTOS },
-    { key: 'duration', label: 'Duración (s)', kind: 'num', step: 0.05, min: 0.05 },
+    { key: 'duration', label: 'Duración (s)', kind: 'num', step: 0.05, min: 0.05, cuando: sinSpring },
     { key: 'ease', label: 'Curva', kind: 'select', options: EASES },
+    ...camposCurva,
     { key: 'color', label: 'Color', kind: 'color', cuando: (g, efecto) => efecto === 'glow' },
   ],
 

@@ -29,8 +29,8 @@ Motion vs CSS puro: m3nt41 ya decidió la opción (a), CSS puro donde se pueda y
 - [ ] Animación entre estados (y qué dispara el cambio: hover, clic, scroll, carga) → Etapa 6
 
 ## Transiciones
-- [ ] Spring real con rigidez, amortiguación y masa editables (hoy solo hay una curva "rebote" fija) → Etapa 6
-- [ ] Tween con cubic-bezier editable (hoy solo hay 4 curvas predefinidas) → Etapa 6
+- [x] Spring real con rigidez, amortiguación y masa editables (curva calculada en el editor y exportada como `linear()`; la duración sale de la física; no es interrumpible como un spring de Motion) (Etapa 6)
+- [x] Tween con cubic-bezier editable (x1, y1, x2, y2; las y pueden pasarse de 0–1 para rebote) (Etapa 6)
 - [ ] Inercia → Etapa 8 (va con Drag)
 - [x] Delay (Etapa 4)
 - [x] Stagger entre letras/palabras del mismo texto (Etapa 4)

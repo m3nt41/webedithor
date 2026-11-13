@@ -113,6 +113,13 @@ Chrome no reemplaza a Firefox (el navegador de m3nt41). Lo de la lista funciona 
 **No verificado**: no se vio la animación en vivo ni `:active`/`:focus-visible` reales (el panel de pruebas está en segundo plano; solo se comprobó que las reglas existen y parsean). Probar en Firefox con el HTML exportado y Tab. En el preview del editor el foco no se puede ver (los botones no reciben foco de teclado ahí).
 - En la sesión se vio un ruido de 500 de Vite de pruebas anteriores (bloques); el build pasa.
 
+### Bloque 2: tween con cubic-bezier y spring real  ✅
+**Hecho**
+- `base.js`: nuevas curvas "Cubic-bezier (editable)" (`bx1,by1,bx2,by2`; x se limita a 0–1, y libre) y "Spring (rigidez/amortiguación/masa)" (`stiffness,damping,mass`). El spring se resuelve con la fórmula exacta del oscilador amortiguado (sub, crítico y sobreamortiguado), se muestrea (20–120 puntos) y se exporta como `linear()`. Su duración es el tiempo de asentado (≤5 s) y el campo "Duración" se oculta con esa curva. La curva fija "Rebote" sigue (renombrada "Rebote (fijo)") para no romper páginas guardadas.
+- Funciones nuevas: `curva(g)`, `duracion(g, def)`, `resorte(g)`, `camposCurva`, `DEF_CURVA`. Usadas por appear, text, hover, press y focus (todas tienen las curvas nuevas). Páginas viejas sin los parámetros usan los defaults.
+**Verificado**: build OK; `resorte` da curvas que terminan en 1 (con rebote si amortiguación baja, sin rebote si es alta); en el editor los campos aparecen/desaparecen al cambiar la curva y el CSS del preview lleva el `linear()` generado.
+**No verificado**: no se vio la animación en vivo (panel en segundo plano). Probar en Firefox. Limitación: el spring no se interrumpe con continuidad de velocidad (para eso haría falta Motion).
+
 ## Etapa 5 — Elementos y bloques  ✅
 
 ### Hecho

@@ -32,7 +32,9 @@ export const animEntrada = (efecto, d, curva, retraso, a) =>
 
 export const EASES = [
   ['suave', 'Suave'],
-  ['spring', 'Rebote (spring)'],
+  ['spring', 'Rebote (fijo)'],
+  ['springreal', 'Spring (rigidez/amortiguación/masa)'],
+  ['bezier', 'Cubic-bezier (editable)'],
   ['rapido', 'Rápido al inicio'],
   ['lineal', 'Lineal'],
 ];
@@ -48,9 +50,75 @@ const CURVAS = {
 
 export const easeCss = (e) => CURVAS[e] ?? CURVAS.suave;
 
+// ---- Curvas editables ----
+// Valores por defecto de los parámetros (cada grupo los añade a sus defaults).
+export const DEF_CURVA = { bx1: 0.22, by1: 1, bx2: 0.36, by2: 1, stiffness: 170, damping: 26, mass: 1 };
+const num = (v, d) => (Number.isFinite(+v) && v !== '' && v != null ? +v : d);
+const r3 = (n) => Math.round(n * 1000) / 1000;
+
+/**
+ * Spring real (oscilador amortiguado: x'' = -(k/m)x - (c/m)x'). Se calcula la respuesta
+ * exacta de 0 a 1 y se muestrea como `linear()` de CSS (sigue siendo CSS puro).
+ * La duración NO se elige: es el tiempo que tarda el spring en asentarse.
+ * Devuelve { css, dur }. Límite: no es interrumpible como un spring de verdad.
+ */
+export function resorte(g) {
+  const k = Math.max(1, num(g?.stiffness, DEF_CURVA.stiffness));
+  const c = Math.max(0.1, num(g?.damping, DEF_CURVA.damping));
+  const m = Math.max(0.1, num(g?.mass, DEF_CURVA.mass));
+  const w0 = Math.sqrt(k / m);
+  const z = c / (2 * Math.sqrt(k * m));
+  // x(t) = desplazamiento restante (1 → 0); el progreso es 1 - x
+  const x = (t) => {
+    if (z < 1) {
+      const wd = w0 * Math.sqrt(1 - z * z);
+      return Math.exp(-z * w0 * t) * (Math.cos(wd * t) + ((z * w0) / wd) * Math.sin(wd * t));
+    }
+    if (z === 1) return (1 + w0 * t) * Math.exp(-w0 * t);
+    const s = Math.sqrt(z * z - 1);
+    const r1 = -w0 * (z - s), r2 = -w0 * (z + s);
+    return (r2 * Math.exp(r1 * t) - r1 * Math.exp(r2 * t)) / (r2 - r1);
+  };
+  // tiempo de asentado: la última vez que se aleja más de 0.2 % del destino (máx. 5 s)
+  let dur = 0.1;
+  for (let t = 0; t <= 5; t += 1 / 120) if (Math.abs(x(t)) > 0.002) dur = t;
+  dur = Math.min(5, Math.max(0.1, dur + 1 / 120));
+  const n = Math.min(120, Math.max(20, Math.ceil(dur * 60)));
+  const pts = [];
+  for (let i = 0; i <= n; i++) pts.push(i === 0 ? 0 : i === n ? 1 : r3(1 - x((dur * i) / n)));
+  return { css: `linear(${pts.join(',')})`, dur: r3(dur) };
+}
+
+/** Curva CSS de un grupo de animación (lee g.ease y, si hace falta, sus parámetros). */
+export function curva(g) {
+  if (g?.ease === 'bezier') {
+    const cl = (v) => Math.min(1, Math.max(0, v)); // x debe estar entre 0 y 1; y puede pasarse (rebote)
+    const { bx1, by1, bx2, by2 } = DEF_CURVA;
+    return `cubic-bezier(${r3(cl(num(g.bx1, bx1)))},${r3(num(g.by1, by1))},${r3(cl(num(g.bx2, bx2)))},${r3(num(g.by2, by2))})`;
+  }
+  if (g?.ease === 'springreal') return resorte(g).css;
+  return easeCss(g?.ease);
+}
+
+/** Duración en segundos: la del campo, o la calculada si la curva es un spring real. */
+export const duracion = (g, def) => (g?.ease === 'springreal' ? resorte(g).dur : num(g?.duration, def));
+
+/** Campos de la curva editable (bezier / spring real); van justo después del select "Curva". */
+export const camposCurva = [
+  { key: 'bx1', label: 'Bezier x1 (0–1)', kind: 'num', step: 0.05, min: 0, cuando: (g) => g.ease === 'bezier' },
+  { key: 'by1', label: 'Bezier y1', kind: 'num', step: 0.05, min: -3, cuando: (g) => g.ease === 'bezier' },
+  { key: 'bx2', label: 'Bezier x2 (0–1)', kind: 'num', step: 0.05, min: 0, cuando: (g) => g.ease === 'bezier' },
+  { key: 'by2', label: 'Bezier y2', kind: 'num', step: 0.05, min: -3, cuando: (g) => g.ease === 'bezier' },
+  { key: 'stiffness', label: 'Rigidez', kind: 'num', step: 10, min: 1, cuando: (g) => g.ease === 'springreal' },
+  { key: 'damping', label: 'Amortiguación', kind: 'num', step: 1, min: 0.1, cuando: (g) => g.ease === 'springreal' },
+  { key: 'mass', label: 'Masa', kind: 'num', step: 0.1, min: 0.1, cuando: (g) => g.ease === 'springreal' },
+];
+/** Con spring real la duración sale de la física: el campo "Duración" se oculta. */
+export const sinSpring = (g) => g.ease !== 'springreal';
+
 /** `transition` para los estados hover/press/focus (transform, sombra, filtro y contorno). */
 export const transicion = (g) => {
-  const t = `${g.duration ?? 0.2}s ${easeCss(g.ease)}`;
+  const t = `${duracion(g, 0.2)}s ${curva(g)}`;
   return `transition:transform ${t},box-shadow ${t},filter ${t},outline-color ${t},outline-offset ${t}`;
 };
 
@@ -67,9 +135,10 @@ export const KEYFRAMES = `@keyframes a-fade{from{opacity:0}}
 
 /** Campos comunes (duración, retraso, curva, distancia). */
 export const camposComunes = [
-  { key: 'duration', label: 'Duración (s)', kind: 'num', step: 0.1, min: 0.1 },
+  { key: 'duration', label: 'Duración (s)', kind: 'num', step: 0.1, min: 0.1, cuando: sinSpring },
   { key: 'delay', label: 'Retraso (s)', kind: 'num', step: 0.1, min: 0 },
   { key: 'ease', label: 'Curva', kind: 'select', options: EASES },
+  ...camposCurva,
   { key: 'distance', label: 'Distancia (px)', kind: 'num', step: 5, min: 0, cuando: (g, efecto) => ['up', 'down', 'left', 'right'].includes(efecto) },
   { key: 'angle', label: 'Ángulo (°)', kind: 'num', step: 5, min: -720, cuando: (g, efecto) => efecto === 'rotate' },
 ];

@@ -1,7 +1,7 @@
 // ANIMACIÓN "AL PRESIONAR": mientras se mantiene el clic / el toque (:active). CSS puro.
 // Datos en node.animation.press = { effect, duration, ease }
 
-import { EASES, transicion } from './base.js';
+import { EASES, transicion, camposCurva, sinSpring, DEF_CURVA } from './base.js';
 
 const EFECTOS = [
   ['', 'Ninguno'],
@@ -28,8 +28,9 @@ export default {
   defaults: { effect: 'shrink', duration: 0.12, ease: 'suave' },
   campos: [
     { key: 'effect', label: 'Efecto', kind: 'select', options: EFECTOS },
-    { key: 'duration', label: 'Duración (s)', kind: 'num', step: 0.05, min: 0.05 },
+    { key: 'duration', label: 'Duración (s)', kind: 'num', step: 0.05, min: 0.05, cuando: sinSpring },
     { key: 'ease', label: 'Curva', kind: 'select', options: EASES },
+    ...camposCurva,
   ],
 
   // va después de hover en el registro: si se mantiene el clic con el mouse encima, gana press

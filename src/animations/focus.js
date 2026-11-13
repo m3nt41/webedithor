@@ -2,7 +2,7 @@
 // Solo tiene sentido en botones (enlaces), que son lo enfocable de la página.
 // Datos en node.animation.focus = { effect, duration, ease, color }
 
-import { EASES, transicion } from './base.js';
+import { EASES, transicion, camposCurva, sinSpring, DEF_CURVA } from './base.js';
 
 const EFECTOS = [
   ['', 'Ninguno'],
@@ -24,11 +24,12 @@ export default {
   estado: true,
   titulo: 'Al enfocar (teclado)',
   principal: 'effect',
-  defaults: { effect: 'ring', duration: 0.2, ease: 'suave', color: '#7c5cff' },
+  defaults: { effect: 'ring', duration: 0.2, ease: 'suave', ...DEF_CURVA, color: '#7c5cff' },
   campos: [
     { key: 'effect', label: 'Efecto', kind: 'select', options: EFECTOS },
-    { key: 'duration', label: 'Duración (s)', kind: 'num', step: 0.05, min: 0.05 },
+    { key: 'duration', label: 'Duración (s)', kind: 'num', step: 0.05, min: 0.05, cuando: sinSpring },
     { key: 'ease', label: 'Curva', kind: 'select', options: EASES },
+    ...camposCurva,
     { key: 'color', label: 'Color', kind: 'color', cuando: (g, efecto) => efecto === 'ring' || efecto === 'glow' },
   ],
 

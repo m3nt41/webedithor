@@ -57,3 +57,5 @@ Motion vs CSS puro: m3nt41 ya decidió la opción (a), CSS puro donde se pueda y
 - [ ] Cursor personalizado → Etapa 9
 - [x] Scroll suave (interruptor "Scroll suave" en Ajustes de la página, apagado por defecto; script propio aislado en `animations/scrollsuave.js`, solo viaja si está activado; solo rueda de mouse en escritorio con inercia; táctil, teclado, barra, anclas, trackpad y scroll interno quedan nativos; no corre con "reducir movimiento") (Etapa 7)
 - [ ] Page transitions → Etapa 9
+
+> Nota (2026-11-13): se quitó el botón "▶ Reproducir" del editor; las animaciones se siguen viendo, ahora en 👁 Vista previa (con ↻ Reiniciar para verlas de nuevo). La lista de funciones no cambió.

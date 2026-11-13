@@ -2,7 +2,7 @@
 // La sección lleva animation.scene (3 pasos, 3 pantallas de scroll) y cada hijo directo lleva
 // animation.scenestep (en qué paso aparece / se va). Los hijos se apilan en el mismo lugar (grid);
 // por eso la alineación (centro) va en la sección y los hijos no necesitan posición.
-// Solo se ve con ▶ Reproducir y en el exportado; al editar, los hijos salen uno bajo otro.
+// Solo se ve en la Vista previa y en el exportado; al editar, los hijos salen uno bajo otro.
 // Los pasos y la duración se cambian en el inspector ("Escena por scroll" / "Paso de escena").
 
 import { n, titulo, texto, boton, imagen, placeholder } from './util.js';

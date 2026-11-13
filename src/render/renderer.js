@@ -3,7 +3,6 @@
 // Los estilos van inline (más simple de editar en vivo). El exportador
 // (src/export/exporter.js) los convierte a CSS con clases.
 
-import { splitText, usaScroll, esMedida, usaClic, usaScrollLink, usaEscena, varsEscena, esNavPegado } from '../animations/index.js';
 import { anchorValido } from '../core/tree.js';
 
 // Qué etiqueta HTML usa cada tipo de nodo (también la usa el exportador)
@@ -21,26 +20,17 @@ export function effectiveStyles(node, viewMode) {
   return viewMode === 'mobile' ? { ...node.styles.base, ...node.styles.mobile } : node.styles.base;
 }
 
-/** Construye el DOM de un nodo y sus hijos.
- *  opts.play = true → modo "reproducir animaciones": marca data-rv y parte el
- *  texto animado en palabras/letras (si no, el texto queda como texto plano). */
-export function renderNode(node, viewMode = 'desktop', opts = {}) {
+/** Construye el DOM de un nodo y sus hijos (modo edición: sin animaciones de scroll ni texto partido; eso se ve en la Vista previa). */
+export function renderNode(node, viewMode = 'desktop') {
   const el = document.createElement(tagFor(node));
   el.dataset.id = node.id;
   el.dataset.type = node.type;
   // Ancla (content.anchor) -> id="..." solo si es válida (mismo criterio que el exportador)
   if (anchorValido(node.content?.anchor)) el.id = node.content.anchor;
-  if (opts.play && usaScroll(node)) el.dataset.rv = '';
-  if (opts.play && esMedida(node.animation?.text?.mode)) el.dataset.lm = '';
-  if (opts.play && usaScrollLink(node)) el.dataset.sc = ''; // parallax / ligado al scroll: lo mueve el motor de scroll
-  if (opts.play && usaClic(node)) el.dataset.vc = ''; // estado por clic: el preview alterna .on (con ▶ Reproducir)
-
   Object.assign(el.style, effectiveStyles(node, viewMode));
 
   if (TIPOS_TEXTO.includes(node.type)) {
-    const modo = node.animation?.text?.mode;
-    if (opts.play && modo) el.append(...textoPartido(node.content.text, modo));
-    else el.textContent = node.content.text ?? '';
+    el.textContent = node.content.text ?? '';
     if (node.type === 'button') el.setAttribute('href', node.content.href ?? '#');
   }
   if (node.type === 'image') {
@@ -48,43 +38,8 @@ export function renderNode(node, viewMode = 'desktop', opts = {}) {
     el.alt = node.content.alt ?? '';
   }
 
-  node.children.forEach((hijo) => el.appendChild(renderNode(hijo, viewMode, opts)));
+  node.children.forEach((hijo) => el.appendChild(renderNode(hijo, viewMode)));
 
-  // Escena por scroll (solo con ▶ Reproducir, como el resto de animaciones de scroll): la sección va dentro de un
-  // contenedor alto que da el recorrido; la sección es la capa pegada (ver animations/scene.js). El árbol no cambia.
-  if (opts.play && usaEscena(node)) {
-    const v = varsEscena(node);
-    const w = document.createElement('div');
-    w.dataset.ew = '';
-    if (v.auto) w.dataset.auto = '';
-    w.style.cssText = v.style;
-    el.dataset.es = '';
-    w.appendChild(el);
-    return w;
-  }
-  if (opts.play && esNavPegado(node)) el.dataset.nav = '';
   return el;
 }
 
-/** Texto -> lista de nodos DOM con <span class="w" style="--i:N"> por palabra/letra. */
-function textoPartido(texto, modo) {
-  const span = (clase, s, i) => {
-    const e = document.createElement('span');
-    e.className = clase;
-    if (i != null) e.style.setProperty('--i', i);
-    if (s != null) e.textContent = s;
-    return e;
-  };
-  return splitText(texto, modo).map((p) => {
-    if (p.t === 'br') return document.createElement('br');
-    if (p.t === 'sp') return document.createTextNode(' ');
-    if (p.t === 'ln') {
-      const l = span(p.i < 0 ? 'ln' : 'w ln', p.s || '​', p.i < 0 ? null : p.i);
-      return l;
-    }
-    if (!p.chars) return span('w', p.units[0].s, p.units[0].i);
-    const ww = span('ww');
-    p.units.forEach((u) => ww.appendChild(span('w', u.s, u.i)));
-    return ww;
-  });
-}

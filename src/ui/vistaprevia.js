@@ -1,6 +1,7 @@
 // VISTA PREVIA: capa a pantalla completa con un iframe que muestra EXACTAMENTE el HTML exportado.
 // - Se regenera cada vez que se abre (exportHTML(getState().page) -> srcdoc).
-// - No toca el estado del editor ni el modo ▶ Reproducir.
+// - No toca el estado del editor.
+// - ↻ Reiniciar: regenera el srcdoc (recarga el iframe desde el inicio, scroll arriba) para ver de nuevo las animaciones; conserva Escritorio/Móvil.
 // - Móvil: el iframe mide 390px de ancho (así los @media y 100svh responden de verdad).
 // - Esc cierra, también cuando el foco está dentro del iframe (se escucha su teclado).
 
@@ -22,6 +23,7 @@ export function abrirVistaPrevia() {
         <button type="button" id="vp-desktop" class="activo">🖥 Escritorio</button>
         <button type="button" id="vp-mobile">📱 Móvil</button>
       </span>
+      <button type="button" id="vp-reiniciar" title="Volver a cargar la página desde el inicio">↻ Reiniciar</button>
       <span class="espacio"></span>
       <span class="vp-ayuda">Esc para salir</span>
       <button type="button" id="vp-cerrar" class="primario">Cerrar</button>
@@ -49,7 +51,9 @@ export function abrirVistaPrevia() {
       });
     } catch { /* sin acceso: nada */ }
   });
-  frame.srcdoc = exportHTML(getState().page);
+  // Regenerar el srcdoc recarga el iframe entero (scroll en 0, animaciones de entrada y de scroll desde cero).
+  const cargar = () => { frame.srcdoc = exportHTML(getState().page); };
+  cargar();
 
   const modo = (movil) => {
     capa.classList.toggle('movil', movil);
@@ -58,6 +62,7 @@ export function abrirVistaPrevia() {
   };
   capa.querySelector('#vp-desktop').addEventListener('click', () => modo(false));
   capa.querySelector('#vp-mobile').addEventListener('click', () => modo(true));
+  capa.querySelector('#vp-reiniciar').addEventListener('click', cargar); // el modo (clase .movil de la capa) no se toca
   capa.querySelector('#vp-cerrar').addEventListener('click', cerrarVistaPrevia);
   capa.querySelector('#vp-cerrar').focus();
 }
@@ -67,7 +72,7 @@ export function cerrarVistaPrevia() {
   capa = null;
 }
 
-// Esc en el documento del editor (captura: gana al Esc de "salir de reproducir", que se queda como estaba)
+// Esc en el documento del editor (captura: 
 // y mientras la capa está abierta se bloquean los atajos del editor (Ctrl+Z/Y) para no deshacer por debajo.
 document.addEventListener('keydown', (e) => {
   if (!capa) return;

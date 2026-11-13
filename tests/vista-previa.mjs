@@ -78,14 +78,24 @@ try {
   await abrir(); await d.findElement(By.css('#vp-cerrar')).click(); await esperar(200);
   assert.equal(await abierta(), false, 'Cerrar no cerró');
 
-  // 5. El editor queda tal cual: página sin cambios, sin modo reproducir, sin errores
+  // 5. ↻ Reiniciar: recarga el iframe desde el inicio (scroll 0), conserva el modo Móvil, y el editor queda tal cual
   assert.equal(await d.executeScript(`return localStorage.getItem('editor-landings:pagina')`), guardadoAntes, 'la página del editor cambió');
-  assert.equal(await d.executeScript(`return document.querySelector('#btn-play').textContent.includes('Reproducir')&&!document.querySelector('#btn-play').classList.contains('activo')`), true, 'el modo ▶ cambió');
-  // regenera cada vez: un cambio en el editor se ve al reabrir
-  await d.findElement(By.css('#btn-play')).click(); await esperar(300); // ▶ activo
-  await abrir(); await d.findElement(By.css('#vp-cerrar')).click(); await esperar(200);
-  assert.equal(await d.executeScript(`return document.querySelector('#btn-play').classList.contains('activo')`), true, 'abrir/cerrar la vista previa sacó el modo ▶');
+  assert.equal(await d.executeScript(`return !document.querySelector('#btn-play')&&!document.querySelector('#etiqueta-play')`), true, 'el botón ▶ Reproducir no debería existir');
+  await abrir();
+  await enFrame(async () => { await d.executeScript('window.__marca=1;scrollTo(0,600)'); await esperar(300); assert.ok(await d.executeScript('return scrollY') > 100, 'sin scroll antes de reiniciar'); });
+  await d.findElement(By.css('#vp-reiniciar')).click(); await esperar(900);
+  await enFrame(async () => {
+    assert.equal(await d.executeScript('return window.__marca||0'), 0, '↻ no recargó el iframe');
+    assert.equal(await d.executeScript('return scrollY'), 0, '↻ no volvió a scroll 0');
+  });
+  assert.ok(await abierta(), '↻ cerró la capa');
+  // en Móvil: reinicia y sigue en 390px
+  await d.findElement(By.css('#vp-mobile')).click(); await esperar(300);
+  await d.findElement(By.css('#vp-reiniciar')).click(); await esperar(900);
+  assert.equal(await enFrame(() => d.executeScript('return innerWidth')), 390, '↻ perdió el modo Móvil');
+  assert.equal(await d.executeScript(`return document.querySelector('#vp-mobile').classList.contains('activo')`), true, '↻ cambió el botón de modo');
+  await d.findElement(By.css('#vp-cerrar')).click(); await esperar(200);
   const errs = await d.executeScript('return __err');
   assert.deepEqual(errs, [], 'errores: ' + errs.join(' | '));
-  console.log('OK vista previa: export idéntico en srcdoc, scroll y ancla # dentro del iframe, móvil 390px, Esc (editor e iframe) y Cerrar, editor y ▶ intactos');
+  console.log('OK vista previa: export idéntico en srcdoc, scroll y ancla # dentro del iframe, móvil 390px, Esc (editor e iframe) y Cerrar, ↻ Reiniciar (recarga, scroll 0, conserva Móvil) y editor intacto');
 } finally { await d.quit(); }

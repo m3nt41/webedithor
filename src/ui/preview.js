@@ -5,7 +5,7 @@
 
 import { getState, subscribe, select, setContent, refresh } from '../core/store.js';
 import { renderNode, TIPOS_TEXTO } from '../render/renderer.js';
-import { cssPagina, medirLineas, motorScroll } from '../animations/index.js';
+import { cssPagina, medirLineas } from '../animations/index.js';
 
 export function initPreview(host) {
   // 'stage' es la "pantalla"; en la Etapa 3 cambiará de ancho (móvil/escritorio)
@@ -13,10 +13,7 @@ export function initPreview(host) {
   stage.className = 'stage';
   host.appendChild(stage);
 
-  // Las animaciones de scroll/texto solo se ven al "reproducir" (SOLO con el botón ▶; ningún cambio del panel lo activa;
-  // cualquier otro redibujado vuelve al modo edición, ver `reproduciendo` en el store).
-  // La página queda quieta para poder editar. El hover siempre funciona.
-  let reproducir = false;
+  // El editor es solo de edición: la página queda quieta (escenas apiladas). Las animaciones se ven en 👁 Vista previa.
   const estilo = document.createElement('style');
 
   // Alto de pantalla del preview: las escenas miden "100svh"; aquí 100svh sería el de la ventana del navegador,
@@ -25,28 +22,13 @@ export function initPreview(host) {
   new ResizeObserver(ajustarAlto).observe(host);
   ajustarAlto();
 
-  let pararMotor = null; // parallax / ligado al scroll: solo corre tras ▶ Reproducir; se apaga al redibujar
-
   function dibujar() {
-    const { page, viewMode, selectedId } = getState();
-    const play = reproducir;
-    reproducir = false;
-    pararMotor?.();
-    pararMotor = null;
+    const { page, viewMode } = getState();
     stage.classList.toggle('movil', viewMode === 'mobile'); // ancho 390px en vista móvil
-    estilo.textContent = cssPagina(page, { scroll: play, forzar: getState().verEstado });
-    stage.replaceChildren(estilo, renderNode(page, viewMode, { play }));
+    estilo.textContent = cssPagina(page, { forzar: getState().verEstado });
+    stage.replaceChildren(estilo, renderNode(page, viewMode));
     marcarSeleccion();
     medirLineas(stage);
-    if (play) {
-      pararMotor = motorScroll(host, stage, stage); // el scroll del preview es el de `host`
-      // asegura que lo animado se vea y, en dos cuadros (para que el navegador
-      // pinte antes el estado inicial), dispara todas las animaciones
-      if (selectedId) stage.querySelector(`[data-id="${selectedId}"]`)?.scrollIntoView({ block: 'nearest' });
-      requestAnimationFrame(() => requestAnimationFrame(() => {
-        stage.querySelectorAll('[data-rv]').forEach((el) => el.classList.add('in'));
-      }));
-    }
   }
 
   function marcarSeleccion() {
@@ -96,7 +78,6 @@ export function initPreview(host) {
   stage.addEventListener('click', (e) => {
     e.preventDefault(); // evita seguir enlaces de los botones
     if (e.target.isContentEditable) return; // clic dentro del texto que se edita
-    e.target.closest('[data-vc]')?.classList.toggle('on'); // estados por clic (solo existen tras ▶ Reproducir)
     const el = e.target.closest('[data-id]');
     const id = el?.dataset.id;
     // Clic en la raíz o en el vacío = deseleccionar
@@ -127,7 +108,6 @@ export function initPreview(host) {
 
   subscribe((_, cambio) => {
     if (cambio === 'selection') marcarSeleccion();
-    else if (cambio === 'play') { reproducir = true; dibujar(); }
     else if (cambio === 'page' || cambio === 'view' || cambio === 'verestado') dibujar();
     // 'text': no hacer nada
   });

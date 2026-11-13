@@ -27,7 +27,6 @@ const state = {
   selectedId: null, // id del nodo seleccionado
   viewMode: 'desktop', // 'desktop' | 'mobile'
   verEstado: null, // { id (nodo), estado (id del variant) }: "Ver este estado" en el preview; no se guarda
-  reproduciendo: false, // el preview está en modo reproducir (solo con el botón ▶; cualquier redibujado de edición lo apaga); no se guarda
 };
 
 const pasado = []; // versiones anteriores de la página (undo)
@@ -37,16 +36,13 @@ let ultimoCambio = 0;
 
 const listeners = new Set();
 
-/** Suscribe un callback(state, cambio). cambio = 'page' | 'text' | 'selection' | 'view' | 'play' | 'verestado'. */
+/** Suscribe un callback(state, cambio). cambio = 'page' | 'text' | 'selection' | 'view' | 'verestado'. */
 export function subscribe(fn) {
   listeners.add(fn);
   return () => listeners.delete(fn);
 }
 
 function emit(cambio) {
-  // Modo reproducir: lo enciende solo 'play' (botón ▶). Todo lo que redibuja el preview en modo edición lo apaga.
-  if (cambio === 'play') state.reproduciendo = true;
-  else if (cambio === 'page' || cambio === 'view' || cambio === 'verestado') state.reproduciendo = false;
   listeners.forEach((fn) => fn(state, cambio));
 }
 
@@ -248,18 +244,6 @@ export function setVariantProp(id, estadoId, prop, value) {
     if (value === '' || value == null) delete s.props[prop];
     else s.props[prop] = value;
   }, `vp:${id}:${estadoId}:${prop}`);
-}
-
-/** Botón ▶: entra al modo reproducir del preview; pulsarlo de nuevo (o salirReproducir) vuelve al modo edición.
- *  Es la ÚNICA forma de entrar: ningún cambio del panel de animaciones lo activa. */
-export function play() {
-  if (state.reproduciendo) salirReproducir();
-  else emit('play');
-}
-
-/** Vuelve el preview al modo edición (escenas apiladas, sin motor de scroll). */
-export function salirReproducir() {
-  if (state.reproduciendo) emit('page');
 }
 
 /** Cambia el nombre del nodo (solo se ve en el editor). */

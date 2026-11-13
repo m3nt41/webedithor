@@ -27,6 +27,7 @@ const state = {
   selectedId: null, // id del nodo seleccionado
   viewMode: 'desktop', // 'desktop' | 'mobile'
   verEstado: null, // { id (nodo), estado (id del variant) }: "Ver este estado" en el preview; no se guarda
+  reproduciendo: false, // el preview está en modo reproducir (solo con el botón ▶; cualquier redibujado de edición lo apaga); no se guarda
 };
 
 const pasado = []; // versiones anteriores de la página (undo)
@@ -36,13 +37,16 @@ let ultimoCambio = 0;
 
 const listeners = new Set();
 
-/** Suscribe un callback(state, cambio). cambio = 'page' | 'text' | 'selection' | 'view' | 'play'. */
+/** Suscribe un callback(state, cambio). cambio = 'page' | 'text' | 'selection' | 'view' | 'play' | 'verestado'. */
 export function subscribe(fn) {
   listeners.add(fn);
   return () => listeners.delete(fn);
 }
 
 function emit(cambio) {
+  // Modo reproducir: lo enciende solo 'play' (botón ▶). Todo lo que redibuja el preview en modo edición lo apaga.
+  if (cambio === 'play') state.reproduciendo = true;
+  else if (cambio === 'page' || cambio === 'view' || cambio === 'verestado') state.reproduciendo = false;
   listeners.forEach((fn) => fn(state, cambio));
 }
 
@@ -171,7 +175,7 @@ export function setContent(id, key, value, tipo = 'page') {
 
 /** Cambia un dato de una animación (grupo = 'appear' | 'hover' | 'text').
  *  Poner el campo principal en '' apaga el grupo; ponerlo con valor lo crea con
- *  los valores por defecto. Emite 'play': el preview reproduce las animaciones. */
+ *  los valores por defecto. Emite 'page' (NO 'play'): el preview sigue en modo edición hasta pulsar ▶. */
 export function setAnimation(id, grupo, key, value) {
   mutate((page) => {
     const n = findNode(page, id);
@@ -185,7 +189,7 @@ export function setAnimation(id, grupo, key, value) {
       else g[key] = value;
     }
     if (!Object.keys(anim).length) n.animation = null;
-  }, 'play', `a:${id}:${grupo}:${key}`);
+  }, 'page', `a:${id}:${grupo}:${key}`);
 }
 
 // ---- Variants (estados con nombre) ----
@@ -201,7 +205,7 @@ function editarVariants(id, fn, clave = null) {
     fn(lista);
     if (!lista.length) delete anim.variants;
     if (!Object.keys(anim).length) n.animation = null;
-  }, 'play', clave);
+  }, 'page', clave);
 }
 
 /** Añade un estado nuevo (hover, con escala 1.05 de ejemplo) y devuelve su id. */
@@ -246,9 +250,16 @@ export function setVariantProp(id, estadoId, prop, value) {
   }, `vp:${id}:${estadoId}:${prop}`);
 }
 
-/** Pide al preview que reproduzca las animaciones de la página. */
+/** Botón ▶: entra al modo reproducir del preview; pulsarlo de nuevo (o salirReproducir) vuelve al modo edición.
+ *  Es la ÚNICA forma de entrar: ningún cambio del panel de animaciones lo activa. */
 export function play() {
-  emit('play');
+  if (state.reproduciendo) salirReproducir();
+  else emit('play');
+}
+
+/** Vuelve el preview al modo edición (escenas apiladas, sin motor de scroll). */
+export function salirReproducir() {
+  if (state.reproduciendo) emit('page');
 }
 
 /** Cambia el nombre del nodo (solo se ve en el editor). */

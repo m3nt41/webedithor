@@ -13,9 +13,9 @@ export function initPreview(host) {
   stage.className = 'stage';
   host.appendChild(stage);
 
-  // Las animaciones de scroll/texto solo se ven al "reproducir" (botón ▶ o al
-  // cambiar un ajuste de animación); en el resto de redibujos la página queda
-  // quieta para poder editar. El hover siempre funciona.
+  // Las animaciones de scroll/texto solo se ven al "reproducir" (SOLO con el botón ▶; ningún cambio del panel lo activa;
+  // cualquier otro redibujado vuelve al modo edición, ver `reproduciendo` en el store).
+  // La página queda quieta para poder editar. El hover siempre funciona.
   let reproducir = false;
   const estilo = document.createElement('style');
 

@@ -1,7 +1,7 @@
 // BARRA SUPERIOR: deshacer/rehacer, escritorio/móvil, nuevo/abrir/guardar JSON, exportar HTML.
 // También registra los atajos Ctrl+Z / Ctrl+Y (o Ctrl+Shift+Z).
 
-import { getState, subscribe, undo, redo, puedeDeshacer, puedeRehacer, setViewMode, replacePage, newPage, play } from '../core/store.js';
+import { getState, subscribe, undo, redo, puedeDeshacer, puedeRehacer, setViewMode, replacePage, newPage, play, salirReproducir } from '../core/store.js';
 import { exportHTML, descargar } from '../export/exporter.js';
 
 export function initToolbar(host) {
@@ -13,7 +13,8 @@ export function initToolbar(host) {
       <button id="vista-desktop" title="Vista escritorio">🖥 Escritorio</button>
       <button id="vista-mobile" title="Vista móvil (los cambios se guardan solo para móvil)">📱 Móvil</button>
     </span>
-    <button id="btn-play" title="Reproducir las animaciones de scroll y de texto en el preview">▶ Reproducir</button>
+    <button id="btn-play" title="Reproducir las animaciones de scroll y de texto en el preview (pulsa otra vez o Esc para volver a editar)">▶ Reproducir</button>
+    <span id="etiqueta-play" class="etiqueta-play" hidden>● Reproduciendo</span>
     <span class="espacio"></span>
     <button id="btn-nuevo">Nuevo</button>
     <button id="btn-abrir">Abrir JSON</button>
@@ -57,6 +58,14 @@ export function initToolbar(host) {
     descargar('landing.html', exportHTML(getState().page));
   });
 
+  // Esc sale del modo reproducir (si no se está escribiendo en un campo)
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape' || !getState().reproduciendo) return;
+    const t = e.target;
+    if (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) return;
+    salirReproducir();
+  });
+
   // Atajos de teclado. Dentro de un campo de texto se deja el undo nativo del navegador.
   document.addEventListener('keydown', (e) => {
     if (!(e.ctrlKey || e.metaKey)) return;
@@ -74,6 +83,13 @@ export function initToolbar(host) {
     const movil = getState().viewMode === 'mobile';
     $('#vista-desktop').classList.toggle('activo', !movil);
     $('#vista-mobile').classList.toggle('activo', movil);
+    // Modo reproducir: botón resaltado + etiqueta + marco violeta en el preview (ver app.css)
+    const rep = getState().reproduciendo;
+    const bp = $('#btn-play');
+    bp.classList.toggle('activo', rep);
+    bp.textContent = rep ? '■ Salir de reproducir' : '▶ Reproducir';
+    $('#etiqueta-play').hidden = !rep;
+    document.querySelector('#preview')?.classList.toggle('reproduciendo', rep);
   }
   subscribe(actualizar);
   actualizar();

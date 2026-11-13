@@ -103,7 +103,7 @@ Los otros 5 tests siguieron en verde en las 3 rondas (no hay falsos positivos cr
 - **Inspector**: secciones "Al aparecer", "Al pasar el mouse" y "Animación de texto" (esta solo en heading/text/button). El primer select enciende/apaga el grupo; al encenderlo salen duración, retraso, curva y distancia con valores por defecto.
 - **Preview**: el hover funciona siempre. Las animaciones de scroll/texto solo se ven con **▶ Reproducir** (barra superior) o al cambiar un ajuste de animación; en el resto el preview queda quieto para poder editar. Doble clic en un texto animado lo edita como texto plano.
 - **Exportador**: todo en CSS puro (keyframes + `transition`/`:hover`). Solo si hay animaciones de scroll/texto añade un `<script>` de 2 líneas (IntersectionObserver que pone `.in`). Salvaguardas: `prefers-reduced-motion` y `<noscript>` dejan todo visible y quieto.
-- Store: `setAnimation(id, grupo, key, value)` (agrupa undo por campo) y `play()`; nuevo tipo de cambio `'play'`.
+- Store: `setAnimation(id, grupo, key, value)` (agrupa undo por campo) y `play()`; nuevo tipo de cambio `'play'`. (Actualizado después: `setAnimation` y los estados ya NO emiten `'play'`; solo el botón ▶ reproduce, ver `PROGRESS.md`.)
 - Fix: los selects del inspector que muestran/ocultan campos pedían reconstruir el panel un cambio tarde; ahora se fuerza en el evento `input`.
 
 ### Verificado

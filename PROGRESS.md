@@ -4,8 +4,9 @@ Estado al día. El detalle de las etapas 1 a 7 (qué se hizo, cómo se verificó
 
 ## Estado actual
 - **Hechas las etapas 1 a 7**: estructura/árbol/preview, inspector y export, secciones/móvil/JSON/undo, animaciones base, elementos y bloques, navbar y anclas (5.5), transiciones y estados (6), y scroll (7: sticky, parallax, scroll-linked, escenas por scroll y scroll suave opcional).
-- **Tests**: `npm run test:selenium` (18 pruebas en tu Firefox real, perfil temporal, sobre el HTML exportado; ruta cambiable con `FIREFOX_BIN`) y `node tests/ronda7.mjs` (validación de datos y export, en Node). `npm run build` compila. Playwright (`npm run test:firefox`) está configurado pero su Firefox propio no arranca en este PC; aquí sirve Selenium.
+- **Tests**: `npm run test:selenium` (19 pruebas en tu Firefox real, perfil temporal, sobre el HTML exportado; ruta cambiable con `FIREFOX_BIN`) y `node tests/ronda7.mjs` (validación de datos y export, en Node). `npm run build` compila. Playwright (`npm run test:firefox`) está configurado pero su Firefox propio no arranca en este PC; aquí sirve Selenium.
 - Últimos cambios: ver `git log`.
+- **Scroll suave, cola (arreglado)**. Medido con `node tests/medir-suave.mjs firefox|chrome` (scrollY por frame tras una rueda de 300px): en Firefox headless scrollY NO se redondea (valores como 298.98, sin saltos de 1px); la cola era un arrastre de ~25 frames de <0.5px que termina con un salto final. En Chrome el primer frame salía con dt = -1.33 ms (t del rAF anterior al `performance.now()` del wheel); en Firefox +0.08. Cambios en `scrollsuave.js`: destino redondeado, avance mínimo de 1px por frame, para y salta al destino si faltan <1.5px, dt >= 0 (el primer frame usa 16.7). Ahora la cola avanza ~1px/frame y termina en un entero (test nuevo de la cola en Selenium). No pude reproducir un escalonado visible en headless, así que el fix es por la hipótesis (redondeo en el Firefox real) y falta confirmarlo a ojo. Los valores `SUAVE` no se tocaron (no hizo falta la ronda de ajuste).
 
 ## Próxima etapa
 **Etapa 8 — Movimiento avanzado**: layout animations, drag con límites y rebote, inercia, 3D transforms (perspectiva, rotación X/Y). Después, **Etapa 9 — Extras**: marquee/ticker, cursor personalizado, page transitions. Asignación en `FEATURES.md`. Una etapa a la vez; al terminar: revisar bugs, actualizar este archivo, commit y detenerse.
@@ -15,7 +16,7 @@ Estado al día. El detalle de las etapas 1 a 7 (qué se hizo, cómo se verificó
 **Decisiones abiertas**
 - `!important` en los estados (variants): aplicar o no la alternativa (a) (estados cargar/entrar como transición con clase en vez de `@keyframes … forwards`; arreglaría el "entra de golpe" y quitaría el `!important`, pero cambia el export). Análisis en `docs/historial.md`, Etapa 6.
 **Bugs abiertos**
-- **Scroll suave en Firefox**: al terminar el scroll se ve escalonado, incluso con general.smoothScroll=false. Hipótesis sin medir: el `scrollTo` se redondea a píxel entero en la cola subpíxel, y posible dt negativo en el primer frame (`t - t0`). Sin scroll suave va bien.
+- Ninguno conocido. (Scroll suave escalonado en Firefox: arreglado, ver abajo; falta confirmarlo a ojo con una rueda real.)
 **Limitaciones conocidas (no son bugs de la lista)**
 - Imágenes subidas son data URL: pueden inflar el `.html` y el JSON.
 - Arrastrar capas solo se probó con eventos sintéticos en Chromium; no se puede arrastrar desde el preview ni desde la paleta; el árbol de capas no tiene "plegar todo".

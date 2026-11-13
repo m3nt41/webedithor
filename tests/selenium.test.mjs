@@ -282,3 +282,21 @@ test('scroll suave: con "reducir movimiento" no intercepta (Firefox con ui.prefe
     assert.equal((await d2.executeScript('return __w')).some(Boolean), false);
   } finally { await d2.quit(); }
 });
+
+test('scroll suave: la cola no se repite ni da saltos raros (scrollY por frame)', opts, async () => {
+  await abrir('suave'); await irA(0);
+  await driver.executeScript(`window.__y=[];window.__r=true;const l=()=>{__y.push(scrollY);if(window.__r)requestAnimationFrame(l)};requestAnimationFrame(l)`);
+  await rueda(300); await esperar(2500);
+  const ys = await driver.executeScript('window.__r=false;return window.__y');
+  const ini = ys.findIndex((v) => v > 0), fin = ys.length - 1;
+  const mov = ys.slice(ini, fin + 1);
+  // el movimiento termina en un valor entero y no retrocede nunca
+  const ult = mov.findIndex((v) => v === mov.at(-1));
+  const tramo = mov.slice(0, ult + 1);
+  console.log('   cola:', tramo.slice(-12).join(','), '· final', mov.at(-1));
+  for (let i = 1; i < tramo.length; i++) assert.ok(tramo[i] >= tramo[i - 1], `retrocede en el frame ${i}`);
+  assert.ok(Number.isInteger(mov.at(-1)));
+  // en la cola (últimos 15 frames del movimiento) cada frame avanza entre 1 y 6 px: ni se repite ni salta de golpe
+  const cola = tramo.slice(-15);
+  for (let i = 1; i < cola.length; i++) { const dd = cola[i] - cola[i - 1]; assert.ok(dd >= 0.9 && dd <= 8, `paso raro en la cola: ${dd}px`); }
+});

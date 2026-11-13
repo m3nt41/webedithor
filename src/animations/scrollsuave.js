@@ -33,17 +33,19 @@ export function scrollSuave(cfg) {
   const parar = () => { obj = null; cancelAnimationFrame(raf); raf = 0; };
   const ir = (y) => scrollTo({ top: y, left: scrollX, behavior: 'instant' });
 
-  const paso = (t) => {
+  const cuadro = (t) => {
     raf = 0;
     if (obj === null) return;
     if (Math.abs(scrollY - ultimo) > 2) return parar(); // alguien más movió el scroll (teclado, barra, ancla): nos apartamos
-    obj = Math.max(0, Math.min(obj, max()));
+    obj = Math.round(Math.max(0, Math.min(obj, max()))); // destino en píxel entero
     const d = obj - scrollY;
-    if (Math.abs(d) < 1) { ir(obj); return parar(); }
-    const dt = Math.min(t - t0, 50); t0 = t;
-    ir(scrollY + d * (1 - Math.pow(1 - cfg.inercia, dt / 16.7))); // independiente de los fps
+    if (Math.abs(d) < 1.5) { ir(obj); return parar(); } // cola subpíxel: saltamos al destino y paramos
+    const dt = t0 ? Math.max(0, Math.min(t - t0, 50)) : 16.7; t0 = t; // nunca negativo (el primer frame no tiene t0)
+    let paso = d * (1 - Math.pow(1 - cfg.inercia, dt / 16.7)); // independiente de los fps
+    if (Math.abs(paso) < 1) paso = Math.sign(d);               // avance mínimo: 1px entero por frame (el scroll puede redondear)
+    ir(scrollY + (Math.abs(paso) > Math.abs(d) ? d : paso));
     ultimo = scrollY;
-    raf = requestAnimationFrame(paso);
+    raf = requestAnimationFrame(cuadro);
   };
 
   // ¿hay un elemento con scroll propio bajo el cursor que aún pueda moverse en esa dirección?
@@ -70,7 +72,7 @@ export function scrollSuave(cfg) {
     if (sig === base && obj === null) return;                             // ya está en el tope: que el navegador decida
     e.preventDefault();
     obj = sig;
-    if (!raf) { ultimo = scrollY; t0 = performance.now(); raf = requestAnimationFrame(paso); }
+    if (!raf) { ultimo = scrollY; t0 = 0; raf = requestAnimationFrame(cuadro); }
   }, { passive: false });
 
   // Teclado, barra de scroll (mousedown), toque y enlaces de ancla: se cancela el deslizamiento y manda el navegador.

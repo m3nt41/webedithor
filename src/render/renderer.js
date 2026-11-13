@@ -4,6 +4,7 @@
 // (src/export/exporter.js) los convierte a CSS con clases.
 
 import { splitText, usaScroll } from '../animations/index.js';
+import { anchorValido } from '../core/tree.js';
 
 // Qué etiqueta HTML usa cada tipo de nodo (también la usa el exportador)
 const TAGS = { page: 'div', section: 'section', container: 'div', heading: 'h2', text: 'p', button: 'a', image: 'img' };
@@ -27,6 +28,8 @@ export function renderNode(node, viewMode = 'desktop', opts = {}) {
   const el = document.createElement(tagFor(node));
   el.dataset.id = node.id;
   el.dataset.type = node.type;
+  // Ancla (content.anchor) -> id="..." solo si es válida (mismo criterio que el exportador)
+  if (anchorValido(node.content?.anchor)) el.id = node.content.anchor;
   if (opts.play && usaScroll(node)) el.dataset.rv = '';
 
   Object.assign(el.style, effectiveStyles(node, viewMode));

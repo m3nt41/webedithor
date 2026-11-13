@@ -1,6 +1,6 @@
 # PROGRESS
 
-Etapas hechas: 1, 2, 3, 4 y 5. Próxima: 6 (transiciones y estados). El reparto completo está en `CLAUDE.md` y la lista de funciones en `FEATURES.md`.
+Etapas hechas: 1, 2, 3, 4, 5 y 5.5 (navbar y anclas). Próxima: 6 (transiciones y estados). El reparto completo está en `CLAUDE.md` y la lista de funciones en `FEATURES.md`.
 
 ## Etapa 1 — Estructura, árbol JSON, preview y selección  ✅
 - Proyecto Vite + vanilla JS, `motion` instalado (sin usar todavía).
@@ -72,6 +72,24 @@ Etapas hechas: 1, 2, 3, 4 y 5. Próxima: 6 (transiciones y estados). El reparto 
 
 ### Decisiones
 - Motion (npm) no se usó a propósito: todo lo hecho salió en CSS. Ver "Decisión tomada (m3nt41)" al final de este archivo.
+
+## Etapa 5.5 — Navbar y anclas  ✅
+
+### Hecho
+- **Anclas**: campo "Ancla (id)" en el inspector para secciones y contenedores (`content.anchor`). Renderer y exportador emiten `id="..."`. Válida = empieza con letra y solo letras (sin ñ/tildes), números y guiones (`anchorValido` en `core/tree.js`). Si es inválida el aviso sale en rojo y NO se guarda; si se repite en la página sale aviso (`contarAncla`) pero se guarda.
+- **Bloque Navbar** (`blocks/navbar.js`, 4 variantes: Claro, Oscuro, Centrado, Con botón): logo de texto + enlaces + botón. Flex con `flex-wrap`; en móvil los enlaces pasan a una segunda fila (`order:3; width:100%`). Sin hamburguesa ni JS. Nace con `position:sticky; top:0; z-index:50`.
+- **Quitar el navbar pegado**: seleccionar el navbar → inspector → grupo "Posición" → "Normal". (Nuevo grupo en `fields.js`, solo para secciones; con "Pegado arriba" salen también "Distancia arriba" y "z-index".)
+- **Insertar navbar** va siempre arriba de todo (marca `alInicio` del bloque → `addElement`).
+- **Anclas por defecto** en bloques: Hero `inicio`, Servicios `servicios`, Precios `precios`, Contacto `contacto` (campo `ancla` en el bloque; `createBlock` lo aplica). Los botones `#contacto`/`#servicios` ya apuntan a algo; los enlaces del footer (Inicio/Servicios/Precios/Contacto) también.
+- El exportador añade `[id]{scroll-margin-top:90px}` solo si hay algún nodo `position:sticky`, para que el navbar no tape la sección a la que se salta.
+
+### Verificado
+- Build OK. En el editor (UI real): insertar Navbar con otras 5 secciones lo deja en la posición 0; los `id` salen en el preview; aviso de repetida e inválida funcionan, la inválida no se guarda.
+- Exportado: los 4 `href="#..."` distintos resuelven a un `id` existente (0 rotos). El salto en sí es navegación nativa del navegador.
+
+### Pendiente / no verificado
+- No se midió el salto con scroll real ni el aspecto visual del navbar en móvil (el panel de pruebas es diminuto/oculto y da 0 en mediciones): revisarlo en el navegador con Exportar HTML.
+- Páginas ya guardadas antes de esto no tienen anclas: se ponen a mano en el inspector.
 
 ## Etapa 6 — Transiciones y estados  (en curso)
 

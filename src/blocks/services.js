@@ -21,6 +21,7 @@ const conIcono = (icono, t, txt, extra = {}) =>
 const cabecera = (t, extra = {}) => titulo(t, 2, { fontSize: '40px', textAlign: 'center', ...extra }, { fontSize: '30px' });
 
 export default {
+  ancla: 'servicios',
   id: 'services',
   label: 'Servicios',
   variants: {

@@ -56,6 +56,16 @@ export function walk(root, fn) {
   root.children.forEach((h) => walk(h, fn));
 }
 
+/** Ancla válida: empieza con letra; solo letras (sin ñ ni tildes), números y guiones. */
+export const anchorValido = (a) => /^[A-Za-z][A-Za-z0-9-]*$/.test(a ?? '');
+
+/** Cuántos nodos de la página usan esta ancla (para avisar de repetidas). */
+export function contarAncla(root, anchor, exceptoId = null) {
+  let total = 0;
+  walk(root, (n) => { if (n.id !== exceptoId && n.content?.anchor === anchor) total++; });
+  return total;
+}
+
 /** Qué puede contener cada tipo: la página solo secciones; sección y contenedor,
  *  cualquier elemento menos secciones; los elementos hoja (título, texto...) nada. */
 export function canContain(parentType, childType) {

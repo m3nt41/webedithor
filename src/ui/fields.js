@@ -52,6 +52,16 @@ export const GRUPOS = [
     ],
   },
   {
+    titulo: 'Posición',
+    tipos: ['section'],
+    campos: [
+      // "Pegado arriba" = navbar fijo. Para quitarlo: elige "Normal".
+      { key: 'position', label: 'Posición', kind: 'select', options: [['', 'Normal'], ['sticky', 'Pegado arriba']] },
+      { key: 'top', label: 'Distancia arriba', kind: 'text', placeholder: '0', cuando: (s) => s.position === 'sticky' },
+      { key: 'zIndex', label: 'z-index', kind: 'text', placeholder: '50', cuando: (s) => s.position === 'sticky' },
+    ],
+  },
+  {
     titulo: 'Imagen',
     tipos: ['image'],
     campos: [{ key: 'objectFit', label: 'Ajuste', kind: 'select', options: [['', '—'], ['cover', 'Cover'], ['contain', 'Contain']] }],

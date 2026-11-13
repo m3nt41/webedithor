@@ -5,6 +5,7 @@
 // se añade un <script> de ~3 líneas que pone la clase .in al entrar en pantalla.
 // (Motion se reserva para lo que el CSS no pueda: scroll-linked, drag... Etapa 5.)
 
+import { anchorValido, walk } from '../core/tree.js';
 import { tagFor, TIPOS_TEXTO } from '../render/renderer.js';
 import { cssNodo, usaScroll, usaCarga, paginaUsaScroll, paginaUsaEntrada, splitText, KEYFRAMES, SCRIPT_SCROLL } from '../animations/index.js';
 
@@ -40,6 +41,7 @@ export function exportHTML(page) {
     const anim = cssNodo(node, `.${clase}`);
     if (anim) cssAnim.push(anim);
     // data-rv: el script de scroll le pone .in · data-ld: corre sola al cargar (solo para reduced-motion)
+    const idAttr = anchorValido(node.content?.anchor) ? ` id="${node.content.anchor}"` : '';
     const rv = (usaScroll(node) ? ' data-rv' : '') + (usaCarga(node) ? ' data-ld' : '');
 
     const tag = tagFor(node);
@@ -47,9 +49,9 @@ export function exportHTML(page) {
     const c = node.content;
 
     if (node.type === 'image') {
-      return `${sangria}<img class="${clase}"${rv} src="${escAttr(c.src)}" alt="${escAttr(c.alt)}">`;
+      return `${sangria}<img class="${clase}"${idAttr}${rv} src="${escAttr(c.src)}" alt="${escAttr(c.alt)}">`;
     }
-    const attrs = (node.type === 'button' ? ` href="${escAttr(c.href ?? '#')}"` : '') + rv;
+    const attrs = (node.type === 'button' ? ` href="${escAttr(c.href ?? '#')}"` : '') + idAttr + rv;
     const abre = `<${tag} class="${clase}"${attrs}>`;
     if (TIPOS_TEXTO.includes(node.type)) {
       const modo = node.animation?.text?.mode;
@@ -62,7 +64,10 @@ export function exportHTML(page) {
 
   const cuerpo = nodoAHtml(page, 2);
 
-  const reset = '*{box-sizing:border-box}body{margin:0}img{max-width:100%;display:block}';
+  // Si hay un navbar pegado arriba (position:sticky), las anclas dejan un margen para no quedar tapadas
+  let hayFijo = false;
+  walk(page, (n) => { if (n.styles.base.position === 'sticky') hayFijo = true; });
+  const reset = '*{box-sizing:border-box}body{margin:0}img{max-width:100%;display:block}' + (hayFijo ? '[id]{scroll-margin-top:90px}' : '');
   const media = cssMovil.length ? `@media (max-width:${BREAKPOINT_MOVIL}px){\n${cssMovil.join('\n')}\n}` : '';
 
   // Animaciones: keyframes + reglas por nodo. Si hay de scroll/texto, el script mínimo

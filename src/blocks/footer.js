@@ -2,8 +2,9 @@
 
 import { n, texto, columna } from './util.js';
 
+const ANCLAS = { Inicio: '#inicio', Servicios: '#servicios', Precios: '#precios', Contacto: '#contacto' };
 const enlaces = (lista, color = 'inherit') =>
-  lista.map((t) => n('button', { name: 'Enlace', content: { text: t, href: '#' }, styles: { color, textDecoration: 'none', opacity: '0.75', display: 'inline-block' } }));
+  lista.map((t) => n('button', { name: 'Enlace', content: { text: t, href: ANCLAS[t] ?? '#' }, styles: { color, textDecoration: 'none', opacity: '0.75', display: 'inline-block' } }));
 
 export default {
   id: 'footer',

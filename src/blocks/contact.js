@@ -8,6 +8,7 @@ const WA = 'https://wa.me/50600000000?text=Hola%2C%20quiero%20m%C3%A1s%20informa
 const botonWa = (extra = {}) => boton('Escríbenos por WhatsApp', WA, { background: '#25d366', color: '#063d1b', ...extra }, 'Botón WhatsApp');
 
 export default {
+  ancla: 'contacto',
   id: 'contact',
   label: 'Contacto WhatsApp',
   variants: {

@@ -18,6 +18,7 @@ const plan = (nombre, precio, ventajas, { destacado = false, oscuro = false } = 
 };
 
 export default {
+  ancla: 'precios',
   id: 'pricing',
   label: 'Precios',
   variants: {

@@ -255,6 +255,7 @@ export function addElement(node) {
 
   if (node.type === 'section') { // las secciones solo viven en la página
     let idx = page.children.length;
+    if (node.content?.alInicio) { delete node.content.alInicio; return addNode(node, page.id, 0); } // navbar: arriba de todo
     if (sel && sel.type !== 'page') {
       let raiz = sel;
       while (findParent(page, raiz.id)?.type !== 'page') raiz = findParent(page, raiz.id);

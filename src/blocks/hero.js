@@ -7,6 +7,7 @@ import { n, titulo, texto, boton, imagen, placeholder, columna, seccion } from '
 const CENTRADO = { alignItems: 'center', justifyContent: 'center', gap: '24px', minHeight: '80vh', textAlign: 'center' };
 
 export default {
+  ancla: 'inicio',
   id: 'hero',
   label: 'Hero',
   variants: {

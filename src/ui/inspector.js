@@ -6,7 +6,7 @@
 //   select altere qué campos se muestran: ahí se fuerza).
 
 import { getState, subscribe, setStyle, setContent, setName, setAnimation, moveBy, duplicateNode, removeNode } from '../core/store.js';
-import { findNode, findParent } from '../core/tree.js';
+import { findNode, findParent, anchorValido, contarAncla } from '../core/tree.js';
 import { effectiveStyles, TIPOS_TEXTO } from '../render/renderer.js';
 import { GRUPOS } from './fields.js';
 import { GRUPOS_ANIM } from '../animations/index.js';
@@ -18,6 +18,14 @@ function aHex(v) {
   if (/^#[0-9a-f]{6}$/i.test(v)) return v;
   if (/^#[0-9a-f]{3}$/i.test(v)) return '#' + [...v.slice(1)].map((c) => c + c).join('');
   return null;
+}
+
+/** Mensaje de validación del ancla (vacío si todo bien). */
+function avisoAncla(page, nodo, valor) {
+  if (!valor) return 'Para enlazar: <code>#nombre</code>';
+  if (!anchorValido(valor)) return '⚠ Inválida: empieza con letra; solo letras, números y guiones. No se guarda.';
+  if (contarAncla(page, valor, nodo.id) > 0) return `⚠ "${esc(valor)}" ya existe en otra parte de la página (se repite).`;
+  return `Enlace: <code>#${esc(valor)}</code>`;
 }
 
 export function initInspector(host) {
@@ -62,6 +70,10 @@ export function initInspector(host) {
       cont += `<div class="campo"><label>URL</label><input data-c="src" value="${esc(c.src?.startsWith('data:') ? '' : c.src)}" placeholder="https://..."></div>
         <div class="campo"><label>Archivo</label><input type="file" accept="image/*" data-file></div>
         <div class="campo"><label>Alt</label><input data-c="alt" value="${esc(c.alt)}"></div>`;
+    }
+    if (nodo.type === 'section' || nodo.type === 'container') {
+      cont += `<div class="campo"><label>Ancla (id)</label><input data-anchor value="${esc(c.anchor)}" placeholder="contacto"></div>
+        <p class="modo" data-aviso-ancla>${avisoAncla(page, nodo, c.anchor ?? '')}</p>`;
     }
     if (cont) html += `<h3>Contenido</h3>${cont}`;
 
@@ -118,6 +130,15 @@ export function initInspector(host) {
     if (!id) return;
     // Un select puede mostrar/ocultar campos: pedimos reconstruir el panel (antes del cambio)
     if (t.tagName === 'SELECT' && (t.dataset.s || t.dataset.a)) forzar = true;
+    if (t.dataset.anchor !== undefined) {
+      // Ancla: solo se guarda si es válida (o vacía); siempre se muestra el aviso
+      const v = t.value.trim();
+      const { page } = getState();
+      const aviso = host.querySelector('[data-aviso-ancla]');
+      if (aviso) aviso.innerHTML = avisoAncla(page, findNode(page, id), v);
+      if (v === '' || anchorValido(v)) setContent(id, 'anchor', v || undefined);
+      return;
+    }
     if (t.dataset.name !== undefined) setName(id, t.value);
     else if (t.dataset.a) {
       const [grupo, key] = t.dataset.a.split('.');

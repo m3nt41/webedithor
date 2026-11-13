@@ -9,9 +9,9 @@ Motion vs CSS puro: m3nt41 ya decidió la opción (a), CSS puro donde se pueda y
 - [x] Slide: subir, bajar, izquierda, derecha (Etapa 4)
 - [x] Zoom (Etapa 4)
 - [x] Blur / desenfoque (Etapa 4)
-- [ ] Rotación (rotar al entrar, con ángulo editable). Hoy solo existe "Voltear" (rotateX fijo de 70°), que no cuenta como la rotación completa → Etapa 6
+- [x] Rotación (rotar al entrar, con ángulo editable; también en texto por letra/palabra) (Etapa 6)
 - [x] Al entrar en pantalla (Etapa 4)
-- [ ] Al cargar la página (opción explícita; hoy solo se dispara al entrar en pantalla) → Etapa 6
+- [x] Al cargar la página (selector "Se dispara" en Al aparecer y en Animación de texto; CSS puro, sin script) (Etapa 6)
 
 ## Scroll
 - [ ] Parallax → Etapa 7
@@ -21,8 +21,8 @@ Motion vs CSS puro: m3nt41 ya decidió la opción (a), CSS puro donde se pueda y
 
 ## Hover / press / focus
 - [x] Hover con transición: elevar, agrandar, encoger, inclinar, resplandor, aclarar (Etapa 4)
-- [ ] Press (al mantener clic/tocar) con transición → Etapa 6
-- [ ] Focus (`:focus-visible`) con transición → Etapa 6
+- [x] Press (al mantener clic/tocar) con transición (Etapa 6)
+- [x] Focus (`:focus-visible`) con transición, solo en botones/enlaces (Etapa 6)
 
 ## Variants
 - [ ] Estados con nombre por elemento (p. ej. `reposo`, `activo`, `abierto`) con sus propios estilos → Etapa 6

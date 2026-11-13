@@ -4,8 +4,10 @@
 
 import appear from './appear.js';
 import hover from './hover.js';
+import press from './press.js';
+import focus from './focus.js';
 import text from './text.js';
-import { KEYFRAMES } from './base.js';
+import { KEYFRAMES, transicion, cargaInmediata } from './base.js';
 import { walk } from '../core/tree.js';
 
 export { splitText } from './text.js';
@@ -16,14 +18,28 @@ export const TIPOS_TEXTO = ['heading', 'text', 'button'];
 export const GRUPOS_ANIM = [
   { ...appear, tipos: ['section', 'container', 'heading', 'text', 'button', 'image'] },
   { ...hover, tipos: ['container', 'heading', 'text', 'button', 'image'] },
+  { ...press, tipos: ['container', 'heading', 'text', 'button', 'image'] }, // después de hover: gana al presionar
+  { ...focus, tipos: ['button'] }, // solo los enlaces/botones reciben foco de teclado
   { ...text, tipos: TIPOS_TEXTO },
 ];
 
 export const DEFAULTS = Object.fromEntries(GRUPOS_ANIM.map((g) => [g.id, g.defaults]));
 export const PRINCIPAL = Object.fromEntries(GRUPOS_ANIM.map((g) => [g.id, g.principal]));
 
-/** ¿El nodo necesita que el script de scroll le ponga la clase .in? */
-export const usaScroll = (node) => Boolean(node.animation?.appear?.effect || node.animation?.text?.mode);
+/** ¿El nodo tiene una animación de entrada (appear o texto)? */
+const tieneEntrada = (node) => Boolean(node.animation?.appear?.effect || node.animation?.text?.mode);
+
+/** ¿El nodo necesita que el script de scroll le ponga la clase .in? (las de "al cargar" no) */
+export const usaScroll = (node) => {
+  const a = node.animation;
+  return Boolean((a?.appear?.effect && !cargaInmediata(a.appear)) || (a?.text?.mode && !cargaInmediata(a.text)));
+};
+
+/** ¿Alguna animación de entrada del nodo corre al cargar? */
+export const usaCarga = (node) => {
+  const a = node.animation;
+  return Boolean((a?.appear?.effect && cargaInmediata(a.appear)) || (a?.text?.mode && cargaInmediata(a.text)));
+};
 
 /** ¿Hay animaciones de scroll en toda la página? (el exportador decide si incluye el script) */
 export function paginaUsaScroll(page) {
@@ -32,13 +48,25 @@ export function paginaUsaScroll(page) {
   return usa;
 }
 
+/** ¿Hay animaciones de entrada (scroll o carga)? Si sí, el export lleva los @keyframes. */
+export function paginaUsaEntrada(page) {
+  let usa = false;
+  walk(page, (n) => { if (tieneEntrada(n)) usa = true; });
+  return usa;
+}
+
+/** Transición base para SOLTAR un estado (hover/press/focus): usa la del primero que exista. */
+function transicionBase(anim, sel) {
+  const g = GRUPOS_ANIM.find((x) => x.estado && anim[x.id]?.effect);
+  return g ? `${sel}{${transicion(anim[g.id])}}` : '';
+}
+
 /** CSS de las animaciones de un nodo. */
 export function cssNodo(node, sel, { scroll = true } = {}) {
   if (!node.animation) return '';
-  return GRUPOS_ANIM.filter((g) => scroll || g.id === 'hover')
-    .map((g) => g.css(node.animation[g.id], sel))
-    .filter(Boolean)
-    .join('\n');
+  return [transicionBase(node.animation, sel),
+    ...GRUPOS_ANIM.filter((g) => scroll || g.estado).map((g) => g.css(node.animation[g.id], sel)),
+  ].filter(Boolean).join('\n');
 }
 
 /** CSS de toda la página para el PREVIEW (selector por data-id). scroll=false → solo hover. */

@@ -16,7 +16,19 @@ export const EFECTOS = [
   ['zoom', 'Zoom'],
   ['blur', 'Desenfoque'],
   ['flip', 'Voltear'],
+  ['rotate', 'Rotar'],
 ];
+
+// Qué dispara la entrada: al entrar en pantalla (scroll) o apenas carga la página.
+export const DISPAROS = [
+  ['scroll', 'Al entrar en pantalla'],
+  ['load', 'Al cargar la página'],
+];
+export const cargaInmediata = (a) => a?.trigger === 'load';
+
+/** Animación de entrada: en "load" corre sola; en "scroll" espera la clase .in (paused). */
+export const animEntrada = (efecto, d, curva, retraso, a) =>
+  `a-${efecto} ${d}s ${curva} ${retraso} backwards${cargaInmediata(a) ? '' : ' paused'}`;
 
 export const EASES = [
   ['suave', 'Suave'],
@@ -36,6 +48,12 @@ const CURVAS = {
 
 export const easeCss = (e) => CURVAS[e] ?? CURVAS.suave;
 
+/** `transition` para los estados hover/press/focus (transform, sombra, filtro y contorno). */
+export const transicion = (g) => {
+  const t = `${g.duration ?? 0.2}s ${easeCss(g.ease)}`;
+  return `transition:transform ${t},box-shadow ${t},filter ${t},outline-color ${t},outline-offset ${t}`;
+};
+
 /** Todos los @keyframes (una sola vez por página). --ad = distancia en px. */
 export const KEYFRAMES = `@keyframes a-fade{from{opacity:0}}
 @keyframes a-up{from{opacity:0;translate:0 var(--ad,40px)}}
@@ -44,7 +62,8 @@ export const KEYFRAMES = `@keyframes a-fade{from{opacity:0}}
 @keyframes a-right{from{opacity:0;translate:var(--ad,40px) 0}}
 @keyframes a-zoom{from{opacity:0;scale:.8}}
 @keyframes a-blur{from{opacity:0;filter:blur(12px)}}
-@keyframes a-flip{from{opacity:0;transform:perspective(600px) rotateX(-70deg)}}`;
+@keyframes a-flip{from{opacity:0;transform:perspective(600px) rotateX(-70deg)}}
+@keyframes a-rotate{from{opacity:0;rotate:var(--ar,-90deg)}}`;
 
 /** Campos comunes (duración, retraso, curva, distancia). */
 export const camposComunes = [
@@ -52,4 +71,6 @@ export const camposComunes = [
   { key: 'delay', label: 'Retraso (s)', kind: 'num', step: 0.1, min: 0 },
   { key: 'ease', label: 'Curva', kind: 'select', options: EASES },
   { key: 'distance', label: 'Distancia (px)', kind: 'num', step: 5, min: 0, cuando: (g, efecto) => ['up', 'down', 'left', 'right'].includes(efecto) },
+  { key: 'angle', label: 'Ángulo (°)', kind: 'num', step: 5, min: -720, cuando: (g, efecto) => efecto === 'rotate' },
 ];
+export const campoDisparo = { key: 'trigger', label: 'Se dispara', kind: 'select', options: DISPAROS };

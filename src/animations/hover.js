@@ -1,7 +1,7 @@
 // ANIMACIÓN "AL PASAR EL MOUSE": CSS puro (transition + :hover), sin JS.
 // Datos en node.animation.hover = { effect, duration, ease, color }
 
-import { EASES, easeCss } from './base.js';
+import { EASES, transicion } from './base.js';
 
 const EFECTOS = [
   ['', 'Ninguno'],
@@ -25,6 +25,7 @@ const REGLAS = {
 
 export default {
   id: 'hover',
+  estado: true, // se ve siempre en el preview
   titulo: 'Al pasar el mouse',
   principal: 'effect',
   defaults: { effect: 'lift', duration: 0.25, ease: 'suave', color: '#7c5cff' },
@@ -38,8 +39,7 @@ export default {
   css(h, sel) {
     const regla = REGLAS[h?.effect];
     if (!regla) return '';
-    const t = `${h.duration ?? 0.25}s ${easeCss(h.ease)}`;
-    return `${sel}{transition:transform ${t},box-shadow ${t},filter ${t}}
-${sel}:hover{${regla(h)}}`;
+    // la transición base (para soltar) la pone cssNodo; aquí va la de entrar al estado
+    return `${sel}:hover{${transicion(h)};${regla(h)}}`;
   },
 };

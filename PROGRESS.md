@@ -73,6 +73,21 @@ Etapas hechas: 1, 2, 3, 4 y 5. Próxima: 6 (transiciones y estados). El reparto 
 ### Decisiones
 - Motion (npm) no se usó a propósito: todo lo hecho salió en CSS. Ver "Decisión tomada (m3nt41)" al final de este archivo.
 
+## Etapa 6 — Transiciones y estados  (en curso)
+
+### Bloque 1: rotación, al cargar, press, focus  ✅
+**Hecho**
+- Efecto **Rotar** en `base.js` (`@keyframes a-rotate`, usa la propiedad `rotate` y `--ar`); campo "Ángulo (°)" (editable, negativo o positivo) en Al aparecer y en Animación de texto.
+- Selector **"Se dispara"** (`trigger`: `scroll` | `load`) en Al aparecer y Texto. `load` = la animación corre sola al abrir la página (sin `paused`, sin `.in`, sin script). Las páginas guardadas sin `trigger` se tratan como `scroll`.
+- Grupos nuevos **Al presionar** (`press.js`, `:active`: encoger, hundir, agrandar, oscurecer, aclarar) y **Al enfocar** (`focus.js`, `:focus-visible`: anillo, resplandor, agrandar, aclarar; solo botones). Grupos de estado marcados con `estado: true` (se ven siempre en el preview, como hover).
+- `transition` unificada: `cssNodo` emite una base (para soltar) con la duración/curva del primer estado activo; cada estado lleva la suya para entrar. Press se registra después de hover para ganar mientras se mantiene el clic.
+- Exportador: atributo `data-ld` para lo que corre al cargar, keyframes si hay entrada (scroll o carga), y `prefers-reduced-motion` también lo apaga.
+
+**Verificado** (`npm run dev` + build): CSS exportado correcto; en un iframe el h2 con rotación+carga corre `a-rotate` sin pausa con `--ar:-45deg`; el inspector muestra los grupos y campos nuevos (Ángulo, Se dispara) al elegir "Rotar"; sin errores nuevos.
+
+**No verificado**: no se vio la animación en vivo ni `:active`/`:focus-visible` reales (el panel de pruebas está en segundo plano; solo se comprobó que las reglas existen y parsean). Probar en Firefox con el HTML exportado y Tab. En el preview del editor el foco no se puede ver (los botones no reciben foco de teclado ahí).
+- En la sesión se vio un ruido de 500 de Vite de pruebas anteriores (bloques); el build pasa.
+
 ## Etapa 5 — Elementos y bloques  ✅
 
 ### Hecho

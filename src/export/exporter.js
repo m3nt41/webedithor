@@ -6,7 +6,7 @@
 // (Motion se reserva para lo que el CSS no pueda: scroll-linked, drag... Etapa 5.)
 
 import { tagFor, TIPOS_TEXTO } from '../render/renderer.js';
-import { cssNodo, usaScroll, paginaUsaScroll, splitText, KEYFRAMES, SCRIPT_SCROLL } from '../animations/index.js';
+import { cssNodo, usaScroll, usaCarga, paginaUsaScroll, paginaUsaEntrada, splitText, KEYFRAMES, SCRIPT_SCROLL } from '../animations/index.js';
 
 export const BREAKPOINT_MOVIL = 768;
 
@@ -39,7 +39,8 @@ export function exportHTML(page) {
 
     const anim = cssNodo(node, `.${clase}`);
     if (anim) cssAnim.push(anim);
-    const rv = usaScroll(node) ? ' data-rv' : ''; // el script de scroll le pone .in
+    // data-rv: el script de scroll le pone .in · data-ld: corre sola al cargar (solo para reduced-motion)
+    const rv = (usaScroll(node) ? ' data-rv' : '') + (usaCarga(node) ? ' data-ld' : '');
 
     const tag = tagFor(node);
     const sangria = '  '.repeat(nivel);
@@ -67,10 +68,11 @@ export function exportHTML(page) {
   // Animaciones: keyframes + reglas por nodo. Si hay de scroll/texto, el script mínimo
   // (IntersectionObserver) y dos salvaguardas: sin JS y con "reducir movimiento" se ve todo quieto.
   const usaRv = paginaUsaScroll(page);
+  const usaEntrada = paginaUsaEntrada(page); // scroll o carga: hacen falta los keyframes
   const animaciones = [
-    usaRv ? KEYFRAMES : '',
+    usaEntrada ? KEYFRAMES : '',
     ...cssAnim,
-    usaRv ? '@media (prefers-reduced-motion:reduce){[data-rv],[data-rv] .w{animation:none!important}}' : '',
+    usaEntrada ? '@media (prefers-reduced-motion:reduce){[data-rv],[data-ld],[data-rv] .w,[data-ld] .w{animation:none!important}}' : '',
   ].filter(Boolean).join('\n');
   const noscript = usaRv ? '<noscript><style>[data-rv],[data-rv] .w{animation:none!important}</style></noscript>\n' : '';
   const script = usaRv ? `<script>\n${SCRIPT_SCROLL}\n</script>\n` : '';

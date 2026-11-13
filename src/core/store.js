@@ -26,6 +26,7 @@ const state = {
   page: cargarGuardado() ?? createPage(),
   selectedId: null, // id del nodo seleccionado
   viewMode: 'desktop', // 'desktop' | 'mobile'
+  conflicto: null, // JSON (texto) que otra pestaña guardó mientras esta estaba abierta; null = sin aviso
   verEstado: null, // { id (nodo), estado (id del variant) }: "Ver este estado" en el preview; no se guarda
 };
 
@@ -55,15 +56,56 @@ export const puedeRehacer = () => futuro.length > 0;
 
 // ---- Autoguardado ----
 let temporizador = null;
-function programarGuardado() {
+let pendiente = false; // hay cambios sin guardar
+
+/** Guarda YA (sin esperar los 300 ms). Si otra pestaña guardó algo distinto y el usuario
+ *  aún no eligió qué hacer (state.conflicto), NO se guarda: así no se pisa lo de la otra pestaña. */
+export function guardarAhora() {
   clearTimeout(temporizador);
-  temporizador = setTimeout(() => {
-    try {
-      localStorage.setItem(CLAVE_LS, JSON.stringify(state.page));
-    } catch {
-      /* sin espacio o bloqueado: se ignora, el usuario aún puede exportar el JSON */
-    }
-  }, 300);
+  temporizador = null;
+  if (state.conflicto != null) return;
+  pendiente = false;
+  try {
+    localStorage.setItem(CLAVE_LS, JSON.stringify(state.page));
+  } catch {
+    /* sin espacio o bloqueado: se ignora, el usuario aún puede exportar el JSON */
+  }
+}
+
+function programarGuardado() {
+  pendiente = true;
+  clearTimeout(temporizador);
+  temporizador = setTimeout(guardarAhora, 300);
+}
+
+// Al salir (cerrar pestaña, recargar, cambiar de pestaña) se guarda sin esperar.
+window.addEventListener('pagehide', () => { if (pendiente) guardarAhora(); });
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden' && pendiente) guardarAhora(); });
+
+// ---- Varias pestañas ----
+// El evento `storage` solo se dispara en las OTRAS pestañas (nunca en la que guardó),
+// así que nuestro propio guardado no puede generar el aviso.
+window.addEventListener('storage', (e) => {
+  if (e.storageArea !== localStorage || (e.key !== CLAVE_LS && e.key !== null)) return;
+  const otra = e.key === null ? null : e.newValue;
+  if (otra == null || otra === JSON.stringify(state.page)) return; // borrado o igual a lo nuestro
+  state.conflicto = otra;
+  emit('conflicto');
+});
+
+/** "Recargar con lo guardado": carga lo que guardó la otra pestaña (se puede deshacer). */
+export function recargarGuardado() {
+  const txt = state.conflicto;
+  state.conflicto = null;
+  try { replacePage(JSON.parse(txt)); } catch { /* JSON dañado: nos quedamos con lo actual */ }
+  emit('conflicto');
+}
+
+/** "Seguir con esta versión": esta pestaña vuelve a guardar y pisa lo de la otra. */
+export function seguirConEsta() {
+  state.conflicto = null;
+  guardarAhora();
+  emit('conflicto');
 }
 
 // ---- Selección y vista ----

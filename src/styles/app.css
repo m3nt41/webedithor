@@ -8,6 +8,11 @@ body { font: 14px system-ui, sans-serif; background: #1a1a1f; color: #e8e8ee; }
 #app { display: grid; grid-template-columns: 240px 1fr 300px; grid-template-rows: 44px 1fr; height: 100vh; }
 #toolbar { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; padding: 0 14px; background: #1f1f26; border-bottom: 1px solid #333; }
 #toolbar .espacio { flex: 1; }
+/* Aviso de varias pestañas: flotante bajo la barra, no mueve el layout */
+#aviso-pestanas { position: fixed; top: 52px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: #3b2a12; border: 1px solid #c98a2b; border-radius: 8px; color: #ffe2b0; box-shadow: 0 6px 24px rgba(0,0,0,.5); }
+#aviso-pestanas[hidden] { display: none; }
+#aviso-pestanas button { background: #2f2f38; color: #fff; border: 1px solid #44444f; border-radius: 6px; padding: 6px 11px; cursor: pointer; font: inherit; }
+#aviso-pestanas button:hover { background: #3b3470; }
 #toolbar button { background: #2f2f38; color: inherit; border: 1px solid #44444f; border-radius: 6px; padding: 6px 11px; cursor: pointer; font: inherit; }
 #toolbar button:hover:not(:disabled) { background: #3b3470; }
 #toolbar button:disabled { opacity: .35; cursor: default; }

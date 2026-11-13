@@ -32,7 +32,9 @@ const seleccionar = async (nombre) => {
 };
 const campo = (clave) => d.findElement(By.css(`#inspector [data-s="${clave}"]`));
 /** Escribe de verdad, tecla por tecla: borra lo que haya y teclea. */
+const abrirAvanzado = (clave) => d.executeScript(`const c=document.querySelector('#inspector [data-s="${clave}"]'); const g=c&&c.closest('details'); if(g) g.open=true;`);
 const escribir = async (clave, texto) => {
+  await abrirAvanzado(clave);
   const c = await campo(clave);
   await c.click();
   await c.sendKeys(Key.chord(Key.CONTROL, 'a'), Key.BACK_SPACE);
@@ -112,6 +114,7 @@ try {
   await esperar(200);
   await elegirOpcion('display', 'Grid');
   await esperar(200);
+  await abrirAvanzado('margin');
   const c = await campo('margin');
   await c.click();
   await c.sendKeys(Key.chord(Key.CONTROL, 'a'), Key.BACK_SPACE);
@@ -146,7 +149,9 @@ try {
   await d.switchTo().window(pestB);
   await seleccionar('Grid');
   await escribir('gap', '77px'); await esperar(500);        // B (con navbar viejo, sin sticky) guarda TODA la página
+  ver(await d.executeScript(`return !document.getElementById('aviso-pestanas').hidden`), '10a. la pestaña B muestra el aviso de cambios de otra pestaña');
   await d.switchTo().window(pestA);
+  ver(await d.executeScript(`return document.getElementById('aviso-pestanas').hidden`), '10b. la pestaña A (la que guardó) NO muestra aviso');
   await recargar();
   const posTrasDosPestanas = await estilo('Navbar', 'base', 'position');
   ver(posTrasDosPestanas === 'sticky', '10. con 2 pestañas abiertas, el cambio de la pestaña A (sticky) sobrevive a un guardado de la pestaña B', String(posTrasDosPestanas));

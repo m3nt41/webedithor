@@ -9,6 +9,7 @@ Editor visual de landings que corre 100% en el navegador (sin backend, hosting n
 
 ## Stack
 - Vite + JS vanilla (módulos ES). Sin frameworks.
+- **Dependencias (decisión de m3nt41):** no ser estricto con CSS puro ni con "sin dependencias" cuando una librería resuelve mejor el problema; lo importante es que quede bien. Se puede añadir una librería si es la mejor solución; solo viaja en el HTML exportado si la página la usa; sigue avisando qué se añade y por qué. Ya añadida: `lenis` (scroll suave, inline en el export).
 - `motion` (npm) está instalado pero **sin usar** todavía. Decisión de m3nt41: opción (a), CSS puro donde se pueda y Motion solo en lo que obliga (drag con rebote, inercia, layout animations, scroll suave, scroll-linked en Firefox); se carga en el `.html` exportado solo si la página lo usa.
 - Guardado: JSON en localStorage + exportar/importar `.json` (Etapa 3).
 - Exporta un solo `.html`. Si una animación se puede en CSS puro, se exporta en CSS; solo se añade JS (script mínimo, Motion o propio) cuando el CSS no alcance y m3nt41 lo apruebe.
@@ -34,7 +35,7 @@ src/
   blocks/              hero, services, gallery, testimonials, pricing, contact, footer (4 variantes c/u) + elements.js (elementos sueltos) + util.js (atajos) + index.js (registro)
   render/renderer.js   árbol -> DOM
   ui/                  sidebar.js, preview.js (selección + edición de texto), inspector.js, fields.js (campos del panel), toolbar.js (undo/redo, escritorio/móvil, nuevo/abrir/guardar JSON, exportar)
-  animations/          scrollsuave.js (scroll suave opcional; valores en SUAVE) y un módulo por animación: appear, hover, press, focus, text, stagger, variants (estados con nombre; propio: true = sección propia en el inspector) + base (efectos/curvas/keyframes) + index (registro GRUPOS_ANIM) + normalizar (valida node.animation al abrir un .json / restaurar; usa los `campos` de cada grupo, así que un grupo nuevo queda validado solo)
+  animations/          scrollsuave.js (scroll suave opcional con Lenis; valores en SUAVE; lenis-min.js es generado con `npm run gen:lenis`) y un módulo por animación: appear, hover, press, focus, text, stagger, variants (estados con nombre; propio: true = sección propia en el inspector) + base (efectos/curvas/keyframes) + index (registro GRUPOS_ANIM) + normalizar (valida node.animation al abrir un .json / restaurar; usa los `campos` de cada grupo, así que un grupo nuevo queda validado solo)
   export/exporter.js   árbol -> .html (una clase por nodo, @media para móvil)
 ```
 

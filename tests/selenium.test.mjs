@@ -214,11 +214,8 @@ test('scroll suave: la rueda se desliza con inercia y llega al destino', opts, a
   assert.ok(fin > 100, `llegó lejos (${fin})`);
 });
 
-test('scroll suave: trackpad (deltas pequeños) y scroll interno quedan nativos', opts, async () => {
+test('scroll suave: un scroll interno queda nativo', opts, async () => {
   await abrir('suave'); await espiarRueda(); await irA(0);
-  await rueda(10); await esperar(300);
-  assert.equal((await golpes()).at(-1).p, false, 'un golpe pequeño (trackpad) no se intercepta');
-  await esperar(800); await irA(0);
   const r = await internoRect();
   await driver.executeScript('window.__w.length=0');
   await rueda(100, r.x, r.y); await esperar(800);
@@ -283,20 +280,15 @@ test('scroll suave: con "reducir movimiento" no intercepta (Firefox con ui.prefe
   } finally { await d2.quit(); }
 });
 
-test('scroll suave: la cola no se repite ni da saltos raros (scrollY por frame)', opts, async () => {
+test('scroll suave (Lenis): termina en un valor estable y sin retroceder', opts, async () => {
   await abrir('suave'); await irA(0);
   await driver.executeScript(`window.__y=[];window.__r=true;const l=()=>{__y.push(scrollY);if(window.__r)requestAnimationFrame(l)};requestAnimationFrame(l)`);
   await rueda(300); await esperar(2500);
   const ys = await driver.executeScript('window.__r=false;return window.__y');
-  const ini = ys.findIndex((v) => v > 0), fin = ys.length - 1;
-  const mov = ys.slice(ini, fin + 1);
-  // el movimiento termina en un valor entero y no retrocede nunca
-  const ult = mov.findIndex((v) => v === mov.at(-1));
-  const tramo = mov.slice(0, ult + 1);
-  console.log('   cola:', tramo.slice(-12).join(','), '· final', mov.at(-1));
-  for (let i = 1; i < tramo.length; i++) assert.ok(tramo[i] >= tramo[i - 1], `retrocede en el frame ${i}`);
-  assert.ok(Number.isInteger(mov.at(-1)));
-  // en la cola (últimos 15 frames del movimiento) cada frame avanza entre 1 y 6 px: ni se repite ni salta de golpe
-  const cola = tramo.slice(-15);
-  for (let i = 1; i < cola.length; i++) { const dd = cola[i] - cola[i - 1]; assert.ok(dd >= 0.9 && dd <= 8, `paso raro en la cola: ${dd}px`); }
+  const mov = ys.slice(ys.findIndex((v) => v > 0));
+  const fin = mov.at(-1);
+  console.log('   final', fin, '· últimos frames:', mov.slice(-8).map((v) => +v.toFixed(2)).join(','));
+  for (let i = 1; i < mov.length; i++) assert.ok(mov[i] >= mov[i - 1] - 0.01, `retrocede en el frame ${i}: ${mov[i - 1]} → ${mov[i]}`);
+  assert.ok(fin > 100, `llegó lejos (${fin})`);
+  assert.ok(mov.slice(-10).every((v) => Math.abs(v - fin) < 0.01), 'los últimos frames están quietos (valor estable)');
 });

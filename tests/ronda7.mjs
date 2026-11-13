@@ -43,7 +43,10 @@ t('scroll suave: solo smoothScroll === true cuenta; sin él el export no lleva s
   assert.equal(mk(true).content.smoothScroll, true);
   for (const v of ['true', 1, 'si', null, {}, []]) assert.equal('smoothScroll' in mk(v).content, false, String(v));
   assert.ok(!exportHTML(mk('true')).includes('scrollSuave'));
-  assert.ok(exportHTML(mk(true)).includes('scrollSuave('));
+  assert.ok(!exportHTML(mk('true')).includes('Lenis'), 'apagado: Lenis no viaja en el export');
+  const on = exportHTML(mk(true));
+  assert.ok(on.includes('scrollSuave(') && on.includes('globalThis.Lenis'), 'encendido: Lenis va inline en el mismo .html');
+  assert.ok(!/<script[^>]+src=/.test(on), 'un solo archivo: sin scripts externos');
 });
 t('posición: static explícito en móvil sale dentro del @media y el margen de anclas respeta cada vista', () => {
   const mk = (base, mobile) => { const p = n('page', {}); const s = n('section', { styles: base, mobile }); p.children.push(s); return exportHTML(p); };

@@ -5,7 +5,7 @@
 //   página mientras el foco está dentro (salvo que cambie la selección o un
 //   select altere qué campos se muestran: ahí se fuerza).
 
-import { getState, subscribe, setStyle, setContent, setName, setAnimation, moveBy, duplicateNode, removeNode, addVariant, removeVariant, moveVariant, setVariant, setVariantProp, verEstado } from '../core/store.js';
+import { getState, subscribe, setStyle, setPosicion, setContent, setName, setAnimation, moveBy, duplicateNode, removeNode, addVariant, removeVariant, moveVariant, setVariant, setVariantProp, verEstado } from '../core/store.js';
 import { findNode, findParent, anchorValido, contarAncla, aspectoValido, capaValida } from '../core/tree.js';
 import { reducirImagen } from './imagen.js';
 import { effectiveStyles, TIPOS_TEXTO } from '../render/renderer.js';
@@ -299,7 +299,8 @@ export function initInspector(host) {
     } else if (t.dataset.s) {
       const pick = t.previousElementSibling;
       if (pick?.dataset.pick && aHex(t.value)) pick.value = aHex(t.value);
-      setStyle(id, t.dataset.s, t.value.trim());
+      if (t.dataset.s === 'position') setPosicion(id, t.value); // escribe también top/zIndex en un solo mutate
+      else setStyle(id, t.dataset.s, t.value.trim());
       // Aviso en rojo si el navegador no entiende el valor (se guarda igual)
       const av = t.closest('.campo')?.nextElementSibling;
       if (t.tagName === 'INPUT' && av?.matches('[data-aviso-css]')) {

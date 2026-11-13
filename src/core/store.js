@@ -203,7 +203,34 @@ export function setStyle(id, key, value) {
     const destino = modo === 'mobile' ? n.styles.mobile : n.styles.base;
     if (value === '' || value == null) delete destino[key];
     else destino[key] = value;
+    if (n.autoPos) delete n.autoPos[modo === 'mobile' ? 'mobile' : 'base'][key]; // lo escribió el usuario: ya no es automático
   }, 'page', `s:${id}:${key}:${modo}`);
+}
+
+/** Cambia Posición (select Normal / Pegado) en UN solo mutate (un undo lo deshace todo).
+ *  "sticky": si top y bottom están vacíos escribe top:'0' y, si zIndex está vacío, zIndex:'50' (mismo nivel base/mobile)
+ *  y los anota en n.autoPos para poder quitarlos. Lo que el usuario ya tenía no se pisa.
+ *  Al salir de sticky: borra position y solo los valores que puso esta función (si el usuario los cambió a mano, se quedan). */
+export function setPosicion(id, value) {
+  const modo = state.viewMode;
+  mutate((page) => {
+    const n = findNode(page, id);
+    if (!n) return;
+    const d = modo === 'mobile' ? n.styles.mobile : n.styles.base;
+    n.autoPos = n.autoPos || { base: {}, mobile: {} };
+    const auto = n.autoPos[modo === 'mobile' ? 'mobile' : 'base'];
+    if (value === 'sticky') {
+      d.position = 'sticky';
+      if (!d.top && !d.bottom) { d.top = '0'; auto.top = '0'; }
+      if (!d.zIndex) { d.zIndex = '50'; auto.zIndex = '50'; }
+    } else {
+      if (value === '' || value == null) delete d.position; else d.position = value;
+      for (const k of Object.keys(auto)) {
+        if (d[k] === auto[k]) delete d[k]; // solo si sigue siendo el valor automático
+        delete auto[k];
+      }
+    }
+  }, 'page', `pos:${id}:${modo}`);
 }
 
 /** Cambia un dato de content (text, href, src, level...). */

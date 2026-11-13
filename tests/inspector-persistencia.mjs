@@ -132,6 +132,37 @@ try {
   ver(await estilo('Navbar', 'base', 'position') === 'sticky', '9a2. Posición → Pegado lo pega', String(await estilo('Navbar', 'base', 'position')));
   await elegirOpcion('position', 'Normal'); await esperar(400);
   ver(await estilo('Navbar', 'base', 'position') === undefined, '9b. Posición → Normal borra position de styles.base', String(await estilo('Navbar', 'base', 'position')));
+  ver(await estilo('Navbar', 'base', 'top') === undefined && await estilo('Navbar', 'base', 'zIndex') === undefined, '9b2. Normal también borra el top/zIndex automáticos', `${await estilo('Navbar', 'base', 'top')} / ${await estilo('Navbar', 'base', 'zIndex')}`);
+  // Pegado escribe top:0 y zIndex:50 (escritorio)
+  await elegirOpcion('position', 'Pegado (sticky)'); await esperar(400);
+  ver(await estilo('Navbar', 'base', 'top') === '0' && await estilo('Navbar', 'base', 'zIndex') === '50', '9e. Pegado (escritorio) escribe top:0 y zIndex:50', `${await estilo('Navbar', 'base', 'top')} / ${await estilo('Navbar', 'base', 'zIndex')}`);
+  // Undo deshace todo de una vez
+  await d.findElement(By.css('#btn-undo')).click(); await esperar(450);
+  ver(await estilo('Navbar', 'base', 'position') === undefined && await estilo('Navbar', 'base', 'top') === undefined && await estilo('Navbar', 'base', 'zIndex') === undefined, '9f. un solo Undo quita position, top y zIndex');
+  await d.findElement(By.css('#btn-redo')).click(); await esperar(450);
+  ver(await estilo('Navbar', 'base', 'position') === 'sticky' && await estilo('Navbar', 'base', 'top') === '0' && await estilo('Navbar', 'base', 'zIndex') === '50', '9g. un solo Redo los devuelve');
+  // En la Vista previa el navbar se queda pegado al hacer scroll
+  await d.findElement(By.css('#btn-vista-previa')).click(); await esperar(700);
+  await d.switchTo().frame(await d.findElement(By.css('#vp-frame')));
+  const yNav = await d.executeScript(`const se=document.scrollingElement; const rel=document.createElement('div'); rel.style.height='3000px'; document.body.appendChild(rel); se.scrollTop=400; const nv=document.body.querySelector('[data-id], section, nav'); return new Promise(r=>setTimeout(()=>r([se.scrollTop, Math.round(nv.getBoundingClientRect().top), se.scrollHeight]),300))`);
+  await d.switchTo().defaultContent();
+  await d.findElement(By.css('#vp-cerrar')).click(); await esperar(200);
+  ver(yNav[0] > 0 && yNav[1] === 0, '9h. Vista previa: tras hacer scroll el navbar sigue en top:0', JSON.stringify(yNav));
+  // Si el usuario escribe su propio top, no se borra al volver a Normal ni se pisa al volver a Pegado
+  await escribir('top', '12px'); await esperar(400);
+  await elegirOpcion('position', 'Normal'); await esperar(400);
+  ver(await estilo('Navbar', 'base', 'top') === '12px', '9j. Normal no borra el top escrito a mano', String(await estilo('Navbar', 'base', 'top')));
+  await elegirOpcion('position', 'Pegado (sticky)'); await esperar(400);
+  ver(await estilo('Navbar', 'base', 'top') === '12px', '9i. Pegado no pisa un top que ya existía', String(await estilo('Navbar', 'base', 'top')));
+  await escribir('top', ''); await esperar(300);
+  await elegirOpcion('position', 'Normal'); await esperar(400);
+  // Móvil
+  await modo('mobile');
+  await elegirOpcion('position', 'Pegado (sticky)'); await esperar(400);
+  ver(await estilo('Navbar', 'mobile', 'position') === 'sticky' && await estilo('Navbar', 'mobile', 'top') === '0' && await estilo('Navbar', 'mobile', 'zIndex') === '50', '9k. Pegado (móvil) escribe top:0 y zIndex:50 en mobile', JSON.stringify((buscar(await guardada(), 'Navbar')).styles.mobile));
+  await elegirOpcion('position', 'Igual que escritorio'); await esperar(400);
+  ver(Object.keys(buscar(await guardada(), 'Navbar').styles.mobile).filter((k) => ['position', 'top', 'zIndex'].includes(k)).length === 0, '9l. "Igual que escritorio" borra position, top y zIndex de mobile');
+  await modo('desktop');
   await modo('mobile'); await modo('desktop');
   await seleccionar('Grid'); await seleccionar('Navbar');
   await d.findElement(By.css('#btn-vista-previa')).click(); await esperar(600);

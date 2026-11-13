@@ -128,11 +128,13 @@ export function initInspector(host) {
     // ---- Estilos ----
     for (const g of GRUPOS) {
       if (!g.tipos.includes(nodo.type)) continue;
-      const visibles = g.campos.filter((f) => !f.cuando || f.cuando(estilos));
+      const visibles = g.campos.filter((f) => (!f.tipos || f.tipos.includes(nodo.type)) && (!f.cuando || f.cuando(estilos)));
       html += `<h3>${g.titulo}</h3>`;
       for (const f of visibles) {
         const v = estilos[f.key] ?? '';
-        if (f.kind === 'select') {
+        if (f.kind === 'nota') {
+          html += `<p class="modo">${f.texto}</p>`;
+        } else if (f.kind === 'select') {
           const opts = f.options.map(([val, txt]) => `<option value="${esc(val)}" ${val === String(v) ? 'selected' : ''}>${txt}</option>`).join('');
           html += `<div class="campo"><label>${f.label}</label><select data-s="${f.key}">${opts}</select></div>`;
         } else if (f.kind === 'color') {

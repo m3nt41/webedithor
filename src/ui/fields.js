@@ -80,6 +80,11 @@ export const GRUPOS = [
       { key: 'alignItems', label: 'Alinear', kind: 'select', options: [['', '—'], ['flex-start', 'Inicio'], ['center', 'Centro'], ['flex-end', 'Fin'], ['stretch', 'Estirar']], cuando: (s) => s.display === 'flex' || s.display === 'grid' },
       { key: 'gridTemplateColumns', label: 'Columnas', kind: 'text', placeholder: 'repeat(3, 1fr)', cuando: (s) => s.display === 'grid' },
       { key: 'gap', label: 'Separación', kind: 'text', placeholder: '20px', cuando: (s) => s.display === 'flex' || s.display === 'grid' },
+      // Recortar contenido = overflow:hidden. Útil para que una imagen con parallax quede dentro de su marco.
+      // Solo contenedores y secciones (en la página recortaría todo el scroll).
+      { key: 'overflow', label: 'Recortar contenido', kind: 'select', options: [['', 'No (normal)'], ['hidden', 'Sí (recortar)']], tipos: CONTENEDOR },
+      { kind: 'nota', tipos: CONTENEDOR, cuando: (s) => s.overflow === 'hidden',
+        texto: '⚠ Un contenedor que recorta rompe el sticky de lo que tenga adentro (el sticky deja de pegarse). Si necesitas sticky dentro, no recortes aquí.' },
     ],
   },
 ];

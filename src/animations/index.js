@@ -114,10 +114,10 @@ function transicionBase(anim, sel) {
 }
 
 /** CSS de las animaciones de un nodo. */
-export function cssNodo(node, sel, { scroll = true, forzar = null } = {}) {
+export function cssNodo(node, sel, { scroll = true, forzar = null, padre = null } = {}) {
   if (!node.animation) return '';
   return [transicionBase(node.animation, sel),
-    ...GRUPOS_ANIM.filter((g) => scroll || g.estado).map((g) => g.css(node.animation[g.id], sel, node, { scroll, forzar })),
+    ...GRUPOS_ANIM.filter((g) => scroll || g.estado).map((g) => g.css(node.animation[g.id], sel, node, { scroll, forzar, padre })),
   ].filter(Boolean).join('\n');
 }
 
@@ -125,10 +125,12 @@ export function cssNodo(node, sel, { scroll = true, forzar = null } = {}) {
  *  forzar = { id, estado }: muestra fijo ese estado de un nodo ("Ver este estado"). */
 export function cssPagina(page, { scroll = false, forzar = null } = {}) {
   const reglas = [];
-  walk(page, (n) => {
-    const r = cssNodo(n, `[data-id="${n.id}"]`, { scroll, forzar });
+  const recorre = (n, padre) => {
+    const r = cssNodo(n, `[data-id="${n.id}"]`, { scroll, forzar, padre });
     if (r) reglas.push(r);
-  });
+    n.children.forEach((h) => recorre(h, n));
+  };
+  recorre(page, null);
   return (scroll ? KEYFRAMES + '\n' + (paginaUsaEscena(page) ? CSS_ESCENA + '\n' : '') : '') + reglas.join('\n');
 }
 

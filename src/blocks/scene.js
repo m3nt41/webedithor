@@ -21,7 +21,7 @@ const escena = (name, styles, hijos) => {
     mobile: { padding: '32px 20px' },
     children: hijos,
   });
-  s.animation = { scene: { steps: '3', length: 3 } };
+  s.animation = { scene: { steps: '3', length: 4, transition: 40 } }; // 3 pasos: 4 pantallas (≈1 por paso); cambio = 40 % del tramo, 60 % quieto
   return s;
 };
 

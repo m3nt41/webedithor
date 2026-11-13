@@ -6,7 +6,7 @@
 //   - animation debe ser un objeto; si no, null. Grupos desconocidos o que no corresponden al tipo
 //     del nodo (p. ej. "enfocar" en un título) se descartan.
 //   - Cada grupo: objeto con su campo principal válido (si no, se descarta el grupo entero).
-//     select -> debe ser una opción conocida; num -> número finito (respeta `min`); color -> texto limpio.
+//     select -> debe ser una opción conocida; num -> número finito (respeta `min` y `max`); color -> texto limpio.
 //     Lo inválido se borra del grupo. Campos que no existen en el grupo se descartan.
 //   - variants: lista de estados. Se saltan entradas que no son objetos; cada estado recibe
 //     id único, nombre ("Estado N") y disparo válido si faltan; props y tiempos se limpian igual.
@@ -22,7 +22,8 @@ function numero(v, f) {
   if (v === '' || v == null || typeof v === 'boolean') return undefined;
   const n = +v;
   if (!Number.isFinite(n)) return undefined;
-  return f?.min != null ? Math.max(f.min, n) : n;
+  const conMin = f?.min != null ? Math.max(f.min, n) : n;
+  return f?.max != null ? Math.min(f.max, conMin) : conMin;
 }
 
 /** Valida un valor según el campo (select/num/color/text). Devuelve el valor limpio o undefined. */
@@ -85,6 +86,8 @@ export function normalizarAnimacion(anim, tipoNodo) {
     const campoPrincipal = g.campos.find((f) => f.key === g.principal);
     if (!campoPrincipal || valor(raw[g.principal], campoPrincipal) === undefined || raw[g.principal] === '') continue;
     out[g.id] = limpiarCampos(raw, g.campos);
+    // campos nuevos con `relleno`: un .json guardado antes de que existieran se comporta como antes (ej. Transición = 50)
+    for (const f of g.campos) if (f.relleno != null && out[g.id][f.key] === undefined) out[g.id][f.key] = f.relleno;
   }
   return Object.keys(out).length ? out : null;
 }

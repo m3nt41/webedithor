@@ -3,6 +3,9 @@ import assert from 'node:assert/strict';
 import { normalizarAnimacion } from '../src/animations/normalizar.js';
 import { createNode as n, normalizePage } from '../src/core/tree.js';
 import { exportHTML } from '../src/export/exporter.js';
+import { cssPagina } from '../src/animations/index.js';
+import { createBlock } from '../src/blocks/index.js';
+import { readFileSync } from 'node:fs';
 let ok = 0; const t = (nombre, f) => { f(); ok++; console.log('✔', nombre); };
 
 t('parallax/scrolllink/scene/scenestep: basura se limpia y nada se cuela como CSS', () => {
@@ -15,9 +18,31 @@ t('parallax/scrolllink/scene/scenestep: basura se limpia y nada se cuela como CS
   assert.equal(a.scene, undefined);        // scene no va en títulos
   assert.equal(a.scenestep.effect, 'in'); assert.equal(a.scenestep.step, undefined); assert.equal(a.scenestep.distance, 0);
   const s = normalizarAnimacion({ scene: { steps: 9 } }, 'section'); assert.equal(s, null);
-  const s2 = normalizarAnimacion({ scene: { steps: 3, length: 0, top: '' } }, 'section'); assert.deepEqual(s2.scene, { steps: '3', length: 1 });
+  const s2 = normalizarAnimacion({ scene: { steps: 3, length: 0, top: '' } }, 'section'); assert.deepEqual(s2.scene, { steps: '3', length: 1, transition: 50 }); // sin el campo "Transición" se rellena con 50 (como antes), no con 40
   assert.equal(normalizarAnimacion({ scenestep: { effect: 'in' } }, 'section'), null); // paso de escena no va en secciones
   assert.equal(normalizarAnimacion({ parallax: { effect: 'y', amount: 1e999 } }, 'text').parallax.amount, undefined);
+});
+
+t('escena: Transición (% del tramo) se limita a 20–80, basura cae al valor de antes (50)', () => {
+  const T = (v) => normalizarAnimacion({ scene: { steps: '3', transition: v } }, 'section').scene.transition;
+  assert.equal(T(40), 40); assert.equal(T(5), 20); assert.equal(T(200), 80); assert.equal(T('x'), 50); assert.equal(T(''), 50); assert.equal(T(undefined), 50);
+});
+
+t('escena sin el campo Transición: el export es IDÉNTICO al de antes (tests/golden, hecho con el código anterior)', () => {
+  const dir = new URL('./golden/', import.meta.url);
+  const p = normalizePage(JSON.parse(readFileSync(new URL('escena-sin-transicion.json', dir), 'utf8'))); // pasa por el normalizador, como al abrir un .json
+  assert.equal(p.children[1].animation.scene.transition, 50);
+  assert.equal(exportHTML(p), readFileSync(new URL('escena-sin-transicion.html', dir), 'utf8'));
+});
+
+t('escena: con Transición 40 el export lleva * 2.5 (y con 50 sigue * 2); preview y export usan el mismo valor', () => {
+  const mk = (tr) => { const p = n('page', {}); const e = createBlock('scene', 'textos'); e.animation.scene.transition = tr; p.children.push(e); return p; };
+  const h40 = exportHTML(mk(40)), h50 = exportHTML(mk(50));
+  assert.ok(h40.includes('* 2.5),1)') && !h40.includes('* 2),1)'));
+  assert.ok(h50.includes('* 2),1)') && !h50.includes('* 2.5)'));
+  const css = cssPagina(mk(40), { scroll: true });
+  assert.ok(css.includes('* 2.5),1)') && !css.includes('* 2),1)'));
+  assert.ok(createBlock('scene', 'textos').animation.scene.length === 4 && createBlock('scene', 'imagenes').animation.scene.transition === 40);
 });
 
 t('export: parallax + estado hover no deja que la transición suavice el scroll', () => {

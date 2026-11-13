@@ -164,7 +164,7 @@ export function initInspector(host) {
       if (g.propio) { html += htmlEstados(nodo, getState().verEstado); continue; } // los estados tienen su propia sección
       const datos = nodo.animation?.[g.id]; // undefined = grupo apagado
       html += `<h3>${g.titulo}</h3>`;
-      if (g.id === 'scene' && datos) html += '<p class="modo">La sección se queda fija y sus hijos se apilan en el mismo lugar: se respetan Alineación y Justificar (y su fondo, borde y padding); Dirección, Separación y Columnas no se usan. Una vez creada, cada hijo directo tiene su "Paso de escena". Solo se ve con ▶ Reproducir (que solo se activa con el botón) y en el exportado. Un navbar pegado arriba se mide solo (o escribe "Espacio arriba").</p>';
+      if (g.id === 'scene' && datos) html += '<p class="modo">La sección se queda fija y sus hijos se apilan en el mismo lugar: se respetan Alineación y Justificar (y su fondo, borde y padding); Dirección, Separación y Columnas no se usan. Una vez creada, cada hijo directo tiene su "Paso de escena". Solo se ve con ▶ Reproducir (que solo se activa con el botón) y en el exportado. "Transición (% del tramo)" = cuánto dura el cambio entre pasos dentro de cada tramo (el resto del tramo el paso queda quieto). Un navbar pegado arriba se mide solo (o escribe "Espacio arriba").</p>';
       for (const f of g.campos) {
         if (f.key !== g.principal && !datos) continue; // apagado: solo se ve el selector principal
         if (f.cuando && !f.cuando(datos, datos?.effect)) continue;
@@ -177,7 +177,7 @@ export function initInspector(host) {
         } else if (f.kind === 'color') {
           html += `<div class="campo"><label>${f.label}</label><input type="color" ${a} value="${aHex(v) ?? '#7c5cff'}"></div>`;
         } else {
-          html += `<div class="campo"><label>${f.label}</label><input type="number" ${a} data-num step="${f.step ?? 1}" min="${f.min ?? 0}" value="${v}"></div>`;
+          html += `<div class="campo"><label>${f.label}</label><input type="number" ${a} data-num step="${f.step ?? 1}" min="${f.min ?? 0}"${f.max != null ? ` max="${f.max}"` : ''} value="${v}"></div>`;
         }
       }
     }

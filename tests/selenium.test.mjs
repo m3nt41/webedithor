@@ -54,6 +54,22 @@ test('sticky: pegado arriba y abajo dentro de su contenedor', opts, async () => 
   assert.ok((await rect('PEGADO-ARRIBA')).top < 20);
 });
 
+// Mide qué parte del recorrido de la escena (0..1) el hijo del medio está a opacidad 1 ("quieto"): se fija --ep a mano en 201 puntos
+const quieto = () => driver.executeScript(`const ew=document.querySelector('[data-ew]'),mid=ew.firstElementChild.children[1];let n=0;
+  for(let i=0;i<=200;i++){ew.style.setProperty('--ep',i/200);if(+getComputedStyle(mid).opacity>=0.999)n++}return n/201`);
+test('escena: con Transición 40 el paso queda quieto más tramo que con 50 (1200px y 390px)', opts, async () => {
+  for (const [w, h] of [[1200, 700], [390, 800]]) {
+    await ventana(w, h);
+    await abrir('escena-t40'); const q40 = await quieto();
+    await abrir('escena-t50'); const q50 = await quieto();
+    console.log(`    ${w}px: quieto con 40 = ${q40.toFixed(3)}, con 50 = ${q50.toFixed(3)}`);
+    // hijo "inout" del paso 2 (3 pasos): quieto entre 1/3 + t/3 y 2/3 → (1-t)/3: 0.200 con t=40 y 0.167 con t=50
+    cerca(q40, 0.2, 0.01); cerca(q50, 1 / 6, 0.01);
+    assert.ok(q40 > q50, 'con 40 debe quedar quieto más tiempo que con 50');
+  }
+  await ventana(900, 600);
+});
+
 test('posición: sticky en escritorio (1200px) y Normal explícito en móvil (390px)', opts, async () => {
   await ventana(1200, 700);
   await abrir('posicion');

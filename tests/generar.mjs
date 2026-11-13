@@ -65,7 +65,9 @@ guardar('combo', pagina(sec('Arriba', { height: '1400px' }), sec('Zona', { heigh
 ]), sec('Abajo', { height: '1800px' })));
 
 // 7. Escena por scroll (con navbar pegado)
-guardar('escena', pagina(createBlock('navbar', 'oscuro'), createBlock('scene', 'textos'), createBlock('hero', 'oscuro')));
+// (la escena se fija a los valores de siempre —3 pantallas, transición 50— porque el test mide esa mecánica; los defaults nuevos del bloque son 4 / 40)
+const escVieja = createBlock('scene', 'textos'); escVieja.animation.scene = { steps: '3', length: 3, transition: 50 };
+guardar('escena', pagina(createBlock('navbar', 'oscuro'), escVieja, createBlock('hero', 'oscuro')));
 // 9. Scroll suave (Etapa 7, bloque 4): navbar pegado, scroll interno, ancla, parallax; y la misma página SIN el interruptor
 const paginaSuave = (activo) => {
   const nav = sec('Nav', { position: 'sticky', top: '0', height: '60px', background: '#222', zIndex: '50' });
@@ -87,4 +89,6 @@ const pegado = tit('POS-MOVIL-NORMAL', { position: 'sticky', top: '10px', zIndex
 pegado.styles.mobile = { position: 'static' };
 const destino = sec('Destino', { height: '300px' }, [tit('DESTINO')]); destino.content.anchor = 'destino';
 guardar('posicion', pagina(sec('Alta', {}, [caja('Contenedor', 2500, { display: 'block' }, [pegado, caja('Hueco', 2000)])]), destino));
+// 12. Escena con Transición 40 y con 50 (sin navbar): el paso queda quieto más tiempo con 40
+for (const tr of [40, 50]) { const e = createBlock('scene', 'textos'); e.animation.scene.transition = tr; guardar('escena-t' + tr, pagina(e)); }
 console.log('Páginas generadas en tests/out');

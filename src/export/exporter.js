@@ -34,12 +34,12 @@ export function exportHTML(page) {
   const cssAnim = [];
   let contador = 0;
 
-  function nodoAHtml(node, nivel) {
+  function nodoAHtml(node, nivel, padre = null) {
     const clase = `n${contador++}`;
     if (Object.keys(node.styles.base).length) css.push(`.${clase}{${declaraciones(node.styles.base)}}`);
     if (Object.keys(node.styles.mobile).length) cssMovil.push(`.${clase}{${declaraciones(node.styles.mobile)}}`);
 
-    const anim = cssNodo(node, `.${clase}`);
+    const anim = cssNodo(node, `.${clase}`, { padre });
     if (anim) cssAnim.push(anim);
     // data-rv: el script de scroll le pone .in · data-ld: corre sola al cargar (solo para reduced-motion)
     const idAttr = anchorValido(node.content?.anchor) ? ` id="${node.content.anchor}"` : '';
@@ -60,7 +60,7 @@ export function exportHTML(page) {
       const interior = modo ? textoPartidoHtml(c.text, modo) : escHtml(c.text).replace(/\n/g, '<br>');
       return `${sangria}${abre}${interior}</${tag}>`;
     }
-    const hijos = node.children.map((h) => nodoAHtml(h, nivel + 1)).join('\n');
+    const hijos = node.children.map((h) => nodoAHtml(h, nivel + 1, node)).join('\n');
     const html = `${sangria}${abre}\n${hijos}\n${sangria}</${tag}>`;
     if (!esc) return html;
     // escena: contenedor alto (da el recorrido de scroll) + la sección como capa pegada

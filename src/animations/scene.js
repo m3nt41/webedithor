@@ -5,6 +5,8 @@
 //   steps  = cuántos pasos tiene la escena (el scroll se reparte en tramos iguales)
 //   length = cuántas "pantallas de scroll" dura (alto del contenedor = length × 100svh)
 //   top    = px que deja libres arriba (para un navbar pegado). Vacío = se mide solo.
+//   transition = % de cada tramo que dura el CAMBIO entre pasos (20–80); el resto del tramo el paso queda quieto.
+//            Falta = 50 (como antes de existir el campo; normalizar.js lo rellena con 50 al abrir). Por defecto en escenas nuevas: 40.
 //
 // CÓMO SE ARMA (el árbol NO cambia; el preview con ▶ y el exportador crean esto igual):
 //   <div data-ew style="--len:3;--n:3">     contenedor alto (el que da el recorrido de scroll)
@@ -42,10 +44,11 @@ export default {
   id: 'scene',
   titulo: 'Escena por scroll',
   principal: 'steps',
-  defaults: { steps: '3', length: 3 },
+  defaults: { steps: '3', length: 4, transition: 40 }, // escenas nuevas desde el inspector (4 pantallas para 3 pasos)
   campos: [
     { key: 'steps', label: 'Pasos', kind: 'select', options: [['', 'Ninguna'], ['2', '2 pasos'], ['3', '3 pasos'], ['4', '4 pasos']] },
     { key: 'length', label: 'Duración (pantallas de scroll)', kind: 'num', step: 0.5, min: 1 },
+    { key: 'transition', label: 'Transición (% del tramo)', kind: 'num', step: 5, min: 20, max: 80, relleno: 50 }, // relleno = valor al abrir un .json sin el campo
     { key: 'top', label: 'Espacio arriba (px, vacío = medir el navbar)', kind: 'num', step: 5, min: 0 },
   ],
 

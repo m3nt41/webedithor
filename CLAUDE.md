@@ -1,15 +1,17 @@
 # Editor visual de landings — contexto del proyecto
 
-Lee este archivo y `PROGRESS.md` al empezar cualquier sesión. Este proyecto es independiente de `C:\Proyectos\CLAUDE.md` (el de m3nt41.com).
+Lee este archivo, `FEATURES.md` y `PROGRESS.md` al empezar cualquier sesión. Este proyecto es independiente de `C:\Proyectos\CLAUDE.md` (el de m3nt41.com).
+
+**FEATURES.md es la lista oficial de animaciones. Nunca recortes ni cambies esa lista sin preguntarme. Lee FEATURES.md al empezar cada sesión.**
 
 ## Qué es
 Editor visual de landings que corre 100% en el navegador (sin backend, hosting ni CMS). Uso personal: armar landings muy animadas para una página de ejemplos. El usuario final no toca código.
 
 ## Stack
 - Vite + JS vanilla (módulos ES). Sin frameworks.
-- `motion` (npm) como motor de animación (springs, scroll-linked, layout) — desde la Etapa 4.
+- `motion` (npm) está instalado pero **sin usar**: la Etapa 4 salió toda en CSS puro. Usarlo (o no) para springs reales, scroll-linked, layout y drag es **decisión de m3nt41**, pendiente (ver `FEATURES.md`, sección "Motion vs CSS puro" en `PROGRESS.md`).
 - Guardado: JSON en localStorage + exportar/importar `.json` (Etapa 3).
-- Exporta un solo `.html` (HTML + CSS + script mínimo de Motion). Si una animación se puede en CSS puro, se exporta en CSS.
+- Exporta un solo `.html`. Si una animación se puede en CSS puro, se exporta en CSS; solo se añade JS (script mínimo, Motion o propio) cuando el CSS no alcance y m3nt41 lo apruebe.
 
 ## Arquitectura
 - La página es un árbol JSON: `page > section > elementos`. Nodo: `{ id, type, name, styles:{base,mobile}, content, animation, children }`.
@@ -32,7 +34,7 @@ src/
   blocks/              hero, services, footer + index.js (registro)
   render/renderer.js   árbol -> DOM
   ui/                  sidebar.js, preview.js (selección + edición de texto), inspector.js, fields.js (campos del panel), toolbar.js (undo/redo, escritorio/móvil, nuevo/abrir/guardar JSON, exportar)
-  animations/          un módulo por animación (Etapa 4+)
+  animations/          un módulo por animación: appear, hover, text + base (efectos/curvas/keyframes) + index (registro GRUPOS_ANIM)
   export/exporter.js   árbol -> .html (una clase por nodo, @media para móvil)
 ```
 
@@ -44,12 +46,20 @@ src/
 - Una etapa a la vez. Al terminar: revisar bugs corriendo el proyecto, actualizar `PROGRESS.md` (hecho / pendiente / decisiones / bugs), commit de git con el nombre de la etapa, avisar y DETENERSE. No empezar la siguiente sin que lo pida.
 
 ## Etapas
-1. Estructura, árbol JSON, render del preview, selección.
-2. Panel de propiedades + edición directa de texto + exportar HTML.
-3. Reordenar secciones, vista móvil/escritorio, guardar/abrir JSON, undo/redo.
-4. Motor de animaciones (appear, hover, transiciones, texto).
-5. Scroll (parallax, scroll-linked, sticky, escenas), 3D, drag, marquee, cursor.
-6. Más bloques y variantes (hero, servicios, galería, testimonios, precios, contacto WhatsApp, footer; 3-4 variantes cada uno).
+Cada función de `FEATURES.md` tiene una etapa asignada (se indica allí con `→ Etapa N`). Si cambia el reparto, se actualizan ambos archivos y se avisa a m3nt41.
+
+**Hechas**
+1. Estructura, árbol JSON, render del preview, selección. ✅
+2. Panel de propiedades + edición directa de texto + exportar HTML. ✅
+3. Reordenar secciones, vista móvil/escritorio, guardar/abrir JSON, undo/redo. ✅
+4. Motor de animaciones base (CSS puro): appear (fade, slide, zoom, blur, voltear, al entrar en pantalla), hover, revelado de texto por letra y palabra, delay, stagger de texto. ✅
+
+**Pendientes**
+5. **Elementos y bloques.** Añadir, borrar, duplicar y mover elementos dentro de las secciones (reordenar y arrastrar entre contenedores, con undo/redo); más bloques (hero, servicios, galería, testimonios, precios, contacto WhatsApp, footer) con 3-4 variantes cada uno. *(No es de FEATURES.md; va antes de seguir con animaciones para tener con qué probarlas.)*
+6. **Transiciones y estados.** Rotación en appear; "al cargar" como disparador; press y focus con transición; variants (estados con nombre + animación entre ellos); spring real (rigidez, amortiguación, masa); tween con cubic-bezier editable; stagger entre hijos; texto por línea.
+7. **Scroll.** Parallax, scroll-linked, sticky, escenas por scroll, scroll suave.
+8. **Movimiento avanzado.** Layout animations, drag con límites y rebote, inercia, 3D transforms (perspectiva, rotación X/Y).
+9. **Extras.** Marquee/ticker, cursor personalizado, page transitions.
 
 ## Comandos
 `npm install` · `npm run dev` (http://localhost:5173) · `npm run build`

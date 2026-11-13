@@ -1,5 +1,25 @@
 # PROGRESS
 
+## Etapa 4 — Motor de animaciones  ✅
+
+### Hecho
+- **Un módulo por animación** en `src/animations/`: `appear.js` (al aparecer con scroll), `hover.js` (al pasar el mouse), `text.js` (texto por palabras/letras en cascada), `base.js` (efectos, curvas y `@keyframes` compartidos) e `index.js` (registro `GRUPOS_ANIM`; añadir una animación = nuevo módulo + una línea ahí, el inspector/preview/exportador la recogen solos).
+- Datos en `node.animation = { appear?, hover?, text? }`. Efectos de entrada: fade, subir, bajar, izquierda, derecha, zoom, desenfoque, voltear. Hover: elevar, agrandar, encoger, inclinar, resplandor (con color), aclarar. Curvas: suave, rebote (spring con `linear()`), rápido, lineal.
+- **Inspector**: secciones "Al aparecer", "Al pasar el mouse" y "Animación de texto" (esta solo en heading/text/button). El primer select enciende/apaga el grupo; al encenderlo salen duración, retraso, curva y distancia con valores por defecto.
+- **Preview**: el hover funciona siempre. Las animaciones de scroll/texto solo se ven con **▶ Reproducir** (barra superior) o al cambiar un ajuste de animación; en el resto el preview queda quieto para poder editar. Doble clic en un texto animado lo edita como texto plano.
+- **Exportador**: todo en CSS puro (keyframes + `transition`/`:hover`). Solo si hay animaciones de scroll/texto añade un `<script>` de 2 líneas (IntersectionObserver que pone `.in`). Salvaguardas: `prefers-reduced-motion` y `<noscript>` dejan todo visible y quieto.
+- Store: `setAnimation(id, grupo, key, value)` (agrupa undo por campo) y `play()`; nuevo tipo de cambio `'play'`.
+- Fix: los selects del inspector que muestran/ocultan campos pedían reconstruir el panel un cambio tarde; ahora se fuerza en el evento `input`.
+
+### Verificado
+- Build OK, sin errores de consola. En el preview: spans por palabra, `data-rv`, keyframes y regla hover presentes; al poner `.in` las 7 animaciones corren. El HTML exportado cargado en un iframe trae las mismas clases/spans/script y la regla hover.
+
+### Pendiente / no verificado
+- No se vio la animación en vivo ni con scroll real (el panel de pruebas congela `requestAnimationFrame` y el IntersectionObserver): probar en tu navegador con Exportar HTML, sobre todo en Firefox.
+- Motion (npm) sigue sin usarse a propósito: todo salió en CSS. Entra en la Etapa 5 (scroll-linked, drag).
+- `translate`/`scale` individuales y `linear()` piden navegadores de 2023 en adelante.
+- Etapa 5: parallax, scroll-linked, sticky, escenas, 3D, drag, marquee, cursor. Etapa 6: más bloques y variantes.
+
 ## Etapa 1 — Estructura, árbol JSON, preview y selección  ✅
 - Proyecto Vite + vanilla JS, `motion` instalado (sin usar hasta la Etapa 4).
 - Árbol JSON (`core/tree.js`), store con `mutate`/`subscribe` (`core/store.js`).

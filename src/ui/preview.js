@@ -5,6 +5,7 @@
 
 import { getState, subscribe, select, setContent, refresh } from '../core/store.js';
 import { renderNode, TIPOS_TEXTO } from '../render/renderer.js';
+import { cssPagina } from '../animations/index.js';
 
 export function initPreview(host) {
   // 'stage' es la "pantalla"; en la Etapa 3 cambiará de ancho (móvil/escritorio)
@@ -12,11 +13,28 @@ export function initPreview(host) {
   stage.className = 'stage';
   host.appendChild(stage);
 
+  // Las animaciones de scroll/texto solo se ven al "reproducir" (botón ▶ o al
+  // cambiar un ajuste de animación); en el resto de redibujos la página queda
+  // quieta para poder editar. El hover siempre funciona.
+  let reproducir = false;
+  const estilo = document.createElement('style');
+
   function dibujar() {
-    const { page, viewMode } = getState();
+    const { page, viewMode, selectedId } = getState();
+    const play = reproducir;
+    reproducir = false;
     stage.classList.toggle('movil', viewMode === 'mobile'); // ancho 390px en vista móvil
-    stage.replaceChildren(renderNode(page, viewMode));
+    estilo.textContent = cssPagina(page, { scroll: play });
+    stage.replaceChildren(estilo, renderNode(page, viewMode, { play }));
     marcarSeleccion();
+    if (play) {
+      // asegura que lo animado se vea y, en dos cuadros (para que el navegador
+      // pinte antes el estado inicial), dispara todas las animaciones
+      if (selectedId) stage.querySelector(`[data-id="${selectedId}"]`)?.scrollIntoView({ block: 'nearest' });
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        stage.querySelectorAll('[data-rv]').forEach((el) => el.classList.add('in'));
+      }));
+    }
   }
 
   function marcarSeleccion() {
@@ -28,6 +46,7 @@ export function initPreview(host) {
   // ---- Edición directa de texto ----
   function editar(el) {
     if (el.isContentEditable) return;
+    el.textContent = el.textContent; // por si tiene <span> de animación: queda texto plano
     // 'plaintext-only' evita pegar HTML ajeno; si el navegador no lo soporta, cae a 'true'
     el.contentEditable = 'plaintext-only';
     if (!el.isContentEditable) el.contentEditable = 'true';
@@ -89,6 +108,7 @@ export function initPreview(host) {
 
   subscribe((_, cambio) => {
     if (cambio === 'selection') marcarSeleccion();
+    else if (cambio === 'play') { reproducir = true; dibujar(); }
     else if (cambio === 'page' || cambio === 'view') dibujar();
     // 'text': no hacer nada
   });

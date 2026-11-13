@@ -1,7 +1,7 @@
 // BARRA SUPERIOR: deshacer/rehacer, escritorio/móvil, nuevo/abrir/guardar JSON, exportar HTML.
 // También registra los atajos Ctrl+Z / Ctrl+Y (o Ctrl+Shift+Z).
 
-import { getState, subscribe, undo, redo, puedeDeshacer, puedeRehacer, setViewMode, replacePage, newPage } from '../core/store.js';
+import { getState, subscribe, undo, redo, puedeDeshacer, puedeRehacer, setViewMode, replacePage, newPage, play } from '../core/store.js';
 import { exportHTML, descargar } from '../export/exporter.js';
 
 export function initToolbar(host) {
@@ -13,6 +13,7 @@ export function initToolbar(host) {
       <button id="vista-desktop" title="Vista escritorio">🖥 Escritorio</button>
       <button id="vista-mobile" title="Vista móvil (los cambios se guardan solo para móvil)">📱 Móvil</button>
     </span>
+    <button id="btn-play" title="Reproducir las animaciones de scroll y de texto en el preview">▶ Reproducir</button>
     <span class="espacio"></span>
     <button id="btn-nuevo">Nuevo</button>
     <button id="btn-abrir">Abrir JSON</button>
@@ -24,6 +25,7 @@ export function initToolbar(host) {
 
   $('#btn-undo').addEventListener('click', undo);
   $('#btn-redo').addEventListener('click', redo);
+  $('#btn-play').addEventListener('click', play);
   $('#vista-desktop').addEventListener('click', () => setViewMode('desktop'));
   $('#vista-mobile').addEventListener('click', () => setViewMode('mobile'));
 

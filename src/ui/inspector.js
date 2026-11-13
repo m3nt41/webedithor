@@ -5,10 +5,11 @@
 //   página mientras el foco está dentro (salvo que cambie la selección o un
 //   select altere qué campos se muestran: ahí se fuerza).
 
-import { getState, subscribe, setStyle, setContent, setName } from '../core/store.js';
+import { getState, subscribe, setStyle, setContent, setName, setAnimation } from '../core/store.js';
 import { findNode } from '../core/tree.js';
 import { effectiveStyles, TIPOS_TEXTO } from '../render/renderer.js';
 import { GRUPOS } from './fields.js';
+import { GRUPOS_ANIM } from '../animations/index.js';
 
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 
@@ -71,6 +72,28 @@ export function initInspector(host) {
       }
     }
 
+    // ---- Animaciones (los grupos viven en src/animations/) ----
+    for (const g of GRUPOS_ANIM) {
+      if (!g.tipos.includes(nodo.type)) continue;
+      const datos = nodo.animation?.[g.id]; // undefined = grupo apagado
+      html += `<h3>${g.titulo}</h3>`;
+      for (const f of g.campos) {
+        if (f.key !== g.principal && !datos) continue; // apagado: solo se ve el selector principal
+        if (f.cuando && !f.cuando(datos, datos?.effect)) continue;
+        const v = datos?.[f.key] ?? g.defaults[f.key] ?? '';
+        const a = `data-a="${g.id}.${f.key}"`;
+        if (f.kind === 'select') {
+          const vSel = f.key === g.principal ? (datos?.[f.key] ?? '') : v;
+          const opts = f.options.map(([val, txt]) => `<option value="${esc(val)}" ${val === String(vSel) ? 'selected' : ''}>${txt}</option>`).join('');
+          html += `<div class="campo"><label>${f.label}</label><select ${a}>${opts}</select></div>`;
+        } else if (f.kind === 'color') {
+          html += `<div class="campo"><label>${f.label}</label><input type="color" ${a} value="${aHex(v) ?? '#7c5cff'}"></div>`;
+        } else {
+          html += `<div class="campo"><label>${f.label}</label><input type="number" ${a} data-num step="${f.step ?? 1}" min="${f.min ?? 0}" value="${v}"></div>`;
+        }
+      }
+    }
+
     // JSON del nodo, plegado (útil para depurar)
     const { children, ...resto } = nodo;
     html += `<details><summary>JSON del nodo</summary><pre>${esc(JSON.stringify(resto, null, 2))}</pre></details>`;
@@ -82,8 +105,14 @@ export function initInspector(host) {
     const t = e.target;
     const id = idDibujado;
     if (!id) return;
+    // Un select puede mostrar/ocultar campos: pedimos reconstruir el panel (antes del cambio)
+    if (t.tagName === 'SELECT' && (t.dataset.s || t.dataset.a)) forzar = true;
     if (t.dataset.name !== undefined) setName(id, t.value);
-    else if (t.dataset.c) setContent(id, t.dataset.c, t.dataset.num !== undefined ? +t.value : t.value);
+    else if (t.dataset.a) {
+      const [grupo, key] = t.dataset.a.split('.');
+      const num = t.dataset.num !== undefined;
+      setAnimation(id, grupo, key, num ? (t.value === '' ? '' : +t.value) : t.value);
+    } else if (t.dataset.c) setContent(id, t.dataset.c, t.dataset.num !== undefined ? +t.value : t.value);
     else if (t.dataset.pick) {
       // el selector de color rellena la caja de texto vecina
       t.nextElementSibling.value = t.value;

@@ -5,6 +5,7 @@
 // El árbol se autoguarda en localStorage.
 
 import { createPage, findNode, findParent, cloneWithNewIds, normalizePage } from './tree.js';
+import { DEFAULTS, PRINCIPAL } from '../animations/index.js';
 
 const CLAVE_LS = 'editor-landings:pagina';
 const MAX_HISTORIAL = 100;
@@ -33,7 +34,7 @@ let ultimoCambio = 0;
 
 const listeners = new Set();
 
-/** Suscribe un callback(state, cambio). cambio = 'page' | 'text' | 'selection' | 'view'. */
+/** Suscribe un callback(state, cambio). cambio = 'page' | 'text' | 'selection' | 'view' | 'play'. */
 export function subscribe(fn) {
   listeners.add(fn);
   return () => listeners.delete(fn);
@@ -155,6 +156,30 @@ export function setContent(id, key, value, tipo = 'page') {
     const n = findNode(page, id);
     if (n) n.content[key] = value;
   }, tipo, `c:${id}:${key}`);
+}
+
+/** Cambia un dato de una animación (grupo = 'appear' | 'hover' | 'text').
+ *  Poner el campo principal en '' apaga el grupo; ponerlo con valor lo crea con
+ *  los valores por defecto. Emite 'play': el preview reproduce las animaciones. */
+export function setAnimation(id, grupo, key, value) {
+  mutate((page) => {
+    const n = findNode(page, id);
+    if (!n) return;
+    const anim = n.animation ?? (n.animation = {});
+    if (key === PRINCIPAL[grupo] && !value) {
+      delete anim[grupo];
+    } else {
+      const g = anim[grupo] ?? (anim[grupo] = { ...DEFAULTS[grupo] });
+      if (value === '' || value == null) delete g[key];
+      else g[key] = value;
+    }
+    if (!Object.keys(anim).length) n.animation = null;
+  }, 'play', `a:${id}:${grupo}:${key}`);
+}
+
+/** Pide al preview que reproduzca las animaciones de la página. */
+export function play() {
+  emit('play');
 }
 
 /** Cambia el nombre del nodo (solo se ve en el editor). */

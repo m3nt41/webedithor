@@ -15,7 +15,9 @@ Estado al día. El detalle de las etapas 1 a 7 (qué se hizo, cómo se verificó
 **Decisiones abiertas**
 - `!important` en los estados (variants): aplicar o no la alternativa (a) (estados cargar/entrar como transición con clase en vez de `@keyframes … forwards`; arreglaría el "entra de golpe" y quitaría el `!important`, pero cambia el export). Análisis en `docs/historial.md`, Etapa 6.
 **Bugs abiertos**
-- Ninguno conocido. (Scroll suave escalonado en Firefox: arreglado, ver abajo; falta confirmarlo a ojo con una rueda real.)
+- Ninguno conocido.
+**Pendientes de baja prioridad**
+- Scroll suave (Lenis 1.3.27, SUAVE: lerp 0.1, wheelMultiplier 1) se siente raro en Firefox y Chrome de m3nt41, y en el demo oficial de Lenis también; apagado por defecto y no viaja en el export si está apagado; revisar más adelante (probar duration en vez de lerp, o dejarlo apagado).
 **Limitaciones conocidas (no son bugs de la lista)**
 - Imágenes subidas son data URL: pueden inflar el `.html` y el JSON.
 - Arrastrar capas solo se probó con eventos sintéticos en Chromium; no se puede arrastrar desde el preview ni desde la paleta; el árbol de capas no tiene "plegar todo".
@@ -49,5 +51,4 @@ Ya confirmado en Firefox 160 sobre el **HTML exportado** (Selenium): sticky arri
 - `prefers-reduced-motion` desde los ajustes del sistema (solo se probó con la preferencia de un perfil temporal) y ancho de teléfono real con `100svh` y barra de direcciones móvil.
 - Estado por clic por teclado; fluidez a ojo de parallax, ligado, escenas y cascada; otras versiones de Firefox.
 - Cascada de hijos con scroll real y animación a ojo; preview del editor con ▶ Reproducir en los 3 modos de texto nuevos; "Por línea (medida)" tras `document.fonts.ready` con una fuente web real (hoy el export solo usa fuentes del sistema).
-- **Scroll suave (Lenis): la sensación con una rueda física y un trackpad reales** (y en Chrome/Edge/Safari).
 - `:active` y `:focus-visible` con mouse/teclado reales en el preview del editor (en el export ya se probaron).

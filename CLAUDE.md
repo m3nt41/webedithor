@@ -43,6 +43,10 @@ src/
 - Código simple y comentado; el usuario lo modificará a mano.
 - El usuario es m3nt41: español informal, Windows + VS Code, prefiere CSS puro antes que JS, guía paso a paso en terminal.
 - Probar siempre en local con `npm run dev` antes de cualquier deploy.
+- Pruebas en navegador: si la extensión Claude in Chrome está conectada (/chrome), úsala al final de cada bloque o etapa para probar lo visual e interactivo: arrastre con mouse real, scroll, sticky, animaciones, ancho móvil real y errores de consola. No la uses para cada cambio pequeño, solo una pasada por bloque.
+- Si Chrome no está disponible, dilo y dime qué falta probar a mano.
+- Chrome no reemplaza a Firefox, que es el navegador de m3nt41: lo que dependa de Firefox (scroll-linked, sticky, drag, animaciones) lo anotas en PROGRESS.md como "pendiente de probar en Firefox".
+- Antes de probar, dime si hace falta tener `npm run dev` corriendo.
 - Una etapa a la vez. Al terminar: revisar bugs corriendo el proyecto, actualizar `PROGRESS.md` (hecho / pendiente / decisiones / bugs), commit de git con el nombre de la etapa, avisar y DETENERSE. No empezar la siguiente sin que lo pida.
 
 ## Etapas

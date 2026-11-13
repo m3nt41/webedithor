@@ -32,9 +32,7 @@ t('escena sin el campo Transición: el export es IDÉNTICO al de antes (tests/go
   const dir = new URL('./golden/', import.meta.url);
   const p = normalizePage(JSON.parse(readFileSync(new URL('escena-sin-transicion.json', dir), 'utf8'))); // pasa por el normalizador, como al abrir un .json
   assert.equal(p.children[1].animation.scene.transition, 50);
-  assert.equal(exportHTML(p), readFileSync(new URL('escena-sin-transicion.html', dir), 'utf8').replace(/
-/g, '
-')); // (git en Windows puede cambiar los saltos de línea)
+  assert.equal(exportHTML(p), readFileSync(new URL('escena-sin-transicion.html', dir), 'utf8').replace(/\r\n/g, '\n')); // (git en Windows puede cambiar los saltos de linea)
 });
 
 t('escena: con Transición 40 el export lleva * 2.5 (y con 50 sigue * 2); preview y export usan el mismo valor', () => {

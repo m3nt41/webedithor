@@ -4,12 +4,10 @@
 // Los enlaces apuntan a anclas (#servicios, #precios, #contacto...): cada bloque
 // trae su ancla puesta (campo "Ancla (id)" del inspector).
 //
-// PEGADO ARRIBA: el navbar nace con position:sticky; top:0; z-index:50.
-// Para quitarlo: selecciona el navbar -> Inspector -> "Posición" -> "Normal".
+// El navbar nace NORMAL (sin sticky). Para pegarlo arriba: selecciona el navbar ->
+// Inspector -> "Posición" -> "Pegado" (y pon la distancia, ej. 0).
 
 import { n, texto, boton } from './util.js';
-
-const PEGADO = { position: 'sticky', top: '0', zIndex: '50' };
 
 /** Enlaces de texto (son nodos "button" = <a>, editables como cualquier botón). */
 const enlace = (t, href, color = 'inherit') =>
@@ -32,7 +30,7 @@ const cta = (t, extra = {}) => boton(t, '#contacto', { padding: '10px 20px', fon
 const barra = (styles, children) =>
   n('section', {
     name: 'Navbar',
-    styles: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px', padding: '16px 40px', ...PEGADO, ...styles },
+    styles: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px', padding: '16px 40px', ...styles },
     mobile: { padding: '12px 20px', gap: '10px 16px' },
     children,
   });

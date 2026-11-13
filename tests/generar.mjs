@@ -20,6 +20,8 @@ const guardar = (nombre, p) => writeFileSync(join(out, nombre + '.html'), export
 mkdirSync(out, { recursive: true });
 
 // 1. Sticky arriba y abajo (dentro de un contenedor alto)
+// El Navbar nace normal; estas pruebas lo necesitan pegado (como si el usuario lo activara en Posición → Pegado)
+function navPegado() { const nv = createBlock('navbar', 'oscuro'); Object.assign(nv.styles.base, { position: 'sticky', top: '0', zIndex: '50' }); return nv; }
 guardar('sticky', pagina(
   sec('Alta', {}, [
     caja('Contenedor', 3000, { display: 'block' }, [
@@ -67,7 +69,7 @@ guardar('combo', pagina(sec('Arriba', { height: '1400px' }), sec('Zona', { heigh
 // 7. Escena por scroll (con navbar pegado)
 // (la escena se fija a los valores de siempre —3 pantallas, transición 50— porque el test mide esa mecánica; los defaults nuevos del bloque son 4 / 40)
 const escVieja = createBlock('scene', 'textos'); escVieja.animation.scene = { steps: '3', length: 3, transition: 50 };
-guardar('escena', pagina(createBlock('navbar', 'oscuro'), escVieja, createBlock('hero', 'oscuro')));
+guardar('escena', pagina(navPegado(), escVieja, createBlock('hero', 'oscuro')));
 // 9. Scroll suave (Etapa 7, bloque 4): navbar pegado, scroll interno, ancla, parallax; y la misma página SIN el interruptor
 const paginaSuave = (activo) => {
   const nav = sec('Nav', { position: 'sticky', top: '0', height: '60px', background: '#222', zIndex: '50' });
@@ -82,7 +84,7 @@ const paginaSuave = (activo) => {
 guardar('suave', paginaSuave(true));
 guardar('suave-off', paginaSuave(false));
 // 10. Escena por scroll con scroll suave activado (convivencia)
-const esc = pagina(createBlock('navbar', 'oscuro'), createBlock('scene', 'textos'), createBlock('hero', 'oscuro')); esc.content.smoothScroll = true;
+const esc = pagina(navPegado(), createBlock('scene', 'textos'), createBlock('hero', 'oscuro')); esc.content.smoothScroll = true;
 guardar('escena-suave', esc);
 // 11. Posición: sticky en escritorio y "Normal" (static explícito) en móvil; y un navbar así con una ancla
 const pegado = tit('POS-MOVIL-NORMAL', { position: 'sticky', top: '10px', zIndex: '50', height: '60px', background: '#fde68a' });

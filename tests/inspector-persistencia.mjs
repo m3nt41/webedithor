@@ -127,7 +127,9 @@ try {
 
   // ===== 9. Navbar: Posición → Normal, luego tocar cosas =====
   await seleccionar('Navbar');
-  ver(await estilo('Navbar', 'base', 'position') === 'sticky', '9a. (partida) el navbar nace sticky', String(await estilo('Navbar', 'base', 'position')));
+  ver(await estilo('Navbar', 'base', 'position') === undefined, '9a. (partida) el navbar nace normal (sin sticky)', String(await estilo('Navbar', 'base', 'position')));
+  await elegirOpcion('position', 'Pegado (sticky)'); await esperar(400);
+  ver(await estilo('Navbar', 'base', 'position') === 'sticky', '9a2. Posición → Pegado lo pega', String(await estilo('Navbar', 'base', 'position')));
   await elegirOpcion('position', 'Normal'); await esperar(400);
   ver(await estilo('Navbar', 'base', 'position') === undefined, '9b. Posición → Normal borra position de styles.base', String(await estilo('Navbar', 'base', 'position')));
   await modo('mobile'); await modo('desktop');

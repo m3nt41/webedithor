@@ -2,6 +2,29 @@
 
 Etapas hechas: 1, 2, 3, 4, 5, 5.5 (navbar y anclas) y 6 (transiciones y estados). Etapa 7 (scroll) en curso: hechos sticky, parallax, scroll-linked y escenas; falta scroll suave. El reparto completo está en `CLAUDE.md` y la lista de funciones en `FEATURES.md`.
 
+## Pruebas automáticas en Firefox real  ✅ (8/8 pasan)
+
+**Cómo correrlas**: `npm run test:selenium` (archivo `tests/selenium.test.mjs`; genera los HTML con el exportador real en `tests/out/` y abre tu Firefox instalado). Usa `selenium-webdriver` (devDependency; Selenium Manager baja geckodriver solo) y Firefox en modo headless con un **perfil nuevo y temporal** en cada arranque (geckodriver lo crea en `%TEMP%\rust_mozprofile…` y lo borra al cerrar; nunca se usa tu perfil normal). La ruta del Firefox es `C:\Program Files\Mozilla Firefox\firefox.exe` (se cambia con la variable `FIREFOX_BIN`). No se tocó el código del editor.
+
+**Resultado en Firefox 160.0 (Windows, headless, `file://`, ventana 900×600), sobre el HTML exportado: todo pasa.**
+
+| Prueba | Resultado |
+|---|---|
+| Sticky arriba y abajo (dentro de su contenedor; deja de pegarse al acabar el contenedor) | ✅ |
+| Parallax con scroll real | ✅ translateY −100 / 47,1 / 100 px a scroll 800 / 1300 / 1900 (igual que en Chromium) |
+| Scroll-linked (opacidad y zoom) | ✅ opacidad 0→1, zoom 0,6→1 |
+| Press (mouse mantenido) | ✅ `none` → `scale(1.08)` → `none` |
+| Focus con Tab (`:focus-visible`) | ✅ anillo rojo `solid` solo en el botón enfocado |
+| Estado por clic | ✅ alterna `.on` (fondo verde, escala 1,3) y el `href="#"` no navega |
+| Texto por línea (medida) al achicar 900 → 300 px | ✅ re-mide: 2 → 4 líneas; cada grupo `--i` coincide con las líneas reales |
+| Escena por scroll (con navbar pegado) | ✅ contenedor 1800 = 3 × 600, capa 531 = 600 − 69, pegada a 69 px en todo el recorrido, fundido cruzado correcto |
+
+**Qué falló**: nada del editor. Solo fallos de los propios tests, ya corregidos: (1) la prueba de focus reutilizaba el objeto de acciones de Selenium, que repite las pulsaciones anteriores (el Tab se saltaba el botón); (2) dos umbrales mal escritos (sticky al final del contenedor y estado por clic leía `transform` en vez de `scale`), que se vieron al validar en Chromium.
+
+**Lo que estas pruebas NO cubren** (probar a mano en Firefox si importa): `prefers-reduced-motion` desde los ajustes del sistema; ancho de teléfono real y `100svh` con la barra de direcciones de un móvil; fluidez a ojo; el preview del editor (solo se probó el HTML exportado); otras versiones de Firefox. Con esto, los "Pendiente de probar en Firefox" de las etapas 6 y 7 quedan confirmados para el HTML exportado, salvo lo de esta lista.
+
+**Playwright**: también quedó configurado (`npm run test:firefox`, mismas 8 pruebas, validadas en Chromium con `PW_BROWSER=chromium`), pero su Firefox propio (builds 1555 y 1572, con `@playwright/test` 1.64.1) **no arranca en este PC** ("configuración en paralelo incorrecta": no resuelve la referencia a `mozglue`; el Firefox 160 normal sí funciona). Se dejó por si en otro equipo funciona; aquí la vía que sirve es Selenium.
+
 ## Etapa 1 — Estructura, árbol JSON, preview y selección  ✅
 - Proyecto Vite + vanilla JS, `motion` instalado (sin usar todavía).
 - Árbol JSON (`core/tree.js`), store con `mutate`/`subscribe` (`core/store.js`).

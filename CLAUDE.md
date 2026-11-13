@@ -9,7 +9,7 @@ Editor visual de landings que corre 100% en el navegador (sin backend, hosting n
 
 ## Stack
 - Vite + JS vanilla (módulos ES). Sin frameworks.
-- `motion` (npm) está instalado pero **sin usar**: la Etapa 4 salió toda en CSS puro. Usarlo (o no) para springs reales, scroll-linked, layout y drag es **decisión de m3nt41**, pendiente (ver `FEATURES.md`, sección "Motion vs CSS puro" en `PROGRESS.md`).
+- `motion` (npm) está instalado pero **sin usar** todavía. Decisión de m3nt41: opción (a), CSS puro donde se pueda y Motion solo en lo que obliga (drag con rebote, inercia, layout animations, scroll suave, scroll-linked en Firefox); se carga en el `.html` exportado solo si la página lo usa.
 - Guardado: JSON en localStorage + exportar/importar `.json` (Etapa 3).
 - Exporta un solo `.html`. Si una animación se puede en CSS puro, se exporta en CSS; solo se añade JS (script mínimo, Motion o propio) cuando el CSS no alcance y m3nt41 lo apruebe.
 
@@ -31,7 +31,7 @@ src/
   styles/app.css       estilos del editor
   core/tree.js         crear/buscar nodos
   core/store.js        estado + mutate(fn,tipo,clave) + historial undo/redo + autoguardado localStorage + acciones (setStyle, duplicateNode, moveSection, replacePage...)
-  blocks/              hero, services, footer + index.js (registro)
+  blocks/              hero, services, gallery, testimonials, pricing, contact, footer (4 variantes c/u) + elements.js (elementos sueltos) + util.js (atajos) + index.js (registro)
   render/renderer.js   árbol -> DOM
   ui/                  sidebar.js, preview.js (selección + edición de texto), inspector.js, fields.js (campos del panel), toolbar.js (undo/redo, escritorio/móvil, nuevo/abrir/guardar JSON, exportar)
   animations/          un módulo por animación: appear, hover, text + base (efectos/curvas/keyframes) + index (registro GRUPOS_ANIM)
@@ -53,9 +53,9 @@ Cada función de `FEATURES.md` tiene una etapa asignada (se indica allí con `�
 2. Panel de propiedades + edición directa de texto + exportar HTML. ✅
 3. Reordenar secciones, vista móvil/escritorio, guardar/abrir JSON, undo/redo. ✅
 4. Motor de animaciones base (CSS puro): appear (fade, slide, zoom, blur, voltear, al entrar en pantalla), hover, revelado de texto por letra y palabra, delay, stagger de texto. ✅
+5. Elementos y bloques: árbol de capas con arrastrar entre contenedores, añadir/borrar/duplicar/mover elementos, atajos, 7 bloques × 4 variantes. ✅
 
 **Pendientes**
-5. **Elementos y bloques.** Añadir, borrar, duplicar y mover elementos dentro de las secciones (reordenar y arrastrar entre contenedores, con undo/redo); más bloques (hero, servicios, galería, testimonios, precios, contacto WhatsApp, footer) con 3-4 variantes cada uno. *(No es de FEATURES.md; va antes de seguir con animaciones para tener con qué probarlas.)*
 6. **Transiciones y estados.** Rotación en appear; "al cargar" como disparador; press y focus con transición; variants (estados con nombre + animación entre ellos); spring real (rigidez, amortiguación, masa); tween con cubic-bezier editable; stagger entre hijos; texto por línea.
 7. **Scroll.** Parallax, scroll-linked, sticky, escenas por scroll, scroll suave.
 8. **Movimiento avanzado.** Layout animations, drag con límites y rebote, inercia, 3D transforms (perspectiva, rotación X/Y).

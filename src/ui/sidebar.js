@@ -1,98 +1,169 @@
-// SIDEBAR (izquierda): lista de secciones + botones para añadir bloques.
-// Cada fila: clic = seleccionar, arrastrar = reordenar, ⧉ = duplicar, ✕ = borrar.
-// (Si te equivocas al borrar: Ctrl+Z.)
+// SIDEBAR (izquierda): árbol de capas + paletas para añadir bloques y elementos.
+// Árbol: clic = seleccionar, ▸/▾ = plegar, ⧉ = duplicar, ✕ = borrar (Ctrl+Z lo recupera).
+// Arrastrar una fila: suéltala en el borde de arriba/abajo de otra (= antes/después)
+// o en el centro de un contenedor/sección (= dentro). Funciona entre contenedores.
 
-import { getState, subscribe, select, addSection, removeNode, duplicateNode, moveSection } from '../core/store.js';
+import { getState, subscribe, select, addNode, addElement, removeNode, duplicateNode, moveNode, puedeMover } from '../core/store.js';
+import { findNode, findParent } from '../core/tree.js';
 import { BLOCKS, createBlock } from '../blocks/index.js';
+import { ELEMENTS } from '../blocks/elements.js';
+
+const ICONOS = { section: '▭', container: '▢', heading: 'H', text: '¶', button: '⬭', image: '▣' };
 
 export function initSidebar(host) {
   host.innerHTML = `
-    <h2>Secciones</h2>
+    <h2>Capas</h2>
     <button id="btn-pagina" class="pagina">⚙ Ajustes de la página</button>
-    <ul class="lista" id="lista-secciones"></ul>
+    <ul class="lista arbol" id="arbol"></ul>
+    <h2>Añadir elemento</h2>
+    <p class="ayuda">Va dentro de lo seleccionado (o tras él).</p>
+    <div class="bloques dos" id="botones-elementos"></div>
     <h2>Añadir bloque</h2>
-    <div class="bloques" id="botones-bloques"></div>
+    <div id="botones-bloques"></div>
   `;
-  const lista = host.querySelector('#lista-secciones');
-  const botones = host.querySelector('#botones-bloques');
+  const arbol = host.querySelector('#arbol');
+  const botonesEl = host.querySelector('#botones-elementos');
+  const botonesBl = host.querySelector('#botones-bloques');
 
-  // Selecciona el nodo raíz (fondo, fuente y título de toda la página)
   host.querySelector('#btn-pagina').addEventListener('click', () => select(getState().page.id));
 
-  // Un botón por bloque registrado en src/blocks/index.js
-  BLOCKS.forEach((b) => {
+  // ---- Elementos sueltos ----
+  ELEMENTS.forEach((e) => {
     const btn = document.createElement('button');
-    btn.textContent = `+ ${b.label}`;
-    btn.addEventListener('click', () => addSection(createBlock(b.id)));
-    botones.appendChild(btn);
+    btn.textContent = `+ ${e.label}`;
+    btn.addEventListener('click', () => addElement(e.crear()));
+    botonesEl.appendChild(btn);
   });
 
-  let origen = null; // índice de la fila que se está arrastrando
+  // ---- Bloques: un <details> por bloque con un botón por variante ----
+  BLOCKS.forEach((b) => {
+    const det = document.createElement('details');
+    det.className = 'bloque';
+    const sum = document.createElement('summary');
+    sum.textContent = b.label;
+    const vars = document.createElement('div');
+    vars.className = 'variantes';
+    Object.entries(b.variants).forEach(([clave, v]) => {
+      const btn = document.createElement('button');
+      btn.textContent = `+ ${v.label}`;
+      // los bloques son secciones: se añaden tras la sección seleccionada (o al final)
+      btn.addEventListener('click', () => addElement(createBlock(b.id, clave)));
+      vars.appendChild(btn);
+    });
+    det.append(sum, vars);
+    botonesBl.appendChild(det);
+  });
+
+  // ---- Árbol de capas ----
+  const plegados = new Set(); // ids de nodos plegados (solo vista, no se guarda)
+  let arrastrado = null; // id del nodo que se arrastra
 
   function limpiarMarcas() {
-    lista.querySelectorAll('.drop-antes, .drop-despues, .arrastrando').forEach((li) => li.classList.remove('drop-antes', 'drop-despues', 'arrastrando'));
+    arbol.querySelectorAll('.drop-antes, .drop-despues, .drop-dentro, .arrastrando').forEach((li) => li.classList.remove('drop-antes', 'drop-despues', 'drop-dentro', 'arrastrando'));
   }
 
-  function filaSeccion(sec, i, selectedId) {
-    const li = document.createElement('li');
-    li.className = sec.id === selectedId ? 'activa' : '';
-    li.draggable = true;
+  /** Según dónde cae el ratón sobre la fila, decide el destino válido (o null). */
+  function destinoDe(page, fila, e) {
+    const nodo = findNode(page, fila.dataset.id);
+    const r = fila.getBoundingClientRect();
+    const y = (e.clientY - r.top) / r.height;
+    const zona = y < 0.3 ? 'antes' : y > 0.7 ? 'despues' : 'dentro';
+    const padre = findParent(page, nodo.id);
+    const i = padre.children.indexOf(nodo);
+    const opciones = {
+      antes: { parentId: padre.id, index: i, marca: 'drop-antes' },
+      despues: { parentId: padre.id, index: i + 1, marca: 'drop-despues' },
+      dentro: { parentId: nodo.id, index: nodo.children.length, marca: 'drop-dentro' },
+    };
+    // Si la zona preferida no es válida, se prueba "dentro" (p. ej. soltar un título sobre una sección)
+    for (const z of [zona, 'dentro']) {
+      const o = opciones[z];
+      if (puedeMover(page, arrastrado, o.parentId)) return o;
+    }
+    return null;
+  }
 
+  function fila(nodo, nivel, selectedId) {
+    const li = document.createElement('li');
+    li.className = nodo.id === selectedId ? 'activa' : '';
+    li.dataset.id = nodo.id;
+    li.draggable = true;
+    li.style.paddingLeft = `${6 + nivel * 14}px`;
+
+    const plegar = document.createElement('button');
+    plegar.className = 'plegar';
+    plegar.textContent = nodo.children.length ? (plegados.has(nodo.id) ? '▸' : '▾') : '';
+    plegar.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (plegados.has(nodo.id)) plegados.delete(nodo.id); else plegados.add(nodo.id);
+      dibujar();
+    });
+
+    const icono = document.createElement('i');
+    icono.textContent = ICONOS[nodo.type] ?? '·';
     const nombre = document.createElement('span');
-    nombre.textContent = sec.name;
-    nombre.addEventListener('click', () => select(sec.id));
+    nombre.textContent = nodo.name;
+    nombre.title = nodo.name;
 
     const dup = document.createElement('button');
     dup.textContent = '⧉';
-    dup.title = 'Duplicar sección';
-    dup.addEventListener('click', () => duplicateNode(sec.id));
+    dup.title = 'Duplicar';
+    dup.addEventListener('click', (e) => { e.stopPropagation(); duplicateNode(nodo.id); });
 
     const borrar = document.createElement('button');
     borrar.textContent = '✕';
-    borrar.title = 'Borrar sección';
+    borrar.title = 'Borrar';
     borrar.className = 'borrar';
-    borrar.addEventListener('click', () => removeNode(sec.id));
+    borrar.addEventListener('click', (e) => { e.stopPropagation(); removeNode(nodo.id); });
 
-    li.append(nombre, dup, borrar);
+    li.append(plegar, icono, nombre, dup, borrar);
+    li.addEventListener('click', () => select(nodo.id));
 
     // ---- Arrastrar y soltar ----
     li.addEventListener('dragstart', (e) => {
-      origen = i;
+      arrastrado = nodo.id;
       e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/plain', String(i)); // Firefox exige setData
+      e.dataTransfer.setData('text/plain', nodo.id); // Firefox exige setData
       li.classList.add('arrastrando');
     });
     li.addEventListener('dragover', (e) => {
-      if (origen === null) return;
-      e.preventDefault();
-      const r = li.getBoundingClientRect();
-      const despues = e.clientY > r.top + r.height / 2;
+      if (!arrastrado) return;
+      const d = destinoDe(getState().page, li, e);
       limpiarMarcas();
-      li.classList.add(despues ? 'drop-despues' : 'drop-antes');
+      if (!d) return; // sin preventDefault: el cursor muestra "no permitido"
+      e.preventDefault();
+      li.classList.add(d.marca);
     });
     li.addEventListener('drop', (e) => {
-      if (origen === null) return;
-      e.preventDefault();
-      const r = li.getBoundingClientRect();
-      let destino = e.clientY > r.top + r.height / 2 ? i + 1 : i;
-      if (origen < destino) destino--; // al quitar el origen, los índices de después bajan 1
-      const desde = origen;
-      origen = null;
+      if (!arrastrado) return;
+      const d = destinoDe(getState().page, li, e);
+      const id = arrastrado;
+      arrastrado = null;
       limpiarMarcas();
-      moveSection(desde, destino);
+      if (!d) return;
+      e.preventDefault();
+      plegados.delete(d.parentId); // que se vea lo recién soltado
+      moveNode(id, d.parentId, d.index);
     });
-    li.addEventListener('dragend', () => { origen = null; limpiarMarcas(); });
+    li.addEventListener('dragend', () => { arrastrado = null; limpiarMarcas(); });
     return li;
   }
 
   function dibujar() {
     const { page, selectedId } = getState();
-    lista.replaceChildren();
+    // el nodo seleccionado siempre debe verse: se despliegan sus ancestros
+    if (selectedId) for (let p = findParent(page, selectedId); p; p = findParent(page, p.id)) plegados.delete(p.id);
+
+    arbol.replaceChildren();
     if (!page.children.length) {
-      lista.innerHTML = '<li class="vacio">Aún no hay secciones. Añade un bloque.</li>';
+      arbol.innerHTML = '<li class="vacio">Aún no hay secciones. Añade un bloque.</li>';
       return;
     }
-    page.children.forEach((sec, i) => lista.appendChild(filaSeccion(sec, i, selectedId)));
+    const recorrer = (nodos, nivel) => nodos.forEach((n) => {
+      arbol.appendChild(fila(n, nivel, selectedId));
+      if (n.children.length && !plegados.has(n.id)) recorrer(n.children, nivel + 1);
+    });
+    recorrer(page.children, 0);
   }
 
   subscribe(dibujar);

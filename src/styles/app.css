@@ -40,6 +40,28 @@ button.primario:hover { background: #6a4aee; }
 .lista li.drop-antes { box-shadow: 0 -2px 0 #7c5cff; }
 .lista li.drop-despues { box-shadow: 0 2px 0 #7c5cff; }
 
+/* Árbol de capas */
+.arbol li { padding: 4px 6px; gap: 4px; }
+.arbol li i { font-style: normal; width: 16px; text-align: center; color: #9a9aa8; font-size: 12px; flex: none; }
+.arbol li span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
+.arbol li .plegar { width: 14px; padding: 0; flex: none; font-size: 10px; }
+.arbol li.drop-dentro { outline: 2px solid #7c5cff; outline-offset: -2px; background: #2f2a55; }
+.ayuda { color: #777; font-size: 11px; margin: -4px 0 8px; }
+.bloques.dos { grid-template-columns: 1fr 1fr; }
+details.bloque { margin-bottom: 4px; }
+details.bloque summary { cursor: pointer; padding: 7px 8px; background: #2f2f38; border: 1px solid #44444f; border-radius: 6px; }
+details.bloque summary:hover { background: #3b3470; }
+details.bloque .variantes { display: grid; gap: 4px; padding: 6px 0 6px 10px; }
+details.bloque .variantes button { padding: 6px 8px; background: #26262d; color: inherit; border: 1px solid #3a3a45; border-radius: 6px; cursor: pointer; text-align: left; font-size: 13px; }
+details.bloque .variantes button:hover { background: #3b3470; }
+
+/* Acciones del elemento seleccionado (inspector) */
+.acciones { display: flex; gap: 6px; margin: 0 0 10px; }
+.acciones button { flex: 1; padding: 6px 0; background: #2f2f38; color: inherit; border: 1px solid #44444f; border-radius: 6px; cursor: pointer; }
+.acciones button:hover:not(:disabled) { background: #3b3470; }
+.acciones button.borrar:hover { background: #7a2a2a; }
+.acciones button:disabled { opacity: .35; cursor: default; }
+
 .bloques { display: grid; gap: 6px; }
 .bloques button { padding: 8px; background: #2f2f38; color: inherit; border: 1px solid #44444f; border-radius: 6px; cursor: pointer; }
 .bloques button:hover { background: #3b3470; }

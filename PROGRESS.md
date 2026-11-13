@@ -1,6 +1,6 @@
 # PROGRESS
 
-Etapas hechas: 1, 2, 3 y 4. Próxima: 5 (elementos y bloques). El reparto completo está en `CLAUDE.md` y la lista de funciones en `FEATURES.md`.
+Etapas hechas: 1, 2, 3, 4 y 5. Próxima: 6 (transiciones y estados). El reparto completo está en `CLAUDE.md` y la lista de funciones en `FEATURES.md`.
 
 ## Etapa 1 — Estructura, árbol JSON, preview y selección  ✅
 - Proyecto Vite + vanilla JS, `motion` instalado (sin usar todavía).
@@ -73,13 +73,34 @@ Etapas hechas: 1, 2, 3 y 4. Próxima: 5 (elementos y bloques). El reparto comple
 ### Decisiones
 - Motion (npm) no se usó a propósito: todo lo hecho salió en CSS. Ver la sección siguiente.
 
+## Etapa 5 — Elementos y bloques  ✅
+
+### Hecho
+- **Panel "Capas"** (`ui/sidebar.js`): árbol completo de la página (no solo secciones). Clic = seleccionar, ▸/▾ = plegar, ⧉ duplicar, ✕ borrar. Arrastrar una fila: borde de arriba/abajo = antes/después, centro = dentro de un contenedor/sección. Funciona entre contenedores y secciones; el destino inválido se rechaza (cursor "no permitido").
+- **Reglas de anidado** (`canContain` en `core/tree.js`): la página solo admite secciones; sección y contenedor admiten todo menos secciones; título/texto/botón/imagen no admiten hijos. No se puede meter un nodo dentro de sí mismo ni de un descendiente.
+- **Añadir elemento** (`blocks/elements.js`): sección vacía, contenedor, título, texto, botón, imagen (con imagen de relleno SVG). Va dentro de lo seleccionado si es contenedor/sección, justo después si es una hoja, y en la última sección si no hay selección (se crea una si no existe).
+- **Acciones del store** (`core/store.js`): `addNode`, `addElement`, `moveNode(id, parentId, index)`, `moveBy(id, ±1)`, `puedeMover`. Todo pasa por `mutate`, así que undo/redo funciona.
+- **Inspector**: fila ↑ ↓ ⧉ ✕ del elemento seleccionado. **Atajos**: Supr borra, Ctrl+D duplica, Alt+↑/↓ mueve (no actúan mientras se escribe en un campo).
+- **Bloques con variantes** (formato `variants: { clave: { label, crear } }`; helpers en `blocks/util.js`): Hero (4), Servicios (4), Galería (4), Testimonios (4), Precios (4), Contacto WhatsApp (4), Footer (4). El sidebar los muestra como un desplegable por bloque con un botón por variante. Un bloque nuevo se inserta tras la sección seleccionada.
+
+### Verificado en `npm run dev`
+- Las 28 variantes se añaden y se dibujan; exportan a HTML y cargan en un iframe. Añadir dentro/tras selección, Ctrl+D, Supr, mover con arrastre (antes, dentro, entre contenedores), rechazo de sección dentro de contenedor, mover secciones, undo. Sin errores de consola.
+
+### Pendiente / no verificado
+- Arrastrar solo se probó con eventos DragEvent sintéticos; probar con mouse real (sobre todo Firefox).
+- No se puede arrastrar desde el preview ni desde la paleta (solo desde el árbol de capas).
+- Las imágenes de relleno son data URL (SVG pequeñas); el número de WhatsApp de ejemplo (`50600000000`) se cambia en el campo "Enlace" del botón.
+- Con muchas secciones el árbol es largo: se puede plegar cada nodo, pero no hay "plegar todo".
+
+### Decisiones
+- Motion vs CSS puro: m3nt41 eligió la opción (a): CSS puro donde se pueda y Motion solo en lo que obliga (drag con rebote, inercia, layout animations, scroll suave, scroll-linked en Firefox). No se tocó ninguna animación en esta etapa.
+
 ## Próximas etapas (reparto en CLAUDE.md)
-5. Elementos y bloques (añadir/borrar/mover/arrastrar entre contenedores + más bloques con variantes).
 6. Transiciones y estados. 7. Scroll. 8. Movimiento avanzado. 9. Extras.
 Asignación función por función: `FEATURES.md`.
 
-## Decisión pendiente (de m3nt41): Motion vs CSS puro
-Análisis por función de `FEATURES.md`. Nada se implementa hasta que m3nt41 decida.
+## Decisión tomada (m3nt41): opción (a) — CSS puro donde se pueda, Motion solo en lo que obliga
+Análisis por función de `FEATURES.md` (referencia).
 
 | Función | CSS puro | Exige Motion / JS |
 |---|---|---|

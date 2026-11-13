@@ -4,7 +4,7 @@
 // guarda la versión anterior en el historial (undo/redo) y notifica.
 // El árbol se autoguarda en localStorage.
 
-import { createPage, findNode, findParent, cloneWithNewIds, normalizePage } from './tree.js';
+import { createPage, createNode, findNode, findParent, cloneWithNewIds, normalizePage, canContain } from './tree.js';
 import { DEFAULTS, PRINCIPAL } from '../animations/index.js';
 
 const CLAVE_LS = 'editor-landings:pagina';
@@ -218,6 +218,98 @@ export function moveSection(desde, hasta) {
   mutate((page) => {
     const [sec] = page.children.splice(desde, 1);
     page.children.splice(hasta, 0, sec);
+  });
+}
+
+// ---- Elementos: añadir / mover (Etapa 5) ----
+
+/** ¿Se puede mover `id` dentro de `parentId`? (tipos compatibles y no meterlo en sí mismo) */
+export function puedeMover(page, id, parentId) {
+  const nodo = findNode(page, id);
+  const destino = findNode(page, parentId);
+  if (!nodo || !destino || nodo.type === 'page') return false;
+  if (findNode(nodo, parentId)) return false; // el destino es el propio nodo o un descendiente
+  return canContain(destino.type, nodo.type);
+}
+
+/** Inserta un nodo nuevo dentro de parentId en la posición index (por defecto al final) y lo selecciona. */
+export function addNode(node, parentId, index) {
+  const destino = findNode(state.page, parentId);
+  if (!destino || !canContain(destino.type, node.type)) return false;
+  mutate((page) => {
+    const d = findNode(page, parentId);
+    const i = index == null ? d.children.length : Math.max(0, Math.min(index, d.children.length));
+    d.children.splice(i, 0, node);
+  });
+  select(node.id);
+  return true;
+}
+
+/** Añade un elemento nuevo según lo seleccionado:
+ *  - contenedor/sección seleccionado → dentro, al final;
+ *  - elemento hoja seleccionado → justo después de él;
+ *  - nada (o la página) → en la última sección (se crea una si no hay). */
+export function addElement(node) {
+  const page = state.page;
+  const sel = state.selectedId ? findNode(page, state.selectedId) : null;
+
+  if (node.type === 'section') { // las secciones solo viven en la página
+    let idx = page.children.length;
+    if (sel && sel.type !== 'page') {
+      let raiz = sel;
+      while (findParent(page, raiz.id)?.type !== 'page') raiz = findParent(page, raiz.id);
+      idx = page.children.indexOf(raiz) + 1;
+    }
+    return addNode(node, page.id, idx);
+  }
+
+  if (sel && canContain(sel.type, node.type)) return addNode(node, sel.id);
+  if (sel && sel.type !== 'page') {
+    // buscar el ancestro más cercano que pueda contenerlo, colocándolo tras la rama actual
+    let hijo = sel;
+    let padre = findParent(page, hijo.id);
+    while (padre && !canContain(padre.type, node.type)) { hijo = padre; padre = findParent(page, hijo.id); }
+    if (padre) return addNode(node, padre.id, padre.children.indexOf(hijo) + 1);
+  }
+  let ultima = page.children[page.children.length - 1];
+  if (!ultima) {
+    ultima = createNode('section', {
+      name: 'Sección',
+      styles: { display: 'flex', flexDirection: 'column', gap: '16px', padding: '64px 32px' },
+      mobile: { padding: '40px 20px' },
+    });
+    mutate((p) => p.children.push(ultima));
+  }
+  return addNode(node, ultima.id);
+}
+
+/** Mueve un nodo a parentId en la posición index (índice contando con el nodo aún en su sitio). */
+export function moveNode(id, parentId, index) {
+  if (!puedeMover(state.page, id, parentId)) return;
+  const padre = findParent(state.page, id);
+  const destino = findNode(state.page, parentId);
+  const actual = padre.children.findIndex((n) => n.id === id);
+  let nuevo = Math.max(0, Math.min(index, destino.children.length));
+  if (padre.id === destino.id && actual < nuevo) nuevo--; // al sacarlo, los de después suben 1
+  if (padre.id === destino.id && actual === nuevo) return; // no cambia nada
+  mutate((page) => {
+    const nodo = findNode(page, id);
+    const origen = findParent(page, id);
+    origen.children.splice(origen.children.indexOf(nodo), 1);
+    findNode(page, parentId).children.splice(nuevo, 0, nodo);
+  });
+}
+
+/** Sube (-1) o baja (+1) un nodo dentro de su mismo padre. */
+export function moveBy(id, delta) {
+  const padre = findParent(state.page, id);
+  if (!padre) return;
+  const i = padre.children.findIndex((n) => n.id === id);
+  const j = i + delta;
+  if (j < 0 || j >= padre.children.length) return;
+  mutate((page) => {
+    const p = findParent(page, id);
+    [p.children[i], p.children[j]] = [p.children[j], p.children[i]];
   });
 }
 

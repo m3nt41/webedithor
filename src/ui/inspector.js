@@ -5,8 +5,8 @@
 //   página mientras el foco está dentro (salvo que cambie la selección o un
 //   select altere qué campos se muestran: ahí se fuerza).
 
-import { getState, subscribe, setStyle, setContent, setName, setAnimation } from '../core/store.js';
-import { findNode } from '../core/tree.js';
+import { getState, subscribe, setStyle, setContent, setName, setAnimation, moveBy, duplicateNode, removeNode } from '../core/store.js';
+import { findNode, findParent } from '../core/tree.js';
 import { effectiveStyles, TIPOS_TEXTO } from '../render/renderer.js';
 import { GRUPOS } from './fields.js';
 import { GRUPOS_ANIM } from '../animations/index.js';
@@ -34,7 +34,18 @@ export function initInspector(host) {
     }
     const estilos = effectiveStyles(nodo, viewMode);
 
-    let html = `<h2>Propiedades</h2>
+    let html = '<h2>Propiedades</h2>';
+    if (nodo.type !== 'page') {
+      const padre = findParent(page, nodo.id);
+      const i = padre.children.indexOf(nodo);
+      html += `<div class="acciones">
+        <button data-act="up" title="Subir (Alt+↑)" ${i === 0 ? 'disabled' : ''}>↑</button>
+        <button data-act="down" title="Bajar (Alt+↓)" ${i === padre.children.length - 1 ? 'disabled' : ''}>↓</button>
+        <button data-act="dup" title="Duplicar (Ctrl+D)">⧉</button>
+        <button data-act="del" class="borrar" title="Borrar (Supr)">✕</button>
+      </div>`;
+    }
+    html += `
       <div class="campo"><label>Nombre</label><input data-name value="${esc(nodo.name)}"></div>
       <p class="modo">${nodo.type} · editando <strong>${viewMode === 'mobile' ? 'móvil' : 'escritorio'}</strong></p>`;
 
@@ -122,6 +133,18 @@ export function initInspector(host) {
       if (pick?.dataset.pick && aHex(t.value)) pick.value = aHex(t.value);
       setStyle(id, t.dataset.s, t.value.trim());
     }
+  });
+
+  // Botones ↑ ↓ ⧉ ✕ del elemento seleccionado
+  host.addEventListener('click', (e) => {
+    const act = e.target.closest('[data-act]')?.dataset.act;
+    const id = idDibujado;
+    if (!act || !id) return;
+    forzar = true; // reconstruir el panel (los botones ↑ ↓ cambian de estado)
+    if (act === 'up') moveBy(id, -1);
+    else if (act === 'down') moveBy(id, 1);
+    else if (act === 'dup') duplicateNode(id);
+    else if (act === 'del') removeNode(id);
   });
 
   host.addEventListener('change', (e) => {

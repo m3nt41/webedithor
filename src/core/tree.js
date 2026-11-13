@@ -56,6 +56,14 @@ export function walk(root, fn) {
   root.children.forEach((h) => walk(h, fn));
 }
 
+/** Qué puede contener cada tipo: la página solo secciones; sección y contenedor,
+ *  cualquier elemento menos secciones; los elementos hoja (título, texto...) nada. */
+export function canContain(parentType, childType) {
+  if (parentType === 'page') return childType === 'section';
+  if (parentType === 'section' || parentType === 'container') return childType !== 'section' && childType !== 'page';
+  return false;
+}
+
 /** Copia profunda de un nodo dándole ids nuevos a todo el subárbol (para duplicar). */
 export function cloneWithNewIds(node) {
   const copia = structuredClone(node);

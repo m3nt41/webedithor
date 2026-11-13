@@ -16,7 +16,7 @@ Motion vs CSS puro: m3nt41 ya decidió la opción (a), CSS puro donde se pueda y
 ## Scroll
 - [ ] Parallax → Etapa 7
 - [ ] Scroll-linked (propiedad ligada al progreso del scroll) → Etapa 7
-- [ ] Sticky → Etapa 7
+- [x] Sticky (grupo "Posición" en cualquier elemento menos la página: pegar arriba y/o abajo con distancia y z-index; CSS puro, sin script; se pega mientras su contenedor siga a la vista) (Etapa 7)
 - [ ] Escenas por scroll (secciones fijadas con varios pasos animados) → Etapa 7
 
 ## Hover / press / focus

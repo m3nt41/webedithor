@@ -186,6 +186,16 @@ Chrome no reemplaza a Firefox (el navegador de m3nt41). Lo de la lista funciona 
 - [ ] Decidir si se aplica la alternativa (a) de `!important` (cambiaría el export de estados cargar/entrar).
 - [ ] Probar en Firefox con el HTML exportado, y a mano `:active`/`:focus-visible` con mouse/teclado reales (en Chrome de pruebas solo se comprobaron las reglas y los estados con clases forzadas).
 
+## Etapa 7 — Scroll (en curso)
+
+### Bloque 1: sticky  ✅
+**Hecho**
+- El grupo "Posición" (antes solo secciones, para el navbar) ahora sale en títulos, textos, botones, imágenes, contenedores y secciones. Campos: Posición (Normal / Pegado), "Pegar arriba (distancia)", "Pegar abajo (distancia)" y z-index. Vacío = no se pega por ese lado. CSS puro (`position: sticky`), **sin script**.
+- Exportador: el margen de anclas (`[id]{scroll-margin-top:90px}`) ahora solo sale si hay una **sección** pegada arriba con `top` (antes salía con cualquier sticky; un elemento pegado abajo o dentro de un contenedor no lo necesita).
+**Verificado** (Chrome, editor en `npm run dev`): título con sticky + top 0 → `position: sticky`, aparece el campo de abajo; con la página scrolleada se queda pegado (top 20 = padding del preview). `npm run build` OK.
+**Límites (CSS, no bugs)**: un sticky solo se mueve dentro de su contenedor (si el padre mide lo mismo que él, no se nota); no funciona si un ancestro tiene `overflow` distinto de visible (el editor no lo pone).
+**Pendiente de probar en Firefox**: sticky en elementos sueltos (preview y export), `bottom`, vista móvil.
+
 ## Etapa 5 — Elementos y bloques  ✅
 
 ### Hecho

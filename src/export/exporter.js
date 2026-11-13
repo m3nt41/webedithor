@@ -65,9 +65,9 @@ export function exportHTML(page) {
 
   const cuerpo = nodoAHtml(page, 2);
 
-  // Si hay un navbar pegado arriba (position:sticky), las anclas dejan un margen para no quedar tapadas
+  // Si hay una SECCIÓN pegada arriba (navbar, position:sticky + top), las anclas dejan un margen para no quedar tapadas
   let hayFijo = false;
-  walk(page, (n) => { if (n.styles.base.position === 'sticky') hayFijo = true; });
+  walk(page, (n) => { if (n.type === 'section' && n.styles.base.position === 'sticky' && n.styles.base.top) hayFijo = true; });
   const reset = '*{box-sizing:border-box}body{margin:0}img{max-width:100%;display:block}' + (hayFijo ? '[id]{scroll-margin-top:90px}' : '');
   const media = cssMovil.length ? `@media (max-width:${BREAKPOINT_MOVIL}px){\n${cssMovil.join('\n')}\n}` : '';
 

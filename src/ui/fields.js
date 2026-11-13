@@ -53,11 +53,14 @@ export const GRUPOS = [
   },
   {
     titulo: 'Posición',
-    tipos: ['section'],
+    tipos: [...TEXTO, ...CONTENEDOR, 'image'],
     campos: [
-      // "Pegado arriba" = navbar fijo. Para quitarlo: elige "Normal".
-      { key: 'position', label: 'Posición', kind: 'select', options: [['', 'Normal'], ['sticky', 'Pegado arriba']] },
-      { key: 'top', label: 'Distancia arriba', kind: 'text', placeholder: '0', cuando: (s) => s.position === 'sticky' },
+      // "Pegado" = position:sticky (CSS puro, sin script). Se queda fijo al hacer scroll mientras
+      // su contenedor siga a la vista. Escribe una distancia arriba (ej. 0) y/o abajo; vacío = no se pega por ese lado.
+      // Para quitarlo: elige "Normal".
+      { key: 'position', label: 'Posición', kind: 'select', options: [['', 'Normal'], ['sticky', 'Pegado (sticky)']] },
+      { key: 'top', label: 'Pegar arriba (distancia)', kind: 'text', placeholder: '0', cuando: (s) => s.position === 'sticky' },
+      { key: 'bottom', label: 'Pegar abajo (distancia)', kind: 'text', placeholder: '0', cuando: (s) => s.position === 'sticky' },
       { key: 'zIndex', label: 'z-index', kind: 'text', placeholder: '50', cuando: (s) => s.position === 'sticky' },
     ],
   },

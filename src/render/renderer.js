@@ -3,7 +3,7 @@
 // Los estilos van inline (más simple de editar en vivo). El exportador
 // (src/export/exporter.js) los convierte a CSS con clases.
 
-import { anchorValido, aspectoValido, CLAVES_PROPIAS } from '../core/tree.js';
+import { anchorValido, aspectoValido, CLAVES_PROPIAS, fondoDeclaraciones } from '../core/tree.js';
 
 // Qué etiqueta HTML usa cada tipo de nodo (también la usa el exportador)
 const TAGS = { page: 'div', section: 'section', container: 'div', heading: 'h2', text: 'p', button: 'a', image: 'img' };
@@ -29,6 +29,7 @@ export function renderNode(node, viewMode = 'desktop') {
   if (anchorValido(node.content?.anchor)) el.id = node.content.anchor;
   const est = effectiveStyles(node, viewMode);
   Object.assign(el.style, Object.fromEntries(Object.entries(est).filter(([k]) => !CLAVES_PROPIAS.includes(k))));
+  Object.assign(el.style, fondoDeclaraciones(est)); // imagen de fondo (después del color: la imagen va encima)
 
   if (TIPOS_TEXTO.includes(node.type)) {
     el.textContent = node.content.text ?? '';

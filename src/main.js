@@ -33,6 +33,15 @@ aviso.querySelector('#aviso-recargar').addEventListener('click', recargarGuardad
 aviso.querySelector('#aviso-seguir').addEventListener('click', seguirConEsta);
 subscribe((s, cambio) => { if (cambio === 'conflicto') aviso.hidden = s.conflicto == null; });
 
+// Aviso si el autoguardado falla (típico: imágenes pesadas llenan el localStorage). No falla en silencio.
+const avisoGuardado = document.createElement('div');
+avisoGuardado.id = 'aviso-guardado';
+avisoGuardado.setAttribute('role', 'alert');
+avisoGuardado.hidden = true;
+avisoGuardado.textContent = '⚠ No se pudo autoguardar: el almacenamiento del navegador está lleno (probablemente por imágenes pesadas). Usa "Guardar JSON" para no perder tu trabajo, o quita/usa una imagen más liviana (o pega su URL).';
+document.body.append(avisoGuardado);
+subscribe((s, cambio) => { if (cambio === 'guardado') avisoGuardado.hidden = !s.errorGuardado; });
+
 initToolbar(document.getElementById('toolbar'));
 initSidebar(document.getElementById('sidebar'));
 initPreview(document.getElementById('preview'));

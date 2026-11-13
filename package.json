@@ -12,6 +12,7 @@
     "test:selenium": "node --test --test-reporter=spec tests/selenium.test.mjs",
     "test:vistaprevia": "node tests/vista-previa.mjs",
     "test:persistencia": "npm run build && node tests/inspector-persistencia.mjs",
+    "test:fondo": "npm run build && node tests/fondo.mjs",
     "test:inspector": "node tests/controles.mjs && node tests/inspector.mjs"
   },
   "dependencies": {

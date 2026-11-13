@@ -47,6 +47,18 @@ export default {
         ],
       }) },
 
+    // Hero con imagen de fondo + capa oscura (campos fondoImagen/fondoCapa: CSS puro en el export)
+    fondo: { label: 'Con fondo', crear: () =>
+      seccion('Hero', {
+        alignItems: 'center', justifyContent: 'center', gap: '24px', textAlign: 'center',
+        minHeight: '90vh', padding: '110px 32px', color: '#ffffff', background: '#14141c',
+        fondoImagen: placeholder(1600, 900, '#4a4a63', 'Tu imagen de fondo'), fondoAjuste: 'cover', fondoPosicion: 'center', fondoCapa: 45,
+      }, [
+        titulo('Un lugar que se queda en la memoria', 1, { fontSize: '68px', lineHeight: '1.05', maxWidth: '16ch', fontWeight: '800' }, { fontSize: '38px' }),
+        texto('Sube tu foto en el panel "Fondo e imagen" y ajusta la capa oscura para que el texto se lea.', { fontSize: '20px', maxWidth: '46ch', opacity: '0.9' }, { fontSize: '17px' }, 'Subtítulo'),
+        boton('Reservar', '#contacto'),
+      ], { padding: '72px 20px', minHeight: '80vh' }) },
+
     degradado: { label: 'Degradado', crear: () =>
       seccion('Hero', {
         ...CENTRADO, padding: '110px 32px', color: '#ffffff',

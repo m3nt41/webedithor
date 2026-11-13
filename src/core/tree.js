@@ -88,12 +88,56 @@ export function cloneWithNewIds(node) {
 export const aspectoValido = (v) => typeof v === 'string' && /^(auto|(auto\s+)?\d{1,3}(\.\d{1,3})?(\s*\/\s*\d{1,3}(\.\d{1,3})?)?)$/.test(v.trim());
 
 /** Claves de estilo que NO son CSS directo del elemento (el exportador las convierte en una regla para los hijos). */
-export const CLAVES_PROPIAS = ['hijosAspectRatio'];
+export const CLAVES_PROPIAS = ['hijosAspectRatio', 'fondoImagen', 'fondoAjuste', 'fondoPosicion', 'fondoCapa'];
 
-/** Quita de un objeto de estilos las proporciones inválidas (aspectRatio y hijosAspectRatio). */
+// ---- Imagen de fondo (secciones y contenedores) ----
+export const FONDO_AJUSTES = ['cover', 'contain'];
+export const FONDO_POSICIONES = ['center', 'top', 'bottom', 'left', 'right'];
+export const FONDO_CAPA_MAX = 80;
+const esFondoKey = (k) => k.startsWith('fondo');
+
+/** Capa oscura válida: número 0–80 (acepta "45" o 45). Devuelve el número o null. */
+export function capaValida(v) {
+  if (v === '' || v == null || typeof v === 'boolean') return null;
+  const x = Number(v);
+  return Number.isFinite(x) && x >= 0 && x <= FONDO_CAPA_MAX ? x : null;
+}
+
+/** Valor seguro para url("..."): escapa \ " saltos de línea y < (que no pueda cerrar un <style>). */
+export function urlCss(src) {
+  return `url("${String(src).replace(/[\\"\n\r<]/g, (c) => (c === '\\' ? '\\\\' : c === '"' ? '\\"' : '\\' + c.charCodeAt(0).toString(16) + ' '))}")`;
+}
+
+/** Declaraciones CSS de la imagen de fondo para estilos EFECTIVOS (base + móvil ya mezclados).
+ *  Devuelve {} si no hay imagen. Es la única fuente de verdad: la usan el editor y el export. */
+export function fondoDeclaraciones(est) {
+  const src = typeof est.fondoImagen === 'string' ? est.fondoImagen.trim() : '';
+  if (!src) return {};
+  const capa = capaValida(est.fondoCapa) ?? 0;
+  const a = capa / 100;
+  const ajuste = FONDO_AJUSTES.includes(est.fondoAjuste) ? est.fondoAjuste : 'cover';
+  const pos = FONDO_POSICIONES.includes(est.fondoPosicion) ? est.fondoPosicion : 'center';
+  const img = urlCss(src);
+  return {
+    backgroundImage: capa > 0 ? `linear-gradient(rgba(0,0,0,${a}),rgba(0,0,0,${a})),${img}` : img,
+    backgroundSize: capa > 0 ? `auto,${ajuste}` : ajuste,
+    backgroundPosition: capa > 0 ? `center,${pos}` : pos,
+    backgroundRepeat: 'no-repeat',
+  };
+}
+
+/** ¿Este objeto de estilos toca algo del fondo? (en móvil decide si hay que re-emitir el fondo, porque un
+ *  `background` propio del override lo pisaría) */
+export const tocaFondo = (st) => Object.keys(st).some((k) => esFondoKey(k) || k === 'background' || k === 'backgroundImage');
+
+/** Quita de un objeto de estilos lo inválido: proporciones y campos de fondo. */
 function limpiarProporciones(st) {
   const r = { ...st };
   for (const k of ['aspectRatio', 'hijosAspectRatio']) if (k in r && !aspectoValido(r[k])) delete r[k];
+  if ('fondoImagen' in r && (typeof r.fondoImagen !== 'string' || !r.fondoImagen.trim())) delete r.fondoImagen;
+  if ('fondoAjuste' in r && !FONDO_AJUSTES.includes(r.fondoAjuste)) delete r.fondoAjuste;
+  if ('fondoPosicion' in r && !FONDO_POSICIONES.includes(r.fondoPosicion)) delete r.fondoPosicion;
+  if ('fondoCapa' in r) { const c = capaValida(r.fondoCapa); if (c == null) delete r.fondoCapa; else r.fondoCapa = c; }
   return r;
 }
 

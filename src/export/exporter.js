@@ -5,7 +5,7 @@
 // se añade un <script> de ~3 líneas que pone la clase .in al entrar en pantalla.
 // (Motion se reserva para lo que el CSS no pueda: scroll-linked, drag... Etapa 5.)
 
-import { anchorValido, walk, aspectoValido, CLAVES_PROPIAS } from '../core/tree.js';
+import { anchorValido, walk, aspectoValido, CLAVES_PROPIAS, fondoDeclaraciones, tocaFondo } from '../core/tree.js';
 import { tagFor, TIPOS_TEXTO } from '../render/renderer.js';
 import { usaEscena, varsEscena, esNavPegado, paginaUsaEscena, CSS_ESCENA, usaScrollLink, paginaUsaScrollLink, SCRIPT_SCROLLMOTOR, SCRIPT_SCROLLSUAVE, paginaUsaScrollSuave, cssNodo, usaScroll, usaCarga, usaClic, paginaUsaScroll, paginaUsaEntrada, paginaUsaMedida, paginaUsaClic, esMedida, splitText, KEYFRAMES, SCRIPT_SCROLL, SCRIPT_LINEAS, SCRIPT_CLIC } from '../animations/index.js';
 
@@ -36,7 +36,12 @@ export function exportHTML(page) {
 
   function nodoAHtml(node, nivel, padre = null) {
     const clase = `n${contador++}`;
-    const dBase = declaraciones(node.styles.base), dMovil = declaraciones(node.styles.mobile);
+    // Imagen de fondo: va al final de la regla (gana a un `background` de color, que queda de respaldo debajo).
+    // En móvil se re-emite entera (con los valores efectivos) si el override toca el fondo.
+    const fondo = (d) => Object.keys(d).length ? declaraciones(d) : '';
+    const unir = (...p) => p.filter(Boolean).join(';');
+    const dBase = unir(declaraciones(node.styles.base), fondo(fondoDeclaraciones(node.styles.base)));
+    const dMovil = unir(declaraciones(node.styles.mobile), tocaFondo(node.styles.mobile) ? fondo(fondoDeclaraciones({ ...node.styles.base, ...node.styles.mobile })) : '');
     if (dBase) css.push(`.${clase}{${dBase}}`);
     if (dMovil) cssMovil.push(`.${clase}{${dMovil}}`);
     // "Proporción de los hijos" (contenedor grid): CSS puro para las imágenes hijas directas. :where() deja la

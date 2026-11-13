@@ -61,3 +61,5 @@ Motion vs CSS puro: m3nt41 ya decidió la opción (a), CSS puro donde se pueda y
 > Nota (2026-11-13): se quitó el botón "▶ Reproducir" del editor; las animaciones se siguen viendo, ahora en 👁 Vista previa (con ↻ Reiniciar para verlas de nuevo). La lista de funciones no cambió.
 
 > Nota (2026-11-13): ajustes de imagen en el inspector: campo "Proporción" (aspect-ratio) en imágenes y "Proporción de los hijos" en contenedores grid (CSS puro `:where(.cls>img)`); la Galería nace con ella. La lista de funciones no cambió.
+
+> Nota (2026-11-13): imagen de fondo para secciones y contenedores (grupo "Fondo e imagen": subir o pegar URL, Cubrir/Contener, posición y capa oscura 0–80 %; CSS puro en el export) y hero "Con fondo". La lista de funciones no cambió.

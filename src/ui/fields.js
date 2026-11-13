@@ -47,6 +47,18 @@ export const GRUPOS = [
     ],
   },
   {
+    // Imagen de fondo de secciones/contenedores. Campos propios (no son CSS directo: ver CLAVES_PROPIAS en tree.js);
+    // el export los convierte en background-image (+ capa oscura) en CSS puro. "Fondo" de arriba queda de color de respaldo.
+    titulo: 'Fondo e imagen',
+    tipos: CONTENEDOR,
+    campos: [
+      { key: 'fondoImagen', label: 'Imagen de fondo', kind: 'fondoImagen' },
+      { key: 'fondoAjuste', label: 'Ajuste', kind: 'fondoAjuste', cuando: (s) => !!s.fondoImagen },
+      { key: 'fondoPosicion', label: 'Posición', kind: 'fondoPosicion', cuando: (s) => !!s.fondoImagen },
+      { key: 'fondoCapa', label: 'Capa oscura', kind: 'fondoCapa', cuando: (s) => !!s.fondoImagen },
+    ],
+  },
+  {
     titulo: 'Tamaño y espaciado',
     tipos: [...TEXTO, ...CONTENEDOR, 'image'],
     campos: [

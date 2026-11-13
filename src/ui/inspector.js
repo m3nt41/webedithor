@@ -6,10 +6,11 @@
 //   select altere qué campos se muestran: ahí se fuerza).
 
 import { getState, subscribe, setStyle, setContent, setName, setAnimation, moveBy, duplicateNode, removeNode, addVariant, removeVariant, moveVariant, setVariant, setVariantProp, verEstado } from '../core/store.js';
-import { findNode, findParent, anchorValido, contarAncla, aspectoValido } from '../core/tree.js';
+import { findNode, findParent, anchorValido, contarAncla, aspectoValido, capaValida } from '../core/tree.js';
+import { reducirImagen } from './imagen.js';
 import { effectiveStyles, TIPOS_TEXTO } from '../render/renderer.js';
 import { GRUPOS } from './fields.js';
-import { modeloControl, columnasAuto, kebab, KINDS_CONTROL } from './controles.js';
+import { modeloControl, columnasAuto, kebab, KINDS_CONTROL, KINDS_BOTONES } from './controles.js';
 import { GRUPOS_ANIM } from '../animations/index.js';
 import { DISPAROS_VARIANT, CAMPOS_PROPS, CAMPOS_TIEMPO, DEF_TIEMPO } from '../animations/variants.js';
 
@@ -44,7 +45,7 @@ function htmlTexto(key, v, placeholder, texto, ov) {
 function htmlControl(f, v, modo, ov, tieneValor) {
   const m = modeloControl(f, v, modo);
   const botones = m.opciones.map((o) => `<button type="button" data-ctl="${f.key}" data-val="${esc(o.val)}" class="${o.on ? 'on' : ''}">${o.txt}</button>`).join('');
-  const otro = `<button type="button" data-ctl-otro="${f.key}" class="${m.personalizado ? 'on' : ''}" title="Escribir otro valor CSS (en Avanzado)">Otro</button>`;
+  const otro = m.sinOtro ? '' : `<button type="button" data-ctl-otro="${f.key}" class="${m.personalizado ? 'on' : ''}" title="Escribir otro valor CSS (en Avanzado)">Otro</button>`;
   const min = m.min != null ? `<span class="mini">mín. <input type="number" min="50" step="10" data-ctl-min="${f.key}" value="${m.min}"> px</span>` : '';
   const quitar = tieneValor ? `<button type="button" class="quitar" data-ctl="${f.key}" data-val="">${modo === 'mobile' ? '↺ igual que escritorio' : '✕ quitar'}</button>` : '';
   return `<div class="campo ctl">${etiqueta(f.label, ov)}<div class="botones${modo === 'mobile' && !ov ? ' heredado' : ''}">${botones}${otro}${min}${quitar}</div></div>`;
@@ -169,7 +170,20 @@ export function initInspector(host) {
       for (const f of visibles) {
         const v = estilos[f.key] ?? '';
         const ov = viewMode === 'mobile' && f.key in nodo.styles.mobile; // en móvil: ¿tiene valor propio?
-        if (KINDS_CONTROL.includes(f.kind)) {
+        if (f.kind === 'fondoImagen') {
+          const quitar = `<button type="button" class="quitar" data-ctl="fondoImagen" data-val="">${viewMode === 'mobile' ? '↺ igual que escritorio' : '✕ Quitar'}</button>`;
+          html += `<div class="campo ctl">${etiqueta(f.label, ov)}<div class="botones${viewMode === 'mobile' && !ov ? ' heredado' : ''}">` +
+            `<label class="subir">Subir imagen<input type="file" accept="image/*" data-fondo-file style="position:absolute;width:1px;height:1px;opacity:0"></label>${quitar}</div></div>` +
+            `<div class="campo"><label>…o pega una URL</label><input data-fondo-url value="${esc(v.startsWith('data:') ? '' : v)}" placeholder="${v.startsWith('data:') ? '(imagen subida)' : 'https://…'}"></div>` +
+            '<p class="fondo-msg" data-fondo-msg hidden></p>';
+        } else if (f.kind === 'fondoCapa') {
+          const n = capaValida(v) ?? 0;
+          html += `<div class="campo rango">${etiqueta(f.label, ov)}<span class="rango-fila"><input type="range" min="0" max="80" step="1" data-capa value="${n}"><output data-capa-out>${n}%</output></span></div>` +
+            (ov || (viewMode !== 'mobile' && f.key in nodo.styles.base) ? `<div class="campo ctl"><label></label><div class="botones"><button type="button" class="quitar" data-ctl="fondoCapa" data-val="">${viewMode === 'mobile' ? '↺ igual que escritorio' : '✕ quitar'}</button></div></div>` : '');
+        } else if (KINDS_BOTONES.includes(f.kind)) {
+          const tieneValor = viewMode === 'mobile' ? ov : f.key in nodo.styles.base;
+          html += htmlControl(f, v, viewMode, ov, tieneValor);
+        } else if (KINDS_CONTROL.includes(f.kind)) {
           const tieneValor = viewMode === 'mobile' ? ov : f.key in nodo.styles.base;
           html += htmlControl(f, v, viewMode, ov, tieneValor);
           conControl.push({ f, v, ov, personalizado: modeloControl(f, v, viewMode).personalizado });
@@ -266,6 +280,12 @@ export function initInspector(host) {
       if (v === '' || anchorValido(v)) setContent(id, 'anchor', v || undefined);
       return;
     }
+    if (t.dataset.fondoUrl !== undefined) { setStyle(id, 'fondoImagen', t.value.trim()); return; }
+    if (t.dataset.capa !== undefined) { // deslizador de la capa oscura: muestra el valor y guarda
+      host.querySelector('[data-capa-out]').textContent = `${t.value}%`;
+      setStyle(id, 'fondoCapa', t.value);
+      return;
+    }
     if (t.dataset.name !== undefined) setName(id, t.value);
     else if (t.dataset.a) {
       const [grupo, key] = t.dataset.a.split('.');
@@ -346,6 +366,14 @@ export function initInspector(host) {
     const t = e.target;
     if (t.tagName === 'SELECT' && t.dataset.c) return; // ya manejado en 'input'
     if (t.tagName === 'SELECT' && t.dataset.s) forzar = true; // puede mostrar/ocultar campos
+    if (t.dataset.fondoFile !== undefined && t.files[0]) {
+      const id = idDibujado, archivo = t.files[0];
+      const msg = (txt) => { const p = host.querySelector('[data-fondo-msg]'); if (p) { p.textContent = txt; p.hidden = !txt; } };
+      msg('Procesando imagen…');
+      reducirImagen(archivo).then((url) => { forzar = true; setStyle(id, 'fondoImagen', url); })
+        .catch((err) => msg(`⚠ ${err.message}`));
+      return;
+    }
     if (t.dataset.file !== undefined && t.files[0]) {
       const lector = new FileReader();
       lector.onload = () => { forzar = true; setContent(idDibujado, 'src', lector.result); };

@@ -27,6 +27,7 @@ const state = {
   selectedId: null, // id del nodo seleccionado
   viewMode: 'desktop', // 'desktop' | 'mobile'
   conflicto: null, // JSON (texto) que otra pestaña guardó mientras esta estaba abierta; null = sin aviso
+  errorGuardado: false, // true si el último autoguardado falló (cuota de localStorage llena o bloqueado)
   verEstado: null, // { id (nodo), estado (id del variant) }: "Ver este estado" en el preview; no se guarda
 };
 
@@ -65,11 +66,13 @@ export function guardarAhora() {
   temporizador = null;
   if (state.conflicto != null) return;
   pendiente = false;
+  let fallo = false;
   try {
     localStorage.setItem(CLAVE_LS, JSON.stringify(state.page));
   } catch {
-    /* sin espacio o bloqueado: se ignora, el usuario aún puede exportar el JSON */
+    fallo = true; // sin espacio (imágenes grandes) o bloqueado: se avisa; el usuario aún puede exportar el JSON
   }
+  if (fallo !== state.errorGuardado) { state.errorGuardado = fallo; emit('guardado'); }
 }
 
 function programarGuardado() {

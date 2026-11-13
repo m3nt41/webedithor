@@ -112,4 +112,21 @@ t('galería: las 4 variantes nacen con Proporción de los hijos', () => {
     assert.ok(/^\d \/ \d$/.test(grid.styles.base.hijosAspectRatio), v);
   }
 });
+// ---- Imagen de fondo: validación al abrir un .json y hero "fondo" ----
+t('fondo: valores inválidos se descartan al abrir un .json y las claves propias no salen como CSS', () => {
+  const p = n('page', {}); const s = n('section', { styles: { fondoImagen: 'https://x/a.jpg', fondoAjuste: 'zoom', fondoPosicion: 'diagonal', fondoCapa: 99, background: '#111' }, mobile: { fondoCapa: '30' } });
+  p.children.push(s);
+  const q = normalizePage(JSON.parse(JSON.stringify(p))).children[0];
+  assert.equal(q.styles.base.fondoAjuste, undefined); assert.equal(q.styles.base.fondoPosicion, undefined); assert.equal(q.styles.base.fondoCapa, undefined);
+  assert.equal(q.styles.base.fondoImagen, 'https://x/a.jpg'); assert.equal(q.styles.mobile.fondoCapa, 30);
+  const html = exportHTML(normalizePage(JSON.parse(JSON.stringify(p))));
+  assert.ok(html.includes('background:#111;background-image:url("https://x/a.jpg");background-size:cover;background-position:center;background-repeat:no-repeat'));
+  assert.ok(!/fondo/i.test(html), 'ninguna clave fondo* sale al CSS');
+});
+t('hero con fondo: nace con imagen, capa 45 y 90vh', () => {
+  const h = createBlock('hero', 'fondo');
+  assert.equal(h.styles.base.fondoCapa, 45); assert.equal(h.styles.base.minHeight, '90vh'); assert.ok(h.styles.base.fondoImagen.startsWith('data:image/svg'));
+  const p = n('page', {}); p.children.push(h);
+  assert.ok(exportHTML(p).includes('rgba(0,0,0,0.45)'));
+});
 console.log(`${ok} pruebas ok`);

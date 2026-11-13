@@ -110,7 +110,17 @@ export function modeloControl(f, v, modo = 'desktop') {
     opciones.push({ txt: 'Auto', val: autoVal, on: l.tipo === 'auto' || (!!f.autoVacio && l.tipo === 'vacio') });
     return { opciones, personalizado: l.tipo === 'otro', min: null };
   }
+  // Imagen de fondo: botones simples (valor vacío = el por defecto: Cubrir / centro). Todos escriben un valor explícito.
+  if (f.kind === 'fondoAjuste' || f.kind === 'fondoPosicion') {
+    const lista = f.kind === 'fondoAjuste' ? FONDO_AJUSTES_UI : FONDO_POSICIONES_UI;
+    const actual = norm(v) || lista[0][0];
+    return { opciones: lista.map(([val, txt]) => ({ txt, val, on: actual === val })), personalizado: false, min: null, sinOtro: true };
+  }
   throw new Error('kind de control desconocido: ' + f.kind);
 }
+
+const FONDO_AJUSTES_UI = [['cover', 'Cubrir'], ['contain', 'Contener']];
+const FONDO_POSICIONES_UI = [['center', 'Centro'], ['top', 'Arriba'], ['bottom', 'Abajo'], ['left', 'Izquierda'], ['right', 'Derecha']];
+export const KINDS_BOTONES = ['fondoAjuste', 'fondoPosicion'];
 
 export const KINDS_CONTROL = ['columnas', 'anchoMax', 'centrar', 'proporcion'];

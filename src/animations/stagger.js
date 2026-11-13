@@ -5,9 +5,12 @@
 // y NO entran en la cascada.
 // Datos en node.animation.stagger = { effect, trigger, duration, delay, step, ease, distance, angle }
 
+import { estadosEntrada } from './variants.js';
 import { EFECTOS, camposComunes, campoDisparo, animEntrada, cargaInmediata, curva, duracion, DEF_CURVA } from './base.js';
 
-const tieneEntradaPropia = (n) => Boolean(n.animation?.appear?.effect || n.animation?.text?.mode);
+// Incluye los estados "al cargar"/"al entrar" (variants): llevan su propio `animation` y la regla
+// `:nth-child` de la cascada (más específica) se lo pisaría.
+const tieneEntradaPropia = (n) => Boolean(n.animation?.appear?.effect || n.animation?.text?.mode || estadosEntrada(n).length);
 
 export default {
   id: 'stagger',

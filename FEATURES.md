@@ -25,7 +25,7 @@ Motion vs CSS puro: m3nt41 ya decidió la opción (a), CSS puro donde se pueda y
 - [x] Focus (`:focus-visible`) con transición, solo en botones/enlaces (Etapa 6)
 
 ## Variants
-- [x] Estados con nombre por elemento (sección "Estados (variants)": lista de estados con nombre; cada uno cambia opacidad, mover X/Y, escala, rotación, desenfoque, brillo, color de texto/fondo/borde, radio y sombra; si coinciden gana el de más abajo; botón "Ver" para fijarlo en el preview) (Etapa 6)
+- [x] Estados con nombre por elemento (sección "Estados (variants)": lista de estados con nombre; cada uno cambia opacidad, mover X/Y, escala, rotación, desenfoque, brillo, color de texto/fondo/borde, radio y sombra; si coinciden gana el de más abajo entre los interactivos (los de cargar/entrar siempre pierden contra uno interactivo que toque lo mismo); botón "Ver" para fijarlo en el preview) (Etapa 6)
 - [x] Animación entre estados y qué la dispara: pasar el mouse, presionar, enfocar (botones), clic (alterna; único caso con script, de unas líneas y solo si se usa), al cargar y al entrar en pantalla; con duración, retraso y curva (bezier/spring). Limitación: ver PROGRESS.md (Etapa 6, bloque 4) (Etapa 6)
 
 ## Transiciones

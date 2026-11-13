@@ -57,7 +57,8 @@ export const DEF_TIEMPO = { duration: 0.4, delay: 0, ease: 'suave', ...DEF_CURVA
 
 const numero = (v) => (v === '' || v == null || !Number.isFinite(+v) ? null : +v);
 // Texto libre (color, sombra) que va dentro de una regla CSS: se quitan los caracteres que podrían romperla
-const limpio = (s) => String(s ?? '').replace(/[;{}<>!\\]/g, '').trim();
+// También se quitan `/*` y `*/`: un comentario sin cerrar se comería el resto del <style>.
+export const limpio = (s) => String(s ?? '').replace(/\/\*|\*\//g, '').replace(/[;{}<>!\\]/g, '').trim();
 
 /** props -> declaraciones CSS ("a:1;b:2"). imp=true añade !important (los @keyframes no lo admiten). */
 export function declaraciones(p = {}, imp = false) {

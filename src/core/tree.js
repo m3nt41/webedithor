@@ -6,8 +6,11 @@
 // - styles.base: estilos CSS (camelCase) para escritorio (y como base de todo)
 // - styles.mobile: SOLO lo que cambia en móvil (se superpone a base)
 // - content: datos propios del tipo ({ text }, { src, alt }, { href }...)
-// - animation: null o { appear?, hover?, text? } (ver src/animations/)
+// - animation: null o { appear?, hover?, press?, focus?, text?, stagger?, variants? } (ver src/animations/;
+//   al abrir un .json se valida con animations/normalizar.js)
 // - children: nodos hijos (layout flex/grid, NUNCA posiciones absolutas)
+
+import { normalizarAnimacion } from '../animations/normalizar.js';
 
 let contador = 0;
 
@@ -81,7 +84,11 @@ export function cloneWithNewIds(node) {
   return copia;
 }
 
-/** Valida y completa un objeto leído de un .json. Lanza Error si no es una página válida. */
+/** Objeto plano o {} (evita que un string/array/null en el JSON rompa lo que lo lea). */
+const objeto = (v) => (v !== null && typeof v === 'object' && !Array.isArray(v) ? v : {});
+
+/** Valida y completa un objeto leído de un .json. Lanza Error si no es una página válida.
+ *  La animación de cada nodo se limpia con normalizarAnimacion (nunca lanza: lo inválido se descarta). */
 export function normalizePage(obj) {
   const TIPOS = ['page', 'section', 'container', 'heading', 'text', 'button', 'image'];
   function norm(n, esRaiz, padre) {
@@ -96,9 +103,9 @@ export function normalizePage(obj) {
       id: typeof n.id === 'string' ? n.id : newId(),
       type: n.type,
       name: n.name ?? n.type,
-      styles: { base: n.styles?.base ?? {}, mobile: n.styles?.mobile ?? {} },
-      content: n.content ?? {},
-      animation: n.animation ?? null,
+      styles: { base: objeto(n.styles?.base), mobile: objeto(n.styles?.mobile) },
+      content: objeto(n.content),
+      animation: normalizarAnimacion(n.animation, n.type), // validada: ver animations/normalizar.js
       children: (n.children ?? []).map((h) => norm(h, false, n)),
     };
   }

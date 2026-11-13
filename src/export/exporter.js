@@ -78,7 +78,9 @@ export function exportHTML(page) {
   const animaciones = [
     usaEntrada ? KEYFRAMES : '',
     ...cssAnim,
+    // "Reducir movimiento": sin animaciones de entrada y sin transiciones (hover/press/focus/estados cambian de golpe)
     usaEntrada ? '@media (prefers-reduced-motion:reduce){[data-rv],[data-ld],[data-rv] .w,[data-ld] .w,[data-rv]>*,[data-ld]>*{animation:none!important}}' : '',
+    cssAnim.length ? '@media (prefers-reduced-motion:reduce){*{transition:none!important}}' : '',
   ].filter(Boolean).join('\n');
   const noscript = usaRv ? '<noscript><style>[data-rv],[data-rv] .w,[data-rv]>*{animation:none!important}</style></noscript>\n' : '';
   // El script de medición solo viaja si algún texto usa "Por línea (medida)"

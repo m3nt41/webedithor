@@ -66,4 +66,20 @@ guardar('combo', pagina(sec('Arriba', { height: '1400px' }), sec('Zona', { heigh
 
 // 7. Escena por scroll (con navbar pegado)
 guardar('escena', pagina(createBlock('navbar', 'oscuro'), createBlock('scene', 'textos'), createBlock('hero', 'oscuro')));
+// 9. Scroll suave (Etapa 7, bloque 4): navbar pegado, scroll interno, ancla, parallax; y la misma página SIN el interruptor
+const paginaSuave = (activo) => {
+  const nav = sec('Nav', { position: 'sticky', top: '0', height: '60px', background: '#222', zIndex: '50' });
+  const interno = caja('INTERNO', 200, { overflow: 'auto', background: '#eee' }, [caja('Alto', 1000, { background: 'linear-gradient(#fff,#999)' })]);
+  const fin = sec('Fin', { height: '1500px' }, [tit('FIN')]); fin.content.anchor = 'fin';
+  const boton = btn('IR-FIN'); boton.content.href = '#fin';
+  const p = pagina(nav, sec('Intro', { height: '700px' }, [boton, interno]),
+    sec('Zona', { height: '1000px' }, [tit('PARALLAX-SUAVE', { height: '80px', background: '#fecaca' }, { parallax: { effect: 'y', amount: 100 } })]), fin);
+  if (activo) p.content.smoothScroll = true;
+  return p;
+};
+guardar('suave', paginaSuave(true));
+guardar('suave-off', paginaSuave(false));
+// 10. Escena por scroll con scroll suave activado (convivencia)
+const esc = pagina(createBlock('navbar', 'oscuro'), createBlock('scene', 'textos'), createBlock('hero', 'oscuro')); esc.content.smoothScroll = true;
+guardar('escena-suave', esc);
 console.log('Páginas generadas en tests/out');

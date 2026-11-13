@@ -1,6 +1,6 @@
 # PROGRESS
 
-Etapas hechas: 1, 2, 3, 4, 5, 5.5 (navbar y anclas) y 6 (transiciones y estados). Etapa 7 (scroll) en curso: hechos sticky, parallax, scroll-linked y escenas; falta scroll suave. El reparto completo está en `CLAUDE.md` y la lista de funciones en `FEATURES.md`.
+Etapas hechas: 1, 2, 3, 4, 5, 5.5 (navbar y anclas) y 6 (transiciones y estados). Etapa 7 (scroll) en curso: hechos sticky, parallax, scroll-linked, escenas y scroll suave (la etapa está completa). El reparto completo está en `CLAUDE.md` y la lista de funciones en `FEATURES.md`.
 
 ## Pruebas automáticas en Firefox real  ✅ (8/8 pasan)
 
@@ -42,7 +42,7 @@ Los otros 5 tests siguieron en verde en las 3 rondas (no hay falsos positivos cr
 - `prefers-reduced-motion`: el motor sale antes de poner `.sc`; todo lo de parallax/ligado/escena está bajo `.sc`, así que queda en reposo y visible (la escena es `display:contents`); el sticky (CSS puro) no se apaga, a propósito (no es movimiento animado). Comprobado por código y por el test de reglas (`tests/ronda7.mjs`); desde los ajustes reales del sistema sigue sin probarse.
 - Combinaciones: parallax + ligado en el mismo elemento (propiedades distintas, conviven; test existente), sticky + parallax (el motor mide `offsetTop`, ok), escena + navbar pegado (test existente), parallax/ligado sobre un hijo de escena: gana el paso de escena (mayor especificidad), ya documentado como "no combinar".
 - Vista móvil: las reglas de escena usan `!important` y `100svh`; los `styles.mobile` de padding/fondo sí valen, los de dirección/separación/columnas no (límite documentado). Sin cambios.
-**FEATURES.md**: todo lo marcado `[x]` de la Etapa 7 es cierto; "Scroll suave" sigue `[ ]` (no se empezó).
+**FEATURES.md**: todo lo marcado `[x]` de la Etapa 7 es cierto (scroll suave se añadió después, ver Bloque 4).
 
 **Qué queda pendiente de Firefox a la luz de los tests** (ver tabla de arriba): ya confirmado en Firefox 160 sobre el HTML exportado → sticky (arriba/abajo), parallax, ligado, press, focus, estado por clic, texto por línea y escena completa. **Sigue pendiente**: `prefers-reduced-motion` real del sistema, ancho/`100svh` de un teléfono real, el **preview del editor** (el editor en sí) en Firefox —incluido arrastre de capas con mouse real, sticky del navbar en el preview, saltos de ancla y vista móvil del editor—, "estado por clic" por teclado, fluidez a ojo y otras versiones de Firefox.
 
@@ -272,6 +272,19 @@ Chrome no reemplaza a Firefox (el navegador de m3nt41). Lo de la lista funciona 
 - Mobile: la traducción de alineación usa los estilos de escritorio; el `--alto-v` del preview en vista móvil es el alto del panel, no el de un teléfono.
 - No combinar parallax/ligado en la misma sección de una escena.
 **Pendiente de probar en Firefox**: escenas completas (sticky + grid apilado + `calc()`/`clamp()` con variables, `translate`/`scale` individuales), `100svh` en el navegador móvil real (barra de direcciones), `reducir movimiento`, vista móvil, y que el navbar medido encaje tras cargar fuentes.
+
+### Bloque 4: scroll suave  ✅ (una sola ronda de afinación disponible)
+**Decisión de m3nt41**: opción (b), script propio mínimo, sin Lenis. Módulo aislado `src/animations/scrollsuave.js` (si algún día se pasa a Lenis, basta con cambiar `SCRIPT_SCROLLSUAVE` ahí).
+**Qué hace**: suaviza solo la rueda de un mouse en escritorio: acumula un destino y se desliza hacia él con inercia (`scrollTo` por cuadro, independiente de los fps), así que sticky, parallax, ligado y escenas siguen funcionando igual (el scroll sigue siendo el nativo).
+**Dónde se activa**: Ajustes de la página → "Scroll suave" (No/Sí). Se guarda en `page.content.smoothScroll`; **apagado por defecto**; `normalizePage` solo acepta exactamente `true`. No se ve en el preview del editor, solo en el HTML exportado. Si está apagado no viaja ningún script.
+**Dónde se cambian los valores**: objeto `SUAVE` al principio de `src/animations/scrollsuave.js`: `inercia` (0.1 por defecto; 0.03 = muy flotante, 0.3 = casi inmediato), `paso` (1; 1.5 = avanza más por golpe), `pxPorLinea` (40, para Firefox si reporta líneas), `minRueda` (50) y `pausaTrackpad` (600 ms).
+**Qué queda nativo**: táctil y dispositivos sin mouse (`hover:hover` + `pointer:fine`), teclado, barra de scroll, anclas (y su `scroll-margin-top`), Ctrl+rueda (zoom), scroll horizontal, elementos con scroll interno que aún pueden moverse (y `textarea`/`select`), y el trackpad "en lo posible": un golpe en píxeles menor que `minRueda` marca trackpad y el script se aparta 600 ms. Se cancela solo con teclado, `mousedown` (barra de scroll, clic en enlace), `touchstart`, clic en `a[href^="#"]`, `hashchange`, o si el scroll se movió por otra vía (deriva > 2 px). No corre con `prefers-reduced-motion`.
+**Tests** (`npm run test:selenium`, Firefox 160 real, 17/17): apagado no viaja el script y la rueda no se intercepta; la rueda pasa por valores intermedios (0→2,92,148,189…→300); trackpad (delta 10) y scroll interno nativos; el teclado (End) cancela; un ancla cancela y deja la sección a 90 px (scroll-margin del navbar); convive con parallax + navbar sticky y con una escena completa; con "reducir movimiento" real (`ui.prefersReducedMotion=1` en un perfil temporal) no intercepta. También `node tests/ronda7.mjs` (validación de `smoothScroll` y export). Sensibilidad: sin las cancelaciones, falla el test del teclado; el del ancla no distingue, porque el `mousedown` del clic ya cancela (el `click` queda cubierto solo para activación por teclado).
+**Límites / pendiente**
+- No probado a mano: **sensación real** con una rueda física y con un trackpad real (headless solo envía un golpe de 300 px en píxeles), Chrome/Edge, Safari. La detección de trackpad es una heurística y puede equivocarse en ambos sentidos (un mouse con rueda de precisión que envíe deltas < 50 px quedaría nativo).
+- Si el navegador ya suaviza la rueda por su cuenta, puede notarse doble suavizado; en ese caso subir `inercia` o dejarlo apagado.
+- La rueda sobre un `iframe` incrustado no se intercepta (los eventos no llegan).
+- Siguiente paso de m3nt41: una ronda de afinación de `SUAVE` con una página exportada; si no convence, decidir entre dejarlo o pasar a Lenis.
 
 ## Etapa 5 — Elementos y bloques  ✅
 

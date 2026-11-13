@@ -14,6 +14,7 @@ import scene, { CSS_ESCENA, usaEscena, varsEscena } from './scene.js';
 import scenestep from './scenestep.js';
 import variants, { estadosEntrada, usaClic, SCRIPT_CLIC } from './variants.js';
 export { motorScroll, SCRIPT_SCROLLMOTOR } from './scrollmotor.js';
+export { SCRIPT_SCROLLSUAVE, paginaUsaScrollSuave } from './scrollsuave.js';
 import { KEYFRAMES, transicion, cargaInmediata } from './base.js';
 import { walk } from '../core/tree.js';
 

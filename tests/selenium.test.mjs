@@ -5,6 +5,7 @@ import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { dirname, join } from 'node:path';
+import { readFileSync } from 'node:fs';
 import { Builder, By, Key } from 'selenium-webdriver';
 import firefox from 'selenium-webdriver/firefox.js';
 import './generar.mjs'; // genera tests/out/*.html con el código actual del editor
@@ -168,4 +169,102 @@ test('parallax + estado hover en el mismo elemento: el scroll no se suaviza con 
   await esperar(600);
   const y2 = parseFloat(((await css('PARALLAX-HOVER', 'translate')) ?? '').split(' ')[1] ?? '0');
   cerca(y, y2, 3);
+});
+
+// ---------- Scroll suave (Etapa 7, bloque 4) ----------
+const rueda = async (dy, x = 450, y = 520) => { await driver.actions({ async: true }).scroll(x, y, 0, dy).perform(); };
+const sy = () => driver.executeScript('return scrollY');
+// Registra el defaultPrevented de cada golpe de rueda (el listener se añade DESPUÉS del script de la página, así lo ve ya decidido)
+const espiarRueda = () => driver.executeScript('window.__w=[];addEventListener("wheel",(e)=>__w.push({p:e.defaultPrevented,m:e.deltaMode,dy:e.deltaY}))');
+const golpes = () => driver.executeScript('return window.__w');
+const internoRect = () => driver.executeScript('const e=[...document.querySelectorAll("div")].find(d=>getComputedStyle(d).overflowY==="auto");const b=e.getBoundingClientRect();return {x:Math.round(b.left+b.width/2),y:Math.round(b.top+b.height/2)}');
+
+test('scroll suave: apagado no viaja el script; encendido sí', opts, async () => {
+  const off = readFileSync(join(out, 'suave-off.html'), 'utf8'), on = readFileSync(join(out, 'suave.html'), 'utf8');
+  assert.ok(!off.includes('scrollSuave') && !off.includes('wheel'));
+  assert.ok(on.includes('scrollSuave') && on.includes('wheel'));
+  await abrir('suave-off'); await espiarRueda(); await rueda(300); await esperar(600);
+  assert.equal((await golpes()).some((g) => g.p), false); // sin interruptor nadie intercepta la rueda
+});
+
+test('scroll suave: la rueda se desliza con inercia y llega al destino', opts, async () => {
+  await abrir('suave'); await espiarRueda(); await irA(0);
+  await rueda(300);
+  const lecturas = [];
+  for (let i = 0; i < 10; i++) { lecturas.push(await sy()); await esperar(40); }
+  await esperar(1500);
+  const fin = await sy(), g = await golpes();
+  console.log('   lecturas:', lecturas.map((v) => Math.round(v)).join(','), '→ final', Math.round(fin), '· golpes', JSON.stringify(g));
+  assert.ok(g[0].p, 'la rueda de mouse se intercepta');
+  assert.ok(lecturas.some((v) => v > 0 && v < fin - 5), 'pasa por valores intermedios (no salta de golpe)');
+  assert.ok(fin > 100, `llegó lejos (${fin})`);
+});
+
+test('scroll suave: trackpad (deltas pequeños) y scroll interno quedan nativos', opts, async () => {
+  await abrir('suave'); await espiarRueda(); await irA(0);
+  await rueda(10); await esperar(300);
+  assert.equal((await golpes()).at(-1).p, false, 'un golpe pequeño (trackpad) no se intercepta');
+  await esperar(800); await irA(0);
+  const r = await internoRect();
+  await driver.executeScript('window.__w.length=0');
+  await rueda(100, r.x, r.y); await esperar(800);
+  assert.equal((await golpes()).at(-1).p, false, 'sobre un scroll interno no se intercepta');
+  assert.ok(await driver.executeScript('return [...document.querySelectorAll("div")].find(d=>getComputedStyle(d).overflowY==="auto").scrollTop') > 0, 'el contenedor interno se movió');
+  assert.equal(await sy(), 0, 'la página no se movió');
+});
+
+test('scroll suave: el teclado cancela el deslizamiento', opts, async () => {
+  await abrir('suave'); await irA(0);
+  await rueda(800); await esperar(60);
+  await driver.actions().sendKeys(Key.END).perform();
+  await esperar(1200);
+  const [y, max] = await driver.executeScript('return [scrollY, document.documentElement.scrollHeight-innerHeight]');
+  cerca(y, max, 2); // quedó abajo del todo; el deslizamiento no lo devolvió a su destino
+});
+
+test('scroll suave: un ancla cancela y respeta el scroll-margin del navbar', opts, async () => {
+  await abrir('suave'); await irA(0);
+  await rueda(300); await esperar(80);
+  await (await el('IR-FIN')).click();
+  await esperar(1500);
+  const top = await driver.executeScript('return document.getElementById("fin").getBoundingClientRect().top');
+  cerca(top, 90, 2); // [id]{scroll-margin-top:90px}: la sección queda justo debajo del navbar y nada tira de vuelta
+});
+
+test('scroll suave: convive con parallax y sticky', opts, async () => {
+  await abrir('suave'); await irA(0);
+  assert.match(await driver.executeScript('return document.documentElement.className'), /sc/);
+  for (let i = 0; i < 6; i++) await rueda(200);
+  await esperar(1800);
+  const y = await sy();
+  const nav = await driver.executeScript('return document.querySelector("section").getBoundingClientRect().top');
+  const t = parseFloat(((await css('PARALLAX-SUAVE', 'translate')) ?? '').split(' ')[1] ?? '0');
+  console.log('   scrollY', Math.round(y), 'nav top', nav, 'parallax', t);
+  assert.ok(y > 600); assert.equal(Math.round(nav), 0); // navbar sticky sigue pegado
+  assert.ok(t !== 0, 'el parallax responde al scroll de la rueda');
+});
+
+test('scroll suave: convive con escenas por scroll', opts, async () => {
+  await abrir('escena-suave');
+  const d = await driver.executeScript('return {nav:document.querySelector("[data-nav]").offsetHeight,ew:document.querySelector("[data-ew]").getBoundingClientRect().top+scrollY}');
+  await irA(Math.max(0, d.ew - d.nav + 10));
+  for (let i = 0; i < 4; i++) await rueda(200);
+  await esperar(1800);
+  const r = await driver.executeScript('const ew=document.querySelector("[data-ew]");return {top:Math.round(ew.firstElementChild.getBoundingClientRect().top),ep:+(+ew.style.getPropertyValue("--ep"))}');
+  console.log('   ', JSON.stringify(r));
+  assert.equal(r.top, d.nav); assert.ok(r.ep > 0.05);
+});
+
+test('scroll suave: con "reducir movimiento" no intercepta (Firefox con ui.prefersReducedMotion=1)', opts, async () => {
+  const o = new firefox.Options().addArguments('-headless').setBinary(FIREFOX);
+  o.setPreference('ui.prefersReducedMotion', 1);
+  const d2 = await new Builder().forBrowser('firefox').setFirefoxOptions(o).build();
+  try {
+    await d2.manage().window().setRect({ width: 900, height: 700 });
+    await d2.get(pathToFileURL(join(out, 'suave.html')).href); await esperar(500);
+    assert.equal(await d2.executeScript('return matchMedia("(prefers-reduced-motion:reduce)").matches'), true, 'el perfil de prueba sí emula reducir movimiento');
+    await d2.executeScript('window.__w=[];addEventListener("wheel",(e)=>__w.push(e.defaultPrevented))');
+    await d2.actions({ async: true }).scroll(450, 300, 0, 300).perform(); await esperar(800);
+    assert.equal((await d2.executeScript('return __w')).some(Boolean), false);
+  } finally { await d2.quit(); }
 });

@@ -87,6 +87,13 @@ export function cloneWithNewIds(node) {
 /** Objeto plano o {} (evita que un string/array/null en el JSON rompa lo que lo lea). */
 const objeto = (v) => (v !== null && typeof v === 'object' && !Array.isArray(v) ? v : {});
 
+/** content del nodo; en la página, smoothScroll solo vale si es exactamente true (lo demás se descarta). */
+function limpiarContenido(n) {
+  const c = { ...objeto(n.content) };
+  if (n.type === 'page' && c.smoothScroll !== true) delete c.smoothScroll;
+  return c;
+}
+
 /** Valida y completa un objeto leído de un .json. Lanza Error si no es una página válida.
  *  La animación de cada nodo se limpia con normalizarAnimacion (nunca lanza: lo inválido se descarta). */
 export function normalizePage(obj) {
@@ -104,7 +111,7 @@ export function normalizePage(obj) {
       type: n.type,
       name: n.name ?? n.type,
       styles: { base: objeto(n.styles?.base), mobile: objeto(n.styles?.mobile) },
-      content: objeto(n.content),
+      content: limpiarContenido(n),
       animation: normalizarAnimacion(n.animation, n.type), // validada: ver animations/normalizar.js
       children: (n.children ?? []).map((h) => norm(h, false, n)),
     };

@@ -34,7 +34,7 @@ src/
   blocks/              hero, services, gallery, testimonials, pricing, contact, footer (4 variantes c/u) + elements.js (elementos sueltos) + util.js (atajos) + index.js (registro)
   render/renderer.js   árbol -> DOM
   ui/                  sidebar.js, preview.js (selección + edición de texto), inspector.js, fields.js (campos del panel), toolbar.js (undo/redo, escritorio/móvil, nuevo/abrir/guardar JSON, exportar)
-  animations/          un módulo por animación: appear, hover, press, focus, text, stagger, variants (estados con nombre; propio: true = sección propia en el inspector) + base (efectos/curvas/keyframes) + index (registro GRUPOS_ANIM) + normalizar (valida node.animation al abrir un .json / restaurar; usa los `campos` de cada grupo, así que un grupo nuevo queda validado solo)
+  animations/          scrollsuave.js (scroll suave opcional; valores en SUAVE) y un módulo por animación: appear, hover, press, focus, text, stagger, variants (estados con nombre; propio: true = sección propia en el inspector) + base (efectos/curvas/keyframes) + index (registro GRUPOS_ANIM) + normalizar (valida node.animation al abrir un .json / restaurar; usa los `campos` de cada grupo, así que un grupo nuevo queda validado solo)
   export/exporter.js   árbol -> .html (una clase por nodo, @media para móvil)
 ```
 
@@ -61,8 +61,9 @@ Cada función de `FEATURES.md` tiene una etapa asignada (se indica allí con `�
 
 6. Transiciones y estados: rotación, al cargar, press/focus, tween bezier, spring real, stagger entre hijos, texto por línea y variants (estados con nombre). ✅
 
+7. Scroll: parallax, scroll-linked, sticky, escenas por scroll y scroll suave (script propio aislado, opcional por página). ✅
+
 **Pendientes**
-7. **Scroll.** Parallax, scroll-linked, sticky, escenas por scroll, scroll suave.
 8. **Movimiento avanzado.** Layout animations, drag con límites y rebote, inercia, 3D transforms (perspectiva, rotación X/Y).
 9. **Extras.** Marquee/ticker, cursor personalizado, page transitions.
 

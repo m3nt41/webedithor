@@ -7,7 +7,7 @@
 
 import { anchorValido, walk } from '../core/tree.js';
 import { tagFor, TIPOS_TEXTO } from '../render/renderer.js';
-import { usaEscena, varsEscena, esNavPegado, paginaUsaEscena, CSS_ESCENA, usaScrollLink, paginaUsaScrollLink, SCRIPT_SCROLLMOTOR, cssNodo, usaScroll, usaCarga, usaClic, paginaUsaScroll, paginaUsaEntrada, paginaUsaMedida, paginaUsaClic, esMedida, splitText, KEYFRAMES, SCRIPT_SCROLL, SCRIPT_LINEAS, SCRIPT_CLIC } from '../animations/index.js';
+import { usaEscena, varsEscena, esNavPegado, paginaUsaEscena, CSS_ESCENA, usaScrollLink, paginaUsaScrollLink, SCRIPT_SCROLLMOTOR, SCRIPT_SCROLLSUAVE, paginaUsaScrollSuave, cssNodo, usaScroll, usaCarga, usaClic, paginaUsaScroll, paginaUsaEntrada, paginaUsaMedida, paginaUsaClic, esMedida, splitText, KEYFRAMES, SCRIPT_SCROLL, SCRIPT_LINEAS, SCRIPT_CLIC } from '../animations/index.js';
 
 export const BREAKPOINT_MOVIL = 768;
 
@@ -92,7 +92,7 @@ export function exportHTML(page) {
   const noscript = usaRv ? '<noscript><style>[data-rv],[data-rv] .w,[data-rv]>*{animation:none!important}</style></noscript>\n' : '';
   // El script de medición solo viaja si algún texto usa "Por línea (medida)"
   // (y el de clic solo si algún estado "al hacer clic" lo necesita)
-  const scripts = [paginaUsaMedida(page) ? SCRIPT_LINEAS : '', usaRv ? SCRIPT_SCROLL : '', paginaUsaClic(page) ? SCRIPT_CLIC : '', paginaUsaScrollLink(page) ? SCRIPT_SCROLLMOTOR : ''].filter(Boolean).join('\n');
+  const scripts = [paginaUsaMedida(page) ? SCRIPT_LINEAS : '', usaRv ? SCRIPT_SCROLL : '', paginaUsaClic(page) ? SCRIPT_CLIC : '', paginaUsaScrollLink(page) ? SCRIPT_SCROLLMOTOR : '', paginaUsaScrollSuave(page) ? SCRIPT_SCROLLSUAVE : ''].filter(Boolean).join('\n');
   const script = scripts ? `<script>\n${scripts}\n</script>\n` : '';
 
   return `<!doctype html>

@@ -108,7 +108,11 @@ export function initInspector(host) {
     // ---- Contenido ----
     const c = nodo.content;
     let cont = '';
-    if (nodo.type === 'page') cont += `<div class="campo"><label>Título</label><input data-c="title" value="${esc(c.title)}"></div>`;
+    if (nodo.type === 'page') {
+      cont += `<div class="campo"><label>Título</label><input data-c="title" value="${esc(c.title)}"></div>
+        <div class="campo"><label>Scroll suave</label><select data-c="smoothScroll" data-bool><option value="no" ${c.smoothScroll ? '' : 'selected'}>No</option><option value="si" ${c.smoothScroll ? 'selected' : ''}>Sí</option></select></div>
+        <p class="modo">Solo la rueda del mouse en escritorio (táctil, teclado, barra y anclas quedan nativos). Se ve en el HTML exportado, no en este preview.</p>`;
+    }
     if (TIPOS_TEXTO.includes(nodo.type)) cont += `<div class="campo"><label>Texto</label><textarea data-c="text" rows="3">${esc(c.text)}</textarea></div>`;
     if (nodo.type === 'heading') {
       cont += `<div class="campo"><label>Nivel</label><select data-c="level" data-num>${[1, 2, 3, 4].map((n) => `<option value="${n}" ${+c.level === n ? 'selected' : ''}>H${n}</option>`).join('')}</select></div>`;
@@ -212,7 +216,7 @@ export function initInspector(host) {
       const [grupo, key] = t.dataset.a.split('.');
       const num = t.dataset.num !== undefined;
       setAnimation(id, grupo, key, num ? (t.value === '' ? '' : +t.value) : t.value);
-    } else if (t.dataset.c) setContent(id, t.dataset.c, t.dataset.num !== undefined ? +t.value : t.value);
+    } else if (t.dataset.c) setContent(id, t.dataset.c, t.dataset.bool !== undefined ? (t.value === 'si' ? true : undefined) : t.dataset.num !== undefined ? +t.value : t.value);
     else if (t.dataset.pick) {
       // el selector de color rellena la caja de texto vecina
       t.nextElementSibling.value = t.value;

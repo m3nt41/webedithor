@@ -55,5 +55,5 @@ Motion vs CSS puro: m3nt41 ya decidió la opción (a), CSS puro donde se pueda y
 ## Extras
 - [ ] Marquee / ticker → Etapa 9
 - [ ] Cursor personalizado → Etapa 9
-- [ ] Scroll suave → Etapa 7
+- [x] Scroll suave (interruptor "Scroll suave" en Ajustes de la página, apagado por defecto; script propio aislado en `animations/scrollsuave.js`, solo viaja si está activado; solo rueda de mouse en escritorio con inercia; táctil, teclado, barra, anclas, trackpad y scroll interno quedan nativos; no corre con "reducir movimiento") (Etapa 7)
 - [ ] Page transitions → Etapa 9

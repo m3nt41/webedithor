@@ -1,7 +1,7 @@
 // Ronda de bugs de la Etapa 7: validación de datos de scroll/escena en normalizePage y combinaciones. Ejecutar: node tests/ronda7.mjs
 import assert from 'node:assert/strict';
 import { normalizarAnimacion } from '../src/animations/normalizar.js';
-import { createNode as n } from '../src/core/tree.js';
+import { createNode as n, normalizePage } from '../src/core/tree.js';
 import { exportHTML } from '../src/export/exporter.js';
 let ok = 0; const t = (nombre, f) => { f(); ok++; console.log('✔', nombre); };
 
@@ -37,5 +37,12 @@ t('export: escena + reduced-motion y sin JS: la regla de escena vale solo con .s
   const html = exportHTML(p);
   for (const l of html.split('\n').filter((x) => /data-es\]/.test(x))) assert.ok(l.startsWith('.sc ') || l.startsWith('[data-ew]'), l);
   assert.ok(html.includes("matchMedia('(prefers-reduced-motion:reduce)')"));
+});
+t('scroll suave: solo smoothScroll === true cuenta; sin él el export no lleva script', () => {
+  const mk = (v) => { const p = n('page'); p.content.smoothScroll = v; return normalizePage(JSON.parse(JSON.stringify(p))); };
+  assert.equal(mk(true).content.smoothScroll, true);
+  for (const v of ['true', 1, 'si', null, {}, []]) assert.equal('smoothScroll' in mk(v).content, false, String(v));
+  assert.ok(!exportHTML(mk('true')).includes('scrollSuave'));
+  assert.ok(exportHTML(mk(true)).includes('scrollSuave('));
 });
 console.log(`${ok} pruebas ok`);

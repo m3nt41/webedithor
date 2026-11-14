@@ -16,7 +16,7 @@
     "test:sidebar": "npm run build && node tests/sidebar-pestanas.mjs",
     "test:iconos": "npm run build && node tests/iconos.mjs",
     "test:tema": "node tests/tema.mjs",
-    "test:menu": "npm run build && node tests/menu-movil.mjs",
+    "test:menu": "npm run build && node tests/menu-movil.mjs && node tests/menu-scroll.mjs",
     "test:inspector": "node tests/controles.mjs && node tests/inspector.mjs"
   },
   "dependencies": {

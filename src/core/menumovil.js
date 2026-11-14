@@ -120,7 +120,9 @@ export function cssMenuMovil(sel, vars, { important = false, editor = false, anc
     `${pref}a{${I('display:flex;align-items:center;justify-content:center;width:100%;min-height:44px;margin:12px 0 6px;text-align:center')}}`,
   ];
   if (!editor) {
-    movil.unshift(`${chk}{display:block;position:absolute;width:1px;height:1px;margin:-1px;opacity:0;overflow:hidden}`);
+    // position:fixed;top:0;left:0 (no absolute sin coordenadas): al enfocarse con el clic, Firefox hace scroll hasta la posición de maquetación
+    // del checkbox, y dentro de un navbar sticky esa posición es la de la barra SIN pegar (arriba de la página): la página saltaba hacia arriba en cada apertura.
+    movil.unshift(`${chk}{display:block;position:fixed;top:0;left:0;width:1px;height:1px;margin:-1px;opacity:0;overflow:hidden}`);
     movil.push(`${chk}:checked+.mm-btn::before{transform:translateY(4px) rotate(45deg)}`);
     movil.push(`${chk}:checked+.mm-btn::after{transform:translateY(-4px) rotate(-45deg)}`);
     movil.push(`${chk}:focus-visible+.mm-btn{outline:2px solid currentColor;outline-offset:-4px}`);

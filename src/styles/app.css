@@ -28,6 +28,11 @@ body { font: 14px system-ui, sans-serif; background: #1a1a1f; color: #e8e8ee; }
 #toolbar .grupo { display: flex; margin-left: 10px; }
 #toolbar .grupo button:first-child { border-radius: 6px 0 0 6px; }
 #toolbar .grupo button:last-child { border-radius: 0 6px 6px 0; border-left: 0; }
+#toolbar .ico-btn { width: 34px; height: 30px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; }
+#toolbar .grupo .ico-btn:first-child { border-radius: 6px 0 0 6px; }
+#toolbar .grupo .ico-btn:last-child { border-radius: 0 6px 6px 0; }
+#toolbar .divisor { width: 1px; height: 20px; background: #44444f; margin: 0 4px; }
+#toolbar .ico-btn:focus-visible { outline: 2px solid #a794ff; outline-offset: 2px; }
 #toolbar button.activo { background: #7c5cff; border-color: #7c5cff; color: #fff; }
 button.primario { background: #7c5cff; color: #fff; border: 0; border-radius: 6px; padding: 7px 14px; cursor: pointer; font-weight: 600; }
 button.primario:hover { background: #6a4aee; }

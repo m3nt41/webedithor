@@ -93,7 +93,7 @@ try {
   await d.findElement(By.css('#vp-mobile')).click(); await esperar(300);
   await d.findElement(By.css('#vp-reiniciar')).click(); await esperar(900);
   assert.equal(await enFrame(() => d.executeScript('return innerWidth')), 390, '↻ perdió el modo Móvil');
-  assert.equal(await d.executeScript(`return document.querySelector('#vp-mobile').classList.contains('activo')`), true, '↻ cambió el botón de modo');
+  assert.equal(await d.executeScript(`return document.querySelector('#vp-mobile').getAttribute('aria-pressed')`), 'true', '↻ cambió el botón de modo');
   await d.findElement(By.css('#vp-cerrar')).click(); await esperar(200);
   const errs = await d.executeScript('return __err');
   assert.deepEqual(errs, [], 'errores: ' + errs.join(' | '));

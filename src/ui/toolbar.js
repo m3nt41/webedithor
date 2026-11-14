@@ -5,11 +5,7 @@ import { getState, subscribe, undo, redo, puedeDeshacer, puedeRehacer, setViewMo
 import { exportHTML, descargar } from '../export/exporter.js';
 import { abrirVistaPrevia } from './vistaprevia.js';
 
-// Iconos de línea fina (mismo estilo que las pestañas del panel izquierdo), 18px.
-const ico = (d) => `<svg viewBox="0 0 18 18" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
-const SVG_ESCRITORIO = ico('<rect x="2" y="2.5" width="14" height="9.5" rx="1.2"/><path d="M9 12v3M5.8 15.5h6.4"/>');
-const SVG_MOVIL = ico('<rect x="5" y="1.8" width="8" height="14.4" rx="2"/><path d="M8 13.7h2"/>');
-const SVG_OJO = ico('<path d="M1.5 9S4.3 4 9 4s7.5 5 7.5 5-2.8 5-7.5 5S1.5 9 1.5 9Z"/><circle cx="9" cy="9" r="2.2"/>');
+import { SVG_ESCRITORIO, SVG_MOVIL, SVG_OJO } from './iconos.js'; // iconos compartidos con la Vista previa
 
 export function initToolbar(host) {
   host.innerHTML = `

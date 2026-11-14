@@ -7,6 +7,7 @@
 
 import { getState } from '../core/store.js';
 import { exportHTML } from '../export/exporter.js';
+import { SVG_ESCRITORIO, SVG_MOVIL, SVG_REINICIAR, SVG_CERRAR } from './iconos.js';
 
 let capa = null;
 
@@ -19,14 +20,14 @@ export function abrirVistaPrevia() {
   capa.innerHTML = `
     <div class="vp-barra">
       <strong>Vista previa</strong>
-      <span class="grupo">
-        <button type="button" id="vp-desktop" class="activo">🖥 Escritorio</button>
-        <button type="button" id="vp-mobile">📱 Móvil</button>
+      <span class="grupo" role="group" aria-label="Modo de la vista previa">
+        <button type="button" id="vp-desktop" class="ico-btn activo" title="Escritorio" aria-label="Escritorio" aria-pressed="true">${SVG_ESCRITORIO}</button>
+        <button type="button" id="vp-mobile" class="ico-btn" title="Móvil" aria-label="Móvil" aria-pressed="false">${SVG_MOVIL}</button>
       </span>
-      <button type="button" id="vp-reiniciar" title="Volver a cargar la página desde el inicio">↻ Reiniciar</button>
+      <span class="divisor" aria-hidden="true"></span>
+      <button type="button" id="vp-reiniciar" class="ico-btn" title="Reiniciar" aria-label="Reiniciar">${SVG_REINICIAR}</button>
       <span class="espacio"></span>
-      <span class="vp-ayuda">Esc para salir</span>
-      <button type="button" id="vp-cerrar" class="primario">Cerrar</button>
+      <button type="button" id="vp-cerrar" class="ico-btn" title="Cerrar (Esc)" aria-label="Cerrar (Esc)">${SVG_CERRAR}</button>
     </div>
     <div class="vp-escenario"><iframe id="vp-frame" title="Vista previa de la página"></iframe></div>
   `;
@@ -57,8 +58,11 @@ export function abrirVistaPrevia() {
 
   const modo = (movil) => {
     capa.classList.toggle('movil', movil);
-    capa.querySelector('#vp-desktop').classList.toggle('activo', !movil);
-    capa.querySelector('#vp-mobile').classList.toggle('activo', movil);
+    for (const [id, on] of [['#vp-desktop', !movil], ['#vp-mobile', movil]]) {
+      const b = capa.querySelector(id);
+      b.classList.toggle('activo', on);
+      b.setAttribute('aria-pressed', String(on));
+    }
   };
   capa.querySelector('#vp-desktop').addEventListener('click', () => modo(false));
   capa.querySelector('#vp-mobile').addEventListener('click', () => modo(true));

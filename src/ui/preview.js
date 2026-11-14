@@ -6,6 +6,7 @@
 import { getState, subscribe, select, setContent, refresh } from '../core/store.js';
 import { renderNode, TIPOS_TEXTO } from '../render/renderer.js';
 import { cssPagina, medirLineas } from '../animations/index.js';
+import { CSS_MENU_EDITOR } from '../core/menumovil.js';
 
 export function initPreview(host) {
   // 'stage' es la "pantalla"; en la Etapa 3 cambiará de ancho (móvil/escritorio)
@@ -25,7 +26,7 @@ export function initPreview(host) {
   function dibujar() {
     const { page, viewMode } = getState();
     stage.classList.toggle('movil', viewMode === 'mobile'); // ancho 390px en vista móvil
-    estilo.textContent = cssPagina(page, { forzar: getState().verEstado });
+    estilo.textContent = cssPagina(page, { forzar: getState().verEstado }) + '\n' + CSS_MENU_EDITOR;
     stage.replaceChildren(estilo, renderNode(page, viewMode));
     marcarSeleccion();
     medirLineas(stage);

@@ -70,3 +70,6 @@ Motion vs CSS puro: m3nt41 ya decidió la opción (a), CSS puro donde se pueda y
 
 ## Estilo de los bloques
 - [x] Estilo base elegante para todos los bloques: tema único `src/blocks/tema.js` (editorial minimalista + moderno oscuro, un solo acento, todo recto, sin sombras ni degradados) y landing de muestra `docs/demo-estilo.json` (mini-etapa estética)
+
+## Navbar en móvil
+- [x] Menú hamburguesa opcional en el Navbar (`content.menuMovil`, activo de fábrica en las 4 variantes; interruptor "Menú hamburguesa en móvil" en el inspector): el primer hijo (logo) queda visible y el resto va a un panel desplegable; en el export es CSS puro (checkbox + label, sin nodos nuevos) con un script mínimo solo si se usa (Esc, cerrar al pulsar un enlace, Enter, aria-expanded); en el editor móvil el panel se ve siempre abierto (mini-etapa menú móvil)

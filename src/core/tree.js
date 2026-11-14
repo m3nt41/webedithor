@@ -149,6 +149,7 @@ const objeto = (v) => (v !== null && typeof v === 'object' && !Array.isArray(v) 
 function limpiarContenido(n) {
   const c = { ...objeto(n.content) };
   if (n.type === 'page' && c.smoothScroll !== true) delete c.smoothScroll;
+  if (c.menuMovil !== true || n.type !== 'section') delete c.menuMovil; // menú hamburguesa del Navbar: solo vale exactamente true y en secciones
   if (n.type === 'icon' && typeof c.name !== 'string') c.name = 'star'; // un name que no exista en la biblioteca se deja: se dibuja el icono neutro
   return c;
 }

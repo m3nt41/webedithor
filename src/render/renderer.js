@@ -5,6 +5,7 @@
 
 import { anchorValido, aspectoValido, CLAVES_PROPIAS, fondoDeclaraciones } from '../core/tree.js';
 import { iconoSvg, estilosIcono } from '../core/icono.js';
+import { usaMenuMovil, colorLinea } from '../core/menumovil.js';
 
 // Qué etiqueta HTML usa cada tipo de nodo (también la usa el exportador)
 const TAGS = { page: 'div', section: 'section', container: 'div', heading: 'h2', text: 'p', button: 'a', image: 'img', icon: 'span' };
@@ -57,6 +58,18 @@ export function renderNode(node, viewMode = 'desktop') {
     }
     el.appendChild(h);
   });
+
+  // Menú hamburguesa (vista móvil del editor): se ve el icono y el panel SIEMPRE abierto, para poder
+  // seleccionar y editar enlaces y botón. El span no lleva data-id (un clic en él selecciona la barra).
+  // Las reglas del panel (.mm-edit) viven en CSS_MENU_EDITOR (preview.js); el export usa checkbox real.
+  if (viewMode === 'mobile' && usaMenuMovil(node)) {
+    el.classList.add('mm-edit');
+    el.style.setProperty('--mm-linea', colorLinea(est));
+    const icono = document.createElement('span');
+    icono.className = 'mm-btn';
+    icono.setAttribute('aria-hidden', 'true');
+    el.insertBefore(icono, el.children[1] ?? null);
+  }
 
   return el;
 }

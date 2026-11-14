@@ -1,6 +1,8 @@
 // BLOQUE NAVBAR (4 variantes)
-// Logo (texto) + enlaces + botón de acción. Todo flex, sin menú hamburguesa ni JS:
-// en móvil los enlaces pasan a una segunda fila (flex-wrap + order).
+// Logo (texto) + enlaces + botón de acción. Todo flex.
+// En móvil (content.menuMovil, activo de fábrica) el logo queda visible y lo demás va a un panel
+// con hamburguesa (src/core/menumovil.js). Si la opción se apaga, vale el comportamiento antiguo:
+// los enlaces pasan a una segunda fila (flex-wrap + order, estilos móviles de grupoEnlaces).
 // Los enlaces apuntan a anclas (#servicios, #precios, #contacto...): cada bloque
 // trae su ancla puesta (campo "Ancla (id)" del inspector).
 //
@@ -31,8 +33,9 @@ const cta = (t, m, variante = 'primario') => boton(t, '#contacto', botonTema(m, 
 const barra = (m, styles, children) =>
   n('section', {
     name: 'Navbar',
+    content: { menuMovil: true }, // hamburguesa en móvil (el 1.er hijo, el logo, queda visible; el resto va al panel)
     styles: { display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px', padding: `20px ${lado(ANCHO)}`, ...fondoModo(m), borderBottom: `1px solid ${m.linea}`, ...styles },
-    mobile: { padding: '14px 20px', gap: '10px 16px' },
+    mobile: { padding: '10px 20px', gap: '10px 16px' },
     children,
   });
 

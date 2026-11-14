@@ -8,6 +8,7 @@
 import { anchorValido, walk, aspectoValido, CLAVES_PROPIAS, fondoDeclaraciones, tocaFondo } from '../core/tree.js';
 import { tagFor, TIPOS_TEXTO } from '../render/renderer.js';
 import { iconoSvg, estilosIcono } from '../core/icono.js';
+import { usaMenuMovil, paginaUsaMenuMovil, cssMenuMovil, colorLinea, SCRIPT_MENU } from '../core/menumovil.js';
 import { usaEscena, varsEscena, esNavPegado, paginaUsaEscena, CSS_ESCENA, usaScrollLink, paginaUsaScrollLink, SCRIPT_SCROLLMOTOR, SCRIPT_SCROLLSUAVE, paginaUsaScrollSuave, cssNodo, usaScroll, usaCarga, usaClic, paginaUsaScroll, paginaUsaEntrada, paginaUsaMedida, paginaUsaClic, esMedida, splitText, KEYFRAMES, SCRIPT_SCROLL, SCRIPT_LINEAS, SCRIPT_CLIC } from '../animations/index.js';
 
 export const BREAKPOINT_MOVIL = 768;
@@ -33,6 +34,7 @@ export function exportHTML(page) {
   const css = [];
   const cssMovil = [];
   const cssAnim = [];
+  const cssMenuReducido = []; // reglas del menú hamburguesa para prefers-reduced-motion
   let contador = 0;
 
   function nodoAHtml(node, nivel, padre = null) {
@@ -75,7 +77,20 @@ export function exportHTML(page) {
       const interior = modo ? textoPartidoHtml(c.text, modo) : escHtml(c.text).replace(/\n/g, '<br>');
       return `${sangria}${abre}${interior}</${tag}>`;
     }
-    const hijos = node.children.map((h) => nodoAHtml(h, nivel + 1, node)).join('\n');
+    const partes = node.children.map((h) => nodoAHtml(h, nivel + 1, node));
+    if (usaMenuMovil(node)) {
+      // Menú hamburguesa: checkbox + label como hermanos, justo después del logo (primer hijo). Sin nodos nuevos en el árbol.
+      const idChk = `${clase}-mm`;
+      const m = cssMenuMovil(`.${clase}`, `.${clase}>.mm-chk:checked~`, colorLinea({ ...node.styles.base, ...node.styles.mobile }));
+      css.push(...m.base);
+      cssMovil.push(...m.movil);
+      cssMenuReducido.push(...m.reducido);
+      const s2 = '  '.repeat(nivel + 1);
+      partes.splice(1, 0,
+        `${s2}<input type="checkbox" class="mm-chk" id="${idChk}" aria-label="Abrir menú" aria-expanded="false">`,
+        `${s2}<label class="mm-btn" for="${idChk}" aria-hidden="true"></label>`);
+    }
+    const hijos = partes.join('\n');
     const html = `${sangria}${abre}\n${hijos}\n${sangria}</${tag}>`;
     if (!esc) return html;
     // escena: contenedor alto (da el recorrido de scroll) + la sección como capa pegada
@@ -114,11 +129,12 @@ export function exportHTML(page) {
     // "Reducir movimiento": sin animaciones de entrada y sin transiciones (hover/press/focus/estados cambian de golpe)
     usaEntrada ? '@media (prefers-reduced-motion:reduce){[data-rv],[data-ld],[data-rv] .w,[data-ld] .w,[data-rv]>*,[data-ld]>*{animation:none!important}}' : '',
     cssAnim.length ? '@media (prefers-reduced-motion:reduce){*{transition:none!important}}' : '',
+    cssMenuReducido.length ? `@media (prefers-reduced-motion:reduce){${cssMenuReducido.join('')}}` : '',
   ].filter(Boolean).join('\n');
   const noscript = usaRv ? '<noscript><style>[data-rv],[data-rv] .w,[data-rv]>*{animation:none!important}</style></noscript>\n' : '';
   // El script de medición solo viaja si algún texto usa "Por línea (medida)"
   // (y el de clic solo si algún estado "al hacer clic" lo necesita)
-  const scripts = [paginaUsaMedida(page) ? SCRIPT_LINEAS : '', usaRv ? SCRIPT_SCROLL : '', paginaUsaClic(page) ? SCRIPT_CLIC : '', paginaUsaScrollLink(page) ? SCRIPT_SCROLLMOTOR : '', paginaUsaScrollSuave(page) ? SCRIPT_SCROLLSUAVE : ''].filter(Boolean).join('\n');
+  const scripts = [paginaUsaMedida(page) ? SCRIPT_LINEAS : '', usaRv ? SCRIPT_SCROLL : '', paginaUsaClic(page) ? SCRIPT_CLIC : '', paginaUsaScrollLink(page) ? SCRIPT_SCROLLMOTOR : '', paginaUsaScrollSuave(page) ? SCRIPT_SCROLLSUAVE : '', paginaUsaMenuMovil(page) ? SCRIPT_MENU : ''].filter(Boolean).join('\n');
   const script = scripts ? `<script>\n${scripts}\n</script>\n` : '';
 
   return `<!doctype html>

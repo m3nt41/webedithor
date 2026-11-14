@@ -2,7 +2,7 @@
   "app": "editor-landings",
   "version": 1,
   "page": {
-    "id": "6c856e050",
+    "id": "48d78f550",
     "type": "page",
     "name": "Página",
     "styles": {
@@ -19,7 +19,7 @@
     "animation": null,
     "children": [
       {
-        "id": "7d01ca788",
+        "id": "ce11c5fc8",
         "type": "section",
         "name": "Navbar",
         "styles": {
@@ -35,15 +35,17 @@
             "borderBottom": "1px solid #d9d6cf"
           },
           "mobile": {
-            "padding": "14px 20px",
+            "padding": "10px 20px",
             "gap": "10px 16px"
           }
         },
-        "content": {},
+        "content": {
+          "menuMovil": true
+        },
         "animation": null,
         "children": [
           {
-            "id": "62531c831",
+            "id": "0ca3c59f1",
             "type": "text",
             "name": "Logo",
             "styles": {
@@ -63,7 +65,7 @@
             "children": []
           },
           {
-            "id": "ac5f52e16",
+            "id": "25ea54bf6",
             "type": "container",
             "name": "Enlaces",
             "styles": {
@@ -84,7 +86,7 @@
             "animation": null,
             "children": [
               {
-                "id": "b2d53fb52",
+                "id": "f10ce0c42",
                 "type": "button",
                 "name": "Enlace",
                 "styles": {
@@ -107,7 +109,7 @@
                 "children": []
               },
               {
-                "id": "812f9a823",
+                "id": "8f2c22a53",
                 "type": "button",
                 "name": "Enlace",
                 "styles": {
@@ -130,7 +132,7 @@
                 "children": []
               },
               {
-                "id": "fb7eff1a4",
+                "id": "50fbfbed4",
                 "type": "button",
                 "name": "Enlace",
                 "styles": {
@@ -153,7 +155,7 @@
                 "children": []
               },
               {
-                "id": "84bd26f75",
+                "id": "33165f015",
                 "type": "button",
                 "name": "Enlace",
                 "styles": {
@@ -178,7 +180,7 @@
             ]
           },
           {
-            "id": "92e8a4407",
+            "id": "9d8791937",
             "type": "button",
             "name": "Botón de acción",
             "styles": {
@@ -206,7 +208,7 @@
         ]
       },
       {
-        "id": "cc506bedc",
+        "id": "86142dcfc",
         "type": "section",
         "name": "Hero",
         "styles": {
@@ -233,7 +235,7 @@
         "animation": null,
         "children": [
           {
-            "id": "035040e59",
+            "id": "bd77e6a09",
             "type": "heading",
             "name": "Título",
             "styles": {
@@ -258,7 +260,7 @@
             "children": []
           },
           {
-            "id": "ad675f28a",
+            "id": "2e6a7fe0a",
             "type": "text",
             "name": "Subtítulo",
             "styles": {
@@ -280,7 +282,7 @@
             "children": []
           },
           {
-            "id": "139f5cfbb",
+            "id": "0b17f04eb",
             "type": "button",
             "name": "Botón",
             "styles": {
@@ -308,7 +310,7 @@
         ]
       },
       {
-        "id": "bd916509o",
+        "id": "94820ee9o",
         "type": "section",
         "name": "Servicios",
         "styles": {
@@ -330,7 +332,7 @@
         "animation": null,
         "children": [
           {
-            "id": "6b27762fd",
+            "id": "4dcd07a7d",
             "type": "heading",
             "name": "Título",
             "styles": {
@@ -355,7 +357,7 @@
             "children": []
           },
           {
-            "id": "27bde54fn",
+            "id": "30cd04a8n",
             "type": "container",
             "name": "Grid",
             "styles": {
@@ -370,7 +372,7 @@
             "animation": null,
             "children": [
               {
-                "id": "604b013ag",
+                "id": "ded54052g",
                 "type": "container",
                 "name": "Tarjeta",
                 "styles": {
@@ -389,7 +391,7 @@
                 "animation": null,
                 "children": [
                   {
-                    "id": "aa71fe7ae",
+                    "id": "79413866e",
                     "type": "heading",
                     "name": "Título",
                     "styles": {
@@ -413,7 +415,7 @@
                     "children": []
                   },
                   {
-                    "id": "92217c48f",
+                    "id": "41c1a9eef",
                     "type": "text",
                     "name": "Texto",
                     "styles": {
@@ -434,7 +436,7 @@
                 ]
               },
               {
-                "id": "febb2908j",
+                "id": "6f70fa1fj",
                 "type": "container",
                 "name": "Tarjeta",
                 "styles": {
@@ -453,7 +455,7 @@
                 "animation": null,
                 "children": [
                   {
-                    "id": "dce3c186h",
+                    "id": "ade7f30dh",
                     "type": "heading",
                     "name": "Título",
                     "styles": {
@@ -477,7 +479,7 @@
                     "children": []
                   },
                   {
-                    "id": "af3461e7i",
+                    "id": "819b7cc3i",
                     "type": "text",
                     "name": "Texto",
                     "styles": {
@@ -498,7 +500,7 @@
                 ]
               },
               {
-                "id": "a9021896m",
+                "id": "71dd8a73m",
                 "type": "container",
                 "name": "Tarjeta",
                 "styles": {
@@ -517,7 +519,7 @@
                 "animation": null,
                 "children": [
                   {
-                    "id": "0c7ed41dk",
+                    "id": "088deec2k",
                     "type": "heading",
                     "name": "Título",
                     "styles": {
@@ -541,7 +543,7 @@
                     "children": []
                   },
                   {
-                    "id": "4cf9a045l",
+                    "id": "def6600bl",
                     "type": "text",
                     "name": "Texto",
                     "styles": {
@@ -566,7 +568,7 @@
         ]
       },
       {
-        "id": "60a34118u",
+        "id": "af7031e1u",
         "type": "section",
         "name": "Galería",
         "styles": {
@@ -586,7 +588,7 @@
         "animation": null,
         "children": [
           {
-            "id": "3af069eap",
+            "id": "c07b5cefp",
             "type": "heading",
             "name": "Título",
             "styles": {
@@ -611,7 +613,7 @@
             "children": []
           },
           {
-            "id": "90042ec6t",
+            "id": "dda88430t",
             "type": "container",
             "name": "Grid",
             "styles": {
@@ -627,7 +629,7 @@
             "animation": null,
             "children": [
               {
-                "id": "d14ca4a9q",
+                "id": "21a8a857q",
                 "type": "image",
                 "name": "Foto 1",
                 "styles": {
@@ -646,7 +648,7 @@
                 "children": []
               },
               {
-                "id": "bf6838bfr",
+                "id": "54ab3eb4r",
                 "type": "image",
                 "name": "Foto 2",
                 "styles": {
@@ -665,7 +667,7 @@
                 "children": []
               },
               {
-                "id": "c4859721s",
+                "id": "02fccf2bs",
                 "type": "image",
                 "name": "Foto 3",
                 "styles": {
@@ -688,7 +690,7 @@
         ]
       },
       {
-        "id": "e62a1394x",
+        "id": "1bd45e28x",
         "type": "section",
         "name": "Testimonio",
         "styles": {
@@ -710,7 +712,7 @@
         "animation": null,
         "children": [
           {
-            "id": "34a5dcdfv",
+            "id": "bc2c2249v",
             "type": "text",
             "name": "Cita",
             "styles": {
@@ -734,7 +736,7 @@
             "children": []
           },
           {
-            "id": "9a416ee4w",
+            "id": "dd43fc01w",
             "type": "text",
             "name": "Autor",
             "styles": {
@@ -758,7 +760,7 @@
         ]
       },
       {
-        "id": "1b4347e520",
+        "id": "56a6e32020",
         "type": "section",
         "name": "Precios",
         "styles": {
@@ -780,7 +782,7 @@
         "animation": null,
         "children": [
           {
-            "id": "03e72833y",
+            "id": "6359c7edy",
             "type": "heading",
             "name": "Título",
             "styles": {
@@ -805,7 +807,7 @@
             "children": []
           },
           {
-            "id": "5d5f17b71z",
+            "id": "2420b0951z",
             "type": "container",
             "name": "Grid",
             "styles": {
@@ -821,7 +823,7 @@
             "animation": null,
             "children": [
               {
-                "id": "789b19a719",
+                "id": "892a573219",
                 "type": "container",
                 "name": "Plan",
                 "styles": {
@@ -841,7 +843,7 @@
                 "animation": null,
                 "children": [
                   {
-                    "id": "f71c3966z",
+                    "id": "50c54001z",
                     "type": "text",
                     "name": "Nombre",
                     "styles": {
@@ -863,7 +865,7 @@
                     "children": []
                   },
                   {
-                    "id": "27f31afb10",
+                    "id": "70c7efc310",
                     "type": "text",
                     "name": "Precio",
                     "styles": {
@@ -886,7 +888,7 @@
                     "children": []
                   },
                   {
-                    "id": "1cd6d1cd17",
+                    "id": "3ed6221617",
                     "type": "container",
                     "name": "Ventajas",
                     "styles": {
@@ -903,7 +905,7 @@
                     "animation": null,
                     "children": [
                       {
-                        "id": "a941cf0a13",
+                        "id": "4a858d9413",
                         "type": "container",
                         "name": "Ventaja",
                         "styles": {
@@ -918,7 +920,7 @@
                         "animation": null,
                         "children": [
                           {
-                            "id": "cb8876b111",
+                            "id": "fd3b925211",
                             "type": "icon",
                             "name": "Icono",
                             "styles": {
@@ -936,7 +938,7 @@
                             "children": []
                           },
                           {
-                            "id": "68e1a56f12",
+                            "id": "1bc5d06612",
                             "type": "text",
                             "name": "Texto",
                             "styles": {
@@ -956,7 +958,7 @@
                         ]
                       },
                       {
-                        "id": "ddd102ff16",
+                        "id": "34c349d116",
                         "type": "container",
                         "name": "Ventaja",
                         "styles": {
@@ -971,7 +973,7 @@
                         "animation": null,
                         "children": [
                           {
-                            "id": "5007277b14",
+                            "id": "3b246e1d14",
                             "type": "icon",
                             "name": "Icono",
                             "styles": {
@@ -989,7 +991,7 @@
                             "children": []
                           },
                           {
-                            "id": "ff1552b015",
+                            "id": "e71d4e1715",
                             "type": "text",
                             "name": "Texto",
                             "styles": {
@@ -1011,7 +1013,7 @@
                     ]
                   },
                   {
-                    "id": "2b13c77c18",
+                    "id": "6ecb52eb18",
                     "type": "button",
                     "name": "Botón",
                     "styles": {
@@ -1040,7 +1042,7 @@
                 ]
               },
               {
-                "id": "a766ed601n",
+                "id": "61580e3f1n",
                 "type": "container",
                 "name": "Plan",
                 "styles": {
@@ -1060,7 +1062,7 @@
                 "animation": null,
                 "children": [
                   {
-                    "id": "3fffd59d1a",
+                    "id": "650cf3811a",
                     "type": "text",
                     "name": "Nombre",
                     "styles": {
@@ -1082,7 +1084,7 @@
                     "children": []
                   },
                   {
-                    "id": "4901de091b",
+                    "id": "e23367881b",
                     "type": "text",
                     "name": "Precio",
                     "styles": {
@@ -1105,7 +1107,7 @@
                     "children": []
                   },
                   {
-                    "id": "5fde151d1l",
+                    "id": "fc43ae991l",
                     "type": "container",
                     "name": "Ventajas",
                     "styles": {
@@ -1122,7 +1124,7 @@
                     "animation": null,
                     "children": [
                       {
-                        "id": "b4d592171e",
+                        "id": "24fc24111e",
                         "type": "container",
                         "name": "Ventaja",
                         "styles": {
@@ -1137,7 +1139,7 @@
                         "animation": null,
                         "children": [
                           {
-                            "id": "8ae7113c1c",
+                            "id": "3e97940f1c",
                             "type": "icon",
                             "name": "Icono",
                             "styles": {
@@ -1155,7 +1157,7 @@
                             "children": []
                           },
                           {
-                            "id": "fb82bbaf1d",
+                            "id": "f2b4e6de1d",
                             "type": "text",
                             "name": "Texto",
                             "styles": {
@@ -1175,7 +1177,7 @@
                         ]
                       },
                       {
-                        "id": "424d33171h",
+                        "id": "fb0ee4f31h",
                         "type": "container",
                         "name": "Ventaja",
                         "styles": {
@@ -1190,7 +1192,7 @@
                         "animation": null,
                         "children": [
                           {
-                            "id": "06d43c341f",
+                            "id": "7b36a0581f",
                             "type": "icon",
                             "name": "Icono",
                             "styles": {
@@ -1208,7 +1210,7 @@
                             "children": []
                           },
                           {
-                            "id": "e285da0b1g",
+                            "id": "dc6964a61g",
                             "type": "text",
                             "name": "Texto",
                             "styles": {
@@ -1228,7 +1230,7 @@
                         ]
                       },
                       {
-                        "id": "6fa44cf61k",
+                        "id": "904a70a71k",
                         "type": "container",
                         "name": "Ventaja",
                         "styles": {
@@ -1243,7 +1245,7 @@
                         "animation": null,
                         "children": [
                           {
-                            "id": "f4e539861i",
+                            "id": "2f9aa4db1i",
                             "type": "icon",
                             "name": "Icono",
                             "styles": {
@@ -1261,7 +1263,7 @@
                             "children": []
                           },
                           {
-                            "id": "a349e0fb1j",
+                            "id": "eb7b1bd71j",
                             "type": "text",
                             "name": "Texto",
                             "styles": {
@@ -1283,7 +1285,7 @@
                     ]
                   },
                   {
-                    "id": "1feb9aa21m",
+                    "id": "1a5660801m",
                     "type": "button",
                     "name": "Botón",
                     "styles": {
@@ -1312,7 +1314,7 @@
                 ]
               },
               {
-                "id": "e90f3ec91y",
+                "id": "d51948111y",
                 "type": "container",
                 "name": "Plan",
                 "styles": {
@@ -1332,7 +1334,7 @@
                 "animation": null,
                 "children": [
                   {
-                    "id": "e8c61a8e1o",
+                    "id": "65d9225f1o",
                     "type": "text",
                     "name": "Nombre",
                     "styles": {
@@ -1354,7 +1356,7 @@
                     "children": []
                   },
                   {
-                    "id": "1f3459a61p",
+                    "id": "e65dcc891p",
                     "type": "text",
                     "name": "Precio",
                     "styles": {
@@ -1377,7 +1379,7 @@
                     "children": []
                   },
                   {
-                    "id": "80cfd9891w",
+                    "id": "6d91aff41w",
                     "type": "container",
                     "name": "Ventajas",
                     "styles": {
@@ -1394,7 +1396,7 @@
                     "animation": null,
                     "children": [
                       {
-                        "id": "22815d421s",
+                        "id": "eb87f7461s",
                         "type": "container",
                         "name": "Ventaja",
                         "styles": {
@@ -1409,7 +1411,7 @@
                         "animation": null,
                         "children": [
                           {
-                            "id": "739d4c071q",
+                            "id": "e333951e1q",
                             "type": "icon",
                             "name": "Icono",
                             "styles": {
@@ -1427,7 +1429,7 @@
                             "children": []
                           },
                           {
-                            "id": "fc4fef0b1r",
+                            "id": "f81179b41r",
                             "type": "text",
                             "name": "Texto",
                             "styles": {
@@ -1447,7 +1449,7 @@
                         ]
                       },
                       {
-                        "id": "0999468f1v",
+                        "id": "45ea73b11v",
                         "type": "container",
                         "name": "Ventaja",
                         "styles": {
@@ -1462,7 +1464,7 @@
                         "animation": null,
                         "children": [
                           {
-                            "id": "a72d42c11t",
+                            "id": "275614fb1t",
                             "type": "icon",
                             "name": "Icono",
                             "styles": {
@@ -1480,7 +1482,7 @@
                             "children": []
                           },
                           {
-                            "id": "6bae5d7c1u",
+                            "id": "73d9674c1u",
                             "type": "text",
                             "name": "Texto",
                             "styles": {
@@ -1502,7 +1504,7 @@
                     ]
                   },
                   {
-                    "id": "d1ef77b31x",
+                    "id": "bb4ca7f11x",
                     "type": "button",
                     "name": "Botón",
                     "styles": {
@@ -1535,7 +1537,7 @@
         ]
       },
       {
-        "id": "dd4f0f9e24",
+        "id": "5b9c653c24",
         "type": "section",
         "name": "Escena",
         "styles": {
@@ -1563,7 +1565,7 @@
         },
         "children": [
           {
-            "id": "f33bed8421",
+            "id": "390ad5ed21",
             "type": "text",
             "name": "Texto inicial",
             "styles": {
@@ -1594,7 +1596,7 @@
             "children": []
           },
           {
-            "id": "98ab307b22",
+            "id": "152e3e5022",
             "type": "image",
             "name": "Imagen paso 2",
             "styles": {
@@ -1620,7 +1622,7 @@
             "children": []
           },
           {
-            "id": "2cff75fe23",
+            "id": "c6965ced23",
             "type": "image",
             "name": "Imagen paso 3",
             "styles": {
@@ -1648,7 +1650,7 @@
         ]
       },
       {
-        "id": "e2b77c7528",
+        "id": "4f5bc26828",
         "type": "section",
         "name": "Contacto",
         "styles": {
@@ -1672,7 +1674,7 @@
         "animation": null,
         "children": [
           {
-            "id": "594dd1d625",
+            "id": "7c4003b525",
             "type": "heading",
             "name": "Título",
             "styles": {
@@ -1696,7 +1698,7 @@
             "children": []
           },
           {
-            "id": "0fc8224b26",
+            "id": "0dcd8c2526",
             "type": "text",
             "name": "Subtítulo",
             "styles": {
@@ -1717,7 +1719,7 @@
             "children": []
           },
           {
-            "id": "64ea00e427",
+            "id": "966ddea527",
             "type": "button",
             "name": "Botón WhatsApp",
             "styles": {
@@ -1745,7 +1747,7 @@
         ]
       },
       {
-        "id": "113a3dfa2f",
+        "id": "544e227c2f",
         "type": "section",
         "name": "Footer",
         "styles": {
@@ -1766,7 +1768,7 @@
         "animation": null,
         "children": [
           {
-            "id": "ee4f8c8529",
+            "id": "048b674429",
             "type": "text",
             "name": "Marca",
             "styles": {
@@ -1786,7 +1788,7 @@
             "children": []
           },
           {
-            "id": "0d6619ef2d",
+            "id": "448958eb2d",
             "type": "container",
             "name": "Enlaces",
             "styles": {
@@ -1802,7 +1804,7 @@
             "animation": null,
             "children": [
               {
-                "id": "73bbe8392a",
+                "id": "ebcc194b2a",
                 "type": "button",
                 "name": "Enlace",
                 "styles": {
@@ -1823,7 +1825,7 @@
                 "children": []
               },
               {
-                "id": "af7612f32b",
+                "id": "14a79f952b",
                 "type": "button",
                 "name": "Enlace",
                 "styles": {
@@ -1844,7 +1846,7 @@
                 "children": []
               },
               {
-                "id": "6b875b1c2c",
+                "id": "9bc348202c",
                 "type": "button",
                 "name": "Enlace",
                 "styles": {
@@ -1867,7 +1869,7 @@
             ]
           },
           {
-            "id": "06d3b9932e",
+            "id": "fb2996842e",
             "type": "text",
             "name": "Copyright",
             "styles": {

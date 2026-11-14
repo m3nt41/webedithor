@@ -181,6 +181,11 @@ export function initInspector(host) {
         <p class="modo" data-aviso-ancla>${avisoAncla(page, nodo, c.anchor ?? '')}</p>`;
     }
     if (cont) html += `<h3>Contenido</h3>${cont}`;
+    // Menú hamburguesa en móvil: solo en el Navbar (sección con "nav" en el nombre o que ya lo tiene activado)
+    if (nodo.type === 'section' && (c.menuMovil === true || /nav/i.test(nodo.name))) {
+      html += `<h3>Menú en móvil</h3><div class="campo"><label>Menú hamburguesa en móvil</label><select data-c="menuMovil" data-bool><option value="no" ${c.menuMovil ? '' : 'selected'}>No</option><option value="si" ${c.menuMovil ? 'selected' : ''}>Sí</option></select></div>
+        <p class="modo">En móvil el primer elemento (el logo) queda visible y todo lo demás va al panel de la hamburguesa. En la vista móvil del editor el panel se ve siempre abierto.</p>`;
+    }
 
     // ---- Estilos ----
     for (const g of GRUPOS) {

@@ -8,6 +8,7 @@
 //     vacioTexto: nombre de esa opcion explicita (por defecto, el texto de la primera opcion).
 //   Controles visuales (src/ui/controles.js): kind 'columnas' | 'anchoMax' | 'centrar' | 'proporcion'. Escriben los MISMOS
 //     strings CSS de siempre. El campo de texto del valor queda en "Avanzado" del grupo (crudo = su etiqueta ahi).
+//     'forma' (borderRadius) y 'tamanoBoton' (padding + fontSize en una sola accion; crudos: [{key,label,placeholder}] = sus campos de texto en Avanzado).
 //     autoVacio (solo proporcion): "Auto" = quitar la proporcion en vez de escribir 'auto' (para "Proporcion de los hijos").
 
 import { SVG_AVISO } from './iconos.js';
@@ -26,11 +27,22 @@ const FUENTES = [
 
 export const GRUPOS = [
   {
+    // Solo botones, arriba del todo. Forma = border-radius; Tamaño = padding + font-size juntos (sus campos de texto crudos
+    // van en "Avanzado"; por eso Padding y Tamaño de fuente no se repiten abajo para botones).
+    titulo: 'Botón',
+    tipos: ['button'],
+    campos: [
+      { key: 'borderRadius', label: 'Forma', crudo: 'Radio', kind: 'forma', placeholder: '12px' },
+      { key: 'padding', label: 'Tamaño', kind: 'tamanoBoton',
+        crudos: [{ key: 'padding', label: 'Padding', placeholder: '12px 24px' }, { key: 'fontSize', label: 'Tamaño de fuente', placeholder: '16px' }] },
+    ],
+  },
+  {
     titulo: 'Tipografía',
     tipos: [...TEXTO, 'page'],
     campos: [
       { key: 'fontFamily', label: 'Fuente', kind: 'select', options: FUENTES, vacioMovil: 'inherit' },
-      { key: 'fontSize', label: 'Tamaño', kind: 'text', placeholder: '24px' },
+      { key: 'fontSize', label: 'Tamaño', kind: 'text', placeholder: '24px', tipos: ['heading', 'text', 'page'] },
       { key: 'fontWeight', label: 'Grosor', kind: 'select', options: [['', '—'], ['400', 'Normal'], ['600', 'Seminegrita'], ['800', 'Negrita'], ['900', 'Extra']] },
       { key: 'lineHeight', label: 'Interlínea', kind: 'text', placeholder: '1.2' },
       { key: 'letterSpacing', label: 'Espaciado letras', kind: 'text', placeholder: '0.02em' },
@@ -53,7 +65,8 @@ export const GRUPOS = [
     tipos: [...TEXTO, ...CONTENEDOR, 'page', 'image', 'icon'],
     campos: [
       { key: 'background', label: 'Fondo', kind: 'color' },
-      { key: 'borderRadius', label: 'Radio', kind: 'text', placeholder: '12px' },
+      // Forma (Recto/Suave/Redondo/Pastilla) para todo salvo botones (que la tienen arriba, en "Botón"). Su texto crudo (Radio) va en Avanzado.
+      { key: 'borderRadius', label: 'Forma', crudo: 'Radio', kind: 'forma', placeholder: '12px', tipos: [...CONTENEDOR, 'page', 'image', 'heading', 'text', 'icon'] },
       { key: 'border', label: 'Borde', kind: 'text', placeholder: '1px solid #ccc' },
       { key: 'opacity', label: 'Opacidad', kind: 'text', placeholder: '1' },
     ],
@@ -74,7 +87,7 @@ export const GRUPOS = [
     titulo: 'Tamaño y espaciado',
     tipos: [...TEXTO, ...CONTENEDOR, 'image'],
     campos: [
-      { key: 'padding', label: 'Padding', kind: 'text', placeholder: '24px 32px' },
+      { key: 'padding', label: 'Padding', kind: 'text', placeholder: '24px 32px', tipos: ['heading', 'text', ...CONTENEDOR, 'image'] },
       { key: 'margin', label: 'Centrar', crudo: 'Margen', kind: 'centrar', placeholder: '0 auto' },
       { key: 'width', label: 'Ancho', kind: 'text', placeholder: '100%' },
       { key: 'maxWidth', label: 'Ancho máx.', kind: 'anchoMax', placeholder: '600px' },

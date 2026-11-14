@@ -1,6 +1,6 @@
 // Controles visuales del inspector (lógica pura de src/ui/controles.js). Ejecutar: node tests/controles.mjs
 import assert from 'node:assert/strict';
-import { leerColumnas, leerAnchoMax, leerCentrar, leerProporcion, modeloControl, columnasN, columnasAuto } from '../src/ui/controles.js';
+import { leerColumnas, leerAnchoMax, leerCentrar, leerProporcion, leerForma, leerTamanoBoton, FORMAS, TAMANOS_BOTON, modeloControl, columnasN, columnasAuto } from '../src/ui/controles.js';
 import { createBlock, BLOCKS } from '../src/blocks/index.js';
 import { walk } from '../src/core/tree.js';
 let ok = 0; const t = (nombre, f) => { f(); ok++; console.log('✔', nombre); };
@@ -82,6 +82,57 @@ t('todos los valores que traen los bloques se leen sin romperse (leer nunca escr
   for (const v of vistos.margen) assert.doesNotThrow(() => leerCentrar(v));
   for (const v of vistos.prop) assert.notEqual(leerProporcion(v).tipo, 'otro', 'proporción: ' + v);
   console.log('   (columnas:', [...vistos.columnas].join(' | '), ')');
+});
+
+t('forma: Recto/Suave/Redondo/Pastilla, vacío = Recto y lo raro es Otro (no se toca)', () => {
+  assert.equal(leerForma('0').k, 'recto'); assert.equal(leerForma('0px').k, 'recto'); assert.equal(leerForma('0 0 0 0').k, 'recto');
+  assert.equal(leerForma('6px').k, 'suave'); assert.equal(leerForma('12px').k, 'redondo'); assert.equal(leerForma('12px 12px').k, 'redondo');
+  assert.equal(leerForma('999px').k, 'pastilla');
+  for (const v of ['4px', '50%', '8px 0', '12px 0 0 12px', '1rem', '1 2 3 4 5']) assert.equal(leerForma(v).tipo, 'otro', v);
+  assert.equal(leerForma('').tipo, 'vacio');
+  const f = { kind: 'forma' };
+  assert.deepEqual(activo(modeloControl(f, '12px', 'desktop')), ['Redondo']);
+  assert.deepEqual(activo(modeloControl(f, '', 'desktop')), ['Recto']);
+  assert.deepEqual(activo(modeloControl(f, '4px', 'desktop')), []);          // imagen con 4px (grid de bloques): Otro
+  assert.equal(modeloControl(f, '4px', 'desktop').personalizado, true);
+  assert.equal(modeloControl(f, '12px', 'desktop').personalizado, false);
+  // en móvil los botones también escriben un valor explícito (nunca '': eso sería "igual que escritorio")
+  for (const m of ['desktop', 'mobile']) assert.deepEqual(modeloControl(f, '', m).opciones.map((o) => o.val), ['0', '6px', '12px', '999px']);
+  assert.equal(FORMAS.length, 4);
+});
+
+t('tamaño de botón: S/M/L solo si coinciden padding Y fontSize; lo demás es Otro', () => {
+  assert.deepEqual(leerTamanoBoton({ padding: '8px 16px', fontSize: '14px' }), { tipo: 'tam', k: 's' });
+  assert.equal(leerTamanoBoton({ padding: '12px 24px', fontSize: '16px' }).k, 'm');
+  assert.equal(leerTamanoBoton({ padding: '16px 32px', fontSize: '18px' }).k, 'l');
+  assert.equal(leerTamanoBoton({ padding: ' 12px   24px ', fontSize: '16PX' }).k, 'm');                 // espacios y mayúsculas
+  assert.equal(leerTamanoBoton({ padding: '12px 24px 12px 24px', fontSize: '16px' }).k, 'm');            // atajo de 4 partes
+  assert.equal(leerTamanoBoton({ padding: '14px 28px', fontSize: '16px' }).tipo, 'otro');               // el botón por defecto de los bloques
+  assert.equal(leerTamanoBoton({ padding: '12px 24px', fontSize: '17px' }).tipo, 'otro');               // solo coincide uno
+  assert.equal(leerTamanoBoton({ padding: '12px 24px' }).tipo, 'otro');                                   // falta fontSize
+  assert.equal(leerTamanoBoton({ fontSize: '16px' }).tipo, 'otro');
+  assert.equal(leerTamanoBoton({}).tipo, 'vacio');
+  const f = { kind: 'tamanoBoton' };
+  const m = modeloControl(f, { padding: '16px 32px', fontSize: '18px' }, 'desktop');
+  assert.deepEqual(activo(m), ['Grande']);
+  assert.deepEqual(m.opciones.map((o) => o.vals), TAMANOS_BOTON.map((x) => ({ padding: x.padding, fontSize: x.fontSize })));
+  assert.equal(modeloControl(f, { padding: '1px', fontSize: '2px' }, 'desktop').personalizado, true);
+  assert.equal(modeloControl(f, {}, 'desktop').personalizado, false);
+});
+
+t('todos los botones y radios que traen los bloques se leen sin romperse', () => {
+  const formas = new Set(), tams = new Set();
+  for (const b of BLOCKS) for (const v of Object.keys(b.variants)) {
+    walk(createBlock(b.id, v), (nodo) => {
+      for (const est of [nodo.styles.base, nodo.styles.mobile]) {
+        if (est.borderRadius) formas.add(est.borderRadius);
+        if (nodo.type === 'button' && (est.padding || est.fontSize)) tams.add(`${est.padding}|${est.fontSize}`);
+      }
+    });
+  }
+  for (const v of formas) assert.doesNotThrow(() => leerForma(v), v);
+  for (const t2 of tams) { const [padding, fontSize] = t2.split('|'); assert.doesNotThrow(() => leerTamanoBoton({ padding, fontSize }), t2); }
+  console.log('   (radios:', [...formas].join(' | '), ')');
 });
 
 console.log(ok, 'pruebas ok');

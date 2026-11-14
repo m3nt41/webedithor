@@ -5,7 +5,7 @@
 //   página mientras el foco está dentro (salvo que cambie la selección o un
 //   select altere qué campos se muestran: ahí se fuerza).
 
-import { getState, subscribe, setStyle, setPosicion, setContent, setName, setAnimation, moveBy, duplicateNode, removeNode, addVariant, removeVariant, moveVariant, setVariant, setVariantProp, verEstado, setIconSize } from '../core/store.js';
+import { getState, subscribe, setStyle, setStyles, setPosicion, setContent, setName, setAnimation, moveBy, duplicateNode, removeNode, addVariant, removeVariant, moveVariant, setVariant, setVariantProp, verEstado, setIconSize } from '../core/store.js';
 import { findNode, findParent, anchorValido, contarAncla, aspectoValido, capaValida } from '../core/tree.js';
 import { reducirImagen } from './imagen.js';
 import { effectiveStyles, TIPOS_TEXTO } from '../render/renderer.js';
@@ -13,7 +13,7 @@ import { GRUPOS } from './fields.js';
 import { SVG_AVISO } from './iconos.js';
 import { ICONOS } from '../blocks/iconos-data.js';
 import { iconoSvg, TAMANOS_ICONO, TAMANO_ICONO_DEFECTO } from '../core/icono.js';
-import { modeloControl, columnasAuto, kebab, KINDS_CONTROL, KINDS_BOTONES } from './controles.js';
+import { modeloControl, columnasAuto, kebab, KINDS_CONTROL, KINDS_BOTONES, TAMANOS_BOTON } from './controles.js';
 import { GRUPOS_ANIM } from '../animations/index.js';
 import { DISPAROS_VARIANT, CAMPOS_PROPS, CAMPOS_TIEMPO, DEF_TIEMPO } from '../animations/variants.js';
 
@@ -50,10 +50,21 @@ function htmlTexto(key, v, placeholder, texto, ov) {
 /** Control visual (botones) de un campo con kind de controles.js. Escribe los mismos strings CSS de siempre. */
 function htmlControl(f, v, modo, ov, tieneValor) {
   const m = modeloControl(f, v, modo);
-  const botones = m.opciones.map((o) => `<button type="button" data-ctl="${f.key}" data-val="${esc(o.val)}" class="${o.on ? 'on' : ''}">${o.txt}</button>`).join('');
+  let botones;
+  if (f.kind === 'tamanoBoton') {
+    // Cada botón escribe padding Y fontSize a la vez (data-tam = tamaño; el quitar usa data-tam="")
+    botones = m.opciones.map((o) => `<button type="button" data-tam="${o.k}" title="padding ${esc(o.vals.padding)} · ${esc(o.vals.fontSize)}" class="${o.on ? 'on' : ''}">${o.txt}</button>`).join('');
+  } else if (f.kind === 'forma') {
+    // Cada botón lleva un dibujito de la forma (un rectángulo con ese redondeo)
+    botones = m.opciones.map((o) => `<button type="button" class="forma ${o.on ? 'on' : ''}" data-ctl="${f.key}" data-val="${esc(o.val)}" title="${o.txt} (${o.val})"><svg viewBox="0 0 28 18" width="28" height="18" aria-hidden="true"><rect x="2" y="2" width="24" height="14" rx="${o.r === 999 ? 7 : o.r / 2}" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>${o.txt}</button>`).join('');
+  } else {
+    botones = m.opciones.map((o) => `<button type="button" data-ctl="${f.key}" data-val="${esc(o.val)}" class="${o.on ? 'on' : ''}">${o.txt}</button>`).join('');
+  }
   const otro = m.sinOtro ? '' : `<button type="button" data-ctl-otro="${f.key}" class="${m.personalizado ? 'on' : ''}" title="Escribir otro valor CSS (en Avanzado)">Otro</button>`;
   const min = m.min != null ? `<span class="mini">mín. <input type="number" min="50" step="10" data-ctl-min="${f.key}" value="${m.min}"> px</span>` : '';
-  const quitar = tieneValor ? `<button type="button" class="quitar" data-ctl="${f.key}" data-val="">${modo === 'mobile' ? '↺ igual que escritorio' : '✕ quitar'}</button>` : '';
+  const quitar = !tieneValor ? '' : f.kind === 'tamanoBoton'
+    ? `<button type="button" class="quitar" data-tam="">${modo === 'mobile' ? '↺ igual que escritorio' : '✕ quitar'}</button>`
+    : `<button type="button" class="quitar" data-ctl="${f.key}" data-val="">${modo === 'mobile' ? '↺ igual que escritorio' : '✕ quitar'}</button>`;
   return `<div class="campo ctl">${etiqueta(f.label, ov)}<div class="botones${modo === 'mobile' && !ov ? ' heredado' : ''}">${botones}${otro}${min}${quitar}</div></div>`;
 }
 
@@ -201,9 +212,14 @@ export function initInspector(host) {
           const tieneValor = viewMode === 'mobile' ? ov : f.key in nodo.styles.base;
           html += htmlControl(f, v, viewMode, ov, tieneValor);
         } else if (KINDS_CONTROL.includes(f.kind)) {
-          const tieneValor = viewMode === 'mobile' ? ov : f.key in nodo.styles.base;
-          html += htmlControl(f, v, viewMode, ov, tieneValor);
-          conControl.push({ f, v, ov, personalizado: modeloControl(f, v, viewMode).personalizado });
+          // Tamaño de botón mira padding y fontSize a la vez; los demás, su propia clave
+          const claves = (f.crudos ?? [{ key: f.key }]).map((c) => c.key);
+          const dest = viewMode === 'mobile' ? nodo.styles.mobile : nodo.styles.base;
+          const tieneValor = claves.some((k) => k in dest);
+          const ovC = viewMode === 'mobile' && tieneValor;
+          const vC = f.kind === 'tamanoBoton' ? { padding: estilos.padding, fontSize: estilos.fontSize } : v;
+          html += htmlControl(f, vC, viewMode, ovC, tieneValor);
+          conControl.push({ f, v, ov: ovC, personalizado: modeloControl(f, vC, viewMode).personalizado, estilos });
         } else if (f.kind === 'nota') {
           html += `<p class="modo">${f.texto}</p>`;
         } else if (f.kind === 'select') {
@@ -224,9 +240,12 @@ export function initInspector(host) {
         }
       }
       if (conControl.length) {
-        const abrir = abiertos.has(g.titulo) || conControl.some((c) => c.personalizado || avisoCss(c.f.key, c.v));
+        // campos de texto crudos de cada control (tamanoBoton tiene dos: padding y fontSize)
+        const crudosDe = (c) => (c.f.crudos ?? [{ key: c.f.key, label: c.f.crudo ?? c.f.label, placeholder: c.f.placeholder }])
+          .map((r) => ({ ...r, v: c.estilos[r.key] ?? '', ov: viewMode === 'mobile' && r.key in nodo.styles.mobile }));
+        const abrir = abiertos.has(g.titulo) || conControl.some((c) => c.personalizado || crudosDe(c).some((r) => avisoCss(r.key, r.v)));
         html += `<details class="avanzado" data-g="${esc(g.titulo)}"${abrir ? ' open' : ''}><summary>Avanzado (valor CSS)</summary>` +
-          conControl.map((c) => htmlTexto(c.f.key, c.v, c.f.placeholder, c.f.crudo ?? c.f.label, c.ov)).join('') + '</details>';
+          conControl.map((c) => crudosDe(c).map((r) => htmlTexto(r.key, r.v, r.placeholder, r.label, r.ov)).join('')).join('') + '</details>';
       }
     }
 
@@ -346,6 +365,13 @@ export function initInspector(host) {
     const sz = e.target.closest('[data-isz]'); // Icono: tamaño predefinido (o quitar)
     if (sz && idDibujado) { forzar = true; setIconSize(idDibujado, +sz.dataset.isz); return; }
     if (e.target.closest('[data-isz-otro]')) { host.querySelector('[data-isz-num]')?.focus(); return; }
+    const tam = e.target.closest('[data-tam]'); // Tamaño de botón: padding + fontSize en una sola acción (un paso de Undo)
+    if (tam && idDibujado) {
+      forzar = true;
+      const t = TAMANOS_BOTON.find((x) => x.k === tam.dataset.tam);
+      setStyles(idDibujado, { padding: t?.padding ?? '', fontSize: t?.fontSize ?? '' });
+      return;
+    }
     const b = e.target.closest('[data-ctl]');
     if (!b || !idDibujado) return;
     forzar = true; // reconstruir el panel para marcar el botón activo

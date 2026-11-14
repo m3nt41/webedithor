@@ -7,6 +7,7 @@ import { Builder, By, Key } from 'selenium-webdriver';
 import firefox from 'selenium-webdriver/firefox.js';
 import { createNode as n, walk } from '../src/core/tree.js';
 import { createBlock } from '../src/blocks/index.js';
+import { exportHTML } from '../src/export/exporter.js';
 
 const FIREFOX = process.env.FIREFOX_BIN || 'C:/Program Files/Mozilla Firefox/firefox.exe';
 const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -15,9 +16,15 @@ const LS = 'editor-landings:pagina';
 // Dos galerías: "cuadricula" (repeat(3, 1fr), móvil '1fr 1fr', hijos 4/3) y "oscura" (auto-fit minmax(260px, 1fr)).
 const pagina = n('page', { name: 'Página' });
 pagina.children.push(createBlock('gallery', 'cuadricula'), createBlock('gallery', 'oscura'));
+// Mini-etapa Forma/Tamaño: un botón (pastilla, padding 14px 28px = ningún tamaño) y una imagen con radio raro (4px)
+pagina.children.push(n('section', { name: 'SecBtn', children: [
+  n('button', { name: 'BtnTest', content: { text: 'Hola botón', href: '#' }, styles: { padding: '14px 28px', fontSize: '16px', borderRadius: '999px', background: '#7c5cff', color: '#fff' } }),
+  n('image', { name: 'ImgRara', content: { src: '', alt: '' }, styles: { borderRadius: '4px', width: '120px', height: '80px' } }),
+] }));
 const grids = []; walk(pagina, (x) => { if (x.name === 'Grid') grids.push(x); });
 const [g3, gAuto] = grids;
 g3.name = 'Grid3'; gAuto.name = 'GridAuto';
+g3.children[0].name = 'FotoG3'; // nombre único: la foto de la galería "cuadricula" trae radio 12px
 // valores "raros" de un JSON viejo, para comprobar que se muestran como personalizado y NO se tocan
 gAuto.styles.base.margin = '20px 0';
 gAuto.styles.base.maxWidth = '900';   // sin unidad: el navegador lo ignora
@@ -39,9 +46,9 @@ try {
     await d.executeScript(`document.querySelector('#preview [data-id="${id}"]').dispatchEvent(new MouseEvent('click',{bubbles:true}))`);
     await esperar(150);
   };
-  const boton = (clave, texto) => d.findElement(By.xpath(`//*[@id='inspector']//button[@data-ctl='${clave}' and normalize-space()='${texto}']`));
+  const boton = (clave, texto) => d.findElement(By.xpath(`//*[@id='inspector']//button[(@data-ctl='${clave}' or (@data-tam and '${clave}'='padding')) and normalize-space()='${texto}']`));
   const pulsar = async (clave, texto) => { await (await boton(clave, texto)).click(); await esperar(150); };
-  const activo = async (clave) => d.executeScript(`return [...document.querySelectorAll('#inspector button[data-ctl="${clave}"].on, #inspector button[data-ctl-otro="${clave}"].on')].map(b=>b.textContent.trim())`);
+  const activo = async (clave) => d.executeScript(`return [...document.querySelectorAll('#inspector button[data-ctl="${clave}"].on, #inspector button[data-ctl-otro="${clave}"].on${clave === 'padding' ? ', #inspector button[data-tam].on' : ''}')].map(b=>b.textContent.trim())`);
   const modo = async (m) => { await d.findElement(By.css(m === 'mobile' ? '#vista-mobile' : '#vista-desktop')).click(); await esperar(150); };
   const sinHistorial = async () => d.executeScript(`return document.querySelector('#btn-undo').disabled`);
   const crudo = (clave) => d.findElement(By.css(`#inspector details.avanzado [data-s="${clave}"]`));
@@ -138,6 +145,88 @@ try {
   assert.equal(await est('Grid3', 'mobile', 'margin'), undefined, 'el reset borra solo el override móvil');
   assert.equal(await d.executeScript(`return !!document.querySelector('#inspector [data-ctl="margin"]').closest('.botones').classList.contains('heredado')`), true, 'sin override se ve como heredado');
   await modo('desktop');
+
+  // ---- 8. Forma (borderRadius) y Tamaño de botón ----
+  await seleccionar('BtnTest');
+  assert.equal(await d.executeScript(`return [...document.querySelectorAll('#inspector h3')][1].textContent`), 'Botón', 'el grupo Botón es el primero de estilos (tras Contenido)');
+  assert.deepEqual(await activo('borderRadius'), ['Pastilla'], '999px = Pastilla');
+  assert.deepEqual(await activo('padding'), ['Otro'], 'padding 14px 28px no es ningún tamaño: Otro');
+  assert.equal(await d.executeScript(`return document.querySelectorAll('#inspector button[data-ctl="borderRadius"] svg').length`), 4, 'cada forma lleva su dibujo SVG');
+  assert.equal(await d.executeScript(`return document.querySelectorAll('#inspector [data-s="borderRadius"]').length`), 1, 'el campo de texto Radio existe una sola vez (en Avanzado)');
+  assert.deepEqual((await nodo('BtnTest')).styles.base, { padding: '14px 28px', fontSize: '16px', borderRadius: '999px', background: '#7c5cff', color: '#fff' }, 'abrir el botón escribió algo');
+  // Forma: el botón escribe lo mismo que escribirlo a mano
+  await esperar(1200);
+  await pulsar('borderRadius', 'Suave');
+  assert.equal(await est('BtnTest', 'base', 'borderRadius'), '6px');
+  assert.deepEqual(await activo('borderRadius'), ['Suave']);
+  const porBoton = await est('BtnTest', 'base', 'borderRadius');
+  await pulsar('borderRadius', 'Recto');
+  assert.equal(await est('BtnTest', 'base', 'borderRadius'), '0');
+  await (await d.findElement(By.css('[data-ctl-otro="borderRadius"]'))).click();
+  await teclear(await crudo('borderRadius'), '6px', false); await esperar(200);
+  assert.equal(await est('BtnTest', 'base', 'borderRadius'), porBoton, 'botón y teclado deben guardar lo mismo');
+  // Tamaño: padding y fontSize juntos, en UN paso de Undo
+  await seleccionar('ImgRara'); await seleccionar('BtnTest'); // redibuja el panel
+  assert.deepEqual(await activo('borderRadius'), ['Suave']);
+  await esperar(1200);
+  await pulsar('padding', 'Mediano');
+  assert.equal(await est('BtnTest', 'base', 'padding'), '12px 24px'); assert.equal(await est('BtnTest', 'base', 'fontSize'), '16px');
+  await pulsar('padding', 'Grande');
+  assert.equal(await est('BtnTest', 'base', 'padding'), '16px 32px'); assert.equal(await est('BtnTest', 'base', 'fontSize'), '18px');
+  assert.equal(await est('BtnTest', 'base', 'borderRadius'), '6px', 'cambiar el tamaño no pisa la forma');
+  assert.equal(await est('BtnTest', 'base', 'background'), '#7c5cff', 'ni otros valores');
+  assert.deepEqual(await activo('padding'), ['Grande']);
+  await d.findElement(By.css('#btn-undo')).click(); await esperar(150);
+  assert.equal(await est('BtnTest', 'base', 'padding'), '12px 24px', 'Undo revierte padding...');
+  assert.equal(await est('BtnTest', 'base', 'fontSize'), '16px', '...y fontSize en el mismo paso');
+  await d.findElement(By.css('#btn-redo')).click(); await esperar(150);
+  assert.equal(await est('BtnTest', 'base', 'padding'), '16px 32px');
+  // un valor a mano que solo coincide en uno de los dos -> Otro
+  await (await d.findElement(By.css('[data-ctl-otro="padding"]'))).click();
+  await teclear(await crudo('fontSize'), '17px', false); await esperar(200);
+  await seleccionar('ImgRara'); await seleccionar('BtnTest');
+  assert.deepEqual(await activo('padding'), ['Otro'], 'padding de Grande + fontSize 17px = Otro');
+  await pulsar('padding', 'Grande'); // lo dejamos en Grande para el export
+  // Imagen: radio 4px = Otro (no se toca); una foto de bloque con 12px = Redondo
+  await seleccionar('ImgRara');
+  assert.deepEqual(await activo('borderRadius'), ['Otro'], 'imagen con 4px: Otro');
+  assert.equal(await est('ImgRara', 'base', 'borderRadius'), '4px', 'leer no escribe');
+  await pulsar('borderRadius', 'Redondo');
+  assert.equal(await est('ImgRara', 'base', 'borderRadius'), '12px');
+  await seleccionar('FotoG3');
+  assert.deepEqual(await activo('borderRadius'), ['Redondo'], 'la foto de la galería trae 12px: Redondo');
+  assert.equal(await d.executeScript(`return [...document.querySelectorAll('#inspector h3')].some(h=>h.textContent==='Botón')`), false, 'el grupo Botón solo sale en botones');
+  await seleccionar('SecBtn');
+  assert.equal(await d.executeScript(`return !!document.querySelector('#inspector button[data-ctl="borderRadius"]')`), true, 'las secciones tienen Forma');
+  assert.equal(await d.executeScript(`return !!document.querySelector('#inspector button[data-tam]')`), false, 'Tamaño de botón solo en botones');
+  // Móvil: escribe SOLO en styles.mobile
+  await seleccionar('BtnTest');
+  const baseAntes = { p: await est('BtnTest', 'base', 'padding'), f: await est('BtnTest', 'base', 'fontSize'), r: await est('BtnTest', 'base', 'borderRadius') };
+  await modo('mobile');
+  await pulsar('padding', 'Pequeño');
+  assert.equal(await est('BtnTest', 'mobile', 'padding'), '8px 16px'); assert.equal(await est('BtnTest', 'mobile', 'fontSize'), '14px');
+  assert.equal(await est('BtnTest', 'base', 'padding'), baseAntes.p, 'escritorio no cambia'); assert.equal(await est('BtnTest', 'base', 'fontSize'), baseAntes.f);
+  await pulsar('borderRadius', 'Pastilla');
+  assert.equal(await est('BtnTest', 'mobile', 'borderRadius'), '999px'); assert.equal(await est('BtnTest', 'base', 'borderRadius'), baseAntes.r);
+  assert.equal(await d.executeScript(`return document.querySelectorAll('#inspector label.ov').length >= 2`), true, 'marca ● en móvil');
+  // Export: el mismo CSS de siempre (base + @media móvil)
+  const html = exportHTML(await guardada());
+  assert.ok(/padding:16px 32px/.test(html) && /border-radius:6px/.test(html) && /font-size:18px/.test(html), 'export escritorio');
+  assert.ok(/@media[^{]*\{[^]*padding:8px 16px;font-size:14px/.test(html), 'export móvil');
+  // Vista previa en móvil (390 px): lo mismo que el export
+  await d.findElement(By.css('#btn-vista-previa')).click(); await esperar(900);
+  await d.findElement(By.css('#vp-mobile')).click(); await esperar(500);
+  await d.switchTo().frame(await d.findElement(By.css('#vp-frame')));
+  const vpEst = await d.executeScript(`const b=[...document.querySelectorAll('a,button')].find(x=>x.textContent.includes('Hola botón')); const c=getComputedStyle(b); return [c.paddingTop, c.borderTopLeftRadius, c.fontSize]`);
+  await d.switchTo().defaultContent();
+  assert.deepEqual([vpEst[0], vpEst[2]], ['8px', '14px'], 'Vista previa móvil aplica el tamaño Pequeño: ' + vpEst);
+  await d.findElement(By.css('#vp-cerrar')).click(); await esperar(300);
+  const resetT = await d.findElement(By.xpath(`//*[@id='inspector']//button[@data-tam='' and contains(.,'igual que escritorio')]`));
+  await resetT.click(); await esperar(150);
+  assert.equal(await est('BtnTest', 'mobile', 'padding'), undefined); assert.equal(await est('BtnTest', 'mobile', 'fontSize'), undefined, 'el reset borra los dos');
+  assert.equal(await est('BtnTest', 'base', 'padding'), baseAntes.p);
+  await modo('desktop');
+  console.log('OK Forma y Tamaño de botón: lectura sin escribir, botón = a mano, un paso de Undo, no pisa, móvil, export y Vista previa');
 
   const errs = await d.executeScript('return __err');
   assert.deepEqual(errs, [], 'errores: ' + errs.join(' | '));

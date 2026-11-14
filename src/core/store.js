@@ -207,6 +207,21 @@ export function setStyle(id, key, value) {
   }, 'page', `s:${id}:${key}:${modo}`);
 }
 
+/** Escribe VARIAS propiedades de estilo en UN solo mutate (un solo paso de Undo). valores = { clave: valor }; '' borra.
+ *  En móvil va a styles.mobile. No toca nada más. Sin clave de agrupado: cada clic es su propio paso. */
+export function setStyles(id, valores) {
+  const modo = state.viewMode;
+  mutate((page) => {
+    const n = findNode(page, id);
+    if (!n) return;
+    const destino = modo === 'mobile' ? n.styles.mobile : n.styles.base;
+    for (const [k, v] of Object.entries(valores)) {
+      if (v === '' || v == null) delete destino[k]; else destino[k] = v;
+      if (n.autoPos) delete n.autoPos[modo === 'mobile' ? 'mobile' : 'base'][k];
+    }
+  }, 'page');
+}
+
 /** Tamaño de un Icono: escribe width Y height (cuadrado) en UN solo mutate. En móvil va a styles.mobile.
  *  px vacío/0 = borra ambos (en móvil: vuelve al tamaño de escritorio). */
 export function setIconSize(id, px) {

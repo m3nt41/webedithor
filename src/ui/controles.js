@@ -77,6 +77,47 @@ export function leerProporcion(v) {
   return { tipo: 'otro' };
 }
 
+// ---- Forma (border-radius) ----
+// Recto 0 · Suave 6px · Redondo 12px · Pastilla 999px. "0 0 0 0" y "0px" cuentan como Recto; vacío también (no hay redondeo).
+export const FORMAS = [
+  { k: 'recto', txt: 'Recto', val: '0', r: 0 },
+  { k: 'suave', txt: 'Suave', val: '6px', r: 6 },
+  { k: 'redondo', txt: 'Redondo', val: '12px', r: 12 },
+  { k: 'pastilla', txt: 'Pastilla', val: '999px', r: 999 },
+];
+
+export function leerForma(v) {
+  const s = norm(v).toLowerCase();
+  if (!s) return { tipo: 'vacio' };
+  const partes = expandir(s.split(/\s+/));
+  const unico = partes && partes.every((x) => x === partes[0]) ? partes[0] : null; // las 4 esquinas iguales
+  if (unico == null) return { tipo: 'otro' };
+  if (CERO.includes(unico)) return { tipo: 'forma', k: 'recto' };
+  const f = FORMAS.find((x) => x.val === unico);
+  return f ? { tipo: 'forma', k: f.k } : { tipo: 'otro' };
+}
+
+// ---- Tamaño de botón (padding + font-size juntos) ----
+export const TAMANOS_BOTON = [
+  { k: 's', txt: 'Pequeño', padding: '8px 16px', fontSize: '14px' },
+  { k: 'm', txt: 'Mediano', padding: '12px 24px', fontSize: '16px' },
+  { k: 'l', txt: 'Grande', padding: '16px 32px', fontSize: '18px' },
+];
+
+/** Compara padding sin importar espacios ni atajos: "8px 16px" == "8px 16px 8px 16px". */
+const paddingIgual = (a, b) => {
+  const x = expandir(norm(a).toLowerCase().split(/\s+/)), y = expandir(norm(b).toLowerCase().split(/\s+/));
+  return !!x && !!y && x.every((p, i) => p === y[i]);
+};
+
+/** v = { padding, fontSize } efectivos. Solo es un tamaño si coinciden AMBOS; si falta alguno o no coincide, "otro". */
+export function leerTamanoBoton(v) {
+  const p = norm(v?.padding), f = norm(v?.fontSize).toLowerCase();
+  if (!p && !f) return { tipo: 'vacio' };
+  const t = TAMANOS_BOTON.find((x) => p && f && paddingIgual(p, x.padding) && f === x.fontSize);
+  return t ? { tipo: 'tam', k: t.k } : { tipo: 'otro' };
+}
+
 // ---- Modelo para dibujar ----
 export function modeloControl(f, v, modo = 'desktop') {
   const movil = modo === 'mobile';
@@ -110,6 +151,18 @@ export function modeloControl(f, v, modo = 'desktop') {
     opciones.push({ txt: 'Auto', val: autoVal, on: l.tipo === 'auto' || (!!f.autoVacio && l.tipo === 'vacio') });
     return { opciones, personalizado: l.tipo === 'otro', min: null };
   }
+  if (f.kind === 'forma') {
+    const l = leerForma(v);
+    // r = radio del dibujo SVG; todos escriben un valor explícito (en móvil '' = "igual que escritorio", así que no se puede borrar)
+    const opciones = FORMAS.map((x) => ({ txt: x.txt, val: x.val, r: x.r, on: (l.tipo === 'forma' && l.k === x.k) || (l.tipo === 'vacio' && x.k === 'recto') }));
+    return { opciones, personalizado: l.tipo === 'otro', min: null };
+  }
+  if (f.kind === 'tamanoBoton') {
+    // v = { padding, fontSize }. Cada botón escribe los DOS valores a la vez (vals).
+    const l = leerTamanoBoton(v);
+    const opciones = TAMANOS_BOTON.map((x) => ({ txt: x.txt, k: x.k, vals: { padding: x.padding, fontSize: x.fontSize }, on: l.tipo === 'tam' && l.k === x.k }));
+    return { opciones, personalizado: l.tipo === 'otro', min: null };
+  }
   // Imagen de fondo: botones simples (valor vacío = el por defecto: Cubrir / centro). Todos escriben un valor explícito.
   if (f.kind === 'fondoAjuste' || f.kind === 'fondoPosicion') {
     const lista = f.kind === 'fondoAjuste' ? FONDO_AJUSTES_UI : FONDO_POSICIONES_UI;
@@ -123,4 +176,4 @@ const FONDO_AJUSTES_UI = [['cover', 'Cubrir'], ['contain', 'Contener']];
 const FONDO_POSICIONES_UI = [['center', 'Centro'], ['top', 'Arriba'], ['bottom', 'Abajo'], ['left', 'Izquierda'], ['right', 'Derecha']];
 export const KINDS_BOTONES = ['fondoAjuste', 'fondoPosicion'];
 
-export const KINDS_CONTROL = ['columnas', 'anchoMax', 'centrar', 'proporcion'];
+export const KINDS_CONTROL = ['columnas', 'anchoMax', 'centrar', 'proporcion', 'forma', 'tamanoBoton'];

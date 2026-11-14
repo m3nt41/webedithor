@@ -161,6 +161,7 @@ details.bloque .variantes button:hover { background: #3b3470; }
 #inspector .campo.ctl { align-items: start; }
 #inspector .botones { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
 #inspector .botones button { padding: 3px 8px; background: #2f2f38; color: inherit; border: 1px solid #44444f; border-radius: 6px; cursor: pointer; font-size: 12px; }
+#inspector .botones button.forma { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 6px; font-size: 11px; }
 #inspector .botones button:hover { background: #3b3470; }
 #inspector .botones button.on { background: #5b47c9; border-color: #7c5cff; }
 #inspector .botones.heredado button.on { background: #3b3a52; border: 1px dashed #7c5cff; } /* en móvil: valor heredado de escritorio, sin override */

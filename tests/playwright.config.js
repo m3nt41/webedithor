@@ -5,10 +5,11 @@ export default defineConfig({
   testDir: '.',
   testMatch: '*.spec.js',
   globalSetup: './setup.js',
-  timeout: 30000,
+  timeout: 20000, // por prueba (el fallo de lanzamiento es instantáneo; el tope del conjunto lo pone tools/test-firefox.mjs)
+  retries: 0,
   reporter: [['list']],
   workers: 1,
   // PW_BROWSER=chromium sirve solo para comprobar que los tests están bien escritos; lo que importa es firefox.
-  use: { ...(process.env.PW_BROWSER === 'chromium' ? devices['Desktop Chrome'] : devices['Desktop Firefox']), viewport: { width: 900, height: 600 } },
+  use: { launchOptions: { timeout: 15000 }, ...(process.env.PW_BROWSER === 'chromium' ? devices['Desktop Chrome'] : devices['Desktop Firefox']), viewport: { width: 900, height: 600 } },
   projects: [{ name: process.env.PW_BROWSER || 'firefox' }],
 });

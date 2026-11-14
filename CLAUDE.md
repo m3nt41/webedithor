@@ -68,5 +68,11 @@ Cada función de `FEATURES.md` tiene una etapa asignada (se indica allí con `�
 8. **Movimiento avanzado.** Layout animations, drag con límites y rebote, inercia, 3D transforms (perspectiva, rotación X/Y).
 9. **Extras.** Marquee/ticker, cursor personalizado, page transitions.
 
+## Tests
+- Suite completa: `npm run test:todo` (build una sola vez, una línea por test con ✔/✘/– y duración, resumen final; solo muestra detalle de lo que falla). Lee solo el resumen.
+- `test:firefox` (Playwright) va al final y, si no puede lanzar Firefox (`spawn UNKNOWN`), sale como "omitido" (código 3), no como fallo. Nunca reintentes ni depures ese fallo de entorno.
+- Máximo 1 reintento de un test que falle, y solo si hay motivo para pensar que fue intermitente.
+- No abras ni cierres servidores o navegadores de más; al terminar no dejes procesos abiertos de prueba (`npm run dev`, geckodriver, Firefox de prueba). Los Firefox sin perfil temporal son de m3nt41: no se tocan.
+
 ## Comandos
 `npm install` · `npm run dev` (http://localhost:5173) · `npm run build`

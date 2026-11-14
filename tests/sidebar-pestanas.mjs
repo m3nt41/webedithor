@@ -1,4 +1,4 @@
-// Prueba: panel izquierdo con pestañas, "Se añadirá dentro de", plegado y teclado. Firefox real, editor compilado.
+// Prueba: panel izquierdo con pestañas, "Se añadirá dentro de", orden y teclado. Firefox real, editor compilado.
 // Ejecutar: npm run test:sidebar  (hace build antes)
 import assert from 'node:assert/strict';
 import { pathToFileURL } from 'node:url';
@@ -26,7 +26,10 @@ try {
   v((await $$('[role=tab]')).length === 3, '3 pestañas');
   v(await sel('#tab-capas') === 'true' && await visible('#arbol') && !(await visible('#botones-elementos')) && !(await visible('#botones-bloques')), 'arranca en Capas');
   v(await ancho('#sidebar') === 210, 'panel de 210px: ' + await ancho('#sidebar'));
-  v(await visible('#btn-pagina'), 'engranaje de ajustes visible junto a las pestañas');
+  v(await visible('#btn-pagina'), 'icono de ajustes visible junto a las pestañas');
+  const orden = await d.executeScript('return [...document.querySelectorAll("[role=tab]")].map(t=>t.id).join()');
+  v(orden === 'tab-bloques,tab-capas,tab-elementos', 'orden de pestañas: Bloques, Capas, Elem.: ' + orden);
+  v(await d.executeScript('const t=document.querySelector("#tab-elementos").getBoundingClientRect(),b=document.querySelector("#btn-pagina").getBoundingClientRect();return b.left>=t.right'), 'el icono queda a la derecha de las pestañas');
 
   // 2. Elementos: línea de destino
   await $('#tab-elementos').click();
@@ -66,26 +69,25 @@ try {
   // 5. Teclado: flechas
   await $('#tab-elementos').click();
   await $('#tab-elementos').sendKeys(Key.ARROW_RIGHT);
-  v(await sel('#tab-bloques') === 'true' && await d.executeScript('return document.activeElement.id') === 'tab-bloques', 'flecha derecha: Elem. → Bloques (con foco)');
+  v(await sel('#tab-bloques') === 'true' && await d.executeScript('return document.activeElement.id') === 'tab-bloques', 'flecha derecha desde la última (Elem.) vuelve a Bloques (con foco)');
   await $('#tab-bloques').sendKeys(Key.ARROW_RIGHT);
-  v(await sel('#tab-capas') === 'true', 'flecha derecha desde la última vuelve a Capas');
+  v(await sel('#tab-capas') === 'true', 'flecha derecha: Bloques → Capas');
+  await $('#tab-capas').sendKeys(Key.ARROW_RIGHT);
+  v(await sel('#tab-elementos') === 'true', 'flecha derecha: Capas → Elem.');
+  await $('#tab-elementos').sendKeys(Key.ARROW_LEFT);
+  v(await sel('#tab-capas') === 'true', 'flecha izquierda: Elem. → Capas');
   await $('#tab-capas').sendKeys(Key.ARROW_LEFT);
-  v(await sel('#tab-bloques') === 'true', 'flecha izquierda desde la primera va a Bloques');
+  await $('#tab-bloques').sendKeys(Key.ARROW_LEFT);
+  v(await sel('#tab-elementos') === 'true', 'flecha izquierda desde la primera (Bloques) va a Elem.');
 
-  // 6. Plegar / desplegar con la vista previa ganando ancho
-  const pw0 = await ancho('#preview');
-  await $('#btn-plegar').click(); await esperar(700);
-  const pw1 = await ancho('#preview');
-  v(Math.abs((await ancho('#sidebar')) - 36) < 1, 'plegado: tira de 36px');
-  v(pw1 > pw0 + 150, `la vista previa gana ancho (${pw0} → ${pw1})`);
-  v(await visible('#btn-desplegar') && !(await visible('#btn-plegar')), 'solo queda el botón para desplegar');
-  await $('#btn-desplegar').click(); await esperar(700);
-  v(await ancho('#sidebar') === 210 && Math.abs((await ancho('#preview')) - pw0) < 1, 'desplegado: vuelve a 210px');
-  v(await sel('#tab-bloques') === 'true', 'la pestaña activa se conserva tras plegar');
+  // 6. Ya no hay plegado
+  v((await $$('#btn-plegar, #btn-desplegar, .sb-tira')).length === 0, 'no existen los botones de plegar/desplegar');
 
   // 7. Ajustes de la página + vista móvil + Vista previa no rompen el layout
+  v(!(await d.executeScript('return document.querySelector("#btn-pagina").classList.contains("activo")')), 'sin página seleccionada el icono no está marcado');
   await $('#btn-pagina').click(); await esperar(150);
-  v((await d.executeScript('return document.querySelector("#inspector").textContent')).length > 20, 'el engranaje abre los ajustes de la página');
+  v(await d.executeScript('return document.querySelector("#btn-pagina").classList.contains("activo")'), 'el icono de página queda marcado al seleccionar la página');
+  v((await d.executeScript('return document.querySelector("#inspector").textContent')).length > 20, 'el icono abre los ajustes de la página');
   await $('#vista-mobile').click(); await esperar(300);
   v(await d.executeScript('const s=document.querySelector("#sidebar").getBoundingClientRect(),p=document.querySelector("#preview").getBoundingClientRect(),i=document.querySelector("#inspector").getBoundingClientRect();return s.right<=p.left+1&&p.right<=i.left+1&&document.documentElement.scrollWidth<=innerWidth'), 'vista móvil: las 3 columnas no se pisan y no hay scroll horizontal');
   await $('#btn-vista-previa').click(); await esperar(700);

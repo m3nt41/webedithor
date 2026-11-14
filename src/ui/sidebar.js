@@ -12,17 +12,17 @@ const ICONOS = { section: '▭', container: '▢', heading: 'H', text: '¶', but
 
 // Estado de la vista (solo mientras la página esté abierta; no va a localStorage con la landing)
 let pestanaActiva = 'capas';
-let plegado = false;
 
 const svg = (d) => `<svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 const SVG_CAPAS = svg('<path d="M8 2 14 5.2 8 8.4 2 5.2Z"/><path d="m2 8 6 3.2L14 8"/><path d="m2 10.8 6 3.2 6-3.2"/>');
 const SVG_ELEM = svg('<rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><path d="M11.5 9.5v4M9.5 11.5h4"/>');
 const SVG_BLOQ = svg('<rect x="2" y="2.5" width="12" height="4" rx="1"/><rect x="2" y="9.5" width="12" height="4" rx="1"/>');
-const SVG_AJUSTES = svg('<circle cx="8" cy="8" r="2"/><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M12.6 3.4l-1.4 1.4M4.8 11.2l-1.4 1.4"/>');
+// Hoja con la esquina doblada y tres líneas de texto = "ajustes de esta página"
+const SVG_AJUSTES = svg('<path d="M3.5 1.8h6l3 3v9.4h-9Z"/><path d="M9.5 1.8v3h3"/><path d="M5.5 8h5M5.5 10.2h5M5.5 12.2h3"/>');
 const PESTANAS = [
+  { id: 'bloques', texto: 'Bloques', icono: SVG_BLOQ },
   { id: 'capas', texto: 'Capas', icono: SVG_CAPAS },
   { id: 'elementos', texto: 'Elem.', icono: SVG_ELEM },
-  { id: 'bloques', texto: 'Bloques', icono: SVG_BLOQ },
 ];
 
 export function initSidebar(host) {
@@ -31,7 +31,6 @@ export function initSidebar(host) {
       <div class="sb-barra">
         <div class="sb-tabs" role="tablist" aria-label="Paneles"></div>
         <button type="button" id="btn-pagina" class="sb-icono" title="Ajustes de la página" aria-label="Ajustes de la página">${SVG_AJUSTES}</button>
-        <button type="button" id="btn-plegar" class="sb-icono" title="Plegar panel" aria-label="Plegar panel">${svg('<path d="m10 3-5 5 5 5"/>')}</button>
       </div>
       <div class="sb-panel" role="tabpanel" id="panel-capas" aria-labelledby="tab-capas">
         <ul class="lista arbol" id="arbol"></ul>
@@ -44,15 +43,20 @@ export function initSidebar(host) {
         <div id="botones-bloques"></div>
       </div>
     </div>
-    <button type="button" id="btn-desplegar" class="sb-tira" title="Mostrar panel" aria-label="Mostrar panel">${svg('<path d="m6 3 5 5-5 5"/>')}</button>
   `;
   const arbol = host.querySelector('#arbol');
   const botonesEl = host.querySelector('#botones-elementos');
   const botonesBl = host.querySelector('#botones-bloques');
   const hint = host.querySelector('#hint-elemento');
-  const app = host.parentElement;
-
-  host.querySelector('#btn-pagina').addEventListener('click', () => select(getState().page.id));
+  const btnPagina = host.querySelector('#btn-pagina');
+  btnPagina.addEventListener('click', () => select(getState().page.id));
+  // Marcado (activo) cuando lo seleccionado es la página
+  function marcarPagina() {
+    const { page, selectedId } = getState();
+    const on = selectedId === page.id;
+    btnPagina.classList.toggle('activo', on);
+    btnPagina.setAttribute('aria-pressed', String(on));
+  }
 
   // ---- Pestañas ----
   const listaTabs = host.querySelector('.sb-tabs');
@@ -88,15 +92,6 @@ export function initSidebar(host) {
     });
   }
   activar(pestanaActiva);
-
-  // ---- Plegar / desplegar todo el panel ----
-  function aplicarPlegado() {
-    app.classList.toggle('sb-plegado', plegado);
-    host.querySelector('.sb-contenido').inert = plegado;
-  }
-  host.querySelector('#btn-plegar').addEventListener('click', () => { plegado = true; aplicarPlegado(); host.querySelector('#btn-desplegar').focus(); });
-  host.querySelector('#btn-desplegar').addEventListener('click', () => { plegado = false; aplicarPlegado(); host.querySelector('#btn-plegar').focus(); });
-  aplicarPlegado();
 
   // ---- Elementos sueltos ----
   ELEMENTS.forEach((e) => {
@@ -254,7 +249,8 @@ export function initSidebar(host) {
     recorrer(page.children, 0);
   }
 
-  subscribe(() => { dibujar(); actualizarHint(); });
+  subscribe(() => { dibujar(); actualizarHint(); marcarPagina(); });
   dibujar();
   actualizarHint();
+  marcarPagina();
 }

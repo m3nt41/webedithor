@@ -73,3 +73,6 @@ Motion vs CSS puro: m3nt41 ya decidió la opción (a), CSS puro donde se pueda y
 
 ## Navbar en móvil
 - [x] Menú hamburguesa opcional en el Navbar (`content.menuMovil`, activo de fábrica en las 4 variantes; interruptor "Menú hamburguesa en móvil" en el inspector): el primer hijo (logo) queda visible y el resto va a un panel desplegable; en el export es CSS puro (checkbox + label, sin nodos nuevos) con un script mínimo solo si se usa (Esc, cerrar al pulsar un enlace, Enter, aria-expanded); en el editor móvil el panel se ve siempre abierto (mini-etapa menú móvil)
+
+## Landing con IA (camino 1, sin servidor)
+- [x] "Copiar guía para IA" y "Pegar plan o JSON" en Ajustes de la página: la guía se genera sola del código (bloques, variantes y huecos numerados; también en `docs/guia-ia.md`); el formato compacto "plan" (`{"plan":1,"titulo":…,"secciones":[{"bloque","variante","valores"}]}`) o el JSON completo de una página se carga con Reemplazar o Añadir al final, en un solo paso de Undo, con errores/avisos en lenguaje claro y tolerando ``` y texto alrededor (mini-etapa IA camino 1). Los caminos 2 (clave de API propia) y 3 (servidor público) quedan como ideas en `PROGRESS.md`

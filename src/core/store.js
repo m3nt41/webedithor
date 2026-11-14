@@ -492,3 +492,20 @@ export function replacePage(obj) {
 }
 
 export const newPage = () => replacePage(createPage());
+
+/** Aplica lo que devolvió leerEntrada() (core/plan.js) en UN solo paso de Undo.
+ *  modo 'reemplazar': plan → cambia las secciones (y el título si lo trae) y conserva los ajustes de la página;
+ *                     página completa → igual que Abrir JSON. modo 'anadir': las secciones van al final con ids nuevos. */
+export function aplicarEntrada(entrada, modo) {
+  if (!entrada.secciones.length && !entrada.pagina) return;
+  if (modo === 'anadir') {
+    mutate((page) => { for (const s of entrada.secciones) page.children.push(cloneWithNewIds(s)); });
+    return;
+  }
+  if (entrada.pagina) { replacePage(entrada.pagina); return; }
+  mutate((page) => {
+    page.children = entrada.secciones;
+    if (entrada.titulo) page.content.title = entrada.titulo;
+  });
+  select(null);
+}

@@ -10,7 +10,8 @@ import { findNode, findParent, anchorValido, contarAncla, aspectoValido, capaVal
 import { reducirImagen } from './imagen.js';
 import { effectiveStyles, TIPOS_TEXTO } from '../render/renderer.js';
 import { GRUPOS } from './fields.js';
-import { SVG_AVISO } from './iconos.js';
+import { SVG_AVISO, SVG_COPIAR, SVG_PEGAR } from './iconos.js';
+import { copiarGuia, abrirDialogoPlan } from './plania.js';
 import { ICONOS } from '../blocks/iconos-data.js';
 import { iconoSvg, TAMANOS_ICONO, TAMANO_ICONO_DEFECTO } from '../core/icono.js';
 import { modeloControl, columnasAuto, kebab, KINDS_CONTROL, KINDS_BOTONES, TAMANOS_BOTON } from './controles.js';
@@ -160,7 +161,10 @@ export function initInspector(host) {
     if (nodo.type === 'page') {
       cont += `<div class="campo"><label>Título</label><input data-c="title" value="${esc(c.title)}"></div>
         <div class="campo"><label>Scroll suave</label><select data-c="smoothScroll" data-bool><option value="no" ${c.smoothScroll ? '' : 'selected'}>No</option><option value="si" ${c.smoothScroll ? 'selected' : ''}>Sí</option></select></div>
-        <p class="modo">Solo la rueda del mouse en escritorio (táctil, teclado, barra y anclas quedan nativos). Se ve en el HTML exportado, no en este preview.</p>`;
+        <p class="modo">Solo la rueda del mouse en escritorio (táctil, teclado, barra y anclas quedan nativos). Se ve en el HTML exportado, no en este preview.</p>
+        <h3>Landing con IA</h3>
+        <p class="modo">Pídele a cualquier IA de chat una landing: pégale la guía y carga aquí lo que devuelva.</p>
+        <div class="ia-botones"><button type="button" data-ia="copiar">${SVG_COPIAR} Copiar guía para IA</button><button type="button" data-ia="pegar">${SVG_PEGAR} Pegar plan o JSON</button></div>`;
     }
     if (nodo.type === 'icon') {
       const botones = Object.entries(ICONOS).map(([k, ic]) => `<button type="button" data-icono="${k}" title="${esc(ic.t)}" aria-label="${esc(ic.t)}" aria-pressed="${c.name === k}" class="${c.name === k ? 'on' : ''}">${iconoSvg(k, 18)}</button>`).join('');
@@ -389,6 +393,13 @@ export function initInspector(host) {
     if (!det.matches?.('details.avanzado')) return;
     if (det.open) abiertos.add(det.dataset.g); else abiertos.delete(det.dataset.g);
   }, true);
+
+  // Landing con IA (solo en Ajustes de la página)
+  host.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-ia]');
+    if (!b) return;
+    if (b.dataset.ia === 'copiar') copiarGuia(); else abrirDialogoPlan();
+  });
 
   // Botones ↑ ↓ ⧉ ✕ del elemento seleccionado
   host.addEventListener('click', (e) => {

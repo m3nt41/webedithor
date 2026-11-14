@@ -16,6 +16,8 @@ const SUITE = [ // [nombre, comando, timeout en segundos]
   ['sidebar', 'node tests/sidebar-pestanas.mjs', 180],
   ['iconos', 'node tests/iconos.mjs', 180],
   ['tema', 'node tests/tema.mjs', 60],
+  ['plan-ia', 'node tests/plan-ia.mjs', 60],
+  ['plan-ia-ui', 'node tests/plan-ia-ui.mjs', 180],
   ['menu-movil', 'node tests/menu-movil.mjs', 240],
   ['menu-scroll', 'node tests/menu-scroll.mjs', 240],
   ['editor-file', 'node tests/editor-file.mjs', 120],

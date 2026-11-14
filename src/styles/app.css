@@ -191,3 +191,25 @@ details.bloque .variantes button:hover { background: #3b3470; }
 #inspector .icono-grid button.on { background: #5b47c9; border-color: #7c5cff; color: #fff; }
 #inspector .icono-grid button:focus-visible { outline: 2px solid #a794ff; outline-offset: 1px; }
 .arbol li i svg { display: block; width: 14px; height: 14px; margin: 0 auto; }
+
+/* Landing con IA: botones del inspector, diálogo de pegar plan y aviso breve */
+.ia-botones { display: grid; gap: 6px; margin-top: 6px; }
+.ia-botones button { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: #2f2f38; color: inherit; border: 1px solid #44444f; border-radius: 6px; cursor: pointer; font: inherit; font-size: 12px; }
+.ia-botones button:hover { background: #3b3470; }
+#dlg-plan { width: min(640px, 92vw); background: #1d1d23; color: #e8e8ee; border: 1px solid #44444f; border-radius: 10px; padding: 18px; }
+#dlg-plan::backdrop { background: rgba(0,0,0,.6); }
+#dlg-plan h2 { margin: 0 0 6px; font-size: 16px; }
+#dlg-plan textarea { width: 100%; box-sizing: border-box; background: #14141a; color: #e8e8ee; border: 1px solid #3a3a45; border-radius: 6px; padding: 8px; font: 12px/1.4 ui-monospace, Consolas, monospace; resize: vertical; }
+#dlg-plan .dlg-modo { display: flex; gap: 18px; margin: 10px 0; font-size: 13px; }
+#dlg-plan .dlg-modo label { color: #e8e8ee; display: flex; align-items: center; gap: 6px; cursor: pointer; }
+#dlg-plan #dlg-plan-msg { margin: 6px 0; padding: 8px 10px; border-radius: 6px; font-size: 12px; max-height: 180px; overflow: auto; }
+#dlg-plan #dlg-plan-msg ul { margin: 6px 0 0; padding-left: 18px; }
+#dlg-plan #dlg-plan-msg.error { background: #4a1717; border: 1px solid #d14b4b; color: #ffd6d6; }
+#dlg-plan #dlg-plan-msg.aviso { background: #3b2a12; border: 1px solid #c98a2b; color: #ffe2b0; }
+#dlg-plan #dlg-plan-msg[hidden] { display: none; }
+#dlg-plan .dlg-botones { display: flex; justify-content: flex-end; gap: 8px; margin-top: 10px; }
+#dlg-plan .dlg-botones button { padding: 7px 14px; background: #2f2f38; color: #fff; border: 1px solid #44444f; border-radius: 6px; cursor: pointer; font: inherit; }
+#dlg-plan .dlg-botones button.primario { background: #5b45d6; border-color: #7c5cff; }
+#toast-ia { position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%); z-index: 2000; padding: 9px 14px; background: #1f2f22; border: 1px solid #3f8f55; border-radius: 8px; color: #d6ffe0; font-size: 13px; box-shadow: 0 6px 24px rgba(0,0,0,.5); }
+#toast-ia.error { background: #4a1717; border-color: #d14b4b; color: #ffd6d6; }
+#toast-ia[hidden] { display: none; }

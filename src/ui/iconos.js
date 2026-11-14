@@ -4,7 +4,6 @@ export const SVG_ESCRITORIO = ico('<rect x="2" y="2.5" width="14" height="9.5" r
 export const SVG_MOVIL = ico('<rect x="5" y="1.8" width="8" height="14.4" rx="2"/><path d="M8 13.7h2"/>');
 export const SVG_OJO = ico('<path d="M1.5 9S4.3 4 9 4s7.5 5 7.5 5-2.8 5-7.5 5S1.5 9 1.5 9Z"/><circle cx="9" cy="9" r="2.2"/>');
 export const SVG_REINICIAR = ico('<path d="M15 9a6 6 0 1 1-2-4.5"/><path d="M15 2.5v3h-3"/>');
-export const SVG_CERRAR = ico('<path d="M4 4l10 10M14 4L4 14"/>');
 export const SVG_DESHACER = ico('<path d="M3.5 7h7.2a3.8 3.8 0 0 1 0 7.6H7"/><path d="M6.5 3.8 3.3 7l3.2 3.2"/>');
 export const SVG_REHACER = ico('<path d="M14.5 7H7.3a3.8 3.8 0 0 0 0 7.6H11"/><path d="M11.5 3.8 14.7 7l-3.2 3.2"/>');
 // Triángulo de aviso (reemplaza el emoji de advertencia): se pinta en 14px y hereda el color del texto

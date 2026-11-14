@@ -91,7 +91,7 @@ try {
   const vp = await d.executeScript(`const c=getComputedStyle(document.querySelector('section')); return [c.backgroundImage.includes('linear-gradient'), c.backgroundSize]`);
   await d.switchTo().defaultContent();
   assert.deepEqual(vp, [true, 'auto, contain'], 'Vista previa');
-  await d.findElement(By.css('#vp-cerrar')).click(); await esperar(300);
+  await d.findElement(By.css('#vp-ojo')).click(); await esperar(300);
   console.log('OK Vista previa: igual que el export');
 
   // ---- 5. Móvil: override solo en styles.mobile y "↺ igual que escritorio" ----

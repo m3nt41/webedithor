@@ -220,7 +220,7 @@ try {
   const vpEst = await d.executeScript(`const b=[...document.querySelectorAll('a,button')].find(x=>x.textContent.includes('Hola botón')); const c=getComputedStyle(b); return [c.paddingTop, c.borderTopLeftRadius, c.fontSize]`);
   await d.switchTo().defaultContent();
   assert.deepEqual([vpEst[0], vpEst[2]], ['8px', '14px'], 'Vista previa móvil aplica el tamaño Pequeño: ' + vpEst);
-  await d.findElement(By.css('#vp-cerrar')).click(); await esperar(300);
+  await d.findElement(By.css('#vp-ojo')).click(); await esperar(300);
   const resetT = await d.findElement(By.xpath(`//*[@id='inspector']//button[@data-tam='' and contains(.,'igual que escritorio')]`));
   await resetT.click(); await esperar(150);
   assert.equal(await est('BtnTest', 'mobile', 'padding'), undefined); assert.equal(await est('BtnTest', 'mobile', 'fontSize'), undefined, 'el reset borra los dos');

@@ -74,9 +74,26 @@ try {
   await enFrame(async () => { await d.findElement(By.css('body')).sendKeys(Key.ESCAPE); });
   await esperar(300);
   assert.equal(await abierta(), false, 'Esc no cerró (foco en el iframe)');
-  // ...y el botón Cerrar
-  await abrir(); await d.findElement(By.css('#vp-cerrar')).click(); await esperar(200);
-  assert.equal(await abierta(), false, 'Cerrar no cerró');
+  // ...y el ojo del overlay cierra, ya no existe la X, y el foco vuelve al ojo del editor
+  await abrir();
+  assert.equal((await d.findElements(By.css('#vp-cerrar'))).length, 0, 'sigue existiendo el botón X');
+  assert.equal(await d.executeScript(`return document.querySelector('#vp-ojo').getAttribute('aria-pressed')+'|'+document.querySelector('#vp-ojo').getAttribute('aria-label')`), 'true|Salir de la vista previa (Esc)', 'ojo del overlay sin aria correcto');
+  // 6. El ojo del overlay cae sobre el del editor (tolerancia 2px) en dos tamaños de ventana, también al redimensionar con la capa abierta
+  const rect = (sel) => d.executeScript(`const r=document.querySelector(arguments[0]).getBoundingClientRect();return [r.left,r.top,r.width,r.height]`, sel);
+  const cerca = async (msg) => { const a = await rect('#btn-vista-previa'), b = await rect('#vp-ojo'); a.forEach((v, i) => assert.ok(Math.abs(v - b[i]) <= 2, `${msg}: ojo desalineado ${a} vs ${b}`)); };
+  await cerca('1300x1000');
+  await d.manage().window().setRect({ width: 900, height: 700 }); await esperar(500);
+  await cerca('redimensionado a 900x700 con la capa abierta');
+  await d.findElement(By.css('#vp-ojo')).click(); await esperar(200);
+  assert.equal(await abierta(), false, 'el ojo no cerró');
+  assert.equal(await d.executeScript(`return document.activeElement.id`), 'btn-vista-previa', 'el foco no volvió al ojo del editor');
+  await abrir(); await cerca('abierta a 900x700');
+  const der = await rect('#vp-reiniciar'), ojo = await rect('#vp-ojo'), izq = await rect('#vp-mobile');
+  assert.ok(der[0] > ojo[0] + ojo[2] && izq[0] + izq[2] <= ojo[0], 'Reiniciar a la derecha del ojo y Escritorio/Móvil a la izquierda');
+  assert.ok(der[0] + der[2] < 900 / 2, 'nada en el extremo derecho');
+  await d.findElement(By.css('body')).sendKeys(Key.ESCAPE); await esperar(200);
+  assert.equal(await abierta(), false, 'Esc no cerró');
+  await d.manage().window().setRect({ width: 1300, height: 1000 }); await esperar(300);
 
   // 5. ↻ Reiniciar: recarga el iframe desde el inicio (scroll 0), conserva el modo Móvil, y el editor queda tal cual
   assert.equal(await d.executeScript(`return localStorage.getItem('editor-landings:pagina')`), guardadoAntes, 'la página del editor cambió');
@@ -94,8 +111,8 @@ try {
   await d.findElement(By.css('#vp-reiniciar')).click(); await esperar(900);
   assert.equal(await enFrame(() => d.executeScript('return innerWidth')), 390, '↻ perdió el modo Móvil');
   assert.equal(await d.executeScript(`return document.querySelector('#vp-mobile').getAttribute('aria-pressed')`), 'true', '↻ cambió el botón de modo');
-  await d.findElement(By.css('#vp-cerrar')).click(); await esperar(200);
+  await d.findElement(By.css('#vp-ojo')).click(); await esperar(200);
   const errs = await d.executeScript('return __err');
   assert.deepEqual(errs, [], 'errores: ' + errs.join(' | '));
-  console.log('OK vista previa: export idéntico en srcdoc, scroll y ancla # dentro del iframe, móvil 390px, Esc (editor e iframe) y Cerrar, ↻ Reiniciar (recarga, scroll 0, conserva Móvil) y editor intacto');
+  console.log('OK vista previa: export idéntico en srcdoc, scroll y ancla # dentro del iframe, móvil 390px, Esc (editor e iframe), ojo que cierra y cae sobre el del editor, foco de vuelta, ↻ Reiniciar (recarga, scroll 0, conserva Móvil) y editor intacto');
 } finally { await d.quit(); }

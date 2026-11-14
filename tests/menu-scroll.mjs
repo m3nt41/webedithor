@@ -119,7 +119,7 @@ try {
       if (MEDIR) console.log(`  [vista previa ${etiqueta} / ${caso}] y0=${v0} ciclos=${lv.join(',')}`);
       ver(v0 > 20 && sinDeriva(v0, lv), `C. Vista previa móvil (${etiqueta}, ${caso}): scrollY idéntico tras 5 ciclos`, `${v0} → ${lv.join(',')}`);
       await d.switchTo().defaultContent();
-      await d.findElement(By.css('#vp-cerrar')).click(); await esperar(300);
+      await d.findElement(By.css('#vp-ojo')).click(); await esperar(300);
     }
   }
 } finally {

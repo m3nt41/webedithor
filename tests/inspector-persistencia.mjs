@@ -84,7 +84,7 @@ try {
 
   // ===== 4. Vista previa abrir/cerrar =====
   await d.findElement(By.css('#btn-vista-previa')).click(); await esperar(600);
-  await d.findElement(By.css('#vp-cerrar')).click(); await esperar(200);
+  await d.findElement(By.css('#vp-ojo')).click(); await esperar(200);
   ver(await estilo('Grid', 'base', 'margin') === '0 auto' && await estilo('Grid', 'base', 'maxWidth') === '900px', '4. tras abrir/cerrar Vista previa, siguen guardados');
 
   // ===== 5. Ctrl+Z / Ctrl+Y con el foco fuera de los campos =====
@@ -146,7 +146,7 @@ try {
   await d.switchTo().frame(await d.findElement(By.css('#vp-frame')));
   const yNav = await d.executeScript(`const se=document.scrollingElement; const rel=document.createElement('div'); rel.style.height='3000px'; document.body.appendChild(rel); se.scrollTop=400; const nv=document.body.querySelector('[data-id], section, nav'); return new Promise(r=>setTimeout(()=>r([se.scrollTop, Math.round(nv.getBoundingClientRect().top), se.scrollHeight]),300))`);
   await d.switchTo().defaultContent();
-  await d.findElement(By.css('#vp-cerrar')).click(); await esperar(200);
+  await d.findElement(By.css('#vp-ojo')).click(); await esperar(200);
   ver(yNav[0] > 0 && yNav[1] === 0, '9h. Vista previa: tras hacer scroll el navbar sigue en top:0', JSON.stringify(yNav));
   // Si el usuario escribe su propio top, no se borra al volver a Normal ni se pisa al volver a Pegado
   await escribir('top', '12px'); await esperar(400);
@@ -166,7 +166,7 @@ try {
   await modo('mobile'); await modo('desktop');
   await seleccionar('Grid'); await seleccionar('Navbar');
   await d.findElement(By.css('#btn-vista-previa')).click(); await esperar(600);
-  await d.findElement(By.css('#vp-cerrar')).click(); await esperar(200);
+  await d.findElement(By.css('#vp-ojo')).click(); await esperar(200);
   ver(await estilo('Navbar', 'base', 'position') === undefined, '9c. tras móvil/escritorio, otra selección y Vista previa, position sigue sin sticky', String(await estilo('Navbar', 'base', 'position')));
   await recargar();
   ver(await estilo('Navbar', 'base', 'position') === undefined, '9d. tras recargar, position sigue sin sticky', String(await estilo('Navbar', 'base', 'position')));

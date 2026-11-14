@@ -3,11 +3,12 @@
 // - No toca el estado del editor.
 // - ↻ Reiniciar: regenera el srcdoc (recarga el iframe desde el inicio, scroll arriba) para ver de nuevo las animaciones; conserva Escritorio/Móvil.
 // - Móvil: el iframe mide 390px de ancho (así los @media y 100svh responden de verdad).
+// - El ojo (activo) sustituye a la X: cae EXACTAMENTE sobre el ojo de la barra del editor (se mide con getBoundingClientRect) para abrir y cerrar sin mover el ratón.
 // - Esc cierra, también cuando el foco está dentro del iframe (se escucha su teclado).
 
 import { getState } from '../core/store.js';
 import { exportHTML } from '../export/exporter.js';
-import { SVG_ESCRITORIO, SVG_MOVIL, SVG_REINICIAR, SVG_CERRAR } from './iconos.js';
+import { SVG_ESCRITORIO, SVG_MOVIL, SVG_REINICIAR, SVG_OJO } from './iconos.js';
 
 let capa = null;
 
@@ -18,16 +19,19 @@ export function abrirVistaPrevia() {
   capa = document.createElement('div');
   capa.id = 'vista-previa';
   capa.innerHTML = `
-    <div class="vp-barra">
-      <strong>Vista previa</strong>
-      <span class="grupo" role="group" aria-label="Modo de la vista previa">
-        <button type="button" id="vp-desktop" class="ico-btn activo" title="Escritorio" aria-label="Escritorio" aria-pressed="true">${SVG_ESCRITORIO}</button>
-        <button type="button" id="vp-mobile" class="ico-btn" title="Móvil" aria-label="Móvil" aria-pressed="false">${SVG_MOVIL}</button>
+    <div class="vp-barra" role="toolbar" aria-label="Vista previa">
+      <span class="vp-izq">
+        <span class="grupo" role="group" aria-label="Modo de la vista previa">
+          <button type="button" id="vp-desktop" class="ico-btn activo" title="Escritorio" aria-label="Escritorio" aria-pressed="true">${SVG_ESCRITORIO}</button>
+          <button type="button" id="vp-mobile" class="ico-btn" title="Móvil" aria-label="Móvil" aria-pressed="false">${SVG_MOVIL}</button>
+        </span>
+        <span class="divisor" aria-hidden="true"></span>
       </span>
-      <span class="divisor" aria-hidden="true"></span>
-      <button type="button" id="vp-reiniciar" class="ico-btn" title="Reiniciar" aria-label="Reiniciar">${SVG_REINICIAR}</button>
-      <span class="espacio"></span>
-      <button type="button" id="vp-cerrar" class="ico-btn" title="Cerrar (Esc)" aria-label="Cerrar (Esc)">${SVG_CERRAR}</button>
+      <button type="button" id="vp-ojo" class="ico-btn activo" title="Salir de la vista previa (Esc)" aria-label="Salir de la vista previa (Esc)" aria-pressed="true">${SVG_OJO}</button>
+      <span class="vp-der">
+        <span class="divisor" aria-hidden="true"></span>
+        <button type="button" id="vp-reiniciar" class="ico-btn" title="Reiniciar" aria-label="Reiniciar">${SVG_REINICIAR}</button>
+      </span>
     </div>
     <div class="vp-escenario"><iframe id="vp-frame" title="Vista previa de la página"></iframe></div>
   `;
@@ -67,13 +71,33 @@ export function abrirVistaPrevia() {
   capa.querySelector('#vp-desktop').addEventListener('click', () => modo(false));
   capa.querySelector('#vp-mobile').addEventListener('click', () => modo(true));
   capa.querySelector('#vp-reiniciar').addEventListener('click', cargar); // el modo (clase .movil de la capa) no se toca
-  capa.querySelector('#vp-cerrar').addEventListener('click', cerrarVistaPrevia);
-  capa.querySelector('#vp-cerrar').focus();
+  capa.querySelector('#vp-ojo').addEventListener('click', cerrarVistaPrevia);
+
+  // El ojo del overlay se coloca sobre el del editor (mismas coordenadas y tamaño); se re-mide al redimensionar.
+  colocar();
+  window.addEventListener('resize', colocar);
+  capa.querySelector('#vp-ojo').focus();
+}
+
+function colocar() {
+  const ojoEditor = document.querySelector('#btn-vista-previa');
+  if (!capa || !ojoEditor) return;
+  const r = ojoEditor.getBoundingClientRect();
+  const barra = ojoEditor.closest('#toolbar')?.getBoundingClientRect();
+  const st = capa.style;
+  st.setProperty('--ojo-x', r.left + 'px');
+  st.setProperty('--ojo-y', r.top + 'px');
+  st.setProperty('--ojo-w', r.width + 'px');
+  st.setProperty('--ojo-h', r.height + 'px');
+  st.setProperty('--barra-h', (barra ? barra.bottom : r.bottom + 8) + 'px'); // misma altura que la barra del editor
 }
 
 export function cerrarVistaPrevia() {
-  capa?.remove();
+  if (!capa) return;
+  window.removeEventListener('resize', colocar);
+  capa.remove();
   capa = null;
+  document.querySelector('#btn-vista-previa')?.focus(); // el foco vuelve al ojo del editor
 }
 
 // Esc en el documento del editor (captura: 

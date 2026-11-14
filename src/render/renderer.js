@@ -4,9 +4,10 @@
 // (src/export/exporter.js) los convierte a CSS con clases.
 
 import { anchorValido, aspectoValido, CLAVES_PROPIAS, fondoDeclaraciones } from '../core/tree.js';
+import { iconoSvg, estilosIcono } from '../core/icono.js';
 
 // Qué etiqueta HTML usa cada tipo de nodo (también la usa el exportador)
-const TAGS = { page: 'div', section: 'section', container: 'div', heading: 'h2', text: 'p', button: 'a', image: 'img' };
+const TAGS = { page: 'div', section: 'section', container: 'div', heading: 'h2', text: 'p', button: 'a', image: 'img', icon: 'span' };
 
 export function tagFor(node) {
   return node.type === 'heading' ? `h${node.content.level ?? 2}` : TAGS[node.type] ?? 'div';
@@ -28,6 +29,10 @@ export function renderNode(node, viewMode = 'desktop') {
   // Ancla (content.anchor) -> id="..." solo si es válida (mismo criterio que el exportador)
   if (anchorValido(node.content?.anchor)) el.id = node.content.anchor;
   const est = effectiveStyles(node, viewMode);
+  if (node.type === 'icon') { // caja con tamaño/color del nodo + el mismo SVG que usa el export
+    Object.assign(el.style, estilosIcono({}));
+    el.innerHTML = iconoSvg(node.content.name);
+  }
   Object.assign(el.style, Object.fromEntries(Object.entries(est).filter(([k]) => !CLAVES_PROPIAS.includes(k))));
   Object.assign(el.style, fondoDeclaraciones(est)); // imagen de fondo (después del color: la imagen va encima)
 

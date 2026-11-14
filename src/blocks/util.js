@@ -49,3 +49,7 @@ export const seccion = (name, styles, children, mobile = {}) =>
     mobile: { padding: '56px 20px', ...mobile },
     children,
   });
+
+/** Icono (SVG de la biblioteca iconos-data.js). Tamaño = width/height; color = color (hereda del padre si no se pone). */
+export const icono = (name = 'star', styles = {}, nombre = 'Icono') =>
+  n('icon', { name: nombre, content: { name }, styles: { width: '32px', height: '32px', ...styles } });

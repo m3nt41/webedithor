@@ -1,7 +1,7 @@
 // ELEMENTOS SUELTOS (los que se añaden dentro de una sección o contenedor)
 // Cada uno es { id, label, type, crear }. Para añadir otro: una entrada aquí.
 
-import { n, titulo, texto, boton, imagen, placeholder } from './util.js';
+import { n, titulo, texto, boton, imagen, placeholder, icono } from './util.js';
 
 export const ELEMENTS = [
   { id: 'section', label: 'Sección vacía', type: 'section', crear: () =>
@@ -19,6 +19,7 @@ export const ELEMENTS = [
   { id: 'text', label: 'Texto', type: 'text', crear: () => texto('Escribe aquí tu texto.', { lineHeight: '1.5' }) },
   { id: 'button', label: 'Botón', type: 'button', crear: () => boton('Botón', '#') },
   { id: 'image', label: 'Imagen', type: 'image', crear: () => imagen(placeholder(), 'Imagen', { borderRadius: '12px' }) },
+  { id: 'icon', label: 'Icono', type: 'icon', crear: () => icono('star') },
 ];
 
 export function createElement(id) {

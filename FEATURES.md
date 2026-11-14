@@ -63,3 +63,6 @@ Motion vs CSS puro: m3nt41 ya decidió la opción (a), CSS puro donde se pueda y
 > Nota (2026-11-13): ajustes de imagen en el inspector: campo "Proporción" (aspect-ratio) en imágenes y "Proporción de los hijos" en contenedores grid (CSS puro `:where(.cls>img)`); la Galería nace con ella. La lista de funciones no cambió.
 
 > Nota (2026-11-13): imagen de fondo para secciones y contenedores (grupo "Fondo e imagen": subir o pegar URL, Cubrir/Contener, posición y capa oscura 0–80 %; CSS puro en el export) y hero "Con fondo". La lista de funciones no cambió.
+
+## Elementos (añadido 2026-11-14, mini-etapa iconos)
+- [x] Icono: elemento propio (tipo `icon`) con SVG de línea de una biblioteca de 41 iconos (Lucide, ISC); tamaño y color editables (también en móvil); sin emoticonos en bloques ni en la interfaz; las animaciones existentes (al aparecer, hover, press, scroll, estados) funcionan sobre él

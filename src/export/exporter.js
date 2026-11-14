@@ -7,6 +7,7 @@
 
 import { anchorValido, walk, aspectoValido, CLAVES_PROPIAS, fondoDeclaraciones, tocaFondo } from '../core/tree.js';
 import { tagFor, TIPOS_TEXTO } from '../render/renderer.js';
+import { iconoSvg, estilosIcono } from '../core/icono.js';
 import { usaEscena, varsEscena, esNavPegado, paginaUsaEscena, CSS_ESCENA, usaScrollLink, paginaUsaScrollLink, SCRIPT_SCROLLMOTOR, SCRIPT_SCROLLSUAVE, paginaUsaScrollSuave, cssNodo, usaScroll, usaCarga, usaClic, paginaUsaScroll, paginaUsaEntrada, paginaUsaMedida, paginaUsaClic, esMedida, splitText, KEYFRAMES, SCRIPT_SCROLL, SCRIPT_LINEAS, SCRIPT_CLIC } from '../animations/index.js';
 
 export const BREAKPOINT_MOVIL = 768;
@@ -40,7 +41,7 @@ export function exportHTML(page) {
     // En móvil se re-emite entera (con los valores efectivos) si el override toca el fondo.
     const fondo = (d) => Object.keys(d).length ? declaraciones(d) : '';
     const unir = (...p) => p.filter(Boolean).join(';');
-    const dBase = unir(declaraciones(node.styles.base), fondo(fondoDeclaraciones(node.styles.base)));
+    const dBase = unir(declaraciones(node.type === 'icon' ? estilosIcono(node.styles.base) : node.styles.base), fondo(fondoDeclaraciones(node.styles.base)));
     const dMovil = unir(declaraciones(node.styles.mobile), tocaFondo(node.styles.mobile) ? fondo(fondoDeclaraciones({ ...node.styles.base, ...node.styles.mobile })) : '');
     if (dBase) css.push(`.${clase}{${dBase}}`);
     if (dMovil) cssMovil.push(`.${clase}{${dMovil}}`);
@@ -63,6 +64,9 @@ export function exportHTML(page) {
 
     if (node.type === 'image') {
       return `${sangria}<img class="${clase}"${idAttr}${rv} src="${escAttr(c.src)}" alt="${escAttr(c.alt)}">`;
+    }
+    if (node.type === 'icon') { // mismo SVG inline que el editor (iconoSvg), sin JS
+      return `${sangria}<span class="${clase}"${idAttr}${rv}>${iconoSvg(c.name)}</span>`;
     }
     const attrs = (node.type === 'button' ? ` href="${escAttr(c.href ?? '#')}"` : '') + idAttr + rv;
     const abre = `<${tag} class="${clase}"${attrs}>`;

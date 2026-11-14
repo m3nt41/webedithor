@@ -5,13 +5,13 @@ import { getState, subscribe, undo, redo, puedeDeshacer, puedeRehacer, setViewMo
 import { exportHTML, descargar } from '../export/exporter.js';
 import { abrirVistaPrevia } from './vistaprevia.js';
 
-import { SVG_ESCRITORIO, SVG_MOVIL, SVG_OJO } from './iconos.js'; // iconos compartidos con la Vista previa
+import { SVG_ESCRITORIO, SVG_MOVIL, SVG_OJO, SVG_DESHACER, SVG_REHACER } from './iconos.js'; // iconos compartidos con la Vista previa
 
 export function initToolbar(host) {
   host.innerHTML = `
     <strong class="marca">Editor de landings</strong>
-    <button id="btn-undo" title="Deshacer (Ctrl+Z)">↶</button>
-    <button id="btn-redo" title="Rehacer (Ctrl+Y)">↷</button>
+    <button id="btn-undo" class="ico-btn" title="Deshacer (Ctrl+Z)" aria-label="Deshacer">${SVG_DESHACER}</button>
+    <button id="btn-redo" class="ico-btn" title="Rehacer (Ctrl+Y)" aria-label="Rehacer">${SVG_REHACER}</button>
     <span class="grupo" role="group" aria-label="Modo de edición">
       <button id="vista-desktop" class="ico-btn" title="Escritorio" aria-label="Escritorio" aria-pressed="true">${SVG_ESCRITORIO}</button>
       <button id="vista-mobile" class="ico-btn" title="Móvil" aria-label="Móvil" aria-pressed="false">${SVG_MOVIL}</button>

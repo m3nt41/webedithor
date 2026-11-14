@@ -8,7 +8,7 @@
 //   transition = % de cada tramo que dura el CAMBIO entre pasos (20–80); el resto del tramo el paso queda quieto.
 //            Falta = 50 (como antes de existir el campo; normalizar.js lo rellena con 50 al abrir). Por defecto en escenas nuevas: 40.
 //
-// CÓMO SE ARMA (el árbol NO cambia; el preview con ▶ y el exportador crean esto igual):
+// CÓMO SE ARMA (el árbol NO cambia; la Vista previa y el exportador crean esto igual):
 //   <div data-ew style="--len:3;--n:3">     contenedor alto (el que da el recorrido de scroll)
 //     <section data-es class="...">          capa pegada: sticky, alto = 100svh − navbar
 //       hijos apilados en la MISMA celda de un grid (grid-area:1/1), nunca position:absolute

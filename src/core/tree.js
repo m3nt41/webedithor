@@ -2,7 +2,8 @@
 // Todo nodo tiene la misma forma:
 //   { id, type, name, styles:{base,mobile}, content, animation, children }
 //
-// - type: 'page' | 'section' | 'container' | 'heading' | 'text' | 'button' | 'image'
+// - type: 'page' | 'section' | 'container' | 'heading' | 'text' | 'button' | 'image' | 'icon'
+//   ('icon' = SVG de la biblioteca de blocks/iconos-data.js: content:{ name }, tamaño = width/height, color = color)
 // - styles.base: estilos CSS (camelCase) para escritorio (y como base de todo)
 // - styles.mobile: SOLO lo que cambia en móvil (se superpone a base)
 // - content: datos propios del tipo ({ text }, { src, alt }, { href }...)
@@ -148,13 +149,14 @@ const objeto = (v) => (v !== null && typeof v === 'object' && !Array.isArray(v) 
 function limpiarContenido(n) {
   const c = { ...objeto(n.content) };
   if (n.type === 'page' && c.smoothScroll !== true) delete c.smoothScroll;
+  if (n.type === 'icon' && typeof c.name !== 'string') c.name = 'star'; // un name que no exista en la biblioteca se deja: se dibuja el icono neutro
   return c;
 }
 
 /** Valida y completa un objeto leído de un .json. Lanza Error si no es una página válida.
  *  La animación de cada nodo se limpia con normalizarAnimacion (nunca lanza: lo inválido se descarta). */
 export function normalizePage(obj) {
-  const TIPOS = ['page', 'section', 'container', 'heading', 'text', 'button', 'image'];
+  const TIPOS = ['page', 'section', 'container', 'heading', 'text', 'button', 'image', 'icon'];
   function norm(n, esRaiz, padre) {
     if (!n || typeof n !== 'object') throw new Error('Nodo inválido');
     if (!TIPOS.includes(n.type)) throw new Error(`Tipo desconocido: ${n.type}`);

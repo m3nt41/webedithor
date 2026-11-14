@@ -2,7 +2,14 @@
 // El botón apunta a https://wa.me/NUMERO (código de país + número, sin + ni espacios).
 // Cambia el número desde el Inspector (campo "Enlace" del botón).
 
-import { n, titulo, texto, boton, columna, seccion } from './util.js';
+import { n, titulo, texto, boton, columna, seccion, icono } from './util.js';
+
+// Fila de dato de contacto: icono + texto
+const dato = (ic, txt, nombre) =>
+  n('container', { name: nombre, styles: { display: 'flex', alignItems: 'center', gap: '12px' }, children: [
+    icono(ic, { width: '22px', height: '22px', color: '#7c5cff' }),
+    texto(txt, {}, {}, 'Texto'),
+  ] });
 
 const WA = 'https://wa.me/50600000000?text=Hola%2C%20quiero%20m%C3%A1s%20informaci%C3%B3n';
 const botonWa = (extra = {}) => boton('Escríbenos por WhatsApp', WA, { background: '#25d366', color: '#063d1b', ...extra }, 'Botón WhatsApp');
@@ -40,9 +47,9 @@ export default {
             texto('Escríbenos y armamos juntos tu proyecto.', { fontSize: '18px', opacity: '0.7' }, {}, 'Subtítulo'),
           ]),
           columna('Datos', { gap: '14px', padding: '32px', borderRadius: '20px', background: '#f4f4f7' }, [
-            texto('📞 +506 0000 0000', {}, {}, 'Teléfono'),
-            texto('✉️ hola@tumarca.com', {}, {}, 'Correo'),
-            texto('📍 San José, Costa Rica', {}, {}, 'Ubicación'),
+            dato('phone', '+506 0000 0000', 'Teléfono'),
+            dato('mail', 'hola@tumarca.com', 'Correo'),
+            dato('map-pin', 'San José, Costa Rica', 'Ubicación'),
             botonWa({ textAlign: 'center' }),
           ]),
         ],

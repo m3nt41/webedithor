@@ -124,7 +124,7 @@ export const SCRIPT_CLIC = `document.querySelectorAll('[data-vc]').forEach((el)=
 
 export default {
   id: 'variants',
-  estado: true, // hover/press/focus se ven siempre en el preview; el resto solo en 👁 Vista previa
+  estado: true, // hover/press/focus se ven siempre en el preview; el resto solo en Vista previa
   propio: true, // el inspector lo dibuja con su propia sección (lista de estados), no con el formato genérico
   titulo: 'Estados (variants)',
   principal: null,

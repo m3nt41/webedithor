@@ -172,3 +172,14 @@ details.bloque .variantes button:hover { background: #3b3470; }
 #inspector label.ov::before { content: '● '; color: #7c5cff; }
 #inspector input.invalido { outline: 1px solid #e5484d; border-color: #e5484d; }
 #inspector .aviso-css { color: #ff8a8a; font-size: 11px; margin: -2px 0 6px 98px; }
+
+/* Triángulo de aviso (SVG, reemplaza el emoji de advertencia) */
+.ico-aviso { vertical-align: -2px; margin-right: 4px; flex: none; }
+/* Elemento Icono: cuadrícula para elegir (inspector) y miniatura en el árbol de capas */
+#inspector .icono-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(34px, 1fr)); gap: 4px; margin: 4px 0 10px; }
+#inspector .icono-grid button { height: 34px; padding: 0; display: inline-flex; align-items: center; justify-content: center; background: #2f2f38; color: #d8d8e4; border: 1px solid #44444f; border-radius: 6px; cursor: pointer; }
+#inspector .icono-grid button svg { width: 18px; height: 18px; }
+#inspector .icono-grid button:hover { background: #3b3470; }
+#inspector .icono-grid button.on { background: #5b47c9; border-color: #7c5cff; color: #fff; }
+#inspector .icono-grid button:focus-visible { outline: 2px solid #a794ff; outline-offset: 1px; }
+.arbol li i svg { display: block; width: 14px; height: 14px; margin: 0 auto; }

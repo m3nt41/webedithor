@@ -5,6 +5,7 @@ import { initSidebar } from './ui/sidebar.js';
 import { initPreview } from './ui/preview.js';
 import { initInspector } from './ui/inspector.js';
 import { initToolbar } from './ui/toolbar.js';
+import { SVG_AVISO } from './ui/iconos.js';
 import { getState, subscribe, recargarGuardado, seguirConEsta, removeNode, duplicateNode, moveBy } from './core/store.js';
 
 // Atajos del elemento seleccionado: Supr borra, Ctrl+D duplica, Alt+↑/↓ mueve.
@@ -38,7 +39,7 @@ const avisoGuardado = document.createElement('div');
 avisoGuardado.id = 'aviso-guardado';
 avisoGuardado.setAttribute('role', 'alert');
 avisoGuardado.hidden = true;
-avisoGuardado.textContent = '⚠ No se pudo autoguardar: el almacenamiento del navegador está lleno (probablemente por imágenes pesadas). Usa "Guardar JSON" para no perder tu trabajo, o quita/usa una imagen más liviana (o pega su URL).';
+avisoGuardado.innerHTML = `${SVG_AVISO} No se pudo autoguardar: el almacenamiento del navegador está lleno (probablemente por imágenes pesadas). Usa "Guardar JSON" para no perder tu trabajo, o quita/usa una imagen más liviana (o pega su URL).`;
 document.body.append(avisoGuardado);
 subscribe((s, cambio) => { if (cambio === 'guardado') avisoGuardado.hidden = !s.errorGuardado; });
 

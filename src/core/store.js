@@ -207,6 +207,20 @@ export function setStyle(id, key, value) {
   }, 'page', `s:${id}:${key}:${modo}`);
 }
 
+/** Tamaño de un Icono: escribe width Y height (cuadrado) en UN solo mutate. En móvil va a styles.mobile.
+ *  px vacío/0 = borra ambos (en móvil: vuelve al tamaño de escritorio). */
+export function setIconSize(id, px) {
+  const modo = state.viewMode;
+  mutate((page) => {
+    const n = findNode(page, id);
+    if (!n) return;
+    const destino = modo === 'mobile' ? n.styles.mobile : n.styles.base;
+    if (!(px > 0)) { delete destino.width; delete destino.height; return; }
+    destino.width = `${px}px`;
+    destino.height = `${px}px`;
+  }, 'page', `isz:${id}:${modo}`);
+}
+
 /** Cambia Posición (select Normal / Pegado) en UN solo mutate (un undo lo deshace todo).
  *  "sticky": si top y bottom están vacíos escribe top:'0' y, si zIndex está vacío, zIndex:'50' (mismo nivel base/mobile)
  *  y los anota en n.autoPos para poder quitarlos. Lo que el usuario ya tenía no se pisa.
@@ -243,7 +257,7 @@ export function setContent(id, key, value, tipo = 'page') {
 
 /** Cambia un dato de una animación (grupo = 'appear' | 'hover' | 'text').
  *  Poner el campo principal en '' apaga el grupo; ponerlo con valor lo crea con
- *  los valores por defecto. Emite 'page' (NO 'play'): el preview sigue en modo edición hasta pulsar ▶. */
+ *  los valores por defecto. Emite 'page' (NO 'play'): el preview sigue en modo edición (ya no hay modo reproducir). */
 export function setAnimation(id, grupo, key, value) {
   mutate((page) => {
     const n = findNode(page, id);

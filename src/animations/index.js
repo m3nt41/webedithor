@@ -25,18 +25,18 @@ export const TIPOS_TEXTO = ['heading', 'text', 'button'];
 
 /** Cada grupo y a qué tipos de nodo se aplica. */
 export const GRUPOS_ANIM = [
-  { ...appear, tipos: ['section', 'container', 'heading', 'text', 'button', 'image'] },
-  { ...hover, tipos: ['container', 'heading', 'text', 'button', 'image'] },
-  { ...press, tipos: ['container', 'heading', 'text', 'button', 'image'] }, // después de hover: gana al presionar
+  { ...appear, tipos: ['section', 'container', 'heading', 'text', 'button', 'image', 'icon'] },
+  { ...hover, tipos: ['container', 'heading', 'text', 'button', 'image', 'icon'] },
+  { ...press, tipos: ['container', 'heading', 'text', 'button', 'image', 'icon'] }, // después de hover: gana al presionar
   { ...focus, tipos: ['button'] }, // solo los enlaces/botones reciben foco de teclado
   { ...text, tipos: TIPOS_TEXTO },
   { ...stagger, tipos: ['section', 'container'] },
-  { ...parallax, tipos: ['section', 'container', 'heading', 'text', 'button', 'image'] }, // solo con el motor de scroll (.sc)
-  { ...scrolllink, tipos: ['section', 'container', 'heading', 'text', 'button', 'image'] },
+  { ...parallax, tipos: ['section', 'container', 'heading', 'text', 'button', 'image', 'icon'] }, // solo con el motor de scroll (.sc)
+  { ...scrolllink, tipos: ['section', 'container', 'heading', 'text', 'button', 'image', 'icon'] },
   { ...scene, tipos: ['section'] },
   // solo se muestra en el inspector si el padre es una escena (ver `soloEnEscena`)
-  { ...scenestep, tipos: ['container', 'heading', 'text', 'button', 'image'], soloEnEscena: true },
-  { ...variants, tipos: ['section', 'container', 'heading', 'text', 'button', 'image'] }, // al final: sus !important y su `animation` ganan
+  { ...scenestep, tipos: ['container', 'heading', 'text', 'button', 'image', 'icon'], soloEnEscena: true },
+  { ...variants, tipos: ['section', 'container', 'heading', 'text', 'button', 'image', 'icon'] }, // al final: sus !important y su `animation` ganan
 ];
 
 export { usaClic, SCRIPT_CLIC, CSS_ESCENA, usaEscena, varsEscena };

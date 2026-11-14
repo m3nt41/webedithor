@@ -7,6 +7,7 @@ import { getState, subscribe, select, addNode, addElement, removeNode, duplicate
 import { findNode, findParent, canContain } from '../core/tree.js';
 import { BLOCKS, createBlock } from '../blocks/index.js';
 import { ELEMENTS } from '../blocks/elements.js';
+import { iconoSvg } from '../core/icono.js';
 
 const ICONOS = { section: '▭', container: '▢', heading: 'H', text: '¶', button: '⬭', image: '▣' };
 
@@ -218,7 +219,8 @@ export function initSidebar(host) {
     });
 
     const icono = document.createElement('i');
-    icono.textContent = ICONOS[nodo.type] ?? '·';
+    if (nodo.type === 'icon') icono.innerHTML = iconoSvg(nodo.content.name, 14); // en capas se ve el icono elegido
+    else icono.textContent = ICONOS[nodo.type] ?? '·';
     const nombre = document.createElement('span');
     nombre.textContent = nodo.name;
     nombre.title = nodo.name;

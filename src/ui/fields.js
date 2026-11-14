@@ -10,6 +10,8 @@
 //     strings CSS de siempre. El campo de texto del valor queda en "Avanzado" del grupo (crudo = su etiqueta ahi).
 //     autoVacio (solo proporcion): "Auto" = quitar la proporcion en vez de escribir 'auto' (para "Proporcion de los hijos").
 
+import { SVG_AVISO } from './iconos.js';
+
 const TEXTO = ['heading', 'text', 'button'];
 const CONTENEDOR = ['section', 'container'];
 
@@ -37,8 +39,18 @@ export const GRUPOS = [
     ],
   },
   {
+    // Elemento Icono: la elección del icono va en "Contenido" (cuadrícula). Tamaño = width y height a la vez; Color = color
+    // (si no tiene, hereda del padre). En móvil los dos se pueden sobrescribir como cualquier campo.
+    titulo: 'Icono',
+    tipos: ['icon'],
+    campos: [
+      { key: 'width', label: 'Tamaño', kind: 'iconoTamano' },
+      { key: 'color', label: 'Color', kind: 'color' },
+    ],
+  },
+  {
     titulo: 'Fondo y borde',
-    tipos: [...TEXTO, ...CONTENEDOR, 'page', 'image'],
+    tipos: [...TEXTO, ...CONTENEDOR, 'page', 'image', 'icon'],
     campos: [
       { key: 'background', label: 'Fondo', kind: 'color' },
       { key: 'borderRadius', label: 'Radio', kind: 'text', placeholder: '12px' },
@@ -108,7 +120,7 @@ export const GRUPOS = [
       // Solo contenedores y secciones (en la página recortaría todo el scroll).
       { key: 'overflow', label: 'Recortar contenido', kind: 'select', options: [['', 'No (normal)'], ['hidden', 'Sí (recortar)']], tipos: CONTENEDOR, vacioMovil: 'visible' },
       { kind: 'nota', tipos: CONTENEDOR, cuando: (s) => s.overflow === 'hidden',
-        texto: '⚠ Un contenedor que recorta rompe el sticky de lo que tenga adentro (el sticky deja de pegarse). Si necesitas sticky dentro, no recortes aquí.' },
+        texto: `${SVG_AVISO} Un contenedor que recorta rompe el sticky de lo que tenga adentro (el sticky deja de pegarse). Si necesitas sticky dentro, no recortes aquí.` },
     ],
   },
 ];

@@ -1,6 +1,6 @@
 // BLOQUE PRECIOS
 
-import { n, titulo, texto, boton, columna, seccion } from './util.js';
+import { n, titulo, texto, boton, columna, seccion, icono } from './util.js';
 
 const GRID = { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px', alignItems: 'stretch' };
 const cabecera = (t) => titulo(t, 2, { fontSize: '40px', textAlign: 'center' }, { fontSize: '30px' });
@@ -12,7 +12,7 @@ const plan = (nombre, precio, ventajas, { destacado = false, oscuro = false } = 
   return columna('Plan', { gap: '14px', padding: '32px 28px', borderRadius: '20px', background: fondo, color }, [
     texto(nombre, { fontWeight: '700', fontSize: '16px', opacity: '0.85' }, {}, 'Nombre'),
     texto(precio, { fontSize: '44px', fontWeight: '800' }, {}, 'Precio'),
-    columna('Ventajas', { gap: '8px', flex: '1' }, ventajas.map((v) => texto(`✓ ${v}`, { opacity: '0.85' }, {}, 'Ventaja'))),
+    columna('Ventajas', { gap: '8px', flex: '1' }, ventajas.map((v) => n('container', { name: 'Ventaja', styles: { display: 'flex', alignItems: 'center', gap: '8px', opacity: '0.85' }, children: [icono('check', { width: '18px', height: '18px' }), texto(v, {}, {}, 'Texto')] }))),
     boton('Elegir', '#contacto', destacado ? { background: '#ffffff', color: '#7c5cff', textAlign: 'center' } : { textAlign: 'center' }),
   ]);
 };

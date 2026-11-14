@@ -1,7 +1,7 @@
 // BLOQUE SERVICIOS / BENEFICIOS
 // repeat(auto-fit, minmax()) hace que el grid se adapte solo a móvil.
 
-import { n, titulo, texto, columna, seccion } from './util.js';
+import { n, titulo, texto, columna, seccion, icono } from './util.js';
 
 const GRID = { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '20px' };
 
@@ -11,9 +11,9 @@ const tarjeta = (t, txt, extra = {}) =>
     texto(txt, { opacity: '0.7', lineHeight: '1.5' }),
   ]);
 
-const conIcono = (icono, t, txt, extra = {}) =>
+const conIcono = (nombreIcono, t, txt, extra = {}) =>
   columna('Tarjeta', { gap: '10px', padding: '28px', alignItems: 'center', textAlign: 'center', ...extra }, [
-    texto(icono, { fontSize: '44px' }, {}, 'Icono'),
+    icono(nombreIcono, { width: '44px', height: '44px', color: '#7c5cff' }),
     titulo(t, 3, { fontSize: '22px' }),
     texto(txt, { opacity: '0.7', lineHeight: '1.5' }),
   ]);
@@ -39,9 +39,9 @@ export default {
       seccion('Servicios', { gap: '40px', background: '#ffffff' }, [
         cabecera('Por qué elegirnos'),
         n('container', { name: 'Grid', styles: GRID, children: [
-          conIcono('⚡', 'Rápido', 'Cargas en un parpadeo.'),
-          conIcono('🎨', 'A tu medida', 'Cada detalle según tu marca.'),
-          conIcono('📱', 'Móvil primero', 'Se ve perfecto en cualquier pantalla.'),
+          conIcono('zap', 'Rápido', 'Cargas en un parpadeo.'),
+          conIcono('palette', 'A tu medida', 'Cada detalle según tu marca.'),
+          conIcono('smartphone', 'Móvil primero', 'Se ve perfecto en cualquier pantalla.'),
         ] }),
       ]) },
 

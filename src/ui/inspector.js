@@ -5,11 +5,14 @@
 //   página mientras el foco está dentro (salvo que cambie la selección o un
 //   select altere qué campos se muestran: ahí se fuerza).
 
-import { getState, subscribe, setStyle, setPosicion, setContent, setName, setAnimation, moveBy, duplicateNode, removeNode, addVariant, removeVariant, moveVariant, setVariant, setVariantProp, verEstado } from '../core/store.js';
+import { getState, subscribe, setStyle, setPosicion, setContent, setName, setAnimation, moveBy, duplicateNode, removeNode, addVariant, removeVariant, moveVariant, setVariant, setVariantProp, verEstado, setIconSize } from '../core/store.js';
 import { findNode, findParent, anchorValido, contarAncla, aspectoValido, capaValida } from '../core/tree.js';
 import { reducirImagen } from './imagen.js';
 import { effectiveStyles, TIPOS_TEXTO } from '../render/renderer.js';
 import { GRUPOS } from './fields.js';
+import { SVG_AVISO } from './iconos.js';
+import { ICONOS } from '../blocks/iconos-data.js';
+import { iconoSvg, TAMANOS_ICONO, TAMANO_ICONO_DEFECTO } from '../core/icono.js';
 import { modeloControl, columnasAuto, kebab, KINDS_CONTROL, KINDS_BOTONES } from './controles.js';
 import { GRUPOS_ANIM } from '../animations/index.js';
 import { DISPAROS_VARIANT, CAMPOS_PROPS, CAMPOS_TIEMPO, DEF_TIEMPO } from '../animations/variants.js';
@@ -28,8 +31,11 @@ function avisoCss(key, v) {
   v = String(v ?? '').trim();
   if (!v) return '';
   const ok = key === 'aspectRatio' || key === 'hijosAspectRatio' ? aspectoValido(v) : typeof CSS === 'undefined' || CSS.supports(kebab(key), v);
-  return ok ? '' : '⚠ El navegador no entiende este valor y lo ignora (¿falta la unidad? ej. 900px).';
+  return ok ? '' : 'El navegador no entiende este valor y lo ignora (¿falta la unidad? ej. 900px).';
 }
+
+/** Mensaje de aviso con su triángulo SVG (el texto va escapado). */
+const avisoHtml = (msg) => `${SVG_AVISO}${esc(msg)}`;
 
 /** Etiqueta de un campo; en móvil marca con ● los que tienen un valor propio (pisan el de escritorio). */
 const etiqueta = (texto, ov) => `<label${ov ? ' class="ov" title="Solo en móvil: este valor pisa el de escritorio"' : ''}>${texto}</label>`;
@@ -38,7 +44,7 @@ const etiqueta = (texto, ov) => `<label${ov ? ' class="ov" title="Solo en móvil
 function htmlTexto(key, v, placeholder, texto, ov) {
   const av = avisoCss(key, v);
   return `<div class="campo">${etiqueta(texto, ov)}<input data-s="${key}" class="${av ? 'invalido' : ''}" value="${esc(v)}" placeholder="${esc(placeholder)}"></div>` +
-    `<p class="aviso-css" data-aviso-css${av ? '' : ' hidden'}>${av}</p>`;
+    `<p class="aviso-css" data-aviso-css${av ? '' : ' hidden'}>${av ? avisoHtml(av) : ''}</p>`;
 }
 
 /** Control visual (botones) de un campo con kind de controles.js. Escribe los mismos strings CSS de siempre. */
@@ -101,8 +107,8 @@ function htmlEstados(nodo, verActual) {
 /** Mensaje de validación del ancla (vacío si todo bien). */
 function avisoAncla(page, nodo, valor) {
   if (!valor) return 'Para enlazar: <code>#nombre</code>';
-  if (!anchorValido(valor)) return '⚠ Inválida: empieza con letra; solo letras, números y guiones. No se guarda.';
-  if (contarAncla(page, valor, nodo.id) > 0) return `⚠ "${esc(valor)}" ya existe en otra parte de la página (se repite).`;
+  if (!anchorValido(valor)) return SVG_AVISO + 'Inválida: empieza con letra; solo letras, números y guiones. No se guarda.';
+  if (contarAncla(page, valor, nodo.id) > 0) return `${SVG_AVISO}"${esc(valor)}" ya existe en otra parte de la página (se repite).`;
   return `Enlace: <code>#${esc(valor)}</code>`;
 }
 
@@ -145,6 +151,10 @@ export function initInspector(host) {
         <div class="campo"><label>Scroll suave</label><select data-c="smoothScroll" data-bool><option value="no" ${c.smoothScroll ? '' : 'selected'}>No</option><option value="si" ${c.smoothScroll ? 'selected' : ''}>Sí</option></select></div>
         <p class="modo">Solo la rueda del mouse en escritorio (táctil, teclado, barra y anclas quedan nativos). Se ve en el HTML exportado, no en este preview.</p>`;
     }
+    if (nodo.type === 'icon') {
+      const botones = Object.entries(ICONOS).map(([k, ic]) => `<button type="button" data-icono="${k}" title="${esc(ic.t)}" aria-label="${esc(ic.t)}" aria-pressed="${c.name === k}" class="${c.name === k ? 'on' : ''}">${iconoSvg(k, 18)}</button>`).join('');
+      cont += `<div class="campo"><label>Icono</label></div><div class="icono-grid" role="group" aria-label="Elegir icono">${botones}</div>`;
+    }
     if (TIPOS_TEXTO.includes(nodo.type)) cont += `<div class="campo"><label>Texto</label><textarea data-c="text" rows="3">${esc(c.text)}</textarea></div>`;
     if (nodo.type === 'heading') {
       cont += `<div class="campo"><label>Nivel</label><select data-c="level" data-num>${[1, 2, 3, 4].map((n) => `<option value="${n}" ${+c.level === n ? 'selected' : ''}>H${n}</option>`).join('')}</select></div>`;
@@ -176,6 +186,13 @@ export function initInspector(host) {
             `<label class="subir">Subir imagen<input type="file" accept="image/*" data-fondo-file style="position:absolute;width:1px;height:1px;opacity:0"></label>${quitar}</div></div>` +
             `<div class="campo"><label>…o pega una URL</label><input data-fondo-url value="${esc(v.startsWith('data:') ? '' : v)}" placeholder="${v.startsWith('data:') ? '(imagen subida)' : 'https://…'}"></div>` +
             '<p class="fondo-msg" data-fondo-msg hidden></p>';
+        } else if (f.kind === 'iconoTamano') {
+          const px = parseFloat(v) || TAMANO_ICONO_DEFECTO; // efectivo (en móvil: ya mezclado con escritorio)
+          const tieneValor = viewMode === 'mobile' ? ov : f.key in nodo.styles.base;
+          const preset = TAMANOS_ICONO.includes(px) && (v === '' || /^\d+(\.\d+)?px$/.test(String(v)));
+          const bs = TAMANOS_ICONO.map((t) => `<button type="button" data-isz="${t}" class="${preset && t === px ? 'on' : ''}">${t}</button>`).join('');
+          const quitar = tieneValor ? `<button type="button" class="quitar" data-isz="">${viewMode === 'mobile' ? '↺ igual que escritorio' : '✕ quitar'}</button>` : '';
+          html += `<div class="campo ctl">${etiqueta(f.label, ov)}<div class="botones${viewMode === 'mobile' && !ov ? ' heredado' : ''}">${bs}<button type="button" data-isz-otro class="${preset ? '' : 'on'}" title="Escribir otro tamaño">Otro</button><span class="mini"><input type="number" min="4" max="512" step="1" data-isz-num value="${Math.round(px)}" aria-label="Tamaño en px"> px</span>${quitar}</div></div>`;
         } else if (f.kind === 'fondoCapa') {
           const n = capaValida(v) ?? 0;
           html += `<div class="campo rango">${etiqueta(f.label, ov)}<span class="rango-fila"><input type="range" min="0" max="80" step="1" data-capa value="${n}"><output data-capa-out>${n}%</output></span></div>` +
@@ -201,7 +218,7 @@ export function initInspector(host) {
           html += `<div class="campo">${etiqueta(f.label, ov)}<select data-s="${f.key}">${opts}</select></div>`;
         } else if (f.kind === 'color') {
           const av = avisoCss(f.key, v);
-          html += `<div class="campo">${etiqueta(f.label, ov)}<span class="color"><input type="color" data-pick="${f.key}" value="${aHex(v) ?? '#000000'}"><input data-s="${f.key}" class="${av ? 'invalido' : ''}" value="${esc(v)}" placeholder="#ffffff"></span></div><p class="aviso-css" data-aviso-css${av ? '' : ' hidden'}>${av}</p>`;
+          html += `<div class="campo">${etiqueta(f.label, ov)}<span class="color"><input type="color" data-pick="${f.key}" value="${aHex(v) ?? '#000000'}"><input data-s="${f.key}" class="${av ? 'invalido' : ''}" value="${esc(v)}" placeholder="#ffffff"></span></div><p class="aviso-css" data-aviso-css${av ? '' : ' hidden'}>${av ? avisoHtml(av) : ''}</p>`;
         } else {
           html += htmlTexto(f.key, v, f.placeholder, f.label, ov);
         }
@@ -221,7 +238,7 @@ export function initInspector(host) {
       if (g.propio) { html += htmlEstados(nodo, getState().verEstado); continue; } // los estados tienen su propia sección
       const datos = nodo.animation?.[g.id]; // undefined = grupo apagado
       html += `<h3>${g.titulo}</h3>`;
-      if (g.id === 'scene' && datos) html += '<p class="modo">La sección se queda fija y sus hijos se apilan en el mismo lugar: se respetan Alineación y Justificar (y su fondo, borde y padding); Dirección, Separación y Columnas no se usan. Una vez creada, cada hijo directo tiene su "Paso de escena". Solo se ve en 👁 Vista previa y en el exportado. "Transición (% del tramo)" = cuánto dura el cambio entre pasos dentro de cada tramo (el resto del tramo el paso queda quieto). Un navbar pegado arriba se mide solo (o escribe "Espacio arriba").</p>';
+      if (g.id === 'scene' && datos) html += '<p class="modo">La sección se queda fija y sus hijos se apilan en el mismo lugar: se respetan Alineación y Justificar (y su fondo, borde y padding); Dirección, Separación y Columnas no se usan. Una vez creada, cada hijo directo tiene su "Paso de escena". Solo se ve en Vista previa y en el exportado. "Transición (% del tramo)" = cuánto dura el cambio entre pasos dentro de cada tramo (el resto del tramo el paso queda quieto). Un navbar pegado arriba se mide solo (o escribe "Espacio arriba").</p>';
       for (const f of g.campos) {
         if (f.key !== g.principal && !datos) continue; // apagado: solo se ve el selector principal
         if (f.cuando && !f.cuando(datos, datos?.effect)) continue;
@@ -253,6 +270,10 @@ export function initInspector(host) {
     // Mínimo (px) del modo Auto de Columnas: escribe repeat(auto-fit, minmax(Npx, 1fr)); no se reconstruye el panel (se pierde el foco)
     if (t.dataset.ctlMin) {
       if (+t.value > 0) setStyle(id, t.dataset.ctlMin, columnasAuto(+t.value));
+      return;
+    }
+    if (t.dataset.iszNum !== undefined) { // Icono: tamaño libre (no se reconstruye el panel: se perdería el foco)
+      if (+t.value > 0) setIconSize(id, Math.min(512, +t.value));
       return;
     }
     // Un select puede mostrar/ocultar campos: pedimos reconstruir el panel (antes del cambio)
@@ -307,7 +328,7 @@ export function initInspector(host) {
         const msg = avisoCss(t.dataset.s, t.value);
         t.classList.toggle('invalido', !!msg);
         av.hidden = !msg;
-        av.textContent = msg;
+        av.innerHTML = msg ? avisoHtml(msg) : '';
       }
     }
   });
@@ -320,6 +341,11 @@ export function initInspector(host) {
       if (campo) { campo.closest('details').open = true; campo.focus(); }
       return;
     }
+    const ic = e.target.closest('[data-icono]'); // Icono: elegir de la cuadrícula
+    if (ic && idDibujado) { forzar = true; setContent(idDibujado, 'name', ic.dataset.icono); return; }
+    const sz = e.target.closest('[data-isz]'); // Icono: tamaño predefinido (o quitar)
+    if (sz && idDibujado) { forzar = true; setIconSize(idDibujado, +sz.dataset.isz); return; }
+    if (e.target.closest('[data-isz-otro]')) { host.querySelector('[data-isz-num]')?.focus(); return; }
     const b = e.target.closest('[data-ctl]');
     if (!b || !idDibujado) return;
     forzar = true; // reconstruir el panel para marcar el botón activo
@@ -369,10 +395,10 @@ export function initInspector(host) {
     if (t.tagName === 'SELECT' && t.dataset.s) forzar = true; // puede mostrar/ocultar campos
     if (t.dataset.fondoFile !== undefined && t.files[0]) {
       const id = idDibujado, archivo = t.files[0];
-      const msg = (txt) => { const p = host.querySelector('[data-fondo-msg]'); if (p) { p.textContent = txt; p.hidden = !txt; } };
+      const msg = (txt, aviso = false) => { const p = host.querySelector('[data-fondo-msg]'); if (p) { if (aviso) p.innerHTML = avisoHtml(txt); else p.textContent = txt; p.hidden = !txt; } };
       msg('Procesando imagen…');
       reducirImagen(archivo).then((url) => { forzar = true; setStyle(id, 'fondoImagen', url); })
-        .catch((err) => msg(`⚠ ${err.message}`));
+        .catch((err) => msg(err.message, true));
       return;
     }
     if (t.dataset.file !== undefined && t.files[0]) {

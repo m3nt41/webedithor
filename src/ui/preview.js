@@ -13,7 +13,7 @@ export function initPreview(host) {
   stage.className = 'stage';
   host.appendChild(stage);
 
-  // El editor es solo de edición: la página queda quieta (escenas apiladas). Las animaciones se ven en 👁 Vista previa.
+  // El editor es solo de edición: la página queda quieta (escenas apiladas). Las animaciones se ven en Vista previa.
   const estilo = document.createElement('style');
 
   // Alto de pantalla del preview: las escenas miden "100svh"; aquí 100svh sería el de la ventana del navegador,

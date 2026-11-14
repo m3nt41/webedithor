@@ -8,7 +8,7 @@
 import { anchorValido, walk, aspectoValido, CLAVES_PROPIAS, fondoDeclaraciones, tocaFondo } from '../core/tree.js';
 import { tagFor, TIPOS_TEXTO } from '../render/renderer.js';
 import { iconoSvg, estilosIcono } from '../core/icono.js';
-import { usaMenuMovil, paginaUsaMenuMovil, cssMenuMovil, colorLinea, SCRIPT_MENU } from '../core/menumovil.js';
+import { usaMenuMovil, paginaUsaMenuMovil, cssMenuMovil, varsMenu, necesitaAncla, SCRIPT_MENU } from '../core/menumovil.js';
 import { usaEscena, varsEscena, esNavPegado, paginaUsaEscena, CSS_ESCENA, usaScrollLink, paginaUsaScrollLink, SCRIPT_SCROLLMOTOR, SCRIPT_SCROLLSUAVE, paginaUsaScrollSuave, cssNodo, usaScroll, usaCarga, usaClic, paginaUsaScroll, paginaUsaEntrada, paginaUsaMedida, paginaUsaClic, esMedida, splitText, KEYFRAMES, SCRIPT_SCROLL, SCRIPT_LINEAS, SCRIPT_CLIC } from '../animations/index.js';
 
 export const BREAKPOINT_MOVIL = 768;
@@ -79,16 +79,23 @@ export function exportHTML(page) {
     }
     const partes = node.children.map((h) => nodoAHtml(h, nivel + 1, node));
     if (usaMenuMovil(node)) {
-      // Menú hamburguesa: checkbox + label como hermanos, justo después del logo (primer hijo). Sin nodos nuevos en el árbol.
+      // Menú hamburguesa: checkbox + label como hermanos justo después del logo (primer hijo) y un <div class="mm-pn">
+      // GENERADO (no es un nodo) que envuelve el resto de hijos. Escritorio: display:contents; móvil: panel superpuesto.
       const idChk = `${clase}-mm`;
-      const m = cssMenuMovil(`.${clase}`, `.${clase}>.mm-chk:checked~`, colorLinea({ ...node.styles.base, ...node.styles.mobile }));
+      const est = { ...node.styles.base, ...node.styles.mobile };
+      const vars = Object.entries(varsMenu(est)).map(([k, v]) => `${k}:${v}`).join(';');
+      const m = cssMenuMovil(`.${clase}`, vars, { ancla: necesitaAncla(est) });
       css.push(...m.base);
       cssMovil.push(...m.movil);
       cssMenuReducido.push(...m.reducido);
       const s2 = '  '.repeat(nivel + 1);
-      partes.splice(1, 0,
+      const resto = partes.splice(1);
+      partes.push(
         `${s2}<input type="checkbox" class="mm-chk" id="${idChk}" aria-label="Abrir menú" aria-expanded="false">`,
-        `${s2}<label class="mm-btn" for="${idChk}" aria-hidden="true"></label>`);
+        `${s2}<label class="mm-btn" for="${idChk}" aria-hidden="true"></label>`,
+        `${s2}<div class="mm-pn">`,
+        ...resto,
+        `${s2}</div>`);
     }
     const hijos = partes.join('\n');
     const html = `${sangria}${abre}\n${hijos}\n${sangria}</${tag}>`;

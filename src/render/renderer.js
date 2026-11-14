@@ -5,7 +5,7 @@
 
 import { anchorValido, aspectoValido, CLAVES_PROPIAS, fondoDeclaraciones } from '../core/tree.js';
 import { iconoSvg, estilosIcono } from '../core/icono.js';
-import { usaMenuMovil, colorLinea } from '../core/menumovil.js';
+import { usaMenuMovil, varsMenu, necesitaAncla } from '../core/menumovil.js';
 
 // Qué etiqueta HTML usa cada tipo de nodo (también la usa el exportador)
 const TAGS = { page: 'div', section: 'section', container: 'div', heading: 'h2', text: 'p', button: 'a', image: 'img', icon: 'span' };
@@ -21,6 +21,9 @@ export const TIPOS_TEXTO = ['heading', 'text', 'button'];
 export function effectiveStyles(node, viewMode) {
   return viewMode === 'mobile' ? { ...node.styles.base, ...node.styles.mobile } : node.styles.base;
 }
+
+/** Menús hamburguesa abiertos en el editor (ids de navbar). Solo en memoria: no se guarda en el JSON. */
+export const estadoMenu = { abiertos: new Set() };
 
 /** Construye el DOM de un nodo y sus hijos (modo edición: sin animaciones de scroll ni texto partido; eso se ve en la Vista previa). */
 export function renderNode(node, viewMode = 'desktop') {
@@ -59,16 +62,21 @@ export function renderNode(node, viewMode = 'desktop') {
     el.appendChild(h);
   });
 
-  // Menú hamburguesa (vista móvil del editor): se ve el icono y el panel SIEMPRE abierto, para poder
-  // seleccionar y editar enlaces y botón. El span no lleva data-id (un clic en él selecciona la barra).
-  // Las reglas del panel (.mm-edit) viven en CSS_MENU_EDITOR (preview.js); el export usa checkbox real.
+  // Menú hamburguesa (vista móvil del editor): icono + panel SUPERPUESTO (como en el export). Empieza cerrado; se abre con
+  // la clase .abierto (la maneja preview.js: clic en el icono o selección de un hijo del panel). Los hijos del panel van en un
+  // <div class="mm-pn"> generado, sin data-id (un clic en él selecciona la barra). Las reglas viven en CSS_MENU_EDITOR (preview.js).
   if (viewMode === 'mobile' && usaMenuMovil(node)) {
     el.classList.add('mm-edit');
-    el.style.setProperty('--mm-linea', colorLinea(est));
+    Object.entries(varsMenu(est)).forEach(([k, v]) => el.style.setProperty(k, v));
+    if (necesitaAncla(est)) { el.style.position = 'relative'; el.style.zIndex = '50'; } // ancla del panel
+    if (estadoMenu.abiertos.has(node.id)) el.classList.add('abierto');
     const icono = document.createElement('span');
     icono.className = 'mm-btn';
     icono.setAttribute('aria-hidden', 'true');
-    el.insertBefore(icono, el.children[1] ?? null);
+    const panel = document.createElement('div');
+    panel.className = 'mm-pn';
+    [...el.children].slice(1).forEach((h) => panel.appendChild(h));
+    el.append(icono, panel);
   }
 
   return el;

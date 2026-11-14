@@ -4,7 +4,7 @@
 // - Mientras se escribe (cambio 'text') NO se re-renderiza, para no perder el cursor.
 
 import { getState, subscribe, select, setContent, refresh } from '../core/store.js';
-import { renderNode, TIPOS_TEXTO } from '../render/renderer.js';
+import { renderNode, TIPOS_TEXTO, estadoMenu } from '../render/renderer.js';
 import { cssPagina, medirLineas } from '../animations/index.js';
 import { CSS_MENU_EDITOR } from '../core/menumovil.js';
 
@@ -27,6 +27,7 @@ export function initPreview(host) {
     const { page, viewMode } = getState();
     stage.classList.toggle('movil', viewMode === 'mobile'); // ancho 390px en vista móvil
     estilo.textContent = cssPagina(page, { forzar: getState().verEstado }) + '\n' + CSS_MENU_EDITOR;
+    if (viewMode !== 'mobile') estadoMenu.abiertos.clear(); // al volver a escritorio el menú se cierra
     stage.replaceChildren(estilo, renderNode(page, viewMode));
     marcarSeleccion();
     medirLineas(stage);
@@ -36,6 +37,16 @@ export function initPreview(host) {
     stage.querySelectorAll('.sel').forEach((el) => el.classList.remove('sel'));
     const { selectedId } = getState();
     if (selectedId) stage.querySelector(`[data-id="${selectedId}"]`)?.classList.add('sel');
+  }
+
+  // Menú hamburguesa del editor: se abre solo si lo seleccionado es un hijo del panel (o está dentro de uno); si no, se cierra.
+  function abrirPorSeleccion() {
+    const sel = getState().selectedId && stage.querySelector(`[data-id="${getState().selectedId}"]`);
+    stage.querySelectorAll('.mm-edit').forEach((nav) => {
+      const dentro = !!sel && nav.querySelector(':scope>.mm-pn')?.contains(sel);
+      nav.classList.toggle('abierto', dentro);
+      if (dentro) estadoMenu.abiertos.add(nav.dataset.id); else estadoMenu.abiertos.delete(nav.dataset.id);
+    });
   }
 
   // ---- Edición directa de texto ----
@@ -78,6 +89,13 @@ export function initPreview(host) {
   // Clic: selecciona el elemento más profundo bajo el cursor.
   stage.addEventListener('click', (e) => {
     e.preventDefault(); // evita seguir enlaces de los botones
+    const ham = e.target.closest('.mm-btn');
+    if (ham) { // hamburguesa del editor: abre/cierra el panel (no cambia la selección)
+      const nav = ham.parentElement;
+      const abre = nav.classList.toggle('abierto');
+      if (abre) estadoMenu.abiertos.add(nav.dataset.id); else estadoMenu.abiertos.delete(nav.dataset.id);
+      return;
+    }
     if (e.target.isContentEditable) return; // clic dentro del texto que se edita
     const el = e.target.closest('[data-id]');
     const id = el?.dataset.id;
@@ -108,8 +126,9 @@ export function initPreview(host) {
   document.fonts?.ready.then(remedir);
 
   subscribe((_, cambio) => {
-    if (cambio === 'selection') marcarSeleccion();
-    else if (cambio === 'page' || cambio === 'view' || cambio === 'verestado') dibujar();
+    if (cambio === 'selection') { marcarSeleccion(); abrirPorSeleccion(); }
+    else if (cambio === 'page' || cambio === 'verestado') dibujar();
+    else if (cambio === 'view') { dibujar(); abrirPorSeleccion(); }
     // 'text': no hacer nada
   });
   dibujar();

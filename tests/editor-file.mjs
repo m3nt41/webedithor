@@ -20,6 +20,7 @@ try {
   assert.ok((await d.findElements(By.css('#toolbar #btn-exportar'))).length, 'la barra del editor no se montó');
   const antes = (await d.findElements(By.css('#arbol li'))).length;
   // agregar un bloque (Hero, primera variante)
+  await d.findElement(By.css('#tab-bloques')).click(); // los botones viven en la pestaña Bloques
   await d.findElement(By.css('#botones-bloques summary')).click();
   await d.findElement(By.css('#botones-bloques .variantes button')).click();
   await esperar(300);

@@ -13,6 +13,7 @@
     "test:vistaprevia": "node tests/vista-previa.mjs",
     "test:persistencia": "npm run build && node tests/inspector-persistencia.mjs",
     "test:fondo": "npm run build && node tests/fondo.mjs",
+    "test:sidebar": "npm run build && node tests/sidebar-pestanas.mjs",
     "test:inspector": "node tests/controles.mjs && node tests/inspector.mjs"
   },
   "dependencies": {

@@ -38,10 +38,19 @@ try {
 
   // 3. Añadir bloques sin que cambie la pestaña
   await $('#tab-bloques').click();
-  const dets = await $$('#botones-bloques details');
-  await dets[0].findElement(By.css('summary')).click();
-  await dets[1].findElement(By.css('summary')).click();
-  v(await d.executeScript('return [...document.querySelectorAll("#botones-bloques details")].filter(x=>x.open).length') === 1, 'acordeón: un solo bloque abierto a la vez');
+  const dets = await $$('#botones-bloques .bloque');
+  const abiertos = () => d.executeScript('return [...document.querySelectorAll("#botones-bloques .bloque")].map(x=>x.classList.contains("abierto")?1:0).join("")');
+  const expandidos = () => d.executeScript('return [...document.querySelectorAll("#botones-bloques .bloque-titulo")].map(x=>x.getAttribute("aria-expanded")).join()');
+  await dets[0].findElement(By.css('.bloque-titulo')).click();
+  v((await abiertos()).startsWith('1') && (await abiertos()).split('1').length === 2, 'abrir bloque A: queda abierto');
+  await dets[1].findElement(By.css('.bloque-titulo')).click();
+  const ab = await abiertos();
+  v(ab[0] === '0' && ab[1] === '1' && ab.split('1').length === 2, 'abrir B: A se cierra y B queda abierto (un solo bloque a la vez): ' + ab);
+  v((await expandidos()).split(',').slice(0, 2).join() === 'false,true', 'aria-expanded coherente');
+  v(await d.executeScript('const c=document.querySelectorAll("#botones-bloques .bloque-cuerpo");return c[0].inert===true&&c[0].getAttribute("aria-hidden")==="true"&&c[1].inert===false'), 'el bloque cerrado es inert/aria-hidden, el abierto no');
+  await esperar(400);
+  v(await d.executeScript('const c=document.querySelectorAll("#botones-bloques .bloque-cuerpo");return c[0].getBoundingClientRect().height===0&&c[1].getBoundingClientRect().height>20'), 'tras la animación: A mide 0 y B tiene altura');
+  v(await d.executeScript('const b=document.querySelector("#botones-bloques .bloque.abierto .variantes button:nth-child(2)");return !!b&&b.getBoundingClientRect().left>document.querySelector("#botones-bloques .bloque.abierto .variantes button:nth-child(1)").getBoundingClientRect().left+20'), 'variantes en 2 columnas');
   await dets[1].findElement(By.css('.variantes button')).click();
   await dets[1].findElement(By.css('.variantes button')).click(); // dos seguidos
   await esperar(200);

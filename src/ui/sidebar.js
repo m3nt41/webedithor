@@ -111,25 +111,64 @@ export function initSidebar(host) {
   }
 
   // ---- Bloques: acordeón de UN solo bloque abierto a la vez ----
-  const detalles = [];
+  // Antes era <details>: su evento "toggle" llega un fotograma tarde, así que al abrir B el A seguía
+  // abierto un instante (el panel crecía) y luego se cerraba de golpe = salto. Ahora cada bloque es un
+  // botón + un cuerpo que se anima con grid-template-rows 0fr -> 1fr (CSS); abrir B y cerrar A es un
+  // solo cambio síncrono, y se anima a la vez.
+  const bloques = [];
+  const panelBl = host.querySelector('#panel-bloques'); // el que hace scroll
+  const sinAnim = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let anclaRaf = 0;
+
+  function fijar(bl, abierto) {
+    bl.el.classList.toggle('abierto', abierto);
+    bl.btn.setAttribute('aria-expanded', String(abierto));
+    bl.cuerpo.inert = !abierto; // cerrado: no se puede tabular dentro (inert también oculta a lectores)
+    bl.cuerpo.setAttribute('aria-hidden', String(!abierto));
+  }
+
+  function alternar(bl) {
+    const abrir = !bl.el.classList.contains('abierto');
+    const top0 = bl.btn.getBoundingClientRect().top;
+    bloques.forEach((o) => fijar(o, o === bl && abrir));
+    // Mantener el título pulsado donde estaba mientras el otro se cierra/abre
+    cancelAnimationFrame(anclaRaf);
+    const ancla = () => { panelBl.scrollTop += bl.btn.getBoundingClientRect().top - top0; };
+    if (sinAnim()) { ancla(); if (abrir) bl.el.scrollIntoView({ block: 'nearest' }); return; }
+    const t0 = performance.now();
+    const paso = (t) => {
+      ancla();
+      if (t - t0 < 220) anclaRaf = requestAnimationFrame(paso);
+      else if (abrir) bl.el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); // si quedó cortado abajo
+    };
+    anclaRaf = requestAnimationFrame(paso);
+  }
+
   BLOCKS.forEach((b) => {
-    const det = document.createElement('details');
-    det.className = 'bloque';
-    const sum = document.createElement('summary');
-    sum.textContent = b.label;
+    const el = document.createElement('div');
+    el.className = 'bloque';
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'bloque-titulo';
+    btn.textContent = b.label;
+    const cuerpo = document.createElement('div');
+    cuerpo.className = 'bloque-cuerpo';
     const vars = document.createElement('div');
     vars.className = 'variantes';
     Object.entries(b.variants).forEach(([clave, v]) => {
-      const btn = document.createElement('button');
-      btn.textContent = `+ ${v.label}`;
+      const vb = document.createElement('button');
+      vb.textContent = `+ ${v.label}`;
       // los bloques son secciones: se añaden tras la sección seleccionada (o al final)
-      btn.addEventListener('click', () => addElement(createBlock(b.id, clave)));
-      vars.appendChild(btn);
+      vb.addEventListener('click', () => addElement(createBlock(b.id, clave)));
+      vars.appendChild(vb);
     });
-    det.addEventListener('toggle', () => { if (det.open) detalles.forEach((o) => { if (o !== det) o.open = false; }); });
-    det.append(sum, vars);
-    detalles.push(det);
-    botonesBl.appendChild(det);
+    cuerpo.appendChild(vars);
+    el.append(btn, cuerpo);
+    const bl = { el, btn, cuerpo };
+    btn.addEventListener('click', () => alternar(bl));
+    fijar(bl, false);
+    bloques.push(bl);
+    botonesBl.appendChild(el);
   });
 
   // ---- Árbol de capas ----

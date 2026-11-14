@@ -78,11 +78,17 @@ button.primario:hover { background: #6a4aee; }
 .arbol li .plegar { width: 14px; padding: 0; flex: none; font-size: 10px; }
 .arbol li.drop-dentro { outline: 2px solid #7c5cff; outline-offset: -2px; background: #2f2a55; }
 .bloques.dos { grid-template-columns: 1fr 1fr; }
-details.bloque { margin-bottom: 4px; }
-details.bloque summary { cursor: pointer; padding: 7px 8px; background: #2f2f38; border: 1px solid #44444f; border-radius: 6px; }
-details.bloque summary:hover { background: #3b3470; }
-details.bloque .variantes { display: grid; gap: 4px; padding: 6px 0 6px 10px; }
-details.bloque .variantes button { padding: 6px 8px; background: #26262d; color: inherit; border: 1px solid #3a3a45; border-radius: 6px; cursor: pointer; text-align: left; font-size: 13px; }
+.bloque { margin-bottom: 4px; }
+.bloque .bloque-titulo { display: block; width: 100%; text-align: left; font: inherit; color: inherit; cursor: pointer; padding: 7px 8px; background: #2f2f38; border: 1px solid #44444f; border-radius: 6px; }
+.bloque .bloque-titulo:hover { background: #3b3470; }
+/* Acordeón: la altura se anima con grid-template-rows 0fr -> 1fr (funciona en Firefox) */
+.bloque .bloque-cuerpo { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .18s ease; }
+.bloque.abierto .bloque-cuerpo { grid-template-rows: 1fr; }
+.bloque .variantes { min-height: 0; overflow: hidden; display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 0 0 0 10px; align-content: start; }
+.bloque .variantes::before { content: ''; grid-column: 1 / -1; height: 2px; } /* aire arriba */
+.bloque .variantes::after { content: ''; grid-column: 1 / -1; height: 2px; } /* aire abajo */
+@media (prefers-reduced-motion: reduce) { .bloque .bloque-cuerpo { transition: none; } }
+.bloque .variantes button { padding: 6px 8px; background: #26262d; color: inherit; border: 1px solid #3a3a45; border-radius: 6px; cursor: pointer; text-align: left; font-size: 13px; }
 details.bloque .variantes button:hover { background: #3b3470; }
 
 /* Acciones del elemento seleccionado (inspector) */

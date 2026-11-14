@@ -40,6 +40,7 @@ export function abrirVistaPrevia() {
 
   // Si el foco está dentro del iframe, sus teclas no llegan al documento: se escucha Esc dentro.
   frame.addEventListener('load', () => {
+    mostrar(); // ya cargó: se hace visible (tras el siguiente frame, para que haya pintado)
     try {
       const doc = frame.contentDocument;
       doc.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrarVistaPrevia(); });
@@ -57,7 +58,19 @@ export function abrirVistaPrevia() {
     } catch { /* sin acceso: nada */ }
   });
   // Regenerar el srcdoc recarga el iframe entero (scroll en 0, animaciones de entrada y de scroll desde cero).
-  const cargar = () => { frame.srcdoc = exportHTML(getState().page); };
+  // Mientras carga, el iframe queda con opacity 0 (sin fondo blanco a la vista); se muestra en 'load' o, si no llega, a los 1.5 s.
+  let temporizador = 0;
+  const mostrar = () => {
+    clearTimeout(temporizador);
+    requestAnimationFrame(() => frame.classList.add('listo'));
+    temporizador = setTimeout(() => frame.classList.add('listo'), 60); // por si rAF no corre (pestaña oculta)
+  };
+  const cargar = () => {
+    clearTimeout(temporizador);
+    frame.classList.remove('listo');
+    frame.srcdoc = exportHTML(getState().page);
+    temporizador = setTimeout(() => frame.classList.add('listo'), 1500); // tope de seguridad si 'load' nunca llega
+  };
   cargar();
 
   const modo = (movil) => {

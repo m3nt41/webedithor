@@ -112,6 +112,31 @@ try {
   assert.equal(await enFrame(() => d.executeScript('return innerWidth')), 390, '↻ perdió el modo Móvil');
   assert.equal(await d.executeScript(`return document.querySelector('#vp-mobile').getAttribute('aria-pressed')`), 'true', '↻ cambió el botón de modo');
   await d.findElement(By.css('#vp-ojo')).click(); await esperar(200);
+  // 7. Sin parpadeo blanco: el iframe nace con opacity 0 y pasa a 1 tras el load (al abrir y al Reiniciar); el overlay es oscuro y el iframe nunca tiene fondo blanco
+  await d.executeScript(`window.__rastro=[];const reg=(et)=>{const f=document.querySelector('#vp-frame');const c=document.querySelector('#vista-previa');const cs=getComputedStyle(f);__rastro.push({et,op:cs.opacity,listo:f.classList.contains('listo'),bgF:cs.backgroundColor,bgC:getComputedStyle(c).backgroundColor,rs:f.contentDocument&&f.contentDocument.readyState});};
+    new MutationObserver((m)=>{for(const x of m)for(const nd of x.addedNodes)if(nd.id==='vista-previa'){reg('abre');const f=nd.querySelector('#vp-frame');f.addEventListener('load',()=>reg('load'));new MutationObserver(()=>reg('clase')).observe(f,{attributes:true,attributeFilter:['class']});}}).observe(document.body,{childList:true});`);
+  const sinBlanco = (r, que) => {
+    assert.ok(r.length >= 2, que + ': sin rastro');
+    assert.equal(r[0].op, '0', que + ': el iframe no empieza con opacity 0');
+    assert.equal(r[0].listo, false, que + ': empieza ya visible');
+    r.forEach((x) => { assert.notEqual(x.bgF, 'rgb(255, 255, 255)', que + ': fondo blanco del iframe'); assert.equal(x.bgC, 'rgb(20, 20, 26)', que + ': el overlay no es oscuro'); });
+    const li = r.findIndex((x) => x.et === 'load'), vi = r.findIndex((x) => x.listo);
+    assert.ok(li >= 0 && vi >= li, que + ': se mostró antes del load');
+  };
+  await abrir(); await esperar(300);
+  const opF = () => d.executeScript(`return getComputedStyle(document.querySelector('#vp-frame')).opacity`);
+  sinBlanco(await d.executeScript('return __rastro'), 'abrir');
+  assert.equal(await opF(), '1', 'abrir: el iframe no quedó visible');
+  await d.executeScript('__rastro.length=0;document.querySelector("#vp-frame").classList.remove("listo");'); // re-armar: el rastro de Reiniciar se mide desde su clic
+  await d.executeScript('__rastro.length=0');
+  await d.findElement(By.css('#vp-reiniciar')).click();
+  await esperar(900);
+  const r2 = await d.executeScript('return __rastro');
+  assert.ok(r2.some((x) => x.et === 'load') && r2.some((x) => x.listo), 'Reiniciar: no hubo load/visible');
+  r2.filter((x) => x.et === 'clase' || x.et === 'load').forEach((x) => assert.notEqual(x.bgF, 'rgb(255, 255, 255)', 'Reiniciar: fondo blanco'));
+  assert.equal(await opF(), '1', 'Reiniciar: no quedó visible');
+  await d.findElement(By.css('#vp-ojo')).click(); await esperar(200);
+
   const errs = await d.executeScript('return __err');
   assert.deepEqual(errs, [], 'errores: ' + errs.join(' | '));
   console.log('OK vista previa: export idéntico en srcdoc, scroll y ancla # dentro del iframe, móvil 390px, Esc (editor e iframe), ojo que cierra y cae sobre el del editor, foco de vuelta, ↻ Reiniciar (recarga, scroll 0, conserva Móvil) y editor intacto');

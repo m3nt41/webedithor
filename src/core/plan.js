@@ -31,6 +31,25 @@ export const enlaceValido = (h) => typeof h === 'string' && /^(#[A-Za-z0-9_-]*|\
 /** Imagen permitida: http(s), ruta o data:image (no SVG con script: el navegador no ejecuta scripts de un <img>). */
 export const srcValido = (s) => typeof s === 'string' && /^(https?:\/\/[^\s]+|\/[^\s]*|data:image\/[a-z+.-]+[;,][^\s]*)$/i.test(s.trim());
 
+/** Foto de fondo permitida desde un plan: solo http(s) o ruta relativa (nada de data: ni otros esquemas). */
+export const fondoValido = (s) => typeof s === 'string' && /^(https?:\/\/[^\s]+|\/(?!\/)[^\s]*)$/i.test(s.trim());
+
+/** Avisos de enlaces rotos: botones con #ancla que no coincide con ninguna sección (content.anchor) de la página.
+ *  `secciones` = la página resultante (en modo "añadir", las existentes + las nuevas). */
+export function avisosEnlaces(secciones) {
+  const anclas = new Set(secciones.map((s) => s.content?.anchor).filter(Boolean));
+  const avisos = [];
+  for (const s of secciones) {
+    walk(s, (x) => {
+      const h = x.type === 'button' ? String(x.content?.href ?? '').trim() : '';
+      if (h.length > 1 && h.startsWith('#') && !anclas.has(h.slice(1))) {
+        avisos.push(`El enlace «${String(x.content.text ?? '').replace(/\s+/g, ' ').trim()}» apunta a ${h} y no hay sección con ese ancla.`);
+      }
+    });
+  }
+  return avisos;
+}
+
 /** Extrae el primer objeto JSON válido de un texto de chat (con ``` o texto antes/después). Devuelve el objeto o null. */
 export function extraerJSON(texto) {
   const t = String(texto ?? '');
@@ -110,6 +129,10 @@ export function construirPlan(plan) {
       const a = aplicarValor(huecos[num - 1], num, v, `${ctx} (${b.id})`);
       if (a) avisos.push(a);
     }
+    if (s.fondo !== undefined) {
+      if (fondoValido(s.fondo)) nodo.styles.base.fondoImagen = s.fondo.trim(); // ajuste y capa: los de la variante
+      else avisos.push(`${ctx} (${b.id}): "fondo" debe ser una dirección https://… o una ruta que empiece con /; se descartó.`);
+    }
     nodos.push(nodo);
   });
   const titulo = typeof plan.titulo === 'string' && plan.titulo.trim() ? limpiar(plan.titulo.trim()) : null;
@@ -117,18 +140,20 @@ export function construirPlan(plan) {
 }
 
 /** Interpreta lo que el usuario pegó: un plan o una página completa (el mismo JSON de "Abrir JSON").
+ *  `existentes` = secciones que ya están en la página y se conservan (modo "añadir"): cuentan como destinos de enlaces.
  *  Devuelve { tipo: 'plan'|'pagina', secciones: nodos[], titulo, pagina?, errores, avisos }. No toca el editor. */
-export function leerEntrada(texto) {
+export function leerEntrada(texto, existentes = []) {
   const obj = extraerJSON(texto);
   if (!obj) return { tipo: null, secciones: [], titulo: null, errores: ['No encontré ningún JSON en el texto pegado. Pega la respuesta de la IA completa.'], avisos: [] };
   if (obj.plan !== undefined) {
     const r = construirPlan(obj);
-    return { tipo: 'plan', secciones: r.nodos, titulo: r.titulo, errores: r.errores, avisos: r.avisos };
+    const avisos = r.errores.length ? r.avisos : [...r.avisos, ...avisosEnlaces([...existentes, ...r.nodos])];
+    return { tipo: 'plan', secciones: r.nodos, titulo: r.titulo, errores: r.errores, avisos };
   }
   if (obj.type === 'page') {
     try {
       const pagina = normalizePage(obj);
-      return { tipo: 'pagina', secciones: pagina.children, titulo: pagina.content?.title ?? null, pagina, errores: [], avisos: [] };
+      return { tipo: 'pagina', secciones: pagina.children, titulo: pagina.content?.title ?? null, pagina, errores: [], avisos: avisosEnlaces([...existentes, ...pagina.children]) };
     } catch (e) {
       return { tipo: 'pagina', secciones: [], titulo: null, errores: [`La página no es válida: ${e.message}`], avisos: [] };
     }

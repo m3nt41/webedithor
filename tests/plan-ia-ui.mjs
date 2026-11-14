@@ -51,9 +51,9 @@ try {
   v(await d.executeScript('return !document.getElementById("dlg-plan")'), 'el diálogo se cierra al aplicar sin avisos');
   v((await secciones()) === 8, 'Reemplazar: la página tiene las 8 secciones del plan');
   const g1 = await guardado();
-  v(g1.content.title === 'Casa Almendro', 'el título del plan pasa a la página');
+  v(g1.content.title === 'Café Almendro', 'el título del plan pasa a la página');
   const textos = await d.executeScript('return [...document.querySelectorAll(".stage h1,.stage h2")].map(e=>e.textContent).join("|")');
-  v(textos.includes('Una casa tranquila a minutos de la playa'), 'la landing se ve en el preview con el texto del plan');
+  v(textos.includes('Café de especialidad en el centro del barrio'), 'la landing se ve en el preview con el texto del plan');
   const fondo = await d.executeScript('const s=document.querySelector(".stage section");return getComputedStyle(document.querySelectorAll(".stage section")[1]).fontFamily');
   v(/Georgia|Palatino|serif/i.test(fondo), 'tiene el tema (tipografía serif del tema) aplicado');
 
@@ -71,7 +71,7 @@ try {
   v(g2.children[8].children.some((h) => h.content?.text === 'Añadido uno'), 'las nuevas quedan al final, en orden');
   const ids = new Set(); let dup = false; const rec = (n) => { if (ids.has(n.id)) dup = true; ids.add(n.id); n.children.forEach(rec); }; rec(g2);
   v(!dup, 'sin ids repetidos');
-  v(g2.content.title === 'Casa Almendro', 'Añadir no cambia el título');
+  v(g2.content.title === 'Café Almendro', 'Añadir no cambia el título');
   await $('#btn-undo').click(); await esperar(300);
   v((await secciones()) === 8, 'un solo Undo quita las dos añadidas');
 
@@ -89,16 +89,22 @@ try {
   // 7. Aviso (hueco inexistente): se aplica y muestra el aviso; "Listo" cierra
   await $('#dlg-plan-cancel').click(); await esperar(200);
   await pegar(JSON.stringify({ plan: 1, secciones: [{ bloque: 'hero', variante: 'oscuro', valores: { 1: 'Con aviso', 77: 'x' } }] }), 'reemplazar');
-  v(/hueco "77" no existe/.test(await $('#dlg-plan-msg').getText()), 'hueco inexistente: se aplica y muestra el aviso');
+  const msg7 = await $('#dlg-plan-msg').getText();
+  v(/hueco "77" no existe/.test(msg7), 'hueco inexistente: se aplica y muestra el aviso');
+  v(/El enlace «Hablemos» apunta a #contacto y no hay sección con ese ancla/.test(msg7), 'enlace roto: el aviso dice qué botón apunta a qué ancla inexistente');
   v((await secciones()) === 1, 'con avisos igual se aplicó');
   await $('#dlg-plan-ok').click(); await esperar(200);
   v(await d.executeScript('return !document.getElementById("dlg-plan")'), '"Listo" cierra el diálogo');
 
   // 8. JSON de página completa (el mismo de Abrir JSON), Reemplazar
   const pag = await guardado();
+  const cerrarAvisos = async () => { if (await d.executeScript('return !!document.getElementById("dlg-plan")')) { await $('#dlg-plan-ok').click(); await esperar(200); } };
   await pegar(JSON.stringify(pag), 'reemplazar');
+  v(/apunta a #contacto/.test(await d.executeScript('return document.getElementById("dlg-plan-msg")?.textContent ?? ""')), 'JSON de página completa: también avisa de enlaces rotos');
+  await cerrarAvisos();
   v((await secciones()) === 1, 'JSON de página completa: se acepta');
   await pegar(JSON.stringify(pag), 'anadir');
+  await cerrarAvisos();
   v((await secciones()) === 2, 'JSON de página completa + Añadir al final');
 
   // 9. Esc cierra el diálogo sin cambiar nada; sin errores JS

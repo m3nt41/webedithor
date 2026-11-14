@@ -3,7 +3,7 @@
 
 import { guiaIA } from '../core/guiaia.js';
 import { leerEntrada } from '../core/plan.js';
-import { aplicarEntrada } from '../core/store.js';
+import { aplicarEntrada, getState } from '../core/store.js';
 import { SVG_AVISO } from './iconos.js';
 
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
@@ -72,7 +72,8 @@ export function abrirDialogoPlan() {
       e.preventDefault();
       if (dialogo.dataset.hecho === '1') { dialogo.close(); return; } // ya aplicado con avisos: "Listo" solo cierra
       const modo = dialogo.querySelector('input[name="dlg-plan-modo"]:checked').value;
-      const r = leerEntrada(txt.value);
+      // en "Añadir" las secciones que ya hay también cuentan como destino de los enlaces
+      const r = leerEntrada(txt.value, modo === 'anadir' ? getState().page.children : []);
       const lista = (arr) => `<ul>${arr.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>`;
       if (r.errores.length || !r.secciones.length) {
         // No se cambia nada: se muestran los problemas

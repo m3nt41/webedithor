@@ -4,8 +4,9 @@ import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { BLOCKS, createBlock } from '../src/blocks/index.js';
-import { huecosDe, construirPlan, leerEntrada, extraerJSON, enlaceValido, srcValido } from '../src/core/plan.js';
-import { guiaIA, catalogoHuecos } from '../src/core/guiaia.js';
+import { huecosDe, construirPlan, leerEntrada, extraerJSON, enlaceValido, srcValido, fondoValido, avisosEnlaces } from '../src/core/plan.js';
+import { guiaIA, catalogoHuecos, limite } from '../src/core/guiaia.js';
+import { ejemplosPlan } from '../src/core/guiaia-ejemplos.js';
 import { normalizePage, createPage, walk } from '../src/core/tree.js';
 import { exportHTML } from '../src/export/exporter.js';
 
@@ -34,8 +35,115 @@ t('los ejemplos de la guía y docs/plan-ejemplo.json son planes válidos sin err
   const ejemplos = g.split('## Ejemplos completos')[1].split('\n').filter((l) => l.startsWith('{'));
   assert.equal(ejemplos.length, 2);
   for (const e of ejemplos) { const r = construirPlan(JSON.parse(e)); assert.deepEqual(r.errores, []); assert.deepEqual(r.avisos, [], r.avisos.join(' | ')); assert.ok(r.nodos.length >= 2); }
-  const r = construirPlan(JSON.parse(readFileSync('docs/plan-ejemplo.json', 'utf8')));
+  assert.deepEqual(ejemplos.map((e) => JSON.parse(e)), ejemplosPlan(), 'la guía incluye los ejemplos de guiaia-ejemplos.js');
+  const doc = JSON.parse(readFileSync('docs/plan-ejemplo.json', 'utf8'));
+  assert.deepEqual(doc, ejemplosPlan()[0]);
+  const r = construirPlan(doc);
   assert.deepEqual(r.errores, []); assert.deepEqual(r.avisos, []); assert.equal(r.nodos.length, 8);
+});
+
+t('ejemplos: se aplican con el importador, rellenan TODOS los textos (solo las imágenes se omiten) y sus enlaces #ancla existen', () => {
+  for (const plan of ejemplosPlan()) {
+    const entrada = leerEntrada(JSON.stringify(plan));
+    assert.deepEqual(entrada.errores, [], plan.titulo);
+    assert.deepEqual(entrada.avisos, [], `${plan.titulo}: ${entrada.avisos.join(' | ')}`); // incluye enlaces rotos
+    plan.secciones.forEach((s, i) => {
+      const ref = huecosDe(createBlock(s.bloque, s.variante));
+      const nodos = huecosDe(entrada.secciones[i]);
+      ref.forEach((h, k) => {
+        const clave = String(k + 1);
+        if (h.type === 'image') return; // las imágenes pueden omitirse
+        const ctx = `${plan.titulo} · ${s.bloque}/${s.variante} · hueco ${clave} (${h.name})`;
+        assert.ok(clave in s.valores, `${ctx}: sin rellenar`);
+        const nuevo = nodos[k].content.text;
+        assert.ok(typeof nuevo === 'string' && nuevo.trim(), `${ctx}: vacío`);
+        if (h.type !== 'button' && String(h.content.text).length > 3) assert.notEqual(nuevo, h.content.text, `${ctx}: conserva el texto de ejemplo`);
+        assert.ok(nuevo.length <= limite(h), `${ctx}: «${nuevo}» pasa del límite ${limite(h)}`);
+      });
+    });
+    assert.ok(!JSON.stringify(plan).includes('Mi Marca') && !JSON.stringify(plan).includes('tumarca'), 'sin textos de marca de ejemplo');
+    // todos los enlaces del navbar y del footer son #anclas de secciones que SÍ existen en el plan
+    const anclas = new Set(entrada.secciones.map((x) => x.content.anchor).filter(Boolean));
+    let enlaces = 0;
+    for (const sec of entrada.secciones.filter((x) => ['Navbar', 'Footer'].includes(x.name))) {
+      walk(sec, (x) => { if (x.type === 'button') { enlaces++; assert.ok(x.content.href.startsWith('#') && anclas.has(x.content.href.slice(1)), `${plan.titulo}: «${x.content.text}» → ${x.content.href} no existe`); } });
+    }
+    assert.ok(enlaces >= 7, 'el navbar y el footer del ejemplo tienen enlaces');
+  }
+});
+
+t('cada variante de la guía tiene etiqueta de tono (claro/oscuro/acento) y las del fondo lo indican', () => {
+  const g = guiaIA();
+  let n = 0;
+  for (const b of catalogoHuecos()) for (const v of b.variantes) {
+    n++;
+    assert.ok(['claro', 'oscuro', 'acento'].includes(v.tono), `${b.bloque}/${v.clave}: tono ${v.tono}`);
+    assert.ok(g.includes(`- variante "${v.clave}" (${v.etiqueta}) · fondo ${v.tono}`), `${b.bloque}/${v.clave}: sin etiqueta en la guía`);
+  }
+  assert.equal(g.split('\n').filter((l) => /^- variante .* · fondo (claro|oscuro|acento)/.test(l)).length, n, 'todas las líneas de variante llevan etiqueta');
+  const tono = (b, k) => catalogoHuecos().find((x) => x.bloque === b).variantes.find((x) => x.clave === k).tono;
+  assert.deepEqual([tono('navbar', 'claro'), tono('navbar', 'oscuro'), tono('hero', 'claro')], ['claro', 'oscuro', 'claro']);
+  // «admite fondo» solo en variantes que traen fondoImagen
+  const conFondo = g.split('\n').filter((l) => l.startsWith('- variante') && l.includes('admite fondo'));
+  assert.equal(conFondo.length, 1); assert.match(conFondo[0], /variante "fondo"/);
+});
+
+t('la guía trae las reglas nuevas (todos los huecos, enlaces navbar/footer, cantidades fijas, WhatsApp, alternar fondos)', () => {
+  const g = guiaIA();
+  for (const re of [/Rellena TODOS los huecos de texto de cada sección que uses/, /Solo las imágenes pueden omitirse/, /no se pueden quitar ni añadir/, /#inicio solo existe si hay hero/, /Las cantidades son fijas por variante/, /https:\/\/wa\.me\/506NÚMERO/, /no inventes uno/, /Alterna fondo claro y oscuro/, /"fondo" \(opcional/]) assert.match(g, re);
+  assert.equal((g.match(/enlace por defecto/g) || []).length, 1, 'el texto sobre el enlace por defecto va una sola vez, no en cada hueco');
+  assert.equal((g.match(/\{"src":/g) || []).length, 1, 'el formato de imagen se explica una sola vez');
+});
+
+t('la guía es corta (≥30 % menos que los 25 582 caracteres anteriores) y sigue listando todos los huecos numerados', () => {
+  const g = guiaIA();
+  assert.ok(g.length <= 17900, `la guía mide ${g.length} caracteres (máximo 17 900 = 30 % menos que los 25 582 de antes)`);
+  for (const b of catalogoHuecos()) for (const v of b.variantes) {
+    v.lineas.forEach((l, i) => { assert.ok(g.includes(l), `falta la línea ${b.bloque}/${v.clave}/${i + 1}`); assert.ok(l.startsWith(`  ${i + 1} `)); });
+  }
+});
+
+t('"fondo" en una sección del plan: solo http(s) o ruta; ajuste y capa de la variante no se tocan; lo demás se descarta con aviso', () => {
+  const ref = createBlock('hero', 'fondo').styles.base;
+  const r = construirPlan({ plan: 1, secciones: [{ bloque: 'hero', variante: 'fondo', fondo: ' https://x.test/f.jpg ' }, { bloque: 'hero', variante: 'oscuro', fondo: '/img/f.jpg' }] });
+  assert.deepEqual([r.errores, r.avisos], [[], []]);
+  const b0 = r.nodos[0].styles.base;
+  assert.equal(b0.fondoImagen, 'https://x.test/f.jpg');
+  assert.deepEqual([b0.fondoAjuste, b0.fondoPosicion, b0.fondoCapa], [ref.fondoAjuste, ref.fondoPosicion, ref.fondoCapa]);
+  assert.equal(r.nodos[1].styles.base.fondoImagen, '/img/f.jpg');
+  assert.equal(r.nodos[1].styles.base.fondoCapa, undefined, 'no se inventa capa en variantes sin ella');
+  const pag = createPage(); pag.children = r.nodos;
+  assert.ok(exportHTML(pag).includes('https://x.test/f.jpg'));
+  for (const malo of ['javascript:alert(1)', 'data:image/png;base64,AA', 'ftp://x.test/a', '', 5, null, 'foto.jpg', '//x.com/a.jpg']) {
+    const x = construirPlan({ plan: 1, secciones: [{ bloque: 'hero', variante: 'fondo', fondo: malo }] });
+    assert.deepEqual(x.errores, []); assert.equal(x.avisos.length, 1, String(malo)); assert.match(x.avisos[0], /"fondo" debe ser/);
+    assert.equal(x.nodos[0].styles.base.fondoImagen, ref.fondoImagen, 'se conserva el fondo de la variante');
+  }
+  assert.equal(fondoValido('https://a.com/x.png') && fondoValido('/a/b.jpg'), true);
+});
+
+t('enlaces rotos: aviso por cada botón #ancla sin sección con ese ancla (plan y página; "añadir" cuenta las existentes)', () => {
+  const e = leerEntrada(JSON.stringify({ plan: 1, secciones: [{ bloque: 'navbar' }, { bloque: 'hero', variante: 'claro' }] }));
+  assert.deepEqual(e.errores, []);
+  const rotos = e.avisos.filter((a) => /apunta a/.test(a));
+  assert.ok(rotos.includes('El enlace «Servicios» apunta a #servicios y no hay sección con ese ancla.'), e.avisos.join(' | '));
+  assert.ok(rotos.some((a) => /«Precios» apunta a #precios/.test(a)) && rotos.some((a) => /«Contacto» apunta a #contacto/.test(a)));
+  assert.ok(!rotos.some((a) => /#inicio/.test(a)), 'hay hero, así que #inicio existe');
+  // con las secciones que faltan no hay avisos de enlaces
+  const completo = leerEntrada(JSON.stringify({ plan: 1, secciones: ['navbar', 'hero', 'services', 'pricing', 'contact'].map((bloque) => ({ bloque })) }));
+  assert.deepEqual(completo.avisos, []);
+  // "añadir": el destino puede estar en lo que ya había
+  const sueltas = JSON.stringify({ plan: 1, secciones: [{ bloque: 'hero', variante: 'oscuro' }] });
+  assert.equal(leerEntrada(sueltas).avisos.length, 1);
+  assert.deepEqual(leerEntrada(sueltas, [createBlock('contact', 'simple')]).avisos, []);
+  // página completa (el mismo JSON de "Abrir JSON")
+  const p = createPage(); p.children = [createBlock('hero', 'oscuro'), createBlock('footer', 'columnas')];
+  const ep = leerEntrada(JSON.stringify(p));
+  assert.equal(ep.tipo, 'pagina'); assert.ok(ep.avisos.some((a) => /«Servicios» apunta a #servicios/.test(a)));
+  assert.deepEqual(avisosEnlaces([createBlock('hero', 'oscuro'), createBlock('contact', 'simple')]), []);
+  // "#" suelto no es un ancla que comprobar
+  const b = createBlock('hero', 'oscuro'); huecosDe(b)[2].content.href = '#';
+  assert.deepEqual(avisosEnlaces([b]), []);
 });
 
 t('el script tools/gen-guia-ia.mjs genera docs/guia-ia.md igual que guiaIA()', () => {

@@ -1,54 +1,134 @@
 {
   "plan": 1,
-  "titulo": "Casa Almendro",
+  "titulo": "Café Almendro",
   "secciones": [
     {
       "bloque": "navbar",
       "variante": "claro",
       "valores": {
-        "1": "Casa Almendro"
-      }
-    },
-    {
-      "bloque": "hero",
-      "variante": "claro",
-      "valores": {
-        "1": "Hospedaje",
-        "2": "Una casa tranquila a minutos de la playa",
-        "3": "Habitaciones luminosas, desayuno casero y atención personal durante toda tu estancia.",
+        "1": "Café Almendro",
+        "2": {
+          "texto": "Inicio",
+          "enlace": "#inicio"
+        },
+        "3": {
+          "texto": "Qué servimos",
+          "enlace": "#servicios"
+        },
         "4": {
-          "texto": "Reservar",
-          "enlace": "#contacto"
+          "texto": "La carta",
+          "enlace": "#precios"
         },
         "5": {
-          "texto": "Ver habitaciones",
-          "enlace": "#servicios"
+          "texto": "Visítanos",
+          "enlace": "#contacto"
+        },
+        "6": {
+          "texto": "Reservar mesa",
+          "enlace": "#contacto"
         }
       }
     },
     {
+      "bloque": "hero",
+      "variante": "fondo",
+      "valores": {
+        "1": "Café de especialidad en el centro del barrio",
+        "2": "Tostamos cada semana, horneamos cada mañana y abrimos la puerta todo el día.",
+        "3": {
+          "texto": "Reservar mesa",
+          "enlace": "#contacto"
+        }
+      },
+      "fondo": "https://ejemplo.com/fotos/cafe-almendro.jpg"
+    },
+    {
       "bloque": "services",
-      "variante": "tarjetas"
+      "variante": "tarjetas",
+      "valores": {
+        "1": "Lo que servimos",
+        "2": "Café de origen",
+        "3": "Granos de fincas locales, tostados cada semana en casa.",
+        "4": "Panadería",
+        "5": "Pan y repostería horneados cada mañana.",
+        "6": "Desayunos",
+        "7": "Platos sencillos con ingredientes de la zona."
+      }
     },
     {
       "bloque": "gallery",
-      "variante": "cuadricula"
+      "variante": "cuadricula",
+      "valores": {
+        "1": "Un día en la barra"
+      }
     },
     {
       "bloque": "testimonials",
-      "variante": "tarjetas"
+      "variante": "tarjetas",
+      "valores": {
+        "1": "Lo que dicen en la barra",
+        "2": "“El mejor flat white que he probado en la ciudad.”",
+        "3": "Camila Solís",
+        "4": "Diseñadora",
+        "5": "“Vengo a trabajar por las mañanas y siempre hay lugar.”",
+        "6": "Diego Araya",
+        "7": "Programador",
+        "8": "“El pan sale caliente y el trato es de casa.”",
+        "9": "Paula Quesada",
+        "10": "Maestra"
+      }
     },
     {
       "bloque": "pricing",
-      "variante": "tres"
+      "variante": "lista",
+      "valores": {
+        "1": "La carta",
+        "2": "Espresso",
+        "3": "Doble, de origen único",
+        "4": "₡1.800",
+        "5": "Capuchino",
+        "6": "Con leche entera o de almendra",
+        "7": "₡2.400",
+        "8": "Desayuno",
+        "9": "Gallo pinto, huevo y café",
+        "10": "₡4.500"
+      }
     },
     {
       "bloque": "contact",
-      "variante": "simple"
+      "variante": "simple",
+      "valores": {
+        "1": "Pasa a tomar un café",
+        "2": "Abrimos todos los días, de 7:00 a 17:00, en el centro.",
+        "3": {
+          "texto": "Reserva por WhatsApp",
+          "enlace": "https://wa.me/50612345678"
+        }
+      }
     },
     {
       "bloque": "footer",
-      "variante": "simple"
+      "variante": "columnas",
+      "valores": {
+        "1": "Café Almendro",
+        "2": "Café de especialidad y pan recién horneado.",
+        "3": "Explora",
+        "4": {
+          "texto": "Inicio",
+          "enlace": "#inicio"
+        },
+        "5": {
+          "texto": "Qué servimos",
+          "enlace": "#servicios"
+        },
+        "6": {
+          "texto": "La carta",
+          "enlace": "#precios"
+        },
+        "7": "Escríbenos",
+        "8": "hola@cafealmendro.com",
+        "9": "+506 2222 3333"
+      }
     }
   ]
 }

@@ -1,46 +1,55 @@
 // BLOQUE GALERÍA
+// Fotos de relleno en grises cálidos; todo recto y sin sombras (ver tema.js).
 
-import { n, titulo, imagen, placeholder, seccion } from './util.js';
+import { n, imagen, placeholder, seccion, tit, etiqueta, fondoModo } from './util.js';
+import { MODOS, colorPh, C } from './tema.js';
 
-const COLORES = ['#d9d9e3', '#e6dcf7', '#d8ecf0', '#f3e0d6', '#dfe8d4', '#f0d9e3'];
-const foto = (i, w = 600, h = 450, extra = {}) =>
-  imagen(placeholder(w, h, COLORES[i % COLORES.length], `Foto ${i + 1}`), `Foto ${i + 1}`, { borderRadius: '12px', objectFit: 'cover', ...extra }, `Foto ${i + 1}`);
+const foto = (i, w = 600, h = 450, extra = {}, color = colorPh(i)) =>
+  imagen(placeholder(w, h, color, `Foto ${i + 1}`), `Foto ${i + 1}`, { objectFit: 'cover', ...extra }, `Foto ${i + 1}`);
 
-const cabecera = (t, color) => titulo(t, 2, { fontSize: '40px', textAlign: 'center', ...(color ? { color } : {}) }, { fontSize: '30px' });
+const cabecera = (t) => tit(2, t, { textAlign: 'center' });
 
 export default {
   id: 'gallery',
   label: 'Galería',
   variants: {
-    cuadricula: { label: 'Cuadrícula 3', crear: () =>
-      seccion('Galería', { gap: '40px', background: '#ffffff' }, [
+    cuadricula: { label: 'Cuadrícula 3', crear: () => {
+      const m = MODOS.claro;
+      return seccion('Galería', { gap: '56px', ...fondoModo(m) }, [
         cabecera('Galería'),
-        n('container', { name: 'Grid', styles: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', hijosAspectRatio: '4 / 3' }, mobile: { gridTemplateColumns: '1fr 1fr', gap: '10px' },
+        n('container', { name: 'Grid', styles: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', hijosAspectRatio: '4 / 3' }, mobile: { gridTemplateColumns: '1fr 1fr', gap: '12px' },
           children: [0, 1, 2, 3, 4, 5].map((i) => foto(i)) }),
-      ]) },
+      ]);
+    } },
 
-    destacada: { label: 'Foto destacada', crear: () =>
-      seccion('Galería', { gap: '40px', background: '#ffffff' }, [
+    destacada: { label: 'Foto destacada', crear: () => {
+      const m = MODOS.claro2;
+      return seccion('Galería', { gap: '56px', ...fondoModo(m) }, [
         cabecera('Nuestro trabajo'),
-        n('container', { name: 'Grid', styles: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', hijosAspectRatio: '1 / 1' }, mobile: { gridTemplateColumns: '1fr 1fr', gap: '10px' },
+        n('container', { name: 'Grid', styles: { display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', hijosAspectRatio: '1 / 1' }, mobile: { gridTemplateColumns: '1fr 1fr', gap: '12px' },
           children: [
             foto(0, 1200, 900, { gridColumn: 'span 2', gridRow: 'span 2', height: '100%', aspectRatio: 'auto' }),
             foto(1), foto(2), foto(3), foto(4),
           ] }),
-      ]) },
+      ]);
+    } },
 
-    fila: { label: 'Fila de 4', crear: () =>
-      seccion('Galería', { gap: '32px', background: '#f6f5ff' }, [
+    fila: { label: 'Fila de 4', crear: () => {
+      const m = MODOS.claro;
+      return seccion('Galería', { gap: '48px', ...fondoModo(m) }, [
         cabecera('Momentos'),
-        n('container', { name: 'Grid', styles: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', hijosAspectRatio: '4 / 5' }, mobile: { gridTemplateColumns: '1fr 1fr', gap: '10px' },
+        n('container', { name: 'Grid', styles: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', hijosAspectRatio: '4 / 5' }, mobile: { gridTemplateColumns: '1fr 1fr', gap: '12px' },
           children: [0, 1, 2, 3].map((i) => foto(i, 500, 620)) }),
-      ]) },
+      ]);
+    } },
 
-    oscura: { label: 'Oscura', crear: () =>
-      seccion('Galería', { gap: '40px', background: '#0b0b10', color: '#ffffff' }, [
+    oscura: { label: 'Oscura', crear: () => {
+      const m = MODOS.oscuro;
+      return seccion('Galería', { gap: '56px', ...fondoModo(m) }, [
         cabecera('Portafolio'),
-        n('container', { name: 'Grid', styles: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px', hijosAspectRatio: '3 / 2' },
-          children: [0, 1, 2].map((i) => foto(i, 700, 460, { borderRadius: '4px' })) }),
-      ]) },
+        n('container', { name: 'Grid', styles: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px', hijosAspectRatio: '3 / 2' },
+          children: [0, 1, 2].map((i) => foto(i, 700, 460, {}, i % 2 ? C.phOscuro : colorPh(i))) }),
+      ]);
+    } },
   },
 };

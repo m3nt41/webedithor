@@ -69,7 +69,7 @@ try {
   assert.ok((await estiloPreview(id, 'backgroundImage')).includes('linear-gradient') && (await estiloPreview(id, 'backgroundImage')).includes('url('), 'editor: gradiente + url');
   assert.equal(await estiloPreview(id, 'backgroundSize'), 'auto, contain');
   assert.equal(await estiloPreview(id, 'backgroundRepeat'), 'no-repeat');
-  assert.equal(await estiloPreview(id, 'backgroundColor'), 'rgb(11, 11, 16)', 'el color queda de respaldo');
+  assert.equal(await estiloPreview(id, 'backgroundColor'), 'rgb(12, 12, 14)', 'el color queda de respaldo');
   console.log('OK editor: capa 50 % + contain + arriba, color de respaldo intacto');
 
   // ---- 3. Export (HTML real cargado en Firefox) ----
@@ -81,7 +81,7 @@ try {
   writeFileSync('tests/out/fondo.html', html);
   await d.get(pathToFileURL(resolve('tests/out/fondo.html')).href); await esperar(500);
   const s = await d.executeScript(`const e=document.querySelector('section'); const c=getComputedStyle(e); return [c.backgroundImage.includes('linear-gradient'), c.backgroundSize, c.backgroundColor]`);
-  assert.equal(s[0], true); assert.equal(s[1], 'auto, contain'); assert.equal(s[2], 'rgb(11, 11, 16)');
+  assert.equal(s[0], true); assert.equal(s[1], 'auto, contain'); assert.equal(s[2], 'rgb(12, 12, 14)');
   console.log('OK export: CSS puro, imagen sobre el color de fondo');
 
   // ---- 4. Vista previa del editor ----

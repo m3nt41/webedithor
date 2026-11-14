@@ -1,0 +1,1892 @@
+{
+  "app": "editor-landings",
+  "version": 1,
+  "page": {
+    "id": "6c856e050",
+    "type": "page",
+    "name": "Página",
+    "styles": {
+      "base": {
+        "fontFamily": "system-ui, sans-serif",
+        "color": "#111",
+        "background": "#fff"
+      },
+      "mobile": {}
+    },
+    "content": {
+      "title": "Demo de estilo"
+    },
+    "animation": null,
+    "children": [
+      {
+        "id": "7d01ca788",
+        "type": "section",
+        "name": "Navbar",
+        "styles": {
+          "base": {
+            "display": "flex",
+            "alignItems": "center",
+            "justifyContent": "space-between",
+            "flexWrap": "wrap",
+            "gap": "16px",
+            "padding": "20px max(32px, calc((100% - 1120px) / 2))",
+            "background": "#f7f5f0",
+            "color": "#111111",
+            "borderBottom": "1px solid #d9d6cf"
+          },
+          "mobile": {
+            "padding": "14px 20px",
+            "gap": "10px 16px"
+          }
+        },
+        "content": {},
+        "animation": null,
+        "children": [
+          {
+            "id": "62531c831",
+            "type": "text",
+            "name": "Logo",
+            "styles": {
+              "base": {
+                "margin": "0",
+                "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                "fontWeight": "500",
+                "fontSize": "22px",
+                "letterSpacing": "-0.01em"
+              },
+              "mobile": {}
+            },
+            "content": {
+              "text": "Mi Marca"
+            },
+            "animation": null,
+            "children": []
+          },
+          {
+            "id": "ac5f52e16",
+            "type": "container",
+            "name": "Enlaces",
+            "styles": {
+              "base": {
+                "display": "flex",
+                "alignItems": "center",
+                "gap": "32px"
+              },
+              "mobile": {
+                "order": "3",
+                "width": "100%",
+                "justifyContent": "center",
+                "gap": "18px",
+                "flexWrap": "wrap"
+              }
+            },
+            "content": {},
+            "animation": null,
+            "children": [
+              {
+                "id": "b2d53fb52",
+                "type": "button",
+                "name": "Enlace",
+                "styles": {
+                  "base": {
+                    "color": "inherit",
+                    "textDecoration": "none",
+                    "opacity": "0.8",
+                    "display": "inline-block",
+                    "fontSize": "15px",
+                    "fontWeight": "400",
+                    "letterSpacing": "0.02em"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "text": "Inicio",
+                  "href": "#inicio"
+                },
+                "animation": null,
+                "children": []
+              },
+              {
+                "id": "812f9a823",
+                "type": "button",
+                "name": "Enlace",
+                "styles": {
+                  "base": {
+                    "color": "inherit",
+                    "textDecoration": "none",
+                    "opacity": "0.8",
+                    "display": "inline-block",
+                    "fontSize": "15px",
+                    "fontWeight": "400",
+                    "letterSpacing": "0.02em"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "text": "Servicios",
+                  "href": "#servicios"
+                },
+                "animation": null,
+                "children": []
+              },
+              {
+                "id": "fb7eff1a4",
+                "type": "button",
+                "name": "Enlace",
+                "styles": {
+                  "base": {
+                    "color": "inherit",
+                    "textDecoration": "none",
+                    "opacity": "0.8",
+                    "display": "inline-block",
+                    "fontSize": "15px",
+                    "fontWeight": "400",
+                    "letterSpacing": "0.02em"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "text": "Precios",
+                  "href": "#precios"
+                },
+                "animation": null,
+                "children": []
+              },
+              {
+                "id": "84bd26f75",
+                "type": "button",
+                "name": "Enlace",
+                "styles": {
+                  "base": {
+                    "color": "inherit",
+                    "textDecoration": "none",
+                    "opacity": "0.8",
+                    "display": "inline-block",
+                    "fontSize": "15px",
+                    "fontWeight": "400",
+                    "letterSpacing": "0.02em"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "text": "Contacto",
+                  "href": "#contacto"
+                },
+                "animation": null,
+                "children": []
+              }
+            ]
+          },
+          {
+            "id": "92e8a4407",
+            "type": "button",
+            "name": "Botón de acción",
+            "styles": {
+              "base": {
+                "display": "inline-block",
+                "padding": "12px 24px",
+                "fontSize": "16px",
+                "borderRadius": "0",
+                "textDecoration": "none",
+                "fontWeight": "500",
+                "letterSpacing": "0.02em",
+                "background": "transparent",
+                "color": "#111111",
+                "border": "1px solid #111111"
+              },
+              "mobile": {}
+            },
+            "content": {
+              "text": "Contacto",
+              "href": "#contacto"
+            },
+            "animation": null,
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": "cc506bedc",
+        "type": "section",
+        "name": "Hero",
+        "styles": {
+          "base": {
+            "display": "flex",
+            "flexDirection": "column",
+            "padding": "112px max(32px, calc((100% - 1120px) / 2))",
+            "alignItems": "center",
+            "justifyContent": "center",
+            "gap": "28px",
+            "minHeight": "80vh",
+            "textAlign": "center",
+            "background": "#0c0c0e",
+            "color": "#f2efe8"
+          },
+          "mobile": {
+            "padding": "64px 20px",
+            "minHeight": "70vh"
+          }
+        },
+        "content": {
+          "anchor": "inicio"
+        },
+        "animation": null,
+        "children": [
+          {
+            "id": "035040e59",
+            "type": "heading",
+            "name": "Título",
+            "styles": {
+              "base": {
+                "margin": "0",
+                "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                "fontWeight": "500",
+                "fontSize": "72px",
+                "lineHeight": "1.08",
+                "letterSpacing": "-0.02em",
+                "maxWidth": "16ch"
+              },
+              "mobile": {
+                "fontSize": "42px"
+              }
+            },
+            "content": {
+              "text": "Tu idea, en una landing inolvidable",
+              "level": 1
+            },
+            "animation": null,
+            "children": []
+          },
+          {
+            "id": "ad675f28a",
+            "type": "text",
+            "name": "Subtítulo",
+            "styles": {
+              "base": {
+                "margin": "0",
+                "fontSize": "20px",
+                "lineHeight": "1.6",
+                "color": "#a3a09a",
+                "maxWidth": "48ch"
+              },
+              "mobile": {
+                "fontSize": "17px"
+              }
+            },
+            "content": {
+              "text": "Diseño a medida, animaciones suaves y cero complicaciones."
+            },
+            "animation": null,
+            "children": []
+          },
+          {
+            "id": "139f5cfbb",
+            "type": "button",
+            "name": "Botón",
+            "styles": {
+              "base": {
+                "display": "inline-block",
+                "padding": "16px 32px",
+                "fontSize": "18px",
+                "borderRadius": "0",
+                "textDecoration": "none",
+                "fontWeight": "500",
+                "letterSpacing": "0.02em",
+                "background": "#a68a56",
+                "color": "#0c0c0e",
+                "border": "1px solid #a68a56"
+              },
+              "mobile": {}
+            },
+            "content": {
+              "text": "Hablemos",
+              "href": "#contacto"
+            },
+            "animation": null,
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": "bd916509o",
+        "type": "section",
+        "name": "Servicios",
+        "styles": {
+          "base": {
+            "display": "flex",
+            "flexDirection": "column",
+            "padding": "112px max(32px, calc((100% - 1120px) / 2))",
+            "gap": "56px",
+            "background": "#f7f5f0",
+            "color": "#111111"
+          },
+          "mobile": {
+            "padding": "64px 20px"
+          }
+        },
+        "content": {
+          "anchor": "servicios"
+        },
+        "animation": null,
+        "children": [
+          {
+            "id": "6b27762fd",
+            "type": "heading",
+            "name": "Título",
+            "styles": {
+              "base": {
+                "margin": "0",
+                "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                "fontWeight": "500",
+                "fontSize": "44px",
+                "lineHeight": "1.15",
+                "letterSpacing": "-0.015em",
+                "textAlign": "center"
+              },
+              "mobile": {
+                "fontSize": "32px"
+              }
+            },
+            "content": {
+              "text": "Lo que hacemos",
+              "level": 2
+            },
+            "animation": null,
+            "children": []
+          },
+          {
+            "id": "27bde54fn",
+            "type": "container",
+            "name": "Grid",
+            "styles": {
+              "base": {
+                "display": "grid",
+                "gridTemplateColumns": "repeat(auto-fit, minmax(240px, 1fr))",
+                "gap": "24px"
+              },
+              "mobile": {}
+            },
+            "content": {},
+            "animation": null,
+            "children": [
+              {
+                "id": "604b013ag",
+                "type": "container",
+                "name": "Tarjeta",
+                "styles": {
+                  "base": {
+                    "display": "flex",
+                    "flexDirection": "column",
+                    "padding": "32px",
+                    "borderRadius": "0",
+                    "background": "#efece4",
+                    "border": "1px solid #d9d6cf",
+                    "gap": "12px"
+                  },
+                  "mobile": {}
+                },
+                "content": {},
+                "animation": null,
+                "children": [
+                  {
+                    "id": "aa71fe7ae",
+                    "type": "heading",
+                    "name": "Título",
+                    "styles": {
+                      "base": {
+                        "margin": "0",
+                        "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                        "fontWeight": "500",
+                        "fontSize": "24px",
+                        "lineHeight": "1.25",
+                        "letterSpacing": "-0.005em"
+                      },
+                      "mobile": {
+                        "fontSize": "21px"
+                      }
+                    },
+                    "content": {
+                      "text": "Diseño",
+                      "level": 3
+                    },
+                    "animation": null,
+                    "children": []
+                  },
+                  {
+                    "id": "92217c48f",
+                    "type": "text",
+                    "name": "Texto",
+                    "styles": {
+                      "base": {
+                        "margin": "0",
+                        "fontSize": "16px",
+                        "lineHeight": "1.65",
+                        "color": "#5f5c55"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {
+                      "text": "Interfaces claras que se sienten únicas."
+                    },
+                    "animation": null,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "febb2908j",
+                "type": "container",
+                "name": "Tarjeta",
+                "styles": {
+                  "base": {
+                    "display": "flex",
+                    "flexDirection": "column",
+                    "padding": "32px",
+                    "borderRadius": "0",
+                    "background": "#efece4",
+                    "border": "1px solid #d9d6cf",
+                    "gap": "12px"
+                  },
+                  "mobile": {}
+                },
+                "content": {},
+                "animation": null,
+                "children": [
+                  {
+                    "id": "dce3c186h",
+                    "type": "heading",
+                    "name": "Título",
+                    "styles": {
+                      "base": {
+                        "margin": "0",
+                        "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                        "fontWeight": "500",
+                        "fontSize": "24px",
+                        "lineHeight": "1.25",
+                        "letterSpacing": "-0.005em"
+                      },
+                      "mobile": {
+                        "fontSize": "21px"
+                      }
+                    },
+                    "content": {
+                      "text": "Animación",
+                      "level": 3
+                    },
+                    "animation": null,
+                    "children": []
+                  },
+                  {
+                    "id": "af3461e7i",
+                    "type": "text",
+                    "name": "Texto",
+                    "styles": {
+                      "base": {
+                        "margin": "0",
+                        "fontSize": "16px",
+                        "lineHeight": "1.65",
+                        "color": "#5f5c55"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {
+                      "text": "Movimiento con intención, sin lag."
+                    },
+                    "animation": null,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "a9021896m",
+                "type": "container",
+                "name": "Tarjeta",
+                "styles": {
+                  "base": {
+                    "display": "flex",
+                    "flexDirection": "column",
+                    "padding": "32px",
+                    "borderRadius": "0",
+                    "background": "#efece4",
+                    "border": "1px solid #d9d6cf",
+                    "gap": "12px"
+                  },
+                  "mobile": {}
+                },
+                "content": {},
+                "animation": null,
+                "children": [
+                  {
+                    "id": "0c7ed41dk",
+                    "type": "heading",
+                    "name": "Título",
+                    "styles": {
+                      "base": {
+                        "margin": "0",
+                        "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                        "fontWeight": "500",
+                        "fontSize": "24px",
+                        "lineHeight": "1.25",
+                        "letterSpacing": "-0.005em"
+                      },
+                      "mobile": {
+                        "fontSize": "21px"
+                      }
+                    },
+                    "content": {
+                      "text": "Entrega",
+                      "level": 3
+                    },
+                    "animation": null,
+                    "children": []
+                  },
+                  {
+                    "id": "4cf9a045l",
+                    "type": "text",
+                    "name": "Texto",
+                    "styles": {
+                      "base": {
+                        "margin": "0",
+                        "fontSize": "16px",
+                        "lineHeight": "1.65",
+                        "color": "#5f5c55"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {
+                      "text": "Un solo archivo listo para publicar."
+                    },
+                    "animation": null,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "60a34118u",
+        "type": "section",
+        "name": "Galería",
+        "styles": {
+          "base": {
+            "display": "flex",
+            "flexDirection": "column",
+            "padding": "112px max(32px, calc((100% - 1120px) / 2))",
+            "gap": "56px",
+            "background": "#0c0c0e",
+            "color": "#f2efe8"
+          },
+          "mobile": {
+            "padding": "64px 20px"
+          }
+        },
+        "content": {},
+        "animation": null,
+        "children": [
+          {
+            "id": "3af069eap",
+            "type": "heading",
+            "name": "Título",
+            "styles": {
+              "base": {
+                "margin": "0",
+                "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                "fontWeight": "500",
+                "fontSize": "44px",
+                "lineHeight": "1.15",
+                "letterSpacing": "-0.015em",
+                "textAlign": "center"
+              },
+              "mobile": {
+                "fontSize": "32px"
+              }
+            },
+            "content": {
+              "text": "Portafolio",
+              "level": 2
+            },
+            "animation": null,
+            "children": []
+          },
+          {
+            "id": "90042ec6t",
+            "type": "container",
+            "name": "Grid",
+            "styles": {
+              "base": {
+                "display": "grid",
+                "gridTemplateColumns": "repeat(auto-fit, minmax(260px, 1fr))",
+                "gap": "20px",
+                "hijosAspectRatio": "3 / 2"
+              },
+              "mobile": {}
+            },
+            "content": {},
+            "animation": null,
+            "children": [
+              {
+                "id": "d14ca4a9q",
+                "type": "image",
+                "name": "Foto 1",
+                "styles": {
+                  "base": {
+                    "width": "100%",
+                    "borderRadius": "0",
+                    "objectFit": "cover"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "src": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22700%22%20height%3D%22460%22%20viewBox%3D%220%200%20700%20460%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23dedad1%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20fill%3D%22%238a867c%22%20font-family%3D%22sans-serif%22%20font-size%3D%2246%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EFoto%201%3C%2Ftext%3E%3C%2Fsvg%3E",
+                  "alt": "Foto 1"
+                },
+                "animation": null,
+                "children": []
+              },
+              {
+                "id": "bf6838bfr",
+                "type": "image",
+                "name": "Foto 2",
+                "styles": {
+                  "base": {
+                    "width": "100%",
+                    "borderRadius": "0",
+                    "objectFit": "cover"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "src": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22700%22%20height%3D%22460%22%20viewBox%3D%220%200%20700%20460%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23c8c3b8%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20fill%3D%22%238a867c%22%20font-family%3D%22sans-serif%22%20font-size%3D%2246%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EFoto%202%3C%2Ftext%3E%3C%2Fsvg%3E",
+                  "alt": "Foto 2"
+                },
+                "animation": null,
+                "children": []
+              },
+              {
+                "id": "c4859721s",
+                "type": "image",
+                "name": "Foto 3",
+                "styles": {
+                  "base": {
+                    "width": "100%",
+                    "borderRadius": "0",
+                    "objectFit": "cover"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "src": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22700%22%20height%3D%22460%22%20viewBox%3D%220%200%20700%20460%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23e4e0d8%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20fill%3D%22%238a867c%22%20font-family%3D%22sans-serif%22%20font-size%3D%2246%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EFoto%203%3C%2Ftext%3E%3C%2Fsvg%3E",
+                  "alt": "Foto 3"
+                },
+                "animation": null,
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "e62a1394x",
+        "type": "section",
+        "name": "Testimonio",
+        "styles": {
+          "base": {
+            "display": "flex",
+            "flexDirection": "column",
+            "padding": "112px max(32px, calc((100% - 1120px) / 2))",
+            "gap": "28px",
+            "alignItems": "center",
+            "textAlign": "center",
+            "background": "#efece4",
+            "color": "#111111"
+          },
+          "mobile": {
+            "padding": "64px 20px"
+          }
+        },
+        "content": {},
+        "animation": null,
+        "children": [
+          {
+            "id": "34a5dcdfv",
+            "type": "text",
+            "name": "Cita",
+            "styles": {
+              "base": {
+                "margin": "0",
+                "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                "fontWeight": "500",
+                "fontSize": "36px",
+                "lineHeight": "1.3",
+                "letterSpacing": "-0.01em",
+                "maxWidth": "24ch"
+              },
+              "mobile": {
+                "fontSize": "26px"
+              }
+            },
+            "content": {
+              "text": "“Pasamos de tener una página olvidada a recibir clientes cada semana.”"
+            },
+            "animation": null,
+            "children": []
+          },
+          {
+            "id": "9a416ee4w",
+            "type": "text",
+            "name": "Autor",
+            "styles": {
+              "base": {
+                "margin": "0",
+                "fontSize": "12px",
+                "lineHeight": "1.4",
+                "letterSpacing": "0.18em",
+                "textTransform": "uppercase",
+                "fontWeight": "500",
+                "color": "#5f5c55"
+              },
+              "mobile": {}
+            },
+            "content": {
+              "text": "Carla Jiménez · Directora, Estudio Aurora"
+            },
+            "animation": null,
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": "1b4347e520",
+        "type": "section",
+        "name": "Precios",
+        "styles": {
+          "base": {
+            "display": "flex",
+            "flexDirection": "column",
+            "padding": "112px max(32px, calc((100% - 1120px) / 2))",
+            "gap": "56px",
+            "background": "#0c0c0e",
+            "color": "#f2efe8"
+          },
+          "mobile": {
+            "padding": "64px 20px"
+          }
+        },
+        "content": {
+          "anchor": "precios"
+        },
+        "animation": null,
+        "children": [
+          {
+            "id": "03e72833y",
+            "type": "heading",
+            "name": "Título",
+            "styles": {
+              "base": {
+                "margin": "0",
+                "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                "fontWeight": "500",
+                "fontSize": "44px",
+                "lineHeight": "1.15",
+                "letterSpacing": "-0.015em",
+                "textAlign": "center"
+              },
+              "mobile": {
+                "fontSize": "32px"
+              }
+            },
+            "content": {
+              "text": "Precios",
+              "level": 2
+            },
+            "animation": null,
+            "children": []
+          },
+          {
+            "id": "5d5f17b71z",
+            "type": "container",
+            "name": "Grid",
+            "styles": {
+              "base": {
+                "display": "grid",
+                "gridTemplateColumns": "repeat(auto-fit, minmax(240px, 1fr))",
+                "gap": "24px",
+                "alignItems": "stretch"
+              },
+              "mobile": {}
+            },
+            "content": {},
+            "animation": null,
+            "children": [
+              {
+                "id": "789b19a719",
+                "type": "container",
+                "name": "Plan",
+                "styles": {
+                  "base": {
+                    "display": "flex",
+                    "flexDirection": "column",
+                    "padding": "36px 32px",
+                    "borderRadius": "0",
+                    "background": "#17171a",
+                    "border": "1px solid #2c2c30",
+                    "gap": "16px",
+                    "color": "#f2efe8"
+                  },
+                  "mobile": {}
+                },
+                "content": {},
+                "animation": null,
+                "children": [
+                  {
+                    "id": "f71c3966z",
+                    "type": "text",
+                    "name": "Nombre",
+                    "styles": {
+                      "base": {
+                        "margin": "0",
+                        "fontSize": "12px",
+                        "lineHeight": "1.4",
+                        "letterSpacing": "0.18em",
+                        "textTransform": "uppercase",
+                        "fontWeight": "500",
+                        "color": "#a68a56"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {
+                      "text": "Starter"
+                    },
+                    "animation": null,
+                    "children": []
+                  },
+                  {
+                    "id": "27f31afb10",
+                    "type": "text",
+                    "name": "Precio",
+                    "styles": {
+                      "base": {
+                        "margin": "0",
+                        "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                        "fontWeight": "500",
+                        "fontSize": "48px",
+                        "lineHeight": "1.1",
+                        "letterSpacing": "-0.02em"
+                      },
+                      "mobile": {
+                        "fontSize": "40px"
+                      }
+                    },
+                    "content": {
+                      "text": "$79"
+                    },
+                    "animation": null,
+                    "children": []
+                  },
+                  {
+                    "id": "1cd6d1cd17",
+                    "type": "container",
+                    "name": "Ventajas",
+                    "styles": {
+                      "base": {
+                        "display": "flex",
+                        "flexDirection": "column",
+                        "gap": "10px",
+                        "flex": "1",
+                        "paddingTop": "8px"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {},
+                    "animation": null,
+                    "children": [
+                      {
+                        "id": "a941cf0a13",
+                        "type": "container",
+                        "name": "Ventaja",
+                        "styles": {
+                          "base": {
+                            "display": "flex",
+                            "alignItems": "center",
+                            "gap": "10px"
+                          },
+                          "mobile": {}
+                        },
+                        "content": {},
+                        "animation": null,
+                        "children": [
+                          {
+                            "id": "cb8876b111",
+                            "type": "icon",
+                            "name": "Icono",
+                            "styles": {
+                              "base": {
+                                "width": "18px",
+                                "height": "18px",
+                                "color": "#a68a56"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "name": "check"
+                            },
+                            "animation": null,
+                            "children": []
+                          },
+                          {
+                            "id": "68e1a56f12",
+                            "type": "text",
+                            "name": "Texto",
+                            "styles": {
+                              "base": {
+                                "margin": "0",
+                                "fontSize": "15px",
+                                "color": "#a3a09a"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "text": "1 página"
+                            },
+                            "animation": null,
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "id": "ddd102ff16",
+                        "type": "container",
+                        "name": "Ventaja",
+                        "styles": {
+                          "base": {
+                            "display": "flex",
+                            "alignItems": "center",
+                            "gap": "10px"
+                          },
+                          "mobile": {}
+                        },
+                        "content": {},
+                        "animation": null,
+                        "children": [
+                          {
+                            "id": "5007277b14",
+                            "type": "icon",
+                            "name": "Icono",
+                            "styles": {
+                              "base": {
+                                "width": "18px",
+                                "height": "18px",
+                                "color": "#a68a56"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "name": "check"
+                            },
+                            "animation": null,
+                            "children": []
+                          },
+                          {
+                            "id": "ff1552b015",
+                            "type": "text",
+                            "name": "Texto",
+                            "styles": {
+                              "base": {
+                                "margin": "0",
+                                "fontSize": "15px",
+                                "color": "#a3a09a"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "text": "Hosting incluido"
+                            },
+                            "animation": null,
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "2b13c77c18",
+                    "type": "button",
+                    "name": "Botón",
+                    "styles": {
+                      "base": {
+                        "display": "inline-block",
+                        "padding": "12px 24px",
+                        "fontSize": "16px",
+                        "borderRadius": "0",
+                        "textDecoration": "none",
+                        "fontWeight": "500",
+                        "letterSpacing": "0.02em",
+                        "background": "transparent",
+                        "color": "#f2efe8",
+                        "border": "1px solid #f2efe8",
+                        "textAlign": "center"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {
+                      "text": "Elegir",
+                      "href": "#contacto"
+                    },
+                    "animation": null,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "a766ed601n",
+                "type": "container",
+                "name": "Plan",
+                "styles": {
+                  "base": {
+                    "display": "flex",
+                    "flexDirection": "column",
+                    "padding": "36px 32px",
+                    "borderRadius": "0",
+                    "background": "#efece4",
+                    "border": "1px solid #d9d6cf",
+                    "gap": "16px",
+                    "color": "#111111"
+                  },
+                  "mobile": {}
+                },
+                "content": {},
+                "animation": null,
+                "children": [
+                  {
+                    "id": "3fffd59d1a",
+                    "type": "text",
+                    "name": "Nombre",
+                    "styles": {
+                      "base": {
+                        "margin": "0",
+                        "fontSize": "12px",
+                        "lineHeight": "1.4",
+                        "letterSpacing": "0.18em",
+                        "textTransform": "uppercase",
+                        "fontWeight": "500",
+                        "color": "#5f5c55"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {
+                      "text": "Business"
+                    },
+                    "animation": null,
+                    "children": []
+                  },
+                  {
+                    "id": "4901de091b",
+                    "type": "text",
+                    "name": "Precio",
+                    "styles": {
+                      "base": {
+                        "margin": "0",
+                        "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                        "fontWeight": "500",
+                        "fontSize": "48px",
+                        "lineHeight": "1.1",
+                        "letterSpacing": "-0.02em"
+                      },
+                      "mobile": {
+                        "fontSize": "40px"
+                      }
+                    },
+                    "content": {
+                      "text": "$199"
+                    },
+                    "animation": null,
+                    "children": []
+                  },
+                  {
+                    "id": "5fde151d1l",
+                    "type": "container",
+                    "name": "Ventajas",
+                    "styles": {
+                      "base": {
+                        "display": "flex",
+                        "flexDirection": "column",
+                        "gap": "10px",
+                        "flex": "1",
+                        "paddingTop": "8px"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {},
+                    "animation": null,
+                    "children": [
+                      {
+                        "id": "b4d592171e",
+                        "type": "container",
+                        "name": "Ventaja",
+                        "styles": {
+                          "base": {
+                            "display": "flex",
+                            "alignItems": "center",
+                            "gap": "10px"
+                          },
+                          "mobile": {}
+                        },
+                        "content": {},
+                        "animation": null,
+                        "children": [
+                          {
+                            "id": "8ae7113c1c",
+                            "type": "icon",
+                            "name": "Icono",
+                            "styles": {
+                              "base": {
+                                "width": "18px",
+                                "height": "18px",
+                                "color": "#a68a56"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "name": "check"
+                            },
+                            "animation": null,
+                            "children": []
+                          },
+                          {
+                            "id": "fb82bbaf1d",
+                            "type": "text",
+                            "name": "Texto",
+                            "styles": {
+                              "base": {
+                                "margin": "0",
+                                "fontSize": "15px",
+                                "color": "#5f5c55"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "text": "3 páginas"
+                            },
+                            "animation": null,
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "id": "424d33171h",
+                        "type": "container",
+                        "name": "Ventaja",
+                        "styles": {
+                          "base": {
+                            "display": "flex",
+                            "alignItems": "center",
+                            "gap": "10px"
+                          },
+                          "mobile": {}
+                        },
+                        "content": {},
+                        "animation": null,
+                        "children": [
+                          {
+                            "id": "06d43c341f",
+                            "type": "icon",
+                            "name": "Icono",
+                            "styles": {
+                              "base": {
+                                "width": "18px",
+                                "height": "18px",
+                                "color": "#a68a56"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "name": "check"
+                            },
+                            "animation": null,
+                            "children": []
+                          },
+                          {
+                            "id": "e285da0b1g",
+                            "type": "text",
+                            "name": "Texto",
+                            "styles": {
+                              "base": {
+                                "margin": "0",
+                                "fontSize": "15px",
+                                "color": "#5f5c55"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "text": "Animaciones"
+                            },
+                            "animation": null,
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "id": "6fa44cf61k",
+                        "type": "container",
+                        "name": "Ventaja",
+                        "styles": {
+                          "base": {
+                            "display": "flex",
+                            "alignItems": "center",
+                            "gap": "10px"
+                          },
+                          "mobile": {}
+                        },
+                        "content": {},
+                        "animation": null,
+                        "children": [
+                          {
+                            "id": "f4e539861i",
+                            "type": "icon",
+                            "name": "Icono",
+                            "styles": {
+                              "base": {
+                                "width": "18px",
+                                "height": "18px",
+                                "color": "#a68a56"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "name": "check"
+                            },
+                            "animation": null,
+                            "children": []
+                          },
+                          {
+                            "id": "a349e0fb1j",
+                            "type": "text",
+                            "name": "Texto",
+                            "styles": {
+                              "base": {
+                                "margin": "0",
+                                "fontSize": "15px",
+                                "color": "#5f5c55"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "text": "Dominio propio"
+                            },
+                            "animation": null,
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "1feb9aa21m",
+                    "type": "button",
+                    "name": "Botón",
+                    "styles": {
+                      "base": {
+                        "display": "inline-block",
+                        "padding": "12px 24px",
+                        "fontSize": "16px",
+                        "borderRadius": "0",
+                        "textDecoration": "none",
+                        "fontWeight": "500",
+                        "letterSpacing": "0.02em",
+                        "background": "#111111",
+                        "color": "#f7f5f0",
+                        "border": "1px solid #111111",
+                        "textAlign": "center"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {
+                      "text": "Elegir",
+                      "href": "#contacto"
+                    },
+                    "animation": null,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "e90f3ec91y",
+                "type": "container",
+                "name": "Plan",
+                "styles": {
+                  "base": {
+                    "display": "flex",
+                    "flexDirection": "column",
+                    "padding": "36px 32px",
+                    "borderRadius": "0",
+                    "background": "#17171a",
+                    "border": "1px solid #2c2c30",
+                    "gap": "16px",
+                    "color": "#f2efe8"
+                  },
+                  "mobile": {}
+                },
+                "content": {},
+                "animation": null,
+                "children": [
+                  {
+                    "id": "e8c61a8e1o",
+                    "type": "text",
+                    "name": "Nombre",
+                    "styles": {
+                      "base": {
+                        "margin": "0",
+                        "fontSize": "12px",
+                        "lineHeight": "1.4",
+                        "letterSpacing": "0.18em",
+                        "textTransform": "uppercase",
+                        "fontWeight": "500",
+                        "color": "#a68a56"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {
+                      "text": "Studio"
+                    },
+                    "animation": null,
+                    "children": []
+                  },
+                  {
+                    "id": "1f3459a61p",
+                    "type": "text",
+                    "name": "Precio",
+                    "styles": {
+                      "base": {
+                        "margin": "0",
+                        "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                        "fontWeight": "500",
+                        "fontSize": "48px",
+                        "lineHeight": "1.1",
+                        "letterSpacing": "-0.02em"
+                      },
+                      "mobile": {
+                        "fontSize": "40px"
+                      }
+                    },
+                    "content": {
+                      "text": "$399"
+                    },
+                    "animation": null,
+                    "children": []
+                  },
+                  {
+                    "id": "80cfd9891w",
+                    "type": "container",
+                    "name": "Ventajas",
+                    "styles": {
+                      "base": {
+                        "display": "flex",
+                        "flexDirection": "column",
+                        "gap": "10px",
+                        "flex": "1",
+                        "paddingTop": "8px"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {},
+                    "animation": null,
+                    "children": [
+                      {
+                        "id": "22815d421s",
+                        "type": "container",
+                        "name": "Ventaja",
+                        "styles": {
+                          "base": {
+                            "display": "flex",
+                            "alignItems": "center",
+                            "gap": "10px"
+                          },
+                          "mobile": {}
+                        },
+                        "content": {},
+                        "animation": null,
+                        "children": [
+                          {
+                            "id": "739d4c071q",
+                            "type": "icon",
+                            "name": "Icono",
+                            "styles": {
+                              "base": {
+                                "width": "18px",
+                                "height": "18px",
+                                "color": "#a68a56"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "name": "check"
+                            },
+                            "animation": null,
+                            "children": []
+                          },
+                          {
+                            "id": "fc4fef0b1r",
+                            "type": "text",
+                            "name": "Texto",
+                            "styles": {
+                              "base": {
+                                "margin": "0",
+                                "fontSize": "15px",
+                                "color": "#a3a09a"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "text": "Páginas ilimitadas"
+                            },
+                            "animation": null,
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "id": "0999468f1v",
+                        "type": "container",
+                        "name": "Ventaja",
+                        "styles": {
+                          "base": {
+                            "display": "flex",
+                            "alignItems": "center",
+                            "gap": "10px"
+                          },
+                          "mobile": {}
+                        },
+                        "content": {},
+                        "animation": null,
+                        "children": [
+                          {
+                            "id": "a72d42c11t",
+                            "type": "icon",
+                            "name": "Icono",
+                            "styles": {
+                              "base": {
+                                "width": "18px",
+                                "height": "18px",
+                                "color": "#a68a56"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "name": "check"
+                            },
+                            "animation": null,
+                            "children": []
+                          },
+                          {
+                            "id": "6bae5d7c1u",
+                            "type": "text",
+                            "name": "Texto",
+                            "styles": {
+                              "base": {
+                                "margin": "0",
+                                "fontSize": "15px",
+                                "color": "#a3a09a"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "text": "Soporte prioritario"
+                            },
+                            "animation": null,
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "d1ef77b31x",
+                    "type": "button",
+                    "name": "Botón",
+                    "styles": {
+                      "base": {
+                        "display": "inline-block",
+                        "padding": "12px 24px",
+                        "fontSize": "16px",
+                        "borderRadius": "0",
+                        "textDecoration": "none",
+                        "fontWeight": "500",
+                        "letterSpacing": "0.02em",
+                        "background": "transparent",
+                        "color": "#f2efe8",
+                        "border": "1px solid #f2efe8",
+                        "textAlign": "center"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {
+                      "text": "Elegir",
+                      "href": "#contacto"
+                    },
+                    "animation": null,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "dd4f0f9e24",
+        "type": "section",
+        "name": "Escena",
+        "styles": {
+          "base": {
+            "display": "flex",
+            "flexDirection": "column",
+            "alignItems": "center",
+            "justifyContent": "center",
+            "textAlign": "center",
+            "padding": "48px 32px",
+            "background": "#efece4",
+            "color": "#111111"
+          },
+          "mobile": {
+            "padding": "32px 20px"
+          }
+        },
+        "content": {},
+        "animation": {
+          "scene": {
+            "steps": "3",
+            "length": 4,
+            "transition": 40
+          }
+        },
+        "children": [
+          {
+            "id": "f33bed8421",
+            "type": "text",
+            "name": "Texto inicial",
+            "styles": {
+              "base": {
+                "margin": "0",
+                "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                "fontWeight": "500",
+                "fontSize": "36px",
+                "lineHeight": "1.3",
+                "letterSpacing": "-0.01em",
+                "maxWidth": "18ch"
+              },
+              "mobile": {
+                "fontSize": "26px"
+              }
+            },
+            "content": {
+              "text": "Mira cómo cambia mientras bajas"
+            },
+            "animation": {
+              "scenestep": {
+                "effect": "out",
+                "step": 2,
+                "move": "up",
+                "distance": 40
+              }
+            },
+            "children": []
+          },
+          {
+            "id": "98ab307b22",
+            "type": "image",
+            "name": "Imagen paso 2",
+            "styles": {
+              "base": {
+                "width": "100%",
+                "borderRadius": "0",
+                "maxWidth": "560px"
+              },
+              "mobile": {}
+            },
+            "content": {
+              "src": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22900%22%20height%3D%22560%22%20viewBox%3D%220%200%20900%20560%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23dedad1%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20fill%3D%22%238a867c%22%20font-family%3D%22sans-serif%22%20font-size%3D%2256%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EPaso%202%3C%2Ftext%3E%3C%2Fsvg%3E",
+              "alt": "Paso 2"
+            },
+            "animation": {
+              "scenestep": {
+                "effect": "inout",
+                "step": 2,
+                "move": "zoom",
+                "distance": 40
+              }
+            },
+            "children": []
+          },
+          {
+            "id": "2cff75fe23",
+            "type": "image",
+            "name": "Imagen paso 3",
+            "styles": {
+              "base": {
+                "width": "100%",
+                "borderRadius": "0",
+                "maxWidth": "560px"
+              },
+              "mobile": {}
+            },
+            "content": {
+              "src": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22900%22%20height%3D%22560%22%20viewBox%3D%220%200%20900%20560%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23cfcbc0%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20fill%3D%22%238a867c%22%20font-family%3D%22sans-serif%22%20font-size%3D%2256%22%20text-anchor%3D%22middle%22%20dominant-baseline%3D%22middle%22%3EPaso%203%3C%2Ftext%3E%3C%2Fsvg%3E",
+              "alt": "Paso 3"
+            },
+            "animation": {
+              "scenestep": {
+                "effect": "in",
+                "step": 3,
+                "move": "zoom",
+                "distance": 40
+              }
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": "e2b77c7528",
+        "type": "section",
+        "name": "Contacto",
+        "styles": {
+          "base": {
+            "display": "flex",
+            "flexDirection": "column",
+            "padding": "112px max(32px, calc((100% - 1120px) / 2))",
+            "gap": "24px",
+            "alignItems": "center",
+            "textAlign": "center",
+            "background": "#0c0c0e",
+            "color": "#f2efe8"
+          },
+          "mobile": {
+            "padding": "64px 20px"
+          }
+        },
+        "content": {
+          "anchor": "contacto"
+        },
+        "animation": null,
+        "children": [
+          {
+            "id": "594dd1d625",
+            "type": "heading",
+            "name": "Título",
+            "styles": {
+              "base": {
+                "margin": "0",
+                "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                "fontWeight": "500",
+                "fontSize": "52px",
+                "lineHeight": "1.15",
+                "letterSpacing": "-0.015em"
+              },
+              "mobile": {
+                "fontSize": "36px"
+              }
+            },
+            "content": {
+              "text": "Empecemos hoy",
+              "level": 2
+            },
+            "animation": null,
+            "children": []
+          },
+          {
+            "id": "0fc8224b26",
+            "type": "text",
+            "name": "Subtítulo",
+            "styles": {
+              "base": {
+                "margin": "0",
+                "fontSize": "20px",
+                "lineHeight": "1.6",
+                "color": "#a3a09a"
+              },
+              "mobile": {
+                "fontSize": "17px"
+              }
+            },
+            "content": {
+              "text": "Un mensaje y tu proyecto está en marcha."
+            },
+            "animation": null,
+            "children": []
+          },
+          {
+            "id": "64ea00e427",
+            "type": "button",
+            "name": "Botón WhatsApp",
+            "styles": {
+              "base": {
+                "display": "inline-block",
+                "padding": "12px 24px",
+                "fontSize": "16px",
+                "borderRadius": "0",
+                "textDecoration": "none",
+                "fontWeight": "500",
+                "letterSpacing": "0.02em",
+                "background": "#a68a56",
+                "color": "#0c0c0e",
+                "border": "1px solid #a68a56"
+              },
+              "mobile": {}
+            },
+            "content": {
+              "text": "Escríbenos por WhatsApp",
+              "href": "https://wa.me/50600000000?text=Hola%2C%20quiero%20m%C3%A1s%20informaci%C3%B3n"
+            },
+            "animation": null,
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": "113a3dfa2f",
+        "type": "section",
+        "name": "Footer",
+        "styles": {
+          "base": {
+            "display": "flex",
+            "flexDirection": "column",
+            "alignItems": "center",
+            "gap": "18px",
+            "padding": "64px 24px",
+            "textAlign": "center",
+            "background": "#efece4",
+            "color": "#111111",
+            "borderTop": "1px solid #d9d6cf"
+          },
+          "mobile": {}
+        },
+        "content": {},
+        "animation": null,
+        "children": [
+          {
+            "id": "ee4f8c8529",
+            "type": "text",
+            "name": "Marca",
+            "styles": {
+              "base": {
+                "margin": "0",
+                "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                "fontWeight": "500",
+                "fontSize": "22px",
+                "letterSpacing": "-0.01em"
+              },
+              "mobile": {}
+            },
+            "content": {
+              "text": "Mi Marca"
+            },
+            "animation": null,
+            "children": []
+          },
+          {
+            "id": "0d6619ef2d",
+            "type": "container",
+            "name": "Enlaces",
+            "styles": {
+              "base": {
+                "display": "flex",
+                "gap": "28px",
+                "flexWrap": "wrap",
+                "justifyContent": "center"
+              },
+              "mobile": {}
+            },
+            "content": {},
+            "animation": null,
+            "children": [
+              {
+                "id": "73bbe8392a",
+                "type": "button",
+                "name": "Enlace",
+                "styles": {
+                  "base": {
+                    "color": "inherit",
+                    "textDecoration": "none",
+                    "opacity": "0.75",
+                    "display": "inline-block",
+                    "fontSize": "15px"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "text": "Inicio",
+                  "href": "#inicio"
+                },
+                "animation": null,
+                "children": []
+              },
+              {
+                "id": "af7612f32b",
+                "type": "button",
+                "name": "Enlace",
+                "styles": {
+                  "base": {
+                    "color": "inherit",
+                    "textDecoration": "none",
+                    "opacity": "0.75",
+                    "display": "inline-block",
+                    "fontSize": "15px"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "text": "Servicios",
+                  "href": "#servicios"
+                },
+                "animation": null,
+                "children": []
+              },
+              {
+                "id": "6b875b1c2c",
+                "type": "button",
+                "name": "Enlace",
+                "styles": {
+                  "base": {
+                    "color": "inherit",
+                    "textDecoration": "none",
+                    "opacity": "0.75",
+                    "display": "inline-block",
+                    "fontSize": "15px"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "text": "Contacto",
+                  "href": "#contacto"
+                },
+                "animation": null,
+                "children": []
+              }
+            ]
+          },
+          {
+            "id": "06d3b9932e",
+            "type": "text",
+            "name": "Copyright",
+            "styles": {
+              "base": {
+                "margin": "0",
+                "fontSize": "14px",
+                "lineHeight": "1.5",
+                "color": "#5f5c55"
+              },
+              "mobile": {}
+            },
+            "content": {
+              "text": "© 2026 Todos los derechos reservados"
+            },
+            "animation": null,
+            "children": []
+          }
+        ]
+      }
+    ]
+  }
+}

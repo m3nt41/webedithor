@@ -1,72 +1,89 @@
 // BLOQUE HERO
 // Cada bloque exporta { id, label, variants }. variants = { clave: { label, crear } };
 // crear() devuelve un árbol de nodos NUEVO (ids nuevos) cada vez que se llama.
+// Estilo: ver tema.js (claras: oscuro/claro alternables; botones Grande en el hero).
 
-import { n, titulo, texto, boton, imagen, placeholder, columna, seccion } from './util.js';
+import { n, boton, imagen, placeholder, columna, seccion, tit, lead, etiqueta, fondoModo } from './util.js';
+import { C, MODOS, botonTema, colorPh, AIRE, lado, ANCHO } from './tema.js';
 
-const CENTRADO = { alignItems: 'center', justifyContent: 'center', gap: '24px', minHeight: '80vh', textAlign: 'center' };
+const CENTRADO = { alignItems: 'center', justifyContent: 'center', gap: '28px', minHeight: '80vh', textAlign: 'center' };
+const MOVIL = { padding: `${AIRE.m} 20px`, minHeight: '70vh' };
+
+const filaBotones = (m) =>
+  n('container', { name: 'Botones', styles: { display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center' }, children: [
+    boton('Empezar', '#contacto', botonTema(m, 'l'), 'Botón'),
+    boton('Ver más', '#servicios', botonTema(m, 'l', 'secundario'), 'Botón secundario'),
+  ] });
 
 export default {
   ancla: 'inicio',
   id: 'hero',
   label: 'Hero',
   variants: {
-    oscuro: { label: 'Oscuro', crear: () =>
-      seccion('Hero', { ...CENTRADO, padding: '96px 32px', background: '#0b0b10', color: '#ffffff' }, [
-        titulo('Tu idea, en una landing inolvidable', 1, { fontSize: '64px', lineHeight: '1.05', maxWidth: '14ch', fontWeight: '800' }, { fontSize: '38px' }),
-        texto('Diseño a medida, animaciones suaves y cero complicaciones.', { fontSize: '20px', maxWidth: '48ch', opacity: '0.75' }, { fontSize: '17px' }, 'Subtítulo'),
-        boton('Hablemos', '#contacto'),
-      ], { padding: '64px 20px', minHeight: '70vh' }) },
+    oscuro: { label: 'Oscuro', crear: () => {
+      const m = MODOS.oscuro;
+      return seccion('Hero', { ...CENTRADO, ...fondoModo(m) }, [
+        tit(1, 'Tu idea, en una landing inolvidable', { maxWidth: '16ch', fontSize: '72px' }, { fontSize: '42px' }),
+        lead('Diseño a medida, animaciones suaves y cero complicaciones.', m, { maxWidth: '48ch' }),
+        boton('Hablemos', '#contacto', botonTema(m, 'l')),
+      ], MOVIL);
+    } },
 
-    claro: { label: 'Claro', crear: () =>
-      seccion('Hero', { ...CENTRADO, padding: '96px 32px', background: '#f6f5ff', color: '#14141c' }, [
-        texto('NUEVO', { fontSize: '13px', letterSpacing: '0.2em', fontWeight: '700', color: '#7c5cff' }, {}, 'Etiqueta'),
-        titulo('Hacemos que tu marca se note', 1, { fontSize: '60px', lineHeight: '1.05', maxWidth: '16ch', fontWeight: '800' }, { fontSize: '36px' }),
-        texto('Una landing clara, rápida y pensada para convertir visitas en clientes.', { fontSize: '19px', maxWidth: '50ch', opacity: '0.7' }, {}, 'Subtítulo'),
-        n('container', { name: 'Botones', styles: { display: 'flex', gap: '12px', flexWrap: 'wrap', justifyContent: 'center' }, children: [
-          boton('Empezar', '#contacto'),
-          boton('Ver más', '#servicios', { background: 'transparent', color: '#14141c', border: '2px solid #14141c' }, 'Botón secundario'),
-        ] }),
-      ], { padding: '64px 20px', minHeight: '70vh' }) },
+    claro: { label: 'Claro', crear: () => {
+      const m = MODOS.claro;
+      return seccion('Hero', { ...CENTRADO, ...fondoModo(m) }, [
+        etiqueta('Nuevo', m),
+        tit(1, 'Hacemos que tu marca se note', { maxWidth: '18ch' }),
+        lead('Una landing clara, rápida y pensada para convertir visitas en clientes.', m, { maxWidth: '50ch' }),
+        filaBotones(m),
+      ], MOVIL);
+    } },
 
-    dividido: { label: 'Texto + imagen', crear: () =>
-      n('section', {
+    dividido: { label: 'Texto + imagen', crear: () => {
+      const m = MODOS.claro2;
+      return n('section', {
         name: 'Hero',
         styles: {
-          display: 'grid', gridTemplateColumns: '1fr 1fr', alignItems: 'center', gap: '48px',
-          padding: '80px 48px', minHeight: '70vh', background: '#ffffff', color: '#14141c',
+          display: 'grid', gridTemplateColumns: '1fr 1fr', alignItems: 'center', gap: '64px',
+          padding: `96px ${lado(ANCHO)}`, minHeight: '70vh', ...fondoModo(m),
         },
-        mobile: { gridTemplateColumns: '1fr', padding: '48px 20px', gap: '28px' },
+        mobile: { gridTemplateColumns: '1fr', padding: '56px 20px', gap: '32px' },
         children: [
-          columna('Textos', { gap: '20px', alignItems: 'flex-start' }, [
-            titulo('Todo lo que tu negocio necesita', 1, { fontSize: '52px', lineHeight: '1.08', fontWeight: '800' }, { fontSize: '34px' }),
-            texto('Un hero en dos columnas: mensaje a la izquierda, imagen a la derecha.', { fontSize: '18px', opacity: '0.7', lineHeight: '1.5' }, {}, 'Subtítulo'),
-            boton('Cotizar', '#contacto'),
+          columna('Textos', { gap: '24px', alignItems: 'flex-start' }, [
+            tit(1, 'Todo lo que tu negocio necesita', { fontSize: '56px' }, { fontSize: '38px' }),
+            lead('Un hero en dos columnas: mensaje a la izquierda, imagen a la derecha.', m),
+            boton('Cotizar', '#contacto', botonTema(m, 'l')),
           ]),
-          imagen(placeholder(800, 640), 'Imagen principal', { borderRadius: '20px' }),
+          imagen(placeholder(800, 640, colorPh(0)), 'Imagen principal'),
         ],
-      }) },
+      });
+    } },
 
     // Hero con imagen de fondo + capa oscura (campos fondoImagen/fondoCapa: CSS puro en el export)
-    fondo: { label: 'Con fondo', crear: () =>
-      seccion('Hero', {
-        alignItems: 'center', justifyContent: 'center', gap: '24px', textAlign: 'center',
-        minHeight: '90vh', padding: '110px 32px', color: '#ffffff', background: '#14141c',
-        fondoImagen: placeholder(1600, 900, '#4a4a63', 'Tu imagen de fondo'), fondoAjuste: 'cover', fondoPosicion: 'center', fondoCapa: 45,
+    fondo: { label: 'Con fondo', crear: () => {
+      const m = MODOS.oscuro;
+      return seccion('Hero', {
+        alignItems: 'center', justifyContent: 'center', gap: '28px', textAlign: 'center',
+        minHeight: '90vh', padding: `${AIRE.d} 32px`, ...fondoModo(m),
+        fondoImagen: placeholder(1600, 900, C.phOscuro, 'Tu imagen de fondo'), fondoAjuste: 'cover', fondoPosicion: 'center', fondoCapa: 45,
       }, [
-        titulo('Un lugar que se queda en la memoria', 1, { fontSize: '68px', lineHeight: '1.05', maxWidth: '16ch', fontWeight: '800' }, { fontSize: '38px' }),
-        texto('Sube tu foto en el panel "Fondo e imagen" y ajusta la capa oscura para que el texto se lea.', { fontSize: '20px', maxWidth: '46ch', opacity: '0.9' }, { fontSize: '17px' }, 'Subtítulo'),
-        boton('Reservar', '#contacto'),
-      ], { padding: '72px 20px', minHeight: '80vh' }) },
+        tit(1, 'Un lugar que se queda en la memoria', { maxWidth: '18ch', fontSize: '68px' }, { fontSize: '40px' }),
+        lead('Sube tu foto en el panel "Fondo e imagen" y ajusta la capa oscura para que el texto se lea.', MODOS.oscuro, { maxWidth: '46ch', color: C.textoClaro }),
+        boton('Reservar', '#contacto', botonTema(m, 'l')),
+      ], { ...MOVIL, minHeight: '80vh' });
+    } },
 
-    degradado: { label: 'Degradado', crear: () =>
-      seccion('Hero', {
-        ...CENTRADO, padding: '110px 32px', color: '#ffffff',
-        background: 'linear-gradient(135deg, #7c5cff 0%, #ff5c9d 100%)',
+    // Antes "degradado" (violeta-rosa): ahora editorial oscuro con una línea de acento
+    degradado: { label: 'Acento', crear: () => {
+      const m = MODOS.oscuro2;
+      return seccion('Hero', {
+        ...CENTRADO, alignItems: 'flex-start', textAlign: 'left', ...fondoModo(m),
+        borderTop: `1px solid ${C.acento}`,
       }, [
-        titulo('Hazlo con estilo', 1, { fontSize: '68px', lineHeight: '1.02', fontWeight: '800' }, { fontSize: '40px' }),
-        texto('Colores que se recuerdan y un mensaje directo.', { fontSize: '20px', maxWidth: '44ch', opacity: '0.9' }, {}, 'Subtítulo'),
-        boton('Quiero la mía', '#contacto', { background: '#ffffff', color: '#7c5cff' }),
-      ], { padding: '72px 20px', minHeight: '70vh' }) },
+        tit(1, 'Hazlo con estilo', { fontSize: '72px', maxWidth: '12ch' }, { fontSize: '44px' }),
+        lead('Un mensaje directo, con espacio para respirar.', m, { maxWidth: '44ch' }),
+        boton('Quiero la mía', '#contacto', botonTema(m, 'l')),
+      ], MOVIL);
+    } },
   },
 };

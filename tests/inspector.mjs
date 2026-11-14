@@ -194,7 +194,7 @@ try {
   await pulsar('borderRadius', 'Redondo');
   assert.equal(await est('ImgRara', 'base', 'borderRadius'), '12px');
   await seleccionar('FotoG3');
-  assert.deepEqual(await activo('borderRadius'), ['Redondo'], 'la foto de la galería trae 12px: Redondo');
+  assert.deepEqual(await activo('borderRadius'), ['Recto'], 'la foto de la galería nace recta (0): Recto');
   assert.equal(await d.executeScript(`return [...document.querySelectorAll('#inspector h3')].some(h=>h.textContent==='Botón')`), false, 'el grupo Botón solo sale en botones');
   await seleccionar('SecBtn');
   assert.equal(await d.executeScript(`return !!document.querySelector('#inspector button[data-ctl="borderRadius"]')`), true, 'las secciones tienen Forma');

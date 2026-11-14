@@ -1,57 +1,68 @@
 // BLOQUE FOOTER
 
-import { n, texto, columna } from './util.js';
+import { n, texto, columna, etiqueta, cuerpo, pequeno, fondoModo } from './util.js';
+import { MODOS, FUENTE, lado, ANCHO } from './tema.js';
 
 const ANCLAS = { Inicio: '#inicio', Servicios: '#servicios', Precios: '#precios', Contacto: '#contacto' };
-const enlaces = (lista, color = 'inherit') =>
-  lista.map((t) => n('button', { name: 'Enlace', content: { text: t, href: ANCLAS[t] ?? '#' }, styles: { color, textDecoration: 'none', opacity: '0.75', display: 'inline-block' } }));
+const enlaces = (lista) =>
+  lista.map((t) => n('button', { name: 'Enlace', content: { text: t, href: ANCLAS[t] ?? '#' }, styles: { color: 'inherit', textDecoration: 'none', opacity: '0.75', display: 'inline-block', fontSize: '15px' } }));
+
+const marca = (t = 'Mi Marca') => texto(t, { fontFamily: FUENTE.titulo, fontWeight: '500', fontSize: '22px', letterSpacing: '-0.01em' }, {}, 'Marca');
 
 export default {
   id: 'footer',
   label: 'Footer',
   variants: {
-    simple: { label: 'Simple', crear: () =>
-      n('section', {
+    simple: { label: 'Simple', crear: () => {
+      const m = MODOS.oscuro;
+      return n('section', {
         name: 'Footer',
-        styles: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px', padding: '32px', background: '#0b0b10', color: '#ffffff' },
-        mobile: { flexDirection: 'column', textAlign: 'center' },
+        styles: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '16px', padding: `40px ${lado(ANCHO)}`, ...fondoModo(m) },
+        mobile: { flexDirection: 'column', textAlign: 'center', padding: '32px 20px' },
         children: [
-          texto('Mi Marca', { fontWeight: '700' }, {}, 'Marca'),
-          texto('© 2026 Todos los derechos reservados', { opacity: '0.6', fontSize: '14px' }, {}, 'Copyright'),
+          marca(),
+          pequeno('© 2026 Todos los derechos reservados', m, {}, 'Copyright'),
         ],
-      }) },
+      });
+    } },
 
-    columnas: { label: 'Columnas', crear: () =>
-      n('section', {
+    columnas: { label: 'Columnas', crear: () => {
+      const m = MODOS.oscuro;
+      return n('section', {
         name: 'Footer',
-        styles: { display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '40px', padding: '56px 48px', background: '#0b0b10', color: '#ffffff' },
-        mobile: { gridTemplateColumns: '1fr', padding: '40px 20px', gap: '28px' },
+        styles: { display: 'grid', gridTemplateColumns: '2fr 1fr 1fr', gap: '48px', padding: `72px ${lado(ANCHO)}`, ...fondoModo(m) },
+        mobile: { gridTemplateColumns: '1fr', padding: '48px 20px', gap: '32px' },
         children: [
-          columna('Marca', { gap: '10px' }, [
-            texto('Mi Marca', { fontWeight: '800', fontSize: '22px' }, {}, 'Marca'),
-            texto('Landings que se sienten vivas.', { opacity: '0.6', maxWidth: '32ch' }, {}, 'Lema'),
+          columna('Marca', { gap: '12px' }, [
+            marca(),
+            cuerpo('Landings que se sienten vivas.', m, { maxWidth: '32ch' }, 'Lema'),
           ]),
-          columna('Enlaces', { gap: '8px' }, [texto('Sitio', { fontWeight: '700' }, {}, 'Título'), ...enlaces(['Inicio', 'Servicios', 'Precios'])]),
-          columna('Contacto', { gap: '8px' }, [texto('Contacto', { fontWeight: '700' }, {}, 'Título'), texto('hola@tumarca.com', { opacity: '0.75' }, {}, 'Correo'), texto('+506 0000 0000', { opacity: '0.75' }, {}, 'Teléfono')]),
+          columna('Enlaces', { gap: '10px' }, [etiqueta('Sitio', m, {}, 'Título'), ...enlaces(['Inicio', 'Servicios', 'Precios'])]),
+          columna('Contacto', { gap: '10px' }, [etiqueta('Contacto', m, {}, 'Título'), cuerpo('hola@tumarca.com', m, {}, 'Correo'), cuerpo('+506 0000 0000', m, {}, 'Teléfono')]),
         ],
-      }) },
+      });
+    } },
 
-    centrado: { label: 'Centrado', crear: () =>
-      n('section', {
+    centrado: { label: 'Centrado', crear: () => {
+      const m = MODOS.claro2;
+      return n('section', {
         name: 'Footer',
-        styles: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '14px', padding: '48px 24px', background: '#f4f4f7', color: '#14141c', textAlign: 'center' },
+        styles: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '18px', padding: '64px 24px', textAlign: 'center', ...fondoModo(m), borderTop: `1px solid ${m.linea}` },
         children: [
-          texto('Mi Marca', { fontWeight: '800', fontSize: '22px' }, {}, 'Marca'),
-          n('container', { name: 'Enlaces', styles: { display: 'flex', gap: '20px', flexWrap: 'wrap', justifyContent: 'center' }, children: enlaces(['Inicio', 'Servicios', 'Contacto']) }),
-          texto('© 2026 Todos los derechos reservados', { opacity: '0.55', fontSize: '14px' }, {}, 'Copyright'),
+          marca(),
+          n('container', { name: 'Enlaces', styles: { display: 'flex', gap: '28px', flexWrap: 'wrap', justifyContent: 'center' }, children: enlaces(['Inicio', 'Servicios', 'Contacto']) }),
+          pequeno('© 2026 Todos los derechos reservados', m, {}, 'Copyright'),
         ],
-      }) },
+      });
+    } },
 
-    minimo: { label: 'Mínimo', crear: () =>
-      n('section', {
+    minimo: { label: 'Mínimo', crear: () => {
+      const m = MODOS.claro;
+      return n('section', {
         name: 'Footer',
-        styles: { display: 'flex', justifyContent: 'center', padding: '20px', background: '#ffffff', color: '#14141c', borderTop: '1px solid #e3e3ea' },
-        children: [texto('© 2026 Mi Marca', { opacity: '0.55', fontSize: '13px' }, {}, 'Copyright')],
-      }) },
+        styles: { display: 'flex', justifyContent: 'center', padding: '24px', ...fondoModo(m), borderTop: `1px solid ${m.linea}` },
+        children: [pequeno('© 2026 Mi Marca', m, { fontSize: '13px' }, 'Copyright')],
+      });
+    } },
   },
 };

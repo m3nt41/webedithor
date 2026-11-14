@@ -5,7 +5,8 @@
 // Solo se ve en la Vista previa y en el exportado; al editar, los hijos salen uno bajo otro.
 // Los pasos y la duración se cambian en el inspector ("Escena por scroll" / "Paso de escena").
 
-import { n, titulo, texto, boton, imagen, placeholder } from './util.js';
+import { n, texto, boton, imagen, placeholder, tit, fondoModo } from './util.js';
+import { MODOS, CITA, botonTema, colorPh } from './tema.js';
 
 /** Pone el "Paso de escena" a un hijo. */
 const paso = (nodo, effect, step, move = 'up') => {
@@ -25,25 +26,31 @@ const escena = (name, styles, hijos) => {
   return s;
 };
 
+const t56 = (text, name) => tit(2, text, { fontSize: '56px', maxWidth: '16ch' }, { fontSize: '34px' }, name);
+
 export default {
   id: 'scene',
   label: 'Escena',
   variants: {
-    textos: { label: 'Tres mensajes', crear: () =>
-      escena('Escena', { background: '#0b0b10', color: '#ffffff' }, [
-        paso(titulo('Primero, una idea', 2, { fontSize: '56px', fontWeight: '800', maxWidth: '16ch' }, { fontSize: '34px' }, 'Paso 1'), 'out', 2),
-        paso(titulo('Luego, el diseño', 2, { fontSize: '56px', fontWeight: '800', maxWidth: '16ch' }, { fontSize: '34px' }, 'Paso 2'), 'inout', 2),
-        paso(n('container', { name: 'Paso 3', styles: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }, children: [
-          titulo('Y al final, tu landing', 2, { fontSize: '56px', fontWeight: '800', maxWidth: '16ch' }, { fontSize: '34px' }),
-          boton('Hablemos', '#contacto'),
+    textos: { label: 'Tres mensajes', crear: () => {
+      const m = MODOS.oscuro;
+      return escena('Escena', fondoModo(m), [
+        paso(t56('Primero, una idea', 'Paso 1'), 'out', 2),
+        paso(t56('Luego, el diseño', 'Paso 2'), 'inout', 2),
+        paso(n('container', { name: 'Paso 3', styles: { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px' }, children: [
+          tit(2, 'Y al final, tu landing', { fontSize: '56px', maxWidth: '16ch' }, { fontSize: '34px' }),
+          boton('Hablemos', '#contacto', botonTema(m, 'l')),
         ] }), 'in', 3),
-      ]) },
+      ]);
+    } },
 
-    imagenes: { label: 'Texto + imagen', crear: () =>
-      escena('Escena', { background: '#f6f5ff', color: '#14141c' }, [
-        paso(texto('Mira cómo cambia mientras bajas', { fontSize: '36px', fontWeight: '700', maxWidth: '18ch' }, { fontSize: '26px' }, 'Texto inicial'), 'out', 2),
-        paso(imagen(placeholder(900, 560, '#d9d9e3', 'Paso 2'), 'Paso 2', { maxWidth: '560px', borderRadius: '20px' }, 'Imagen paso 2'), 'inout', 2, 'zoom'),
-        paso(imagen(placeholder(900, 560, '#c9c2f5', 'Paso 3'), 'Paso 3', { maxWidth: '560px', borderRadius: '20px' }, 'Imagen paso 3'), 'in', 3, 'zoom'),
-      ]) },
+    imagenes: { label: 'Texto + imagen', crear: () => {
+      const m = MODOS.claro2;
+      return escena('Escena', fondoModo(m), [
+        paso(texto('Mira cómo cambia mientras bajas', { ...CITA.d, maxWidth: '18ch' }, CITA.m, 'Texto inicial'), 'out', 2),
+        paso(imagen(placeholder(900, 560, colorPh(0), 'Paso 2'), 'Paso 2', { maxWidth: '560px' }, 'Imagen paso 2'), 'inout', 2, 'zoom'),
+        paso(imagen(placeholder(900, 560, colorPh(3), 'Paso 3'), 'Paso 3', { maxWidth: '560px' }, 'Imagen paso 3'), 'in', 3, 'zoom'),
+      ]);
+    } },
   },
 };

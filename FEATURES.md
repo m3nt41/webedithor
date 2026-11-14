@@ -67,3 +67,6 @@ Motion vs CSS puro: m3nt41 ya decidió la opción (a), CSS puro donde se pueda y
 
 ## Elementos (añadido 2026-11-14, mini-etapa iconos)
 - [x] Icono: elemento propio (tipo `icon`) con SVG de línea de una biblioteca de 41 iconos (Lucide, ISC); tamaño y color editables (también en móvil); sin emoticonos en bloques ni en la interfaz; las animaciones existentes (al aparecer, hover, press, scroll, estados) funcionan sobre él
+
+## Estilo de los bloques
+- [x] Estilo base elegante para todos los bloques: tema único `src/blocks/tema.js` (editorial minimalista + moderno oscuro, un solo acento, todo recto, sin sombras ni degradados) y landing de muestra `docs/demo-estilo.json` (mini-etapa estética)

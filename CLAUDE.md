@@ -71,8 +71,8 @@ Cada función de `FEATURES.md` tiene una etapa asignada (se indica allí con `�
 ## Tests
 - Suite completa: `npm run test:todo` (build una sola vez, una línea por test con ✔/✘/– y duración, resumen final; solo muestra detalle de lo que falla). Lee solo el resumen.
 - `test:firefox` (Playwright) va al final y, si no puede lanzar Firefox (`spawn UNKNOWN`), sale como "omitido" (código 3), no como fallo. Nunca reintentes ni depures ese fallo de entorno.
-- Mientras trabajas en una tarea, ejecuta solo los tests del área que tocas. Al terminar, ejecuta UNA vez `npm run test:todo` completo antes del commit.
-- Si un test lento (por ejemplo menu-scroll) no tiene relación con lo que cambiaste, déjalo para la corrida final.
+- **En mini-etapas usa `npm run test:cambios`**: corre solo los tests que le corresponden a lo que cambió (según `git diff HEAD` + archivos nuevos y el mapa de `tools/mapa-tests.mjs`) e imprime primero qué eligió y por qué; si un archivo de `src/` no está en el mapa, corre la suite completa; si solo cambió documentación, no corre nada; `--ver` muestra el criterio sin correr. Si añades un test o un archivo de `src/` nuevo, añade su línea al mapa (cómo, en `PROGRESS.md`).
+- La suite completa (`npm run test:todo`, UNA vez) solo al cerrar una etapa grande o si tocaste algo compartido (`tree.js`, `store.js`, `renderer.js`, `exporter.js`, `app.css`, `package.json`, `tools/lib-tests.mjs`). Mientras trabajas, solo los tests del área que tocas.
 - Máximo 1 reintento de un test que falle, y solo si hay motivo para pensar que fue intermitente.
 - No abras ni cierres servidores o navegadores de más; al terminar no dejes procesos abiertos de prueba (`npm run dev`, geckodriver, Firefox de prueba). Los Firefox sin perfil temporal son de m3nt41: no se tocan.
 

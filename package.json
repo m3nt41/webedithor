@@ -10,6 +10,7 @@
     "gen:lenis": "node tools/gen-lenis.mjs",
     "test:firefox": "node tools/test-firefox.mjs",
     "test:todo": "node tools/test-todo.mjs",
+    "test:cambios": "node tools/test-cambios.mjs",
     "test:selenium": "node --test --test-reporter=spec tests/selenium.test.mjs",
     "test:vistaprevia": "node tests/vista-previa.mjs",
     "test:persistencia": "npm run build && node tests/inspector-persistencia.mjs",

@@ -31,8 +31,8 @@ export const MAPA = {
 
   // ---- Inspector y controles visuales ----
   'src/ui/controles.js': ['controles', 'inspector'],
-  'src/ui/fields.js': ['controles', 'inspector'],
-  'src/ui/inspector.js': ['controles', 'inspector', 'marquesina-ui'],
+  'src/ui/fields.js': ['controles', 'inspector', 'inspector-niveles'],
+  'src/ui/inspector.js': ['controles', 'inspector', 'inspector-niveles', 'marquesina-ui'],
   'src/ui/imagen.js': ['fondo'],
   'src/ui/iconos.js': ['inspector', 'vistaprevia', 'sidebar', 'iconos'],
   'src/ui/toolbar.js': ['vistaprevia', 'persistencia', 'editor-file'],

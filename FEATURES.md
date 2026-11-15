@@ -64,6 +64,7 @@ Motion vs CSS puro: m3nt41 ya decidió la opción (a), CSS puro donde se pueda y
 > Nota (2026-11-13): imagen de fondo para secciones y contenedores (grupo "Fondo e imagen": subir o pegar URL, Cubrir/Contener, posición y capa oscura 0–80 %; CSS puro en el export) y hero "Con fondo". La lista de funciones no cambió.
 
 > Nota (2026-11-14): inspector con controles visuales de Forma (redondeo) y Tamaño de botón (padding + tamaño de fuente en un clic); escriben el mismo CSS de siempre. La lista de funciones no cambió.
+> Nota (2026-11-15): rediseño del inspector: cabecera fija (icono, nombre, tipo) y campos en 3 niveles plegables (Esencial / Estilo / Avanzado) por tipo de nodo; Esencial abierto y lo que el usuario abre se recuerda. Sin funciones nuevas ni quitadas; la lista no cambió.
 
 ## Elementos (añadido 2026-11-14, mini-etapa iconos)
 - [x] Icono: elemento propio (tipo `icon`) con SVG de línea de una biblioteca de 41 iconos (Lucide, ISC); tamaño y color editables (también en móvil); sin emoticonos en bloques ni en la interfaz; las animaciones existentes (al aparecer, hover, press, scroll, estados) funcionan sobre él

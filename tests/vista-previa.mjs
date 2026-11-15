@@ -24,7 +24,7 @@ try {
   await d.manage().window().setRect({ width: 1300, height: 1000 });
   const url = pathToFileURL(resolve('dist/editor.html')).href;
   await d.get(url);
-  await d.executeScript('localStorage.setItem('editor-landings:niveles','{"esencial":true,"estilo":true,"avanzado":true}');localStorage.setItem("editor-landings:pagina", arguments[0])', JSON.stringify(pagina));
+  await d.executeScript(`localStorage.setItem('editor-landings:niveles','{"esencial":true,"estilo":true,"avanzado":true}');localStorage.setItem("editor-landings:pagina", arguments[0])`, JSON.stringify(pagina));
   await d.get(url);
   await esperar(800);
   await d.executeScript(`window.__err=[];addEventListener('error',e=>__err.push(e.message));`);

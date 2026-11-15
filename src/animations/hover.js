@@ -1,7 +1,7 @@
 // ANIMACIÓN "AL PASAR EL MOUSE": CSS puro (transition + :hover), sin JS.
 // Datos en node.animation.hover = { effect, duration, ease, color }
 
-import { EASES, transicion, camposCurva, sinSpring, DEF_CURVA, sinCaja } from './base.js';
+import { EASES, transicion, camposCurva, sinSpring, DEF_CURVA, modoSombra } from './base.js';
 
 const EFECTOS = [
   ['', 'Ninguno'],
@@ -14,18 +14,22 @@ const EFECTOS = [
 ];
 
 // Qué cambia al hacer hover en cada efecto
-// 2º parámetro: true si el elemento no tiene caja visible (ver sinCaja). Entonces la sombra
-// va con filter:drop-shadow (sigue las letras) en vez de box-shadow (sigue el rectángulo).
+// 2º parámetro = modoSombra: 'texto' (sin caja y con texto: text-shadow, sin capa compuesta, el texto no se
+// ve borroso al moverse), 'plano' (sin caja y sin texto, p. ej. icon/image: filter:drop-shadow) o false (con caja: box-shadow).
 const REGLAS = {
-  lift: (h, plano) => plano
-    ? 'transform:translateY(-6px);filter:drop-shadow(0 8px 10px rgba(0,0,0,.28))'
-    : 'transform:translateY(-6px);box-shadow:0 14px 30px rgba(0,0,0,.28)',
+  lift: (h, modo) => modo === 'texto'
+    ? 'transform:translateY(-6px);text-shadow:0 8px 10px rgba(0,0,0,.28)'
+    : modo
+      ? 'transform:translateY(-6px);filter:drop-shadow(0 8px 10px rgba(0,0,0,.28))'
+      : 'transform:translateY(-6px);box-shadow:0 14px 30px rgba(0,0,0,.28)',
   grow: () => 'transform:scale(1.06)',
   shrink: () => 'transform:scale(.95)',
   tilt: () => 'transform:rotate(-2deg) scale(1.04)',
-  glow: (h, plano) => plano
-    ? `filter:drop-shadow(0 0 10px ${h.color || '#7c5cff'})`
-    : `box-shadow:0 0 28px ${h.color || '#7c5cff'}`,
+  glow: (h, modo) => modo === 'texto'
+    ? `text-shadow:0 0 10px ${h.color || '#7c5cff'}`
+    : modo
+      ? `filter:drop-shadow(0 0 10px ${h.color || '#7c5cff'})`
+      : `box-shadow:0 0 28px ${h.color || '#7c5cff'}`,
   bright: () => 'filter:brightness(1.2)',
 };
 
@@ -47,6 +51,6 @@ export default {
     const regla = REGLAS[h?.effect];
     if (!regla) return '';
     // la transición base (para soltar) la pone cssNodo; aquí va la de entrar al estado
-    return `${sel}:hover{${transicion(h)};${regla(h, sinCaja(node))}}`;
+    return `${sel}:hover{${transicion(h)};${regla(h, modoSombra(node))}}`;
   },
 };

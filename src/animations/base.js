@@ -119,7 +119,7 @@ export const sinSpring = (g) => g.ease !== 'springreal';
 /** `transition` para los estados hover/press/focus (transform, sombra, filtro y contorno). */
 export const transicion = (g) => {
   const t = `${duracion(g, 0.2)}s ${curva(g)}`;
-  return `transition:transform ${t},box-shadow ${t},filter ${t},outline-color ${t},outline-offset ${t}`;
+  return `transition:transform ${t},box-shadow ${t},text-shadow ${t},filter ${t},outline-color ${t},outline-offset ${t}`;
 };
 
 // ¿Un valor CSS "no pinta nada"? (vacío, none, transparent, 0, alfa 0)
@@ -145,6 +145,14 @@ export function sinCaja(node) {
   }
   return true;
 }
+
+/** ¿El contenido del nodo es texto (heading, text, button)? Con sinCaja decide la sombra:
+ *  texto -> text-shadow (no crea capa compuesta, el texto se queda nítido al moverse);
+ *  icon/image/otros -> filter:drop-shadow (sigue la forma). */
+export const esTexto = (node) => ['heading', 'text', 'button'].includes(node?.type);
+
+/** Modo de sombra para hover/focus: 'texto' | 'plano' | false (con caja: box-shadow). */
+export const modoSombra = (node) => (sinCaja(node) ? (esTexto(node) ? 'texto' : 'plano') : false);
 
 /** Todos los @keyframes (una sola vez por página). --ad = distancia en px. */
 export const KEYFRAMES = `@keyframes a-fade{from{opacity:0}}

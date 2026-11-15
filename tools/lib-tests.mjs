@@ -10,6 +10,7 @@ export const SUITE = [ // [nombre, comando, timeout en segundos]
   ['selenium', 'node --test --test-reporter=spec tests/selenium.test.mjs', 300],
   ['ronda7', 'node tests/ronda7.mjs', 120],
   ['hover', 'node tests/hover.mjs', 60],
+  ['hover-texto', 'node tests/hover-texto.mjs', 120],
   ['fuga-estilos', 'node tests/fuga-estilos.mjs', 120],
   ['controles', 'node tests/controles.mjs', 60],
   ['inspector', 'node tests/inspector.mjs', 180],

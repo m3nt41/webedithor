@@ -1,6 +1,7 @@
 // Controles visuales del inspector (lógica pura de src/ui/controles.js). Ejecutar: node tests/controles.mjs
 import assert from 'node:assert/strict';
-import { leerColumnas, leerAnchoMax, leerCentrar, leerProporcion, leerForma, leerTamanoBoton, FORMAS, TAMANOS_BOTON, modeloControl, columnasN, columnasAuto } from '../src/ui/controles.js';
+import { leerColumnas, leerAnchoMax, leerCentrar, leerProporcion, leerForma, leerTamanoBoton, FORMAS, TAMANOS_BOTON, modeloControl, columnasN, columnasAuto, leerEstiloBoton, valoresEstiloBoton, colorBaseBoton, textoSobre } from '../src/ui/controles.js';
+import { C, MODOS, botonTema } from '../src/blocks/tema.js';
 import { createBlock, BLOCKS } from '../src/blocks/index.js';
 import { walk } from '../src/core/tree.js';
 let ok = 0; const t = (nombre, f) => { f(); ok++; console.log('✔', nombre); };
@@ -118,6 +119,57 @@ t('tamaño de botón: S/M/L solo si coinciden padding Y fontSize; lo demás es O
   assert.deepEqual(m.opciones.map((o) => o.vals), TAMANOS_BOTON.map((x) => ({ padding: x.padding, fontSize: x.fontSize })));
   assert.equal(modeloControl(f, { padding: '1px', fontSize: '2px' }, 'desktop').personalizado, true);
   assert.equal(modeloControl(f, {}, 'desktop').personalizado, false);
+});
+
+t('estilo de botón: botonTema primario = Relleno y secundario = Contorno, en todos los modos', () => {
+  const pick = (b) => ({ background: b.background, color: b.color, border: b.border });
+  for (const modo of Object.values(MODOS)) {
+    const p = leerEstiloBoton(pick(botonTema(modo, 'm', 'primario'))), s = leerEstiloBoton(pick(botonTema(modo, 'm', 'secundario')));
+    assert.deepEqual([p.tipo, p.k, p.color], ['estilo', 'relleno', modo.btnBg]);
+    assert.deepEqual([s.tipo, s.k, s.color], ['estilo', 'contorno', modo.fg]);
+  }
+  assert.equal(leerEstiloBoton({}).tipo, 'vacio');
+});
+
+t('estilo de botón: valores que escribe cada opción (mismo color base, borde de 1px en los tres)', () => {
+  const r = valoresEstiloBoton('relleno', { background: 'transparent', color: '#a68a56', border: '1px solid #a68a56' }); // viene de Contorno
+  assert.deepEqual(r, { background: '#a68a56', color: C.oscuro, border: '1px solid #a68a56' });
+  const c = valoresEstiloBoton('contorno', { background: '#111111', color: '#f7f5f0', border: '1px solid #111111' });   // viene de Relleno
+  assert.deepEqual(c, { background: 'transparent', color: '#111111', border: '1px solid #111111' });
+  const s = valoresEstiloBoton('suave', { background: '#111111', color: '#f7f5f0', border: '1px solid #111111' });
+  assert.deepEqual(s, { background: 'color-mix(in srgb, #111111 14%, transparent)', color: '#111111', border: '1px solid transparent' });
+  assert.deepEqual(valoresEstiloBoton('', {}), { background: '', color: '', border: '' });
+  // ida y vuelta: el color base no se pierde, y cada resultado se lee como su propio estilo
+  let v = { background: '#7c5cff', color: '#fff', border: '' };
+  for (const k of ['suave', 'contorno', 'relleno', 'suave', 'relleno']) { v = valoresEstiloBoton(k, v); assert.equal(leerEstiloBoton(v).k, k); assert.equal(colorBaseBoton(v), '#7c5cff'); }
+  // texto de contraste: tinta -> papel, acento -> oscuro (igual que el tema)
+  assert.equal(textoSobre(C.tinta), C.papel); assert.equal(textoSobre(C.acento), C.oscuro);
+});
+
+t('estilo de botón: color base cuando el botón no es ninguno de los tres, y fallback al acento', () => {
+  assert.equal(colorBaseBoton({ background: '#7c5cff', color: '#fff', border: '2px dashed red' }), '#7c5cff');
+  assert.equal(colorBaseBoton({ background: 'linear-gradient(#000,#fff)', color: '#222', border: '' }), '#222');          // degradado: no es color
+  assert.equal(colorBaseBoton({ background: 'transparent', color: '#fff', border: '1px solid #0a0' }), '#0a0');           // borde antes que texto
+  assert.equal(colorBaseBoton({}), C.acento);
+  assert.equal(colorBaseBoton({ background: 'none', color: 'inherit', border: '' }), C.acento);
+});
+
+t('estilo de botón: valores raros = Otro (no se tocan); espacios, #abc y rgb() se leen bien', () => {
+  assert.equal(leerEstiloBoton({ background: '#111', color: '#fff', border: '3px dashed #111' }).tipo, 'otro');
+  assert.equal(leerEstiloBoton({ background: 'linear-gradient(#000,#fff)', color: '#fff', border: '' }).tipo, 'otro');
+  assert.equal(leerEstiloBoton({ background: 'transparent', color: '#111', border: '2px solid #111' }).tipo, 'otro');   // contorno de 2px
+  assert.equal(leerEstiloBoton({ background: 'transparent', color: '#222', border: '1px solid #111' }).tipo, 'otro');   // texto distinto del borde
+  assert.equal(leerEstiloBoton({ background: 'color-mix(in srgb, #111 30%, transparent)', color: '#111', border: '' }).tipo, 'otro'); // otro porcentaje
+  assert.equal(leerEstiloBoton({ background: '#111', color: '#fff', border: '1px solid #f00' }).tipo, 'otro');          // borde visible de otro color
+  assert.equal(leerEstiloBoton({ background: 'transparent', color: '#fff', border: '' }).tipo, 'otro');                 // sin borde ni fondo
+  assert.deepEqual(leerEstiloBoton({ background: ' #FFF ', color: '#000', border: '1px  solid  #ffffff' }), { tipo: 'estilo', k: 'relleno', color: '#FFF' });
+  assert.equal(leerEstiloBoton({ background: 'transparent', color: 'rgb(1, 2, 3)', border: '1px solid rgb(1,2,3)' }).k, 'contorno');
+  assert.equal(leerEstiloBoton({ background: '#7c5cff', color: '#fff' }).k, 'relleno');                                  // sin borde = Relleno
+  const m = modeloControl({ kind: 'estiloBoton' }, { background: '#111', color: '#fff', border: '3px dashed #111' }, 'desktop');
+  assert.deepEqual(activo(m), []); assert.equal(m.personalizado, true);
+  assert.deepEqual(m.opciones.map((o) => o.k), ['relleno', 'contorno', 'suave']);
+  assert.deepEqual(activo(modeloControl({ kind: 'estiloBoton' }, { background: '#111', color: '#fff', border: '1px solid #111' }, 'mobile')), ['Relleno']);
+  assert.equal(modeloControl({ kind: 'estiloBoton' }, {}, 'desktop').personalizado, false);
 });
 
 t('todos los botones y radios que traen los bloques se leen sin romperse', () => {

@@ -8,6 +8,7 @@ import firefox from 'selenium-webdriver/firefox.js';
 import { createNode as n, walk } from '../src/core/tree.js';
 import { createBlock } from '../src/blocks/index.js';
 import { exportHTML } from '../src/export/exporter.js';
+import { botonTema, MODOS } from '../src/blocks/tema.js';
 
 const FIREFOX = process.env.FIREFOX_BIN || 'C:/Program Files/Mozilla Firefox/firefox.exe';
 const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -19,6 +20,10 @@ pagina.children.push(createBlock('gallery', 'cuadricula'), createBlock('gallery'
 // Mini-etapa Forma/Tamaño: un botón (pastilla, padding 14px 28px = ningún tamaño) y una imagen con radio raro (4px)
 pagina.children.push(n('section', { name: 'SecBtn', children: [
   n('button', { name: 'BtnTest', content: { text: 'Hola botón', href: '#' }, styles: { padding: '14px 28px', fontSize: '16px', borderRadius: '999px', background: '#7c5cff', color: '#fff' } }),
+  // Estilo de botón: los dos del tema (primario = Relleno, secundario = Contorno) y uno con borde raro (3px dashed = Otro)
+  n('button', { name: 'BtnPrim', content: { text: 'Prim', href: '#' }, styles: botonTema(MODOS.claro, 'm', 'primario') }),
+  n('button', { name: 'BtnSec', content: { text: 'Sec', href: '#' }, styles: botonTema(MODOS.claro, 'm', 'secundario') }),
+  n('button', { name: 'BtnRaro', content: { text: 'Raro', href: '#' }, styles: { padding: '12px 24px', fontSize: '16px', background: '#7c5cff', color: '#fff', border: '3px dashed #7c5cff' } }),
   n('image', { name: 'ImgRara', content: { src: '', alt: '' }, styles: { borderRadius: '4px', width: '120px', height: '80px' } }),
 ] }));
 const grids = []; walk(pagina, (x) => { if (x.name === 'Grid') grids.push(x); });
@@ -227,6 +232,94 @@ try {
   assert.equal(await est('BtnTest', 'base', 'padding'), baseAntes.p);
   await modo('desktop');
   console.log('OK Forma y Tamaño de botón: lectura sin escribir, botón = a mano, un paso de Undo, no pisa, móvil, export y Vista previa');
+
+  // ---- 9. Estilo de botón (Relleno / Contorno / Suave): background + color + border juntos ----
+  const pulsarEst = async (txt) => { await (await d.findElement(By.xpath(`//*[@id='inspector']//button[@data-est and normalize-space()='${txt}']`))).click(); await esperar(150); };
+  const activoEst = async () => d.executeScript(`return [...document.querySelectorAll('#inspector button[data-est].on, #inspector button[data-ctl-otro="background"].on')].map(b=>b.textContent.trim())`);
+  const tres = async (nombre, m) => { const s = (await nodo(nombre)).styles[m]; return { background: s.background, color: s.color, border: s.border }; };
+  const TINTA = '#111111', PAPEL = '#f7f5f0';
+  // 9a. Leer no escribe: el primario del tema = Relleno, el secundario = Contorno, el de borde raro = Otro
+  const antesRaro = JSON.stringify((await nodo('BtnRaro')).styles);
+  await seleccionar('BtnRaro');
+  assert.deepEqual(await activoEst(), ['Otro'], 'borde 3px dashed = Otro');
+  assert.equal(await d.executeScript(`return document.querySelectorAll('#inspector button[data-est] svg').length`), 3, 'cada estilo lleva su dibujo SVG');
+  assert.equal(JSON.stringify((await nodo('BtnRaro')).styles), antesRaro, 'abrir un botón raro escribió algo');
+  await (await d.findElement(By.css('[data-ctl-otro="background"]'))).click(); await esperar(100);
+  assert.equal(await d.executeScript(`return document.activeElement.dataset.s`), 'background', 'Otro lleva el cursor al campo Fondo');
+  assert.equal(JSON.stringify((await nodo('BtnRaro')).styles), antesRaro, 'pulsar Otro escribió algo');
+  await seleccionar('BtnPrim'); assert.deepEqual(await activoEst(), ['Relleno'], 'botonTema primario');
+  await seleccionar('BtnSec'); assert.deepEqual(await activoEst(), ['Contorno'], 'botonTema secundario');
+  await seleccionar('BtnPrim');
+  const baseP = (await nodo('BtnPrim')).styles.base;
+  await esperar(1200);
+  // 9b. Un clic = tres propiedades, un solo paso de Undo, sin pisar lo demás
+  await pulsarEst('Suave');
+  assert.deepEqual(await tres('BtnPrim', 'base'), { background: `color-mix(in srgb, ${TINTA} 14%, transparent)`, color: TINTA, border: '1px solid transparent' }, 'Suave: color base = fondo del primario');
+  const sinTres = (s) => { const { background, color, border, ...r } = s; return r; };
+  assert.deepEqual(sinTres((await nodo('BtnPrim')).styles.base), sinTres(baseP), 'Suave no pisa padding, forma, etc.');
+  assert.deepEqual(await activoEst(), ['Suave']);
+  await d.findElement(By.css('#btn-undo')).click(); await esperar(150);
+  assert.deepEqual((await nodo('BtnPrim')).styles.base, baseP, 'UN Undo devuelve las tres propiedades');
+  await d.findElement(By.css('#btn-redo')).click(); await esperar(150);
+  assert.equal((await tres('BtnPrim', 'base')).color, TINTA);
+  // ida y vuelta: el color no se pierde y el texto del Relleno es el de contraste del tema
+  await pulsarEst('Contorno');
+  assert.deepEqual(await tres('BtnPrim', 'base'), { background: 'transparent', color: TINTA, border: `1px solid ${TINTA}` });
+  await pulsarEst('Relleno');
+  assert.deepEqual(await tres('BtnPrim', 'base'), { background: TINTA, color: PAPEL, border: `1px solid ${TINTA}` }, 'Relleno = como nació');
+  // pulsar el estilo activo no escribe (ni añade paso de Undo)
+  const jsonAntes = JSON.stringify((await nodo('BtnPrim')).styles);
+  await pulsarEst('Relleno');
+  assert.equal(JSON.stringify((await nodo('BtnPrim')).styles), jsonAntes, 'pulsar el activo no escribe');
+  // un botón de otro color (el del test, #7c5cff) conserva su color base
+  await seleccionar('BtnTest'); assert.deepEqual(await activoEst(), ['Relleno'], '#7c5cff sin borde = Relleno');
+  await pulsarEst('Contorno');
+  assert.deepEqual(await tres('BtnTest', 'base'), { background: 'transparent', color: '#7c5cff', border: '1px solid #7c5cff' });
+  await pulsarEst('Relleno');
+  assert.equal((await tres('BtnTest', 'base')).background, '#7c5cff');
+  // 9c. Móvil: solo styles.mobile, "↺ igual que escritorio" borra las tres
+  await seleccionar('BtnPrim');
+  const baseAntesP = JSON.stringify((await nodo('BtnPrim')).styles.base);
+  await modo('mobile');
+  assert.deepEqual(await activoEst(), ['Relleno'], 'en móvil hereda el estilo de escritorio');
+  assert.equal(await d.executeScript(`return !!document.querySelector('#inspector [data-est]').closest('.botones').classList.contains('heredado')`), true, 'sin override se ve heredado');
+  await pulsarEst('Contorno');
+  assert.deepEqual(await tres('BtnPrim', 'mobile'), { background: 'transparent', color: TINTA, border: `1px solid ${TINTA}` });
+  assert.equal(JSON.stringify((await nodo('BtnPrim')).styles.base), baseAntesP, 'escritorio no cambia');
+  assert.equal(await d.executeScript(`return document.querySelectorAll('#inspector label.ov').length >= 1`), true, 'marca ● en móvil');
+  // 9d. Export y Vista previa (móvil 390 px): Contorno; escritorio: Relleno
+  const html9 = exportHTML(await guardada());
+  assert.ok(/@media[^{]*\{[^]*background:transparent;[^}]*color:#111111;[^}]*border:1px solid #111111/.test(html9), 'export móvil lleva las tres');
+  await d.findElement(By.css('#btn-vista-previa')).click(); await esperar(900);
+  await d.findElement(By.css('#vp-mobile')).click(); await esperar(500);
+  await d.switchTo().frame(await d.findElement(By.css('#vp-frame')));
+  const medir = `const b=[...document.querySelectorAll('a,button')].find(x=>x.textContent.trim()==='Prim'); const c=getComputedStyle(b); return [c.backgroundColor, c.color, c.borderTopColor, c.borderTopWidth]`;
+  const vpM = await d.executeScript(medir);
+  assert.deepEqual([vpM[0], vpM[1], vpM[3]], ['rgba(0, 0, 0, 0)', 'rgb(17, 17, 17)', '1px'], 'Vista previa móvil = Contorno: ' + vpM);
+  await d.switchTo().defaultContent();
+  await d.findElement(By.css('#vp-desktop')).click(); await esperar(500);
+  await d.switchTo().frame(await d.findElement(By.css('#vp-frame')));
+  const vpD = await d.executeScript(medir);
+  await d.switchTo().defaultContent();
+  assert.deepEqual([vpD[0], vpD[1]], ['rgb(17, 17, 17)', 'rgb(247, 245, 240)'], 'Vista previa escritorio = Relleno: ' + vpD);
+  await d.findElement(By.css('#vp-ojo')).click(); await esperar(300);
+  await (await d.findElement(By.xpath(`//*[@id='inspector']//button[@data-est='' and contains(.,'igual que escritorio')]`))).click(); await esperar(150);
+  assert.deepEqual(await tres('BtnPrim', 'mobile'), { background: undefined, color: undefined, border: undefined }, 'el reset borra las tres');
+  assert.equal(JSON.stringify((await nodo('BtnPrim')).styles.base), baseAntesP);
+  await modo('desktop');
+  // Suave en escritorio: export y Vista previa (el fondo atenuado funciona de verdad en el navegador)
+  await pulsarEst('Suave');
+  assert.ok(exportHTML(await guardada()).includes('background:color-mix(in srgb, #111111 14%, transparent)'), 'export Suave');
+  await d.findElement(By.css('#btn-vista-previa')).click(); await esperar(900);
+  await d.switchTo().frame(await d.findElement(By.css('#vp-frame')));
+  const vpS = await d.executeScript(medir);
+  await d.switchTo().defaultContent();
+  assert.ok(vpS[0] !== 'rgba(0, 0, 0, 0)' && /0\.14/.test(vpS[0]), 'Vista previa Suave: fondo al 14 %: ' + vpS[0]);
+  await d.findElement(By.css('#vp-ojo')).click(); await esperar(300);
+  // el grupo Estilo solo sale en botones
+  await seleccionar('SecBtn');
+  assert.equal(await d.executeScript(`return !!document.querySelector('#inspector button[data-est]')`), false, 'Estilo de botón solo en botones');
+  console.log('OK Estilo de botón: lectura sin escribir, un paso de Undo, no pisa, móvil, export y Vista previa');
 
   const errs = await d.executeScript('return __err');
   assert.deepEqual(errs, [], 'errores: ' + errs.join(' | '));

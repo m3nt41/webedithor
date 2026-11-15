@@ -11,6 +11,8 @@
 // modo = 'desktop' | 'mobile'. En móvil, '' significa "igual que escritorio", así que las opciones que en
 // escritorio equivalen a "nada" escriben aquí un valor explícito (none, 0, auto).
 
+import { C } from '../blocks/tema.js'; // colores del tema (acento y tinta/papel para el fallback del estilo de botón)
+
 const norm = (v) => String(v ?? '').trim();
 const sinEsp = (v) => norm(v).toLowerCase().replace(/\s+/g, '');
 
@@ -118,8 +120,113 @@ export function leerTamanoBoton(v) {
   return t ? { tipo: 'tam', k: t.k } : { tipo: 'otro' };
 }
 
+// ---- Estilo de botón (background + color + border juntos) ----
+// Relleno  : fondo sólido C, borde 1px del mismo color C (no se ve), texto de contraste.
+// Contorno : fondo transparente, borde 1px solid C, texto C.
+// Suave    : fondo = C al 14 % (color-mix con transparent), texto C, borde 1px transparente.
+// Los tres llevan borde de 1px para que el botón NO cambie de tamaño al pasar de uno a otro.
+// C (el color base) sale del botón actual; si no se puede deducir, el acento del tema.
+export const SUAVE_PCT = 14;
+export const ESTILOS_BOTON = [
+  { k: 'relleno', txt: 'Relleno' },
+  { k: 'contorno', txt: 'Contorno' },
+  { k: 'suave', txt: 'Suave' },
+];
+
+const TRANSPARENTE = ['', 'transparent', 'none'];
+/** Normaliza un color para compararlo: minúsculas, sin espacios, #rgb -> #rrggbb. */
+const normColor = (c) => {
+  const s = sinEsp(c);
+  return /^#[0-9a-f]{3}$/.test(s) ? '#' + [...s.slice(1)].map((x) => x + x).join('') : s;
+};
+/** ¿Es un color simple (hex, rgb/hsl/color-mix o nombre)? Un degradado o url() no lo es. */
+const esColor = (c) => {
+  const s = norm(c).toLowerCase();
+  if (!s || TRANSPARENTE.includes(s) || ['inherit', 'initial', 'unset', 'currentcolor'].includes(s)) return false;
+  return /^#([0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/.test(s) || /^(rgba?|hsla?|color-mix)\(.*\)$/.test(s) || /^[a-z]+$/.test(s);
+};
+/** Color sólido: lo anterior, pero sin color-mix (un fondo así es un Suave, o algo raro). */
+const esSolido = (c) => esColor(c) && !/^color-mix/i.test(norm(c));
+const suaveDe = (c) => `color-mix(in srgb, ${c} ${SUAVE_PCT}%, transparent)`;
+/** Si bg es "color-mix(in srgb, X 14%, transparent)" devuelve X; si no, null. */
+const leerSuave = (bg) => {
+  const m = /^color-mix\(\s*in\s+srgb\s*,\s*(.+?)\s+(\d+(?:\.\d+)?)%\s*,\s*transparent\s*\)$/i.exec(norm(bg));
+  return m && +m[2] === SUAVE_PCT ? m[1] : null;
+};
+/** border -> { tipo:'ninguno' } | { tipo:'linea', w, estilo, color } | { tipo:'otro' } */
+const leerBorde = (b) => {
+  const s = norm(b).toLowerCase();
+  if (s === '' || s === 'none' || s === '0' || s === '0px') return { tipo: 'ninguno' };
+  const m = /^(\d+(?:\.\d+)?)(?:px)?\s+(solid|dashed|dotted|double)\s+(.+)$/.exec(s);
+  if (!m) return { tipo: 'otro' };
+  return +m[1] === 0 ? { tipo: 'ninguno' } : { tipo: 'linea', w: +m[1], estilo: m[2], color: m[3] };
+};
+
+/** v = { background, color, border } efectivos -> { tipo:'vacio' } | { tipo:'estilo', k, color } | { tipo:'otro' } */
+export function leerEstiloBoton(v) {
+  const bg = norm(v?.background), col = norm(v?.color), borde = leerBorde(v?.border);
+  if (!bg && !col && !norm(v?.border)) return { tipo: 'vacio' };
+  if (borde.tipo === 'otro') return { tipo: 'otro' };
+  const transp = (c) => normColor(c) === 'transparent';
+  const bordeInvisible = (c) => borde.tipo === 'ninguno' || (borde.estilo === 'solid' && (transp(borde.color) || normColor(borde.color) === normColor(c)));
+  // Suave
+  const sx = leerSuave(bg);
+  if (sx && esColor(sx) && normColor(sx) === normColor(col) && (borde.tipo === 'ninguno' || (borde.estilo === 'solid' && borde.w === 1 && transp(borde.color)))) return { tipo: 'estilo', k: 'suave', color: sx };
+  // Contorno
+  if (TRANSPARENTE.includes(bg.toLowerCase()) && borde.tipo === 'linea' && borde.w === 1 && borde.estilo === 'solid' && esColor(borde.color) && normColor(borde.color) === normColor(col)) return { tipo: 'estilo', k: 'contorno', color: col };
+  // Relleno
+  if (esSolido(bg) && bordeInvisible(bg)) return { tipo: 'estilo', k: 'relleno', color: bg };
+  return { tipo: 'otro' };
+}
+
+/** Color base C: el del estilo actual; si es "otro", el fondo sólido, o el borde, o el texto; si no hay nada, el acento del tema. */
+export function colorBaseBoton(v) {
+  const l = leerEstiloBoton(v);
+  if (l.tipo === 'estilo') return l.color;
+  const bg = norm(v?.background), col = norm(v?.color), borde = leerBorde(v?.border);
+  if (esSolido(bg)) return bg;
+  if (borde.tipo === 'linea' && esColor(borde.color)) return borde.color;
+  if (esColor(col)) return col;
+  return C.acento;
+}
+
+/** Luminancia relativa (0-1) de #rgb/#rrggbb/rgb(); null si no se puede leer. */
+function luminancia(c) {
+  const s = normColor(c);
+  let r, g, b;
+  let m = /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/.exec(s);
+  if (m) [r, g, b] = m.slice(1).map((x) => parseInt(x, 16));
+  else if ((m = /^rgba?\((\d+),(\d+),(\d+)/.exec(s))) [r, g, b] = m.slice(1).map(Number);
+  else return null;
+  const lin = (x) => { x /= 255; return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4; };
+  return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+}
+
+/** Texto para un fondo sólido: el del tema (oscuro o papel) con más contraste. Si no se puede medir, papel. */
+export function textoSobre(c) {
+  const L = luminancia(c);
+  if (L == null) return C.papel;
+  const contr = (l2) => (Math.max(L, l2) + 0.05) / (Math.min(L, l2) + 0.05);
+  return contr(luminancia(C.oscuro)) >= contr(luminancia(C.papel)) ? C.oscuro : C.papel;
+}
+
+/** Las tres propiedades que escribe el estilo k, partiendo del botón actual v. */
+export function valoresEstiloBoton(k, v) {
+  const c = colorBaseBoton(v);
+  if (k === 'relleno') return { background: c, color: textoSobre(c), border: `1px solid ${c}` };
+  if (k === 'contorno') return { background: 'transparent', color: c, border: `1px solid ${c}` };
+  if (k === 'suave') return { background: suaveDe(c), color: c, border: '1px solid transparent' };
+  return { background: '', color: '', border: '' }; // k vacío = quitar las tres
+}
+
 // ---- Modelo para dibujar ----
 export function modeloControl(f, v, modo = 'desktop') {
+  if (f.kind === 'estiloBoton') {
+    // v = { background, color, border }. Cada botón escribe las TRES a la vez (vals); el clic en el activo no escribe nada.
+    const l = leerEstiloBoton(v);
+    const opciones = ESTILOS_BOTON.map((x) => ({ txt: x.txt, k: x.k, vals: valoresEstiloBoton(x.k, v), on: l.tipo === 'estilo' && l.k === x.k }));
+    return { opciones, personalizado: l.tipo === 'otro', min: null };
+  }
   const movil = modo === 'mobile';
   if (f.kind === 'columnas') {
     const l = leerColumnas(v);

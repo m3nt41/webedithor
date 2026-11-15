@@ -9,6 +9,7 @@
 //   Controles visuales (src/ui/controles.js): kind 'columnas' | 'anchoMax' | 'centrar' | 'proporcion'. Escriben los MISMOS
 //     strings CSS de siempre. El campo de texto del valor queda en "Avanzado" del grupo (crudo = su etiqueta ahi).
 //     'forma' (borderRadius) y 'tamanoBoton' (padding + fontSize en una sola accion; crudos: [{key,label,placeholder}] = sus campos de texto en Avanzado).
+//     'estiloBoton' (Relleno/Contorno/Suave: background + color + border en una sola accion; sin Avanzado propio).
 //     autoVacio (solo proporcion): "Auto" = quitar la proporcion en vez de escribir 'auto' (para "Proporcion de los hijos").
 
 import { SVG_AVISO } from './iconos.js';
@@ -32,6 +33,9 @@ export const GRUPOS = [
     titulo: 'Botón',
     tipos: ['button'],
     campos: [
+      // Estilo (Relleno / Contorno / Suave) = background + color + border juntos. Sus valores crudos ya están más abajo
+      // (Fondo, Color de Tipografía y Borde), así que no lleva "Avanzado"; "Otro" lleva el cursor al campo Fondo.
+      { key: 'background', label: 'Estilo', kind: 'estiloBoton' },
       { key: 'borderRadius', label: 'Forma', crudo: 'Radio', kind: 'forma', placeholder: '12px' },
       { key: 'padding', label: 'Tamaño', kind: 'tamanoBoton',
         crudos: [{ key: 'padding', label: 'Padding', placeholder: '12px 24px' }, { key: 'fontSize', label: 'Tamaño de fuente', placeholder: '16px' }] },

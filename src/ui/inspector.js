@@ -14,7 +14,7 @@ import { SVG_AVISO, SVG_COPIAR, SVG_PEGAR } from './iconos.js';
 import { copiarGuia, abrirDialogoPlan } from './plania.js';
 import { ICONOS } from '../blocks/iconos-data.js';
 import { iconoSvg, TAMANOS_ICONO, TAMANO_ICONO_DEFECTO } from '../core/icono.js';
-import { modeloControl, columnasAuto, kebab, KINDS_CONTROL, KINDS_BOTONES, TAMANOS_BOTON } from './controles.js';
+import { modeloControl, columnasAuto, kebab, KINDS_CONTROL, KINDS_BOTONES, TAMANOS_BOTON, leerEstiloBoton, valoresEstiloBoton } from './controles.js';
 import { GRUPOS_ANIM } from '../animations/index.js';
 import { DISPAROS_VARIANT, CAMPOS_PROPS, CAMPOS_TIEMPO, DEF_TIEMPO } from '../animations/variants.js';
 
@@ -52,7 +52,13 @@ function htmlTexto(key, v, placeholder, texto, ov) {
 function htmlControl(f, v, modo, ov, tieneValor) {
   const m = modeloControl(f, v, modo);
   let botones;
-  if (f.kind === 'tamanoBoton') {
+  if (f.kind === 'estiloBoton') {
+    // Cada botón lleva un dibujito del estilo y escribe background + color + border a la vez (data-est = estilo; el quitar usa data-est="")
+    const dib = { relleno: '<rect x="2" y="2" width="24" height="14" fill="currentColor"/>',
+      contorno: '<rect x="2.5" y="2.5" width="23" height="13" fill="none" stroke="currentColor" stroke-width="1.6"/>',
+      suave: '<rect x="2" y="2" width="24" height="14" fill="currentColor" fill-opacity=".2"/><rect x="8" y="8" width="12" height="2" fill="currentColor"/>' };
+    botones = m.opciones.map((o) => `<button type="button" class="forma ${o.on ? 'on' : ''}" data-est="${o.k}" title="${o.txt}"><svg viewBox="0 0 28 18" width="28" height="18" aria-hidden="true">${dib[o.k]}</svg>${o.txt}</button>`).join('');
+  } else if (f.kind === 'tamanoBoton') {
     // Cada botón escribe padding Y fontSize a la vez (data-tam = tamaño; el quitar usa data-tam="")
     botones = m.opciones.map((o) => `<button type="button" data-tam="${o.k}" title="padding ${esc(o.vals.padding)} · ${esc(o.vals.fontSize)}" class="${o.on ? 'on' : ''}">${o.txt}</button>`).join('');
   } else if (f.kind === 'forma') {
@@ -65,7 +71,9 @@ function htmlControl(f, v, modo, ov, tieneValor) {
   const min = m.min != null ? `<span class="mini">mín. <input type="number" min="50" step="10" data-ctl-min="${f.key}" value="${m.min}"> px</span>` : '';
   const quitar = !tieneValor ? '' : f.kind === 'tamanoBoton'
     ? `<button type="button" class="quitar" data-tam="">${modo === 'mobile' ? '↺ igual que escritorio' : '✕ quitar'}</button>`
-    : `<button type="button" class="quitar" data-ctl="${f.key}" data-val="">${modo === 'mobile' ? '↺ igual que escritorio' : '✕ quitar'}</button>`;
+    : f.kind === 'estiloBoton'
+    ? `<button type="button" class="quitar" data-est="">${modo === 'mobile' ? '↺ igual que escritorio' : '✕ quitar'}</button>`
+    :`<button type="button" class="quitar" data-ctl="${f.key}" data-val="">${modo === 'mobile' ? '↺ igual que escritorio' : '✕ quitar'}</button>`;
   return `<div class="campo ctl">${etiqueta(f.label, ov)}<div class="botones${modo === 'mobile' && !ov ? ' heredado' : ''}">${botones}${otro}${min}${quitar}</div></div>`;
 }
 
@@ -220,6 +228,11 @@ export function initInspector(host) {
         } else if (KINDS_BOTONES.includes(f.kind)) {
           const tieneValor = viewMode === 'mobile' ? ov : f.key in nodo.styles.base;
           html += htmlControl(f, v, viewMode, ov, tieneValor);
+        } else if (f.kind === 'estiloBoton') {
+          // Mira background, color y border a la vez; sin "Avanzado" (sus campos crudos son Fondo, Color y Borde, más abajo)
+          const dest = viewMode === 'mobile' ? nodo.styles.mobile : nodo.styles.base;
+          const tieneValor = ['background', 'color', 'border'].some((k) => k in dest);
+          html += htmlControl(f, { background: estilos.background, color: estilos.color, border: estilos.border }, viewMode, viewMode === 'mobile' && tieneValor, tieneValor);
         } else if (KINDS_CONTROL.includes(f.kind)) {
           // Tamaño de botón mira padding y fontSize a la vez; los demás, su propia clave
           const claves = (f.crudos ?? [{ key: f.key }]).map((c) => c.key);
@@ -365,8 +378,10 @@ export function initInspector(host) {
   host.addEventListener('click', (e) => {
     const otro = e.target.closest('[data-ctl-otro]');
     if (otro) { // "Otro": abre Avanzado y deja el cursor en el campo de texto (no escribe nada)
-      const campo = host.querySelector(`details.avanzado [data-s="${otro.dataset.ctlOtro}"]`);
-      if (campo) { campo.closest('details').open = true; campo.focus(); }
+      // (Estilo de botón no tiene Avanzado: lleva el cursor al campo Fondo de más abajo)
+      const campo = host.querySelector(`details.avanzado [data-s="${otro.dataset.ctlOtro}"]`)
+        ?? (otro.dataset.ctlOtro === 'background' ? host.querySelector('[data-s="background"]') : null);
+      if (campo) { const det = campo.closest('details'); if (det) det.open = true; campo.focus(); }
       return;
     }
     const ic = e.target.closest('[data-icono]'); // Icono: elegir de la cuadrícula
@@ -379,6 +394,17 @@ export function initInspector(host) {
       forzar = true;
       const t = TAMANOS_BOTON.find((x) => x.k === tam.dataset.tam);
       setStyles(idDibujado, { padding: t?.padding ?? '', fontSize: t?.fontSize ?? '' });
+      return;
+    }
+    const est = e.target.closest('[data-est]'); // Estilo de botón: background + color + border en una sola acción (un paso de Undo)
+    if (est && idDibujado) {
+      const nodo = findNode(getState().page, idDibujado);
+      const e2 = effectiveStyles(nodo, getState().viewMode);
+      const v = { background: e2.background, color: e2.color, border: e2.border };
+      // pulsar el estilo que ya está activo no escribe nada
+      if (est.dataset.est && leerEstiloBoton(v).k === est.dataset.est) return;
+      forzar = true;
+      setStyles(idDibujado, valoresEstiloBoton(est.dataset.est, v));
       return;
     }
     const b = e.target.closest('[data-ctl]');

@@ -71,5 +71,5 @@ console.log('\n' + (todos
 if (ver) { console.log('(--ver: no se ejecuta nada)'); process.exit(0); }
 
 // Sin build si todos los elegidos son de Node puro (no leen dist/editor.html)
-const PUROS = ['ronda7', 'controles', 'tema', 'plan-ia'];
+const PUROS = ['ronda7', 'hover', 'controles', 'tema', 'plan-ia'];
 correr(lista, { build: !lista.every(([n]) => PUROS.includes(n)) });

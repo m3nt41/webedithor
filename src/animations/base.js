@@ -122,6 +122,30 @@ export const transicion = (g) => {
   return `transition:transform ${t},box-shadow ${t},filter ${t},outline-color ${t},outline-offset ${t}`;
 };
 
+// ¿Un valor CSS "no pinta nada"? (vacío, none, transparent, 0, alfa 0)
+const vacio = (v) => {
+  const s = String(v ?? '').trim().toLowerCase();
+  return !s || s === 'none' || s === 'transparent' || s === 'hidden' || /^0(px|em|rem)?$/.test(s)
+    || /^rgba?\([^)]*[,/]\s*0(\.0+)?\s*\)$/.test(s) || /^#([0-9a-f]{3}0|[0-9a-f]{6}00)$/.test(s);
+};
+
+/** ¿El elemento NO tiene caja visible (sin fondo, sin imagen de fondo, sin borde y sin sombra propia)?
+ *  Mira base Y mobile: si cualquiera de los dos pinta algo, cuenta como "con caja".
+ *  Hover/focus la usan para elegir drop-shadow (sigue las letras) en vez de box-shadow (sigue la caja). */
+export function sinCaja(node) {
+  for (const est of [node?.styles?.base, node?.styles?.mobile]) {
+    for (const [k, v] of Object.entries(est || {})) {
+      if (k === 'background' || k === 'backgroundColor') { if (!vacio(v)) return false; }
+      else if (k === 'backgroundImage') { if (!vacio(v)) return false; }
+      else if (k === 'fondoImagen') { if (String(v ?? '').trim()) return false; }
+      else if (k === 'boxShadow') { if (!vacio(v)) return false; }
+      else if (/^border(Top|Right|Bottom|Left)?$/.test(k)) { if (!vacio(v) && !/\b(none|hidden)\b/i.test(String(v)) && !/^0/.test(String(v).trim())) return false; }
+      else if (/^border(Top|Right|Bottom|Left)?(Width|Style)$/.test(k)) { if (!vacio(v)) return false; }
+    }
+  }
+  return true;
+}
+
 /** Todos los @keyframes (una sola vez por página). --ad = distancia en px. */
 export const KEYFRAMES = `@keyframes a-fade{from{opacity:0}}
 @keyframes a-up{from{opacity:0;translate:0 var(--ad,40px)}}

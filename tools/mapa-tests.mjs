@@ -56,6 +56,9 @@ export const MAPA = {
   'src/blocks/': ['tema', 'plan-ia', 'plan-ia-ui', 'ronda7'], // cualquier otro bloque (hero, services, gallery, index.js, util.js...)
 
   // ---- Animaciones (CSS exportado, validación y su panel) ----
+  'src/animations/hover.js': ['hover', 'selenium', 'ronda7'],
+  'src/animations/focus.js': ['hover', 'selenium', 'ronda7'],
+  'src/animations/base.js': ['hover', 'selenium', 'ronda7', 'inspector', 'vistaprevia'],
   'src/animations/': ['selenium', 'ronda7', 'inspector', 'vistaprevia'],
 
   // ---- Tests (cada archivo de tests/ corre su propio test; ver también `testDeArchivo` en test-cambios.mjs) ----

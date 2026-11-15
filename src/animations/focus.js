@@ -2,7 +2,7 @@
 // Solo tiene sentido en botones (enlaces), que son lo enfocable de la página.
 // Datos en node.animation.focus = { effect, duration, ease, color }
 
-import { EASES, transicion, camposCurva, sinSpring, DEF_CURVA } from './base.js';
+import { EASES, transicion, camposCurva, sinSpring, DEF_CURVA, sinCaja } from './base.js';
 
 const EFECTOS = [
   ['', 'Ninguno'],
@@ -14,7 +14,10 @@ const EFECTOS = [
 
 const REGLAS = {
   ring: (f) => `outline:3px solid ${f.color || '#7c5cff'};outline-offset:4px`,
-  glow: (f) => `outline:0;box-shadow:0 0 0 4px ${f.color || '#7c5cff'}55,0 0 28px ${f.color || '#7c5cff'}`,
+  // sin caja visible (ver sinCaja): drop-shadow sigue las letras; el halo de 4px no tiene equivalente y se aproxima con un 2º drop-shadow
+  glow: (f, plano) => plano
+    ? `outline:0;filter:drop-shadow(0 0 3px ${f.color || '#7c5cff'}) drop-shadow(0 0 10px ${f.color || '#7c5cff'})`
+    : `outline:0;box-shadow:0 0 0 4px ${f.color || '#7c5cff'}55,0 0 28px ${f.color || '#7c5cff'}`,
   grow: () => 'transform:scale(1.06)',
   bright: () => 'filter:brightness(1.2)',
 };
@@ -33,8 +36,8 @@ export default {
     { key: 'color', label: 'Color', kind: 'color', cuando: (g, efecto) => efecto === 'ring' || efecto === 'glow' },
   ],
 
-  css(f, sel) {
+  css(f, sel, node) {
     const regla = REGLAS[f?.effect];
-    return regla ? `${sel}:focus-visible{${transicion(f)};${regla(f)}}` : '';
+    return regla ? `${sel}:focus-visible{${transicion(f)};${regla(f, sinCaja(node))}}` : '';
   },
 };

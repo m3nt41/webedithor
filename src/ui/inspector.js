@@ -17,6 +17,7 @@ import { iconoSvg, TAMANOS_ICONO, TAMANO_ICONO_DEFECTO } from '../core/icono.js'
 import { modeloControl, columnasAuto, kebab, KINDS_CONTROL, KINDS_BOTONES, TAMANOS_BOTON, leerEstiloBoton, valoresEstiloBoton } from './controles.js';
 import { usaMarquesina, MQ_VELOCIDADES, MQ_GAPS, MQ_COPIAS, MQ_VEL_MIN, MQ_VEL_MAX } from '../core/marquesina.js';
 import { GRUPOS_ANIM } from '../animations/index.js';
+import { ancestrosConScroll } from '../animations/parallax.js';
 import { DISPAROS_VARIANT, CAMPOS_PROPS, CAMPOS_TIEMPO, DEF_TIEMPO } from '../animations/variants.js';
 
 // Los 3 niveles del panel: Esencial abierto de fábrica; Estilo y Avanzado plegados. Lo que el usuario deja abierto se guarda.
@@ -341,6 +342,10 @@ export function initInspector(host) {
       const datos = nodo.animation?.[g.id]; // undefined = grupo apagado
       let h = `<h3>${g.titulo}</h3>`;
       if (g.id === 'scene' && datos) h += '<p class="modo">La sección se queda fija y sus hijos se apilan en el mismo lugar: se respetan Alineación y Justificar (y su fondo, borde y padding); Dirección, Separación y Columnas no se usan. Una vez creada, cada hijo directo tiene su "Paso de escena". Solo se ve en Vista previa y en el exportado. "Transición (% del tramo)" = cuánto dura el cambio entre pasos dentro de cada tramo (el resto del tramo el paso queda quieto). Un navbar pegado arriba se mide solo (o escribe "Espacio arriba").</p>';
+      // Parallax: si un ancestro tiene scroll real (overflow auto/scroll) el efecto nativo no se mueve ahí (solo se avisa)
+      if (g.id === 'parallax' && datos?.effect && ancestrosConScroll(page, nodo.id, viewMode).length) {
+        h += `<p class="modo aviso-parallax">${SVG_AVISO} Un contenedor de arriba tiene scroll propio (overflow auto/scroll): ahí el parallax no se moverá. Quita ese scroll o usa "Recortar contenido".</p>`;
+      }
       for (const f of g.campos) {
         if (f.key !== g.principal && !datos) continue; // apagado: solo se ve el selector principal
         if (f.cuando && !f.cuando(datos, datos?.effect)) continue;

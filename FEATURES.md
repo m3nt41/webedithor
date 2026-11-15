@@ -14,7 +14,7 @@ Motion vs CSS puro: m3nt41 ya decidió la opción (a), CSS puro donde se pueda y
 - [x] Al cargar la página (selector "Se dispara" en Al aparecer y en Animación de texto; CSS puro, sin script) (Etapa 6)
 
 ## Scroll
-- [x] Parallax (vertical u horizontal, recorrido en px; CSS `translate` + script mínimo, solo si se usa; no corre con "reducir movimiento") (Etapa 7)
+- [x] Parallax (vertical u horizontal, recorrido en px; CSS nativo `animation-timeline: view()` sin script, con el motor JS mínimo solo como respaldo en navegadores sin soporte o si el nodo ya usa otra animación de entrada; un contenedor que recorta lo exporta como `overflow:clip` para no romperlo; no corre con "reducir movimiento") (Etapa 7)
 - [x] Scroll-linked (opacidad, escala o giro ligados al progreso del scroll del elemento, con rango empieza/termina; mismo script mínimo) (Etapa 7)
 - [x] Sticky (grupo "Posición" en cualquier elemento menos la página: pegar arriba y/o abajo con distancia y z-index; CSS puro, sin script; se pega mientras su contenedor siga a la vista) (Etapa 7)
 - [x] Escenas por scroll (grupo "Escena por scroll" en una sección: 2–4 pasos, duración en pantallas de scroll; la sección se pega (sticky) y sus hijos directos, con "Paso de escena", aparecen/se van por pasos con fundido + subir/bajar/izquierda/derecha/zoom; hijos apilados con grid; usa el motor de scroll, solo viaja si se usa; bloque "Escena" con 2 variantes de 3 pasos) (Etapa 7)

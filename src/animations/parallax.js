@@ -26,6 +26,32 @@ export function parallaxNativo(node, padre = null) {
   return true;
 }
 
+/** ¿Algún descendiente de `node` (no él mismo) usa parallax nativo? Sus ancestros con overflow:hidden lo romperían:
+ *  view() toma como scroller al ancestro con overflow distinto de visible/clip (y un hidden nunca se desplaza). */
+export function tieneParallaxNativoDentro(node) {
+  return node.children.some((h) => parallaxNativo(h, node) || tieneParallaxNativoDentro(h));
+}
+
+/** Ancestros de `id` (de la raíz al padre directo), o null si no existe. */
+export function ancestrosDe(root, id, ruta = []) {
+  if (root.id === id) return ruta;
+  for (const h of root.children) {
+    const r = ancestrosDe(h, id, [...ruta, root]);
+    if (r) return r;
+  }
+  return null;
+}
+
+/** Ancestros con scroll REAL (overflow auto/scroll, también overflow-x/y) en el modo dado ('desktop'|'mobile').
+ *  Con ellos el parallax nativo no se mueve (el scroller de view() sería ese ancestro). overflow:hidden se arregla solo en el export. */
+export function ancestrosConScroll(root, id, modo = 'desktop') {
+  const esScroll = (v) => /^(auto|scroll|overlay)$/.test(String(v ?? '').trim());
+  return (ancestrosDe(root, id) ?? []).filter((a) => {
+    const s = modo === 'mobile' ? { ...a.styles.base, ...a.styles.mobile } : a.styles.base;
+    return esScroll(s.overflow) || esScroll(s.overflowX) || esScroll(s.overflowY);
+  });
+}
+
 const num = (v) => (Number.isFinite(v) ? v : 60);
 
 export default {

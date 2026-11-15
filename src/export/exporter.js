@@ -10,6 +10,7 @@ import { tagFor, TIPOS_TEXTO } from '../render/renderer.js';
 import { iconoSvg, estilosIcono } from '../core/icono.js';
 import { usaMenuMovil, paginaUsaMenuMovil, cssMenuMovil, varsMenu, necesitaAncla, SCRIPT_MENU } from '../core/menumovil.js';
 import { usaMarquesina, cssMarquesina, htmlMarquesina, keyframesMarquesina } from '../core/marquesina.js';
+import { tieneParallaxNativoDentro } from '../animations/parallax.js';
 import { usaEscena, varsEscena, esNavPegado, paginaUsaEscena, CSS_ESCENA, atributosScroll, paginaUsaScrollLink, SCRIPT_SCROLLMOTOR, SCRIPT_SCROLLSUAVE, paginaUsaScrollSuave, cssNodo, usaScroll, usaCarga, usaClic, paginaUsaScroll, paginaUsaEntrada, paginaUsaMedida, paginaUsaClic, esMedida, splitText, KEYFRAMES, SCRIPT_SCROLL, SCRIPT_LINEAS, SCRIPT_CLIC } from '../animations/index.js';
 
 export const BREAKPOINT_MOVIL = 768;
@@ -50,6 +51,14 @@ export function exportHTML(page) {
     const dMovil = unir(declaraciones(node.styles.mobile), tocaFondo(node.styles.mobile) ? fondo(fondoDeclaraciones({ ...node.styles.base, ...node.styles.mobile })) : '');
     if (dBase) css.push(`.${clase}{${dBase}}`);
     if (dMovil) cssMovil.push(`.${clase}{${dMovil}}`);
+    // Parallax nativo dentro: un ancestro con overflow:hidden es un scroller y view() deja de moverse. Con overflow:clip recorta
+    // igual (sin ser scroller). hidden queda como respaldo: la regla clip solo existe si el navegador la soporta.
+    // (overflow-clip-margin no hace falta: su valor por defecto ya recorta en el borde del padding, como hidden.)
+    if (tieneParallaxNativoDentro(node)) {
+      const clip = `@supports (overflow:clip){.${clase}{overflow:clip}}`;
+      if (String(node.styles.base.overflow ?? '').trim() === 'hidden') css.push(clip);
+      if (String(node.styles.mobile.overflow ?? '').trim() === 'hidden') cssMovil.push(clip);
+    }
     // "Proporción de los hijos" (contenedor grid): CSS puro para las imágenes hijas directas. :where() deja la
     // especificidad en 0, así que la foto que tenga su propia proporción o ajuste (clase .nN) siempre gana.
     const asp = (st) => (node.type !== 'image' && aspectoValido(st.hijosAspectRatio) ? `:where(.${clase}>img){aspect-ratio:${st.hijosAspectRatio.trim()};object-fit:cover}` : '');

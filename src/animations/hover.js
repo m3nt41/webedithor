@@ -1,10 +1,15 @@
 // ANIMACIÓN "AL PASAR EL MOUSE": CSS puro (transition + :hover), sin JS.
 // Datos en node.animation.hover = { effect, duration, ease, color }
 
-import { EASES, transicion, camposCurva, sinSpring, DEF_CURVA, modoSombra } from './base.js';
+import { EASES, transicion, camposCurva, sinSpring, DEF_CURVA, modoSombra, sinCaja, esTexto, duracion, curva } from './base.js';
 
-const EFECTOS = [
-  ['', 'Ninguno'],
+// Lista completa (la usa la validación del .json). El orden mostrado depende del nodo: ver opcionesNodo.
+const NUEVOS = [
+  ['underline', 'Subrayado'],
+  ['color', 'Color'],
+  ['soft', 'Fondo suave'],
+];
+const CLASICOS = [
   ['lift', 'Elevar'],
   ['grow', 'Agrandar'],
   ['shrink', 'Encoger'],
@@ -12,6 +17,13 @@ const EFECTOS = [
   ['glow', 'Resplandor'],
   ['bright', 'Aclarar'],
 ];
+const EFECTOS = [['', 'Ninguno'], ...CLASICOS, ...NUEVOS];
+
+// Texto, título o botón SIN caja: los 3 efectos que no mueven las letras van primero y el primero se sugiere.
+// Con caja o imagen: el orden de siempre y los nuevos al final. Solo cambia el orden de la lista, no lo guardado.
+const opcionesNodo = (node) => (esTexto(node) && sinCaja(node)
+  ? [['', 'Ninguno'], ['underline', 'Subrayado (sugerido)'], ...NUEVOS.slice(1), ...CLASICOS]
+  : EFECTOS);
 
 // Qué cambia al hacer hover en cada efecto
 // 2º parámetro = modoSombra: 'texto' (sin caja y con texto: text-shadow, sin capa compuesta, el texto no se
@@ -56,16 +68,38 @@ export default {
   estado: true, // se ve siempre en el preview
   titulo: 'Al pasar el mouse',
   principal: 'effect',
-  defaults: { effect: 'lift', duration: 0.18, ease: 'suave', ...DEF_CURVA, color: '#7c5cff' },
+  defaults: { effect: 'lift', duration: 0.2, ease: 'suave', ...DEF_CURVA, color: '#7c5cff', lineaColor: 'texto' },
   campos: [
-    { key: 'effect', label: 'Efecto', kind: 'select', options: EFECTOS },
+    { key: 'effect', label: 'Efecto', kind: 'select', options: EFECTOS, opcionesNodo },
+    { key: 'lineaColor', label: 'Color de la línea', kind: 'select', options: [['texto', 'El del texto'], ['otro', 'Otro color']], cuando: (g, efecto) => efecto === 'underline' },
     { key: 'duration', label: 'Duración (s)', kind: 'num', step: 0.05, min: 0.05, cuando: sinSpring },
     { key: 'ease', label: 'Curva', kind: 'select', options: EASES },
     ...camposCurva,
-    { key: 'color', label: 'Color', kind: 'color', cuando: (g, efecto) => efecto === 'glow' },
+    { key: 'color', label: 'Color', kind: 'color', cuando: (g, efecto) => ['glow', 'color', 'soft'].includes(efecto) || (efecto === 'underline' && g?.lineaColor === 'otro') },
   ],
 
   css(h, sel, node) {
+    // Subrayado y Fondo suave: un ::before (el ::after queda libre para la zona anti-parpadeo). No mueven ni escalan el texto:
+    // el transform / opacity va solo en el pseudo-elemento. Técnica: transform-origin que cambia en :hover
+    // (30secondsofcode.org/css/s/hover-underline-animation). Las imágenes (<img>) no admiten pseudo-elementos.
+    if (h?.effect === 'underline' || h?.effect === 'soft') {
+      if (node?.type === 'image') return '';
+      const t = `${duracion(h, 0.2)}s ${curva(h)}`;
+      const c = h.color || '#7c5cff';
+      const pos = sinPosicion(node) ? 'position:relative;' : '';
+      if (h.effect === 'underline') {
+        const col = h.lineaColor === 'otro' ? c : 'currentColor';
+        return [pos && `${sel}{${pos}}`,
+          `${sel}::before{content:'';position:absolute;left:0;right:0;bottom:-2px;height:2px;background:${col};transform:scaleX(0);transform-origin:right;transition:transform ${t};pointer-events:none}`,
+          `${sel}:hover::before{transform:scaleX(1);transform-origin:left}`].filter(Boolean).join('\n');
+      }
+      return [`${sel}{${pos}isolation:isolate}`,
+        `${sel}::before{content:'';position:absolute;top:-.2em;right:-.5em;bottom:-.2em;left:-.5em;border-radius:.4em;background:${c};opacity:0;z-index:-1;transition:opacity ${t};pointer-events:none}`,
+        `${sel}:hover::before{opacity:.2}`].join('\n');
+    }
+    // Color: cambia el color del texto con transition (la de color se añade en base.js). !important porque en el
+    // lienzo el color del nodo va en style inline.
+    if (h?.effect === 'color') return `${sel}:hover{${transicion(h)};color:${h.color || '#7c5cff'}!important}`;
     const regla = REGLAS[h?.effect];
     if (!regla) return '';
     // la transición base (para soltar) la pone cssNodo; aquí va la de entrar al estado

@@ -348,12 +348,12 @@ export function initInspector(host) {
       }
       for (const f of g.campos) {
         if (f.key !== g.principal && !datos) continue; // apagado: solo se ve el selector principal
-        if (f.cuando && !f.cuando(datos, datos?.effect)) continue;
+        if (f.cuando && !f.cuando(datos, datos?.effect, nodo)) continue;
         const v = datos?.[f.key] ?? g.defaults[f.key] ?? '';
         const a = `data-a="${g.id}.${f.key}"`;
         if (f.kind === 'select') {
           const vSel = f.key === g.principal ? (datos?.[f.key] ?? '') : v;
-          const opts = f.options.map(([val, txt]) => `<option value="${esc(val)}" ${val === String(vSel) ? 'selected' : ''}>${txt}</option>`).join('');
+          const opts = (f.opcionesNodo ? f.opcionesNodo(nodo) : f.options).map(([val, txt]) => `<option value="${esc(val)}" ${val === String(vSel) ? 'selected' : ''}>${txt}</option>`).join('');
           h += `<div class="campo"><label>${f.label}</label><select ${a}>${opts}</select></div>`;
         } else if (f.kind === 'color') {
           h += `<div class="campo"><label>${f.label}</label><input type="color" ${a} value="${aHex(v) ?? '#7c5cff'}"></div>`;

@@ -20,7 +20,7 @@ const texto = (c) => c.includes('text-shadow:') && !c.includes('drop-shadow') &&
 
 t('lift: transparente (sin estilos) -> drop-shadow, sin box-shadow', () => {
   const c = css({}, LIFT);
-  assert.ok(texto(c), c); assert.ok(c.includes('translateY(-6px)'), c);
+  assert.ok(texto(c), c); assert.ok(c.includes('translateY(-4px)'), c);
 });
 t('lift: fondo transparente explícito / borde 0 / sin imagen cuentan como transparente', () => {
   assert.ok(texto(css({ background: 'transparent', border: 'none' }, LIFT)));
@@ -29,7 +29,7 @@ t('lift: fondo transparente explícito / borde 0 / sin imagen cuentan como trans
 t('lift: con fondo -> box-shadow de siempre, idéntico al anterior', () => {
   const c = css({ background: '#111' }, LIFT);
   assert.ok(caja(c), c);
-  assert.ok(c.includes(':hover{transition:') && c.includes(';transform:translateY(-6px);box-shadow:0 14px 30px rgba(0,0,0,.28)}'), c);
+  assert.ok(c.includes(':hover{transition:') && c.includes(';transform:translateY(-4px);box-shadow:0 14px 30px rgba(0,0,0,.28)}'), c);
   assert.ok(caja(css({ backgroundColor: '#fff' }, LIFT)));
 });
 t('lift: con borde visible -> box-shadow', () => {
@@ -55,7 +55,7 @@ t('móvil: si solo móvil tiene fondo o borde, cuenta como con caja (y al revés
   assert.ok(texto(css({ color: '#fff' }, LIFT, { color: '#000' }))); // solo color de texto: sigue sin caja
 });
 t('otros efectos no cambian (grow/shrink/tilt/bright)', () => {
-  assert.ok(css({}, { hover: { effect: 'grow' } }).includes('transform:scale(1.06)'));
+  assert.ok(css({}, { hover: { effect: 'grow' } }).includes('transform:scale(1.03)'));
   assert.ok(css({ background: '#000' }, { hover: { effect: 'bright' } }).includes('filter:brightness(1.2)'));
 });
 t('focus glow: transparente -> drop-shadow; con fondo -> box-shadow; ring sigue con outline', () => {

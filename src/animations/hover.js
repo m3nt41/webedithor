@@ -18,13 +18,13 @@ const EFECTOS = [
 // ve borroso al moverse), 'plano' (sin caja y sin texto, p. ej. icon/image: filter:drop-shadow) o false (con caja: box-shadow).
 const REGLAS = {
   lift: (h, modo) => modo === 'texto'
-    ? 'transform:translateY(-6px);text-shadow:0 8px 10px rgba(0,0,0,.28)'
+    ? 'transform:translateY(-4px);text-shadow:0 8px 10px rgba(0,0,0,.28)'
     : modo
-      ? 'transform:translateY(-6px);filter:drop-shadow(0 8px 10px rgba(0,0,0,.28))'
-      : 'transform:translateY(-6px);box-shadow:0 14px 30px rgba(0,0,0,.28)',
-  grow: () => 'transform:scale(1.06)',
-  shrink: () => 'transform:scale(.95)',
-  tilt: () => 'transform:rotate(-2deg) scale(1.04)',
+      ? 'transform:translateY(-4px);filter:drop-shadow(0 8px 10px rgba(0,0,0,.28))'
+      : 'transform:translateY(-4px);box-shadow:0 14px 30px rgba(0,0,0,.28)',
+  grow: () => 'transform:scale(1.03)',
+  shrink: () => 'transform:scale(.97)',
+  tilt: () => 'transform:rotate(-1deg)',
   glow: (h, modo) => modo === 'texto'
     ? `text-shadow:0 0 10px ${h.color || '#7c5cff'}`
     : modo
@@ -37,14 +37,14 @@ const REGLAS = {
 // al moverse el cursor queda fuera, el hover se apaga, el elemento vuelve, se reactiva... sin parar.
 // Solución en CSS puro: un ::after transparente (hijo del elemento, así se mueve con él y cuenta como parte
 // del hover) que cubre la zona original. Sin pointer-events:none, para que reciba el cursor.
-//  lift   -> sube 6px: franja de 6px por debajo, ancho completo.
-//  shrink -> scale .95 encoge ~2.6% por lado: el ::after sobresale 3% (se encoge con el elemento).
-//  tilt   -> rotate(-2deg) + scale(1.04): las esquinas se mueven unos px: margen de 6px por todos lados.
+//  lift   -> sube 4px: franja de 4px por debajo, ancho completo.
+//  shrink -> scale .97 encoge ~1.5% por lado: el ::after sobresale 2% (se encoge con el elemento).
+//  tilt   -> rotate(-1deg) sin scale: las esquinas se mueven unos px: margen de 4px por todos lados.
 // grow, glow y bright no dejan el cursor fuera. Las imágenes (<img>) no admiten ::after: se saltan.
 const ZONA = {
-  lift: 'top:100%;left:0;right:0;height:6px',
-  shrink: 'top:-3%;right:-3%;bottom:-3%;left:-3%',
-  tilt: 'top:-6px;right:-6px;bottom:-6px;left:-6px',
+  lift: 'top:100%;left:0;right:0;height:4px',
+  shrink: 'top:-2%;right:-2%;bottom:-2%;left:-2%',
+  tilt: 'top:-4px;right:-4px;bottom:-4px;left:-4px',
 };
 
 // ¿Hace falta ponerle position:relative? Solo si hoy es estática (vacía o static) en escritorio y móvil.
@@ -56,7 +56,7 @@ export default {
   estado: true, // se ve siempre en el preview
   titulo: 'Al pasar el mouse',
   principal: 'effect',
-  defaults: { effect: 'lift', duration: 0.25, ease: 'suave', ...DEF_CURVA, color: '#7c5cff' },
+  defaults: { effect: 'lift', duration: 0.18, ease: 'suave', ...DEF_CURVA, color: '#7c5cff' },
   campos: [
     { key: 'effect', label: 'Efecto', kind: 'select', options: EFECTOS },
     { key: 'duration', label: 'Duración (s)', kind: 'num', step: 0.05, min: 0.05, cuando: sinSpring },

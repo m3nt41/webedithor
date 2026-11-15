@@ -28,9 +28,9 @@ pagina.children.push(n('section', { name: 'Sec', styles: { base: { display: 'fle
 
 // CSS sin sitio para el ::after, sin navegador
 const c = (k) => cssNodo(nodos[k], '.x', { scroll: false });
-v(/\.x:hover::after\{content:'';position:absolute;top:100%;left:0;right:0;height:6px\}/.test(c('Elevar')) && !/pointer-events/.test(c('Elevar')), 'lift: ::after de 6px abajo, ancho completo, sin pointer-events:none');
+v(/\.x:hover::after\{content:'';position:absolute;top:100%;left:0;right:0;height:4px\}/.test(c('Elevar')) && !/pointer-events/.test(c('Elevar')), 'lift: ::after de 4px abajo, ancho completo, sin pointer-events:none');
 v(/\.x\{position:relative\}/.test(c('Elevar')), 'lift: position:relative en el estado base (nodo sin position)');
-v(c('Encoger').includes('top:-3%') && c('Inclinar').includes('top:-6px'), 'shrink y tilt: ::after por todos los lados');
+v(c('Encoger').includes('top:-2%') && c('Inclinar').includes('top:-4px'), 'shrink y tilt: ::after por todos los lados');
 v(!c('Agrandar').includes('::after'), 'grow: sin ::after (no hace falta)');
 const sticky = mk('S', 'lift', { ...base, position: 'sticky', top: '0' });
 v(!cssNodo(sticky, '.x', { scroll: false }).includes('position:relative') && cssNodo(sticky, '.x', { scroll: false }).includes('::after'), 'con position propia: no se la pisa, pero sí lleva ::after');

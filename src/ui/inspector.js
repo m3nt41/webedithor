@@ -19,6 +19,18 @@ import { usaMarquesina, MQ_VELOCIDADES, MQ_GAPS, MQ_COPIAS, MQ_VEL_MIN, MQ_VEL_M
 import { GRUPOS_ANIM } from '../animations/index.js';
 import { DISPAROS_VARIANT, CAMPOS_PROPS, CAMPOS_TIEMPO, DEF_TIEMPO } from '../animations/variants.js';
 
+// Los 3 niveles del panel: Esencial abierto de fábrica; Estilo y Avanzado plegados. Lo que el usuario deja abierto se guarda.
+const NIVELES = [['esencial', 'Esencial'], ['estilo', 'Estilo'], ['avanzado', 'Avanzado']];
+const LS_NIVELES = 'editor-landings:niveles';
+const NIVELES_DEF = { esencial: true, estilo: false, avanzado: false };
+function leerNiveles() {
+  try { const o = JSON.parse(localStorage.getItem(LS_NIVELES)); return { ...NIVELES_DEF, ...(o && typeof o === 'object' ? o : {}) }; } catch { return { ...NIVELES_DEF }; }
+}
+function guardarNiveles(o) { try { localStorage.setItem(LS_NIVELES, JSON.stringify(o)); } catch { /* sin localStorage: no pasa nada */ } }
+// Cabecera del panel: nombre del tipo y su icono (los mismos glifos del árbol de capas)
+const TIPO_ES = { page: 'Página', section: 'Sección', container: 'Contenedor', heading: 'Título', text: 'Texto', button: 'Botón', image: 'Imagen', icon: 'Icono' };
+const GLIFO_TIPO = { page: '▤', section: '▭', container: '▢', heading: 'H', text: '¶', button: '⬭', image: '▣', icon: '✦' };
+
 const esc =(s) => String(s ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 
 /** '#abc' -> '#aabbcc'; si no es hex devuelve null (el picker no admite rgba/gradientes). */
@@ -43,9 +55,9 @@ const avisoHtml = (msg) => `${SVG_AVISO}${esc(msg)}`;
 const etiqueta = (texto, ov) => `<label${ov ? ' class="ov" title="Solo en móvil: este valor pisa el de escritorio"' : ''}>${texto}</label>`;
 
 /** Campo de texto con valor CSS crudo + su aviso de validez. */
-function htmlTexto(key, v, placeholder, texto, ov) {
+function htmlTexto(key, v, placeholder, texto, ov, compacto = false) {
   const av = avisoCss(key, v);
-  return `<div class="campo">${etiqueta(texto, ov)}<input data-s="${key}" class="${av ? 'invalido' : ''}" value="${esc(v)}" placeholder="${esc(placeholder)}"></div>` +
+  return `<div class="campo${compacto ? ' v' : ''}">${etiqueta(texto, ov)}<input data-s="${key}" class="${av ? 'invalido' : ''}" value="${esc(v)}" placeholder="${esc(placeholder)}"></div>` +
     `<p class="aviso-css" data-aviso-css${av ? '' : ' hidden'}>${av ? avisoHtml(av) : ''}</p>`;
 }
 
@@ -102,7 +114,7 @@ function htmlEstados(nodo, verActual) {
   const lista = nodo.animation?.variants ?? [];
   // "Enfocar" solo tiene sentido en botones (los únicos que reciben foco de teclado)
   const disparos = DISPAROS_VARIANT.filter(([v]) => v !== 'focus' || nodo.type === 'button');
-  let h = `<h3>Estados (variants)</h3>
+  let h = `<h3>Estados (hover, clic…)</h3>
     <p class="modo"><strong>reposo</strong> = el aspecto normal del elemento. Cada estado cambia solo lo que rellenes; si dos coinciden, gana el de más abajo.</p>`;
   lista.forEach((s, i) => {
     const viendo = verActual?.id === nodo.id && verActual.estado === s.id;
@@ -160,80 +172,100 @@ export function initInspector(host) {
   function dibujar() {
     const { page, selectedId, viewMode } = getState();
     const nodo = selectedId ? findNode(page, selectedId) : null;
+    const idPrevio = idDibujado;
     if ((nodo?.id ?? null) !== idDibujado) abiertos.clear();
     idDibujado = nodo?.id ?? null;
     if (!nodo) {
-      host.innerHTML = '<h2>Propiedades</h2><p class="vacio">Haz clic en un elemento del preview.<br><br>Doble clic en un texto para escribir directamente.</p>';
+      host.innerHTML = '<div class="insp-cuerpo"><h2>Propiedades</h2><p class="vacio">Haz clic en un elemento del preview.<br><br>Doble clic en un texto para escribir directamente.</p></div>';
       return;
     }
     const estilos = effectiveStyles(nodo, viewMode);
+    const scrollPrevio = idPrevio === idDibujado ? (host.querySelector('.insp-cuerpo')?.scrollTop ?? 0) : 0;
 
-    let html = '<h2>Propiedades</h2>';
+    // ---- Cabecera fija: icono + nombre + tipo (+ modo) y las acciones ----
+    let acciones = '';
     if (nodo.type !== 'page') {
       const padre = findParent(page, nodo.id);
       const i = padre.children.indexOf(nodo);
-      html += `<div class="acciones">
+      acciones = `<div class="acciones">
         <button data-act="up" title="Subir (Alt+↑)" ${i === 0 ? 'disabled' : ''}>↑</button>
         <button data-act="down" title="Bajar (Alt+↓)" ${i === padre.children.length - 1 ? 'disabled' : ''}>↓</button>
         <button data-act="dup" title="Duplicar (Ctrl+D)">⧉</button>
         <button data-act="del" class="borrar" title="Borrar (Supr)">✕</button>
       </div>`;
     }
-    html += `
-      <div class="campo"><label>Nombre</label><input data-name value="${esc(nodo.name)}"></div>
-      <p class="modo">${nodo.type} · editando <strong>${viewMode === 'mobile' ? 'móvil' : 'escritorio'}</strong></p>`;
+    const cabecera = `<header class="insp-cab"><span class="insp-ico" aria-hidden="true">${GLIFO_TIPO[nodo.type] ?? '▭'}</span>
+      <div class="insp-nom"><input data-name value="${esc(nodo.name)}" aria-label="Nombre del elemento" title="Nombre del elemento">
+      <span class="insp-tipo">${TIPO_ES[nodo.type] ?? nodo.type} · <b>${viewMode === 'mobile' ? 'Móvil' : 'Escritorio'}</b></span></div>${acciones}</header>`;
 
-    // ---- Contenido ----
+    // ---- Los 3 niveles: cada pieza se añade al nivel que le toca ----
+    const N = { esencial: '', estilo: '', avanzado: '' };
+
+    // Contenido (texto, enlace, imagen, icono)
     const c = nodo.content;
-    let cont = '';
+    let cont = '', contAv = '';
     if (nodo.type === 'page') {
-      cont += `<div class="campo"><label>Título</label><input data-c="title" value="${esc(c.title)}"></div>
-        <div class="campo"><label>Scroll suave</label><select data-c="smoothScroll" data-bool><option value="no" ${c.smoothScroll ? '' : 'selected'}>No</option><option value="si" ${c.smoothScroll ? 'selected' : ''}>Sí</option></select></div>
-        <p class="modo">Solo la rueda del mouse en escritorio (táctil, teclado, barra y anclas quedan nativos). Se ve en el HTML exportado, no en este preview.</p>
-        <h3>Landing con IA</h3>
-        <p class="modo">Pídele a cualquier IA de chat una landing: pégale la guía y carga aquí lo que devuelva.</p>
-        <div class="ia-botones"><button type="button" data-ia="copiar">${SVG_COPIAR} Copiar guía para IA</button><button type="button" data-ia="pegar">${SVG_PEGAR} Pegar plan o JSON</button></div>`;
+      cont += `<div class="campo"><label>Título</label><input data-c="title" value="${esc(c.title)}"></div>`;
+      contAv += `<h3>Página</h3><div class="campo"><label>Scroll suave</label><select data-c="smoothScroll" data-bool><option value="no" ${c.smoothScroll ? '' : 'selected'}>No</option><option value="si" ${c.smoothScroll ? 'selected' : ''}>Sí</option></select></div>
+        <p class="modo">Solo la rueda del mouse en escritorio (táctil, teclado, barra y anclas quedan nativos). Se ve en el HTML exportado, no en este preview.</p>`;
     }
     if (nodo.type === 'icon') {
       const botones = Object.entries(ICONOS).map(([k, ic]) => `<button type="button" data-icono="${k}" title="${esc(ic.t)}" aria-label="${esc(ic.t)}" aria-pressed="${c.name === k}" class="${c.name === k ? 'on' : ''}">${iconoSvg(k, 18)}</button>`).join('');
       cont += `<div class="campo"><label>Icono</label></div><div class="icono-grid" role="group" aria-label="Elegir icono">${botones}</div>`;
     }
-    if (TIPOS_TEXTO.includes(nodo.type)) cont += `<div class="campo"><label>Texto</label><textarea data-c="text" rows="3">${esc(c.text)}</textarea></div>`;
+    if (TIPOS_TEXTO.includes(nodo.type)) cont += `<div class="campo v"><label>Texto</label><textarea data-c="text" rows="3">${esc(c.text)}</textarea></div>`;
     if (nodo.type === 'heading') {
       cont += `<div class="campo"><label>Nivel</label><select data-c="level" data-num>${[1, 2, 3, 4].map((n) => `<option value="${n}" ${+c.level === n ? 'selected' : ''}>H${n}</option>`).join('')}</select></div>`;
     }
     if (nodo.type === 'button') cont += `<div class="campo"><label>Enlace</label><input data-c="href" value="${esc(c.href)}" placeholder="https://wa.me/506..."></div>`;
     if (nodo.type === 'image') {
       cont += `<div class="campo"><label>URL</label><input data-c="src" value="${esc(c.src?.startsWith('data:') ? '' : c.src)}" placeholder="https://..."></div>
-        <div class="campo"><label>Archivo</label><input type="file" accept="image/*" data-file></div>
-        <div class="campo"><label>Alt</label><input data-c="alt" value="${esc(c.alt)}"></div>`;
+        <div class="campo v"><label>Archivo</label><input type="file" accept="image/*" data-file></div>
+        <div class="campo"><label>Texto alterno</label><input data-c="alt" value="${esc(c.alt)}"></div>`;
     }
     if (nodo.type === 'section' || nodo.type === 'container') {
-      cont += `<div class="campo"><label>Ancla (id)</label><input data-anchor value="${esc(c.anchor)}" placeholder="contacto"></div>
+      contAv += `<h3>Ancla</h3><div class="campo"><label>Ancla (id)</label><input data-anchor value="${esc(c.anchor)}" placeholder="contacto"></div>
         <p class="modo" data-aviso-ancla>${avisoAncla(page, nodo, c.anchor ?? '')}</p>`;
     }
-    if (cont) html += `<h3>Contenido</h3>${cont}`;
+    if (cont) N.esencial += `<h3>Contenido</h3>${cont}`;
+    if (nodo.type === 'page') {
+      N.esencial += `<h3>Landing con IA</h3>
+        <p class="modo">Pídele a cualquier IA de chat una landing: pégale la guía y carga aquí lo que devuelva.</p>
+        <div class="ia-botones"><button type="button" data-ia="copiar">${SVG_COPIAR} Copiar guía para IA</button><button type="button" data-ia="pegar">${SVG_PEGAR} Pegar plan o JSON</button></div>`;
+    }
     // Menú hamburguesa en móvil: solo en el Navbar (sección con "nav" en el nombre o que ya lo tiene activado)
     if (nodo.type === 'section' && (c.menuMovil === true || /nav/i.test(nodo.name))) {
-      html += `<h3>Menú en móvil</h3><div class="campo"><label>Menú hamburguesa en móvil</label><select data-c="menuMovil" data-bool><option value="no" ${c.menuMovil ? '' : 'selected'}>No</option><option value="si" ${c.menuMovil ? 'selected' : ''}>Sí</option></select></div>
+      contAv += `<h3>Menú en móvil</h3><div class="campo"><label>Menú hamburguesa en móvil</label><select data-c="menuMovil" data-bool><option value="no" ${c.menuMovil ? '' : 'selected'}>No</option><option value="si" ${c.menuMovil ? 'selected' : ''}>Sí</option></select></div>
         <p class="modo">En móvil el primer elemento (el logo) queda visible y todo lo demás va al panel de la hamburguesa. El panel se superpone al contenido. En la vista móvil del editor empieza cerrado: ábrelo con la hamburguesa o seleccionando un enlace desde Capas.</p>`;
     }
 
-    const mq = usaMarquesina(nodo);
-    if (mq) html += htmlMarq(mq, abiertos.has('Marquesina'));
+    N.avanzado += contAv; // ancla, menú móvil y scroll suave van primero en Avanzado
 
-    // ---- Estilos ----
+    const mq = usaMarquesina(nodo);
+    if (mq) N.esencial += htmlMarq(mq, abiertos.has('Marquesina'));
+
+    // ---- Estilos: cada campo va al nivel de su grupo (o al suyo propio) ----
     for (const g of GRUPOS) {
       if (!g.tipos.includes(nodo.type)) continue;
       const visibles = g.campos.filter((f) => (!f.tipos || f.tipos.includes(nodo.type)) && (!f.cuando || f.cuando(estilos)));
-      html += `<h3>${g.titulo}</h3>`;
-      const conControl = []; // campos con control visual: su valor CSS crudo va en "Avanzado" al final del grupo
+      const G = { esencial: '', estilo: '', avanzado: '' }; // piezas de este grupo por nivel
+      const fila = {}; // fila de columnas pendiente por nivel: { id, items }
+      const cerrarFila = (niv) => { const r = fila[niv]; if (!r) return; G[niv] += `<div class="fila" style="--n:${r.items.length}">${r.items.join('')}</div>`; fila[niv] = null; };
+      const poner = (niv, h, filaId) => {
+        if (filaId) {
+          if (fila[niv]?.id !== filaId) { cerrarFila(niv); fila[niv] = { id: filaId, items: [] }; }
+          fila[niv].items.push(h);
+        } else { cerrarFila(niv); G[niv] += h; }
+      };
+      const conControl = { esencial: [], estilo: [], avanzado: [] }; // campos con control visual: su valor CSS crudo va en "Valor CSS exacto" al final del grupo
       for (const f of visibles) {
+        const niv = f.nivel ?? g.nivel ?? 'avanzado';
         const v = estilos[f.key] ?? '';
         const ov = viewMode === 'mobile' && f.key in nodo.styles.mobile; // en móvil: ¿tiene valor propio?
+        let h = '';
         if (f.kind === 'fondoImagen') {
           const quitar = `<button type="button" class="quitar" data-ctl="fondoImagen" data-val="">${viewMode === 'mobile' ? '↺ igual que escritorio' : '✕ Quitar'}</button>`;
-          html += `<div class="campo ctl">${etiqueta(f.label, ov)}<div class="botones${viewMode === 'mobile' && !ov ? ' heredado' : ''}">` +
+          h = `<div class="campo ctl">${etiqueta(f.label, ov)}<div class="botones${viewMode === 'mobile' && !ov ? ' heredado' : ''}">` +
             `<label class="subir">Subir imagen<input type="file" accept="image/*" data-fondo-file style="position:absolute;width:1px;height:1px;opacity:0"></label>${quitar}</div></div>` +
             `<div class="campo"><label>…o pega una URL</label><input data-fondo-url value="${esc(v.startsWith('data:') ? '' : v)}" placeholder="${v.startsWith('data:') ? '(imagen subida)' : 'https://…'}"></div>` +
             '<p class="fondo-msg" data-fondo-msg hidden></p>';
@@ -243,19 +275,19 @@ export function initInspector(host) {
           const preset = TAMANOS_ICONO.includes(px) && (v === '' || /^\d+(\.\d+)?px$/.test(String(v)));
           const bs = TAMANOS_ICONO.map((t) => `<button type="button" data-isz="${t}" class="${preset && t === px ? 'on' : ''}">${t}</button>`).join('');
           const quitar = tieneValor ? `<button type="button" class="quitar" data-isz="">${viewMode === 'mobile' ? '↺ igual que escritorio' : '✕ quitar'}</button>` : '';
-          html += `<div class="campo ctl">${etiqueta(f.label, ov)}<div class="botones${viewMode === 'mobile' && !ov ? ' heredado' : ''}">${bs}<button type="button" data-isz-otro class="${preset ? '' : 'on'}" title="Escribir otro tamaño">Otro</button><span class="mini"><input type="number" min="4" max="512" step="1" data-isz-num value="${Math.round(px)}" aria-label="Tamaño en px"> px</span>${quitar}</div></div>`;
+          h = `<div class="campo ctl">${etiqueta(f.label, ov)}<div class="botones${viewMode === 'mobile' && !ov ? ' heredado' : ''}">${bs}<button type="button" data-isz-otro class="${preset ? '' : 'on'}" title="Escribir otro tamaño">Otro</button><span class="mini"><input type="number" min="4" max="512" step="1" data-isz-num value="${Math.round(px)}" aria-label="Tamaño en px"> px</span>${quitar}</div></div>`;
         } else if (f.kind === 'fondoCapa') {
           const n = capaValida(v) ?? 0;
-          html += `<div class="campo rango">${etiqueta(f.label, ov)}<span class="rango-fila"><input type="range" min="0" max="80" step="1" data-capa value="${n}"><output data-capa-out>${n}%</output></span></div>` +
+          h = `<div class="campo rango">${etiqueta(f.label, ov)}<span class="rango-fila"><input type="range" min="0" max="80" step="1" data-capa value="${n}"><output data-capa-out>${n}%</output></span></div>` +
             (ov || (viewMode !== 'mobile' && f.key in nodo.styles.base) ? `<div class="campo ctl"><label></label><div class="botones"><button type="button" class="quitar" data-ctl="fondoCapa" data-val="">${viewMode === 'mobile' ? '↺ igual que escritorio' : '✕ quitar'}</button></div></div>` : '');
         } else if (KINDS_BOTONES.includes(f.kind)) {
           const tieneValor = viewMode === 'mobile' ? ov : f.key in nodo.styles.base;
-          html += htmlControl(f, v, viewMode, ov, tieneValor);
+          h = htmlControl(f, v, viewMode, ov, tieneValor);
         } else if (f.kind === 'estiloBoton') {
-          // Mira background, color y border a la vez; sin "Avanzado" (sus campos crudos son Fondo, Color y Borde, más abajo)
+          // Mira background, color y border a la vez; sin "Valor CSS exacto" (sus campos crudos son Fondo, Color y Borde, más abajo)
           const dest = viewMode === 'mobile' ? nodo.styles.mobile : nodo.styles.base;
           const tieneValor = ['background', 'color', 'border'].some((k) => k in dest);
-          html += htmlControl(f, { background: estilos.background, color: estilos.color, border: estilos.border }, viewMode, viewMode === 'mobile' && tieneValor, tieneValor);
+          h = htmlControl(f, { background: estilos.background, color: estilos.color, border: estilos.border }, viewMode, viewMode === 'mobile' && tieneValor, tieneValor);
         } else if (KINDS_CONTROL.includes(f.kind)) {
           // Tamaño de botón mira padding y fontSize a la vez; los demás, su propia clave
           const claves = (f.crudos ?? [{ key: f.key }]).map((c) => c.key);
@@ -263,10 +295,10 @@ export function initInspector(host) {
           const tieneValor = claves.some((k) => k in dest);
           const ovC = viewMode === 'mobile' && tieneValor;
           const vC = f.kind === 'tamanoBoton' ? { padding: estilos.padding, fontSize: estilos.fontSize } : v;
-          html += htmlControl(f, vC, viewMode, ovC, tieneValor);
-          conControl.push({ f, v, ov: ovC, personalizado: modeloControl(f, vC, viewMode).personalizado, estilos });
+          h = htmlControl(f, vC, viewMode, ovC, tieneValor);
+          conControl[niv].push({ f, v, ov: ovC, personalizado: modeloControl(f, vC, viewMode).personalizado, estilos });
         } else if (f.kind === 'nota') {
-          html += `<p class="modo">${f.texto}</p>`;
+          h = `<p class="modo">${f.texto}</p>`;
         } else if (f.kind === 'select') {
           // En móvil, un select cuyo '' es un valor real (vacioMovil) separa dos cosas: '' = "Igual que escritorio"
           // (sin override) y el valor explícito (ej. static) = "Normal en móvil". El valor mostrado es solo el override móvil.
@@ -276,21 +308,27 @@ export function initInspector(host) {
             vSel = nodo.styles.mobile[f.key] ?? '';
           }
           const opts = opciones.map(([val, txt]) => `<option value="${esc(val)}" ${val === String(vSel) ? 'selected' : ''}>${txt}</option>`).join('');
-          html += `<div class="campo">${etiqueta(f.label, ov)}<select data-s="${f.key}">${opts}</select></div>`;
+          h = `<div class="campo${f.fila ? ' v' : ''}">${etiqueta(f.label, ov)}<select data-s="${f.key}">${opts}</select></div>`;
         } else if (f.kind === 'color') {
           const av = avisoCss(f.key, v);
-          html += `<div class="campo">${etiqueta(f.label, ov)}<span class="color"><input type="color" data-pick="${f.key}" value="${aHex(v) ?? '#000000'}"><input data-s="${f.key}" class="${av ? 'invalido' : ''}" value="${esc(v)}" placeholder="#ffffff"></span></div><p class="aviso-css" data-aviso-css${av ? '' : ' hidden'}>${av ? avisoHtml(av) : ''}</p>`;
+          h = `<div class="campo${f.fila ? ' v' : ''}">${etiqueta(f.label, ov)}<span class="color"><input type="color" data-pick="${f.key}" class="${aHex(v) ? '' : 'sin-valor'}" value="${aHex(v) ?? '#000000'}" aria-label="Elegir color: ${esc(f.label)}"><input data-s="${f.key}" class="${av ? 'invalido' : ''}" value="${esc(v)}" placeholder="#ffffff"></span></div><p class="aviso-css" data-aviso-css${av ? '' : ' hidden'}>${av ? avisoHtml(av) : ''}</p>`;
         } else {
-          html += htmlTexto(f.key, v, f.placeholder, f.label, ov);
+          h = htmlTexto(f.key, v, f.placeholder, f.label, ov, !!f.fila);
         }
+        // En una fila de columnas, campo + aviso van juntos en una celda
+        poner(niv, f.fila ? `<div class="celda">${h}</div>` : h, f.fila);
       }
-      if (conControl.length) {
-        // campos de texto crudos de cada control (tamanoBoton tiene dos: padding y fontSize)
-        const crudosDe = (c) => (c.f.crudos ?? [{ key: c.f.key, label: c.f.crudo ?? c.f.label, placeholder: c.f.placeholder }])
-          .map((r) => ({ ...r, v: c.estilos[r.key] ?? '', ov: viewMode === 'mobile' && r.key in nodo.styles.mobile }));
-        const abrir = abiertos.has(g.titulo) || conControl.some((c) => c.personalizado || crudosDe(c).some((r) => avisoCss(r.key, r.v)));
-        html += `<details class="avanzado" data-g="${esc(g.titulo)}"${abrir ? ' open' : ''}><summary>Avanzado (valor CSS)</summary>` +
-          conControl.map((c) => crudosDe(c).map((r) => htmlTexto(r.key, r.v, r.placeholder, r.label, r.ov)).join('')).join('') + '</details>';
+      for (const niv of Object.keys(G)) {
+        cerrarFila(niv);
+        if (conControl[niv].length) {
+          // campos de texto crudos de cada control (tamanoBoton tiene dos: padding y fontSize)
+          const crudosDe = (c) => (c.f.crudos ?? [{ key: c.f.key, label: c.f.crudo ?? c.f.label, placeholder: c.f.placeholder }])
+            .map((r) => ({ ...r, v: c.estilos[r.key] ?? '', ov: viewMode === 'mobile' && r.key in nodo.styles.mobile }));
+          const abrir = abiertos.has(g.titulo) || conControl[niv].some((c) => c.personalizado || crudosDe(c).some((r) => avisoCss(r.key, r.v)));
+          G[niv] += `<details class="avanzado" data-g="${esc(g.titulo)}"${abrir ? ' open' : ''}><summary>Valor CSS exacto</summary>` +
+            conControl[niv].map((c) => crudosDe(c).map((r) => htmlTexto(r.key, r.v, r.placeholder, r.label, r.ov)).join('')).join('') + '</details>';
+        }
+        if (G[niv]) N[niv] += `<h3>${g.titulo}</h3>` + G[niv];
       }
     }
 
@@ -299,10 +337,10 @@ export function initInspector(host) {
       if (!g.tipos.includes(nodo.type)) continue;
       // "Paso de escena" solo se ofrece a hijos directos de una escena (o si ya lo tienen puesto)
       if (g.soloEnEscena && !nodo.animation?.[g.id] && !findParent(page, nodo.id)?.animation?.scene?.steps) continue;
-      if (g.propio) { html += htmlEstados(nodo, getState().verEstado); continue; } // los estados tienen su propia sección
+      if (g.propio) { N.avanzado += htmlEstados(nodo, getState().verEstado); continue; } // los estados tienen su propia sección
       const datos = nodo.animation?.[g.id]; // undefined = grupo apagado
-      html += `<h3>${g.titulo}</h3>`;
-      if (g.id === 'scene' && datos) html += '<p class="modo">La sección se queda fija y sus hijos se apilan en el mismo lugar: se respetan Alineación y Justificar (y su fondo, borde y padding); Dirección, Separación y Columnas no se usan. Una vez creada, cada hijo directo tiene su "Paso de escena". Solo se ve en Vista previa y en el exportado. "Transición (% del tramo)" = cuánto dura el cambio entre pasos dentro de cada tramo (el resto del tramo el paso queda quieto). Un navbar pegado arriba se mide solo (o escribe "Espacio arriba").</p>';
+      let h = `<h3>${g.titulo}</h3>`;
+      if (g.id === 'scene' && datos) h += '<p class="modo">La sección se queda fija y sus hijos se apilan en el mismo lugar: se respetan Alineación y Justificar (y su fondo, borde y padding); Dirección, Separación y Columnas no se usan. Una vez creada, cada hijo directo tiene su "Paso de escena". Solo se ve en Vista previa y en el exportado. "Transición (% del tramo)" = cuánto dura el cambio entre pasos dentro de cada tramo (el resto del tramo el paso queda quieto). Un navbar pegado arriba se mide solo (o escribe "Espacio arriba").</p>';
       for (const f of g.campos) {
         if (f.key !== g.principal && !datos) continue; // apagado: solo se ve el selector principal
         if (f.cuando && !f.cuando(datos, datos?.effect)) continue;
@@ -311,19 +349,29 @@ export function initInspector(host) {
         if (f.kind === 'select') {
           const vSel = f.key === g.principal ? (datos?.[f.key] ?? '') : v;
           const opts = f.options.map(([val, txt]) => `<option value="${esc(val)}" ${val === String(vSel) ? 'selected' : ''}>${txt}</option>`).join('');
-          html += `<div class="campo"><label>${f.label}</label><select ${a}>${opts}</select></div>`;
+          h += `<div class="campo"><label>${f.label}</label><select ${a}>${opts}</select></div>`;
         } else if (f.kind === 'color') {
-          html += `<div class="campo"><label>${f.label}</label><input type="color" ${a} value="${aHex(v) ?? '#7c5cff'}"></div>`;
+          h += `<div class="campo"><label>${f.label}</label><input type="color" ${a} value="${aHex(v) ?? '#7c5cff'}"></div>`;
         } else {
-          html += `<div class="campo"><label>${f.label}</label><input type="number" ${a} data-num step="${f.step ?? 1}" min="${f.min ?? 0}"${f.max != null ? ` max="${f.max}"` : ''} value="${v}"></div>`;
+          h += `<div class="campo"><label>${f.label}</label><input type="number" ${a} data-num step="${f.step ?? 1}" min="${f.min ?? 0}"${f.max != null ? ` max="${f.max}"` : ''} value="${v}"></div>`;
         }
       }
+      N.avanzado += h;
     }
 
     // JSON del nodo, plegado (útil para depurar)
     const { children, ...resto } = nodo;
-    html += `<details><summary>JSON del nodo</summary><pre>${esc(JSON.stringify(resto, null, 2))}</pre></details>`;
-    host.innerHTML = html;
+    N.avanzado += `<details class="json"><summary>JSON del nodo</summary><pre>${esc(JSON.stringify(resto, null, 2))}</pre></details>`;
+
+    // ---- Montaje: cada nivel es un <details> plegable; se recuerda cuáles dejó abiertos el usuario ----
+    const niveles = leerNiveles();
+    let cuerpo = '';
+    for (const [k, titulo] of NIVELES) {
+      if (!N[k]) continue;
+      cuerpo += `<details class="nivel nivel-${k}" data-nivel="${k}"${niveles[k] ? ' open' : ''}><summary>${titulo}</summary><div class="nivel-cuerpo">${N[k]}</div></details>`;
+    }
+    host.innerHTML = cabecera + `<div class="insp-cuerpo">${cuerpo}</div>`;
+    if (scrollPrevio) host.querySelector('.insp-cuerpo').scrollTop = scrollPrevio;
   }
 
   // ---- Eventos (delegados: un solo listener para todo el panel) ----
@@ -447,6 +495,14 @@ export function initInspector(host) {
     forzar = true; // reconstruir el panel para marcar el botón activo
     setStyle(idDibujado, b.dataset.ctl, b.dataset.val);
   });
+
+  // Recuerda qué niveles (Esencial / Estilo / Avanzado) dejó abiertos el usuario
+  host.addEventListener('toggle', (e) => {
+    const det = e.target;
+    if (!det.matches?.('details.nivel')) return;
+    const n = leerNiveles();
+    if (n[det.dataset.nivel] !== det.open) { n[det.dataset.nivel] = det.open; guardarNiveles(n); }
+  }, true);
 
   // Recuerda qué "Avanzado" abrió el usuario (el evento toggle no burbujea: se escucha en captura)
   host.addEventListener('toggle', (e) => {

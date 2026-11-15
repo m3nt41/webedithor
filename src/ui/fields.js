@@ -6,6 +6,9 @@
 //     En vista movil, '' pasa a significar "Igual que escritorio" (borra el override) y aparece una opcion
 //     extra con este valor explicito (ej. 'static') para poder volver al valor normal en movil.
 //     vacioTexto: nombre de esa opcion explicita (por defecto, el texto de la primera opcion).
+//   nivel: 'esencial' | 'estilo' | 'avanzado' = en cuál de los 3 niveles plegables del inspector se muestra. Va en el grupo
+//     y cada campo puede pisarlo con el suyo. fila: campos seguidos con el mismo `fila` y el mismo nivel van en una sola fila
+//     de columnas (etiqueta arriba); solo para kind 'text' | 'select' | 'color'.
 //   Controles visuales (src/ui/controles.js): kind 'columnas' | 'anchoMax' | 'centrar' | 'proporcion'. Escriben los MISMOS
 //     strings CSS de siempre. El campo de texto del valor queda en "Avanzado" del grupo (crudo = su etiqueta ahi).
 //     'forma' (borderRadius) y 'tamanoBoton' (padding + fontSize en una sola accion; crudos: [{key,label,placeholder}] = sus campos de texto en Avanzado).
@@ -31,6 +34,7 @@ export const GRUPOS = [
     // Solo botones, arriba del todo. Forma = border-radius; Tamaño = padding + font-size juntos (sus campos de texto crudos
     // van en "Avanzado"; por eso Padding y Tamaño de fuente no se repiten abajo para botones).
     titulo: 'Botón',
+    nivel: 'esencial',
     tipos: ['button'],
     campos: [
       // Estilo (Relleno / Contorno / Suave) = background + color + border juntos. Sus valores crudos ya están más abajo
@@ -43,21 +47,23 @@ export const GRUPOS = [
   },
   {
     titulo: 'Tipografía',
+    nivel: 'estilo',
     tipos: [...TEXTO, 'page'],
     campos: [
+      { key: 'fontSize', label: 'Tamaño', kind: 'text', placeholder: '24px', tipos: ['heading', 'text', 'page'], nivel: 'esencial', fila: 'tam-color' },
+      { key: 'color', label: 'Color', kind: 'color', nivel: 'esencial', fila: 'tam-color' },
       { key: 'fontFamily', label: 'Fuente', kind: 'select', options: FUENTES, vacioMovil: 'inherit' },
-      { key: 'fontSize', label: 'Tamaño', kind: 'text', placeholder: '24px', tipos: ['heading', 'text', 'page'] },
-      { key: 'fontWeight', label: 'Grosor', kind: 'select', options: [['', '—'], ['400', 'Normal'], ['600', 'Seminegrita'], ['800', 'Negrita'], ['900', 'Extra']] },
-      { key: 'lineHeight', label: 'Interlínea', kind: 'text', placeholder: '1.2' },
-      { key: 'letterSpacing', label: 'Espaciado letras', kind: 'text', placeholder: '0.02em' },
-      { key: 'textAlign', label: 'Alineación', kind: 'select', options: [['', '—'], ['left', 'Izquierda'], ['center', 'Centro'], ['right', 'Derecha']] },
-      { key: 'color', label: 'Color', kind: 'color' },
+      { key: 'fontWeight', label: 'Grosor', kind: 'select', options: [['', '—'], ['400', 'Normal'], ['600', 'Seminegrita'], ['800', 'Negrita'], ['900', 'Extra']], fila: 'peso-alin' },
+      { key: 'textAlign', label: 'Alineación', kind: 'select', options: [['', '—'], ['left', 'Izquierda'], ['center', 'Centro'], ['right', 'Derecha']], fila: 'peso-alin' },
+      { key: 'lineHeight', label: 'Interlínea', kind: 'text', placeholder: '1.2', fila: 'inter' },
+      { key: 'letterSpacing', label: 'Espaciado letras', kind: 'text', placeholder: '0.02em', fila: 'inter' },
     ],
   },
   {
     // Elemento Icono: la elección del icono va en "Contenido" (cuadrícula). Tamaño = width y height a la vez; Color = color
     // (si no tiene, hereda del padre). En móvil los dos se pueden sobrescribir como cualquier campo.
     titulo: 'Icono',
+    nivel: 'esencial',
     tipos: ['icon'],
     campos: [
       { key: 'width', label: 'Tamaño', kind: 'iconoTamano' },
@@ -66,9 +72,10 @@ export const GRUPOS = [
   },
   {
     titulo: 'Fondo y borde',
+    nivel: 'estilo',
     tipos: [...TEXTO, ...CONTENEDOR, 'page', 'image', 'icon'],
     campos: [
-      { key: 'background', label: 'Fondo', kind: 'color' },
+      { key: 'background', label: 'Fondo', kind: 'color', nivel: 'esencial' },
       // Forma (Recto/Suave/Redondo/Pastilla) para todo salvo botones (que la tienen arriba, en "Botón"). Su texto crudo (Radio) va en Avanzado.
       { key: 'borderRadius', label: 'Forma', crudo: 'Radio', kind: 'forma', placeholder: '12px', tipos: [...CONTENEDOR, 'page', 'image', 'heading', 'text', 'icon'] },
       { key: 'border', label: 'Borde', kind: 'text', placeholder: '1px solid #ccc' },
@@ -79,6 +86,7 @@ export const GRUPOS = [
     // Imagen de fondo de secciones/contenedores. Campos propios (no son CSS directo: ver CLAVES_PROPIAS en tree.js);
     // el export los convierte en background-image (+ capa oscura) en CSS puro. "Fondo" de arriba queda de color de respaldo.
     titulo: 'Fondo e imagen',
+    nivel: 'estilo',
     tipos: CONTENEDOR,
     campos: [
       { key: 'fondoImagen', label: 'Imagen de fondo', kind: 'fondoImagen' },
@@ -89,38 +97,42 @@ export const GRUPOS = [
   },
   {
     titulo: 'Tamaño y espaciado',
+    nivel: 'estilo',
     tipos: [...TEXTO, ...CONTENEDOR, 'image'],
     campos: [
-      { key: 'padding', label: 'Padding', kind: 'text', placeholder: '24px 32px', tipos: ['heading', 'text', ...CONTENEDOR, 'image'] },
-      { key: 'margin', label: 'Centrar', crudo: 'Margen', kind: 'centrar', placeholder: '0 auto' },
-      { key: 'width', label: 'Ancho', kind: 'text', placeholder: '100%' },
+      { key: 'padding', label: 'Padding', kind: 'text', placeholder: '24px 32px', tipos: ['heading', 'text', ...CONTENEDOR, 'image'], nivel: 'esencial' },
+      { key: 'width', label: 'Ancho', kind: 'text', placeholder: '100%', fila: 'dim' },
+      { key: 'height', label: 'Alto', kind: 'text', placeholder: 'auto', fila: 'dim' },
       { key: 'maxWidth', label: 'Ancho máx.', kind: 'anchoMax', placeholder: '600px' },
+      { key: 'margin', label: 'Centrar', crudo: 'Margen', kind: 'centrar', placeholder: '0 auto' },
       { key: 'minHeight', label: 'Alto mín.', kind: 'text', placeholder: '60vh' },
-      { key: 'height', label: 'Alto', kind: 'text', placeholder: 'auto' },
       // Proporción = aspect-ratio (ej. 4 / 3, 1 / 1). Solo imágenes. En móvil, escribe "auto" para volver a la proporción natural.
       { key: 'aspectRatio', label: 'Proporción', kind: 'proporcion', placeholder: '4 / 3', tipos: ['image'] },
     ],
   },
   {
     titulo: 'Posición',
+    nivel: 'avanzado',
     tipos: [...TEXTO, ...CONTENEDOR, 'image'],
     campos: [
       // "Pegado" = position:sticky (CSS puro, sin script). Se queda fijo al hacer scroll mientras
       // su contenedor siga a la vista. Escribe una distancia arriba (ej. 0) y/o abajo; vacío = no se pega por ese lado.
       // Para quitarlo: elige "Normal".
       { key: 'position', label: 'Posición', kind: 'select', options: [['', 'Normal'], ['sticky', 'Pegado (sticky)']], vacioMovil: 'static' },
-      { key: 'top', label: 'Pegar arriba (distancia)', kind: 'text', placeholder: '0', cuando: (s) => s.position === 'sticky' },
-      { key: 'bottom', label: 'Pegar abajo (distancia)', kind: 'text', placeholder: '0', cuando: (s) => s.position === 'sticky' },
-      { key: 'zIndex', label: 'z-index', kind: 'text', placeholder: '50', cuando: (s) => s.position === 'sticky' },
+      { key: 'top', label: 'Pegar arriba', kind: 'text', placeholder: '0', fila: 'pegar', cuando: (s) => s.position === 'sticky' },
+      { key: 'bottom', label: 'Pegar abajo', kind: 'text', placeholder: '0', fila: 'pegar', cuando: (s) => s.position === 'sticky' },
+      { key: 'zIndex', label: 'Capa (z-index)', kind: 'text', placeholder: '50', fila: 'pegar', cuando: (s) => s.position === 'sticky' },
     ],
   },
   {
     titulo: 'Imagen',
+    nivel: 'estilo',
     tipos: ['image'],
     campos: [{ key: 'objectFit', label: 'Ajuste', kind: 'select', options: [['', '—'], ['cover', 'Cover'], ['contain', 'Contain']], vacioMovil: 'fill', vacioTexto: 'Rellenar (fill)' }],
   },
   {
     titulo: 'Layout (hijos)',
+    nivel: 'avanzado',
     tipos: [...CONTENEDOR, 'page'],
     campos: [
       { key: 'display', label: 'Tipo', kind: 'select', options: [['', 'Bloque'], ['flex', 'Flex'], ['grid', 'Grid']], vacioMovil: 'block' },

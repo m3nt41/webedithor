@@ -48,7 +48,7 @@ const elegirOpcion = async (clave, texto) => {
 };
 const cargar = async (pag) => {
   await d.get(url);
-  await d.executeScript(`localStorage.setItem('${LS}', arguments[0])`, JSON.stringify(pag));
+  await d.executeScript(`localStorage.setItem('editor-landings:niveles','{"esencial":true,"estilo":true,"avanzado":true}');localStorage.setItem('${LS}', arguments[0])`, JSON.stringify(pag));
   await d.get(url); await esperar(700);
 };
 const recargar = async () => { await d.navigate().refresh(); await esperar(700); };

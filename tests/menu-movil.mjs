@@ -196,7 +196,7 @@ try {
   const LS = 'editor-landings:pagina';
   const guardada = async () => JSON.parse(await d.executeScript(`return localStorage.getItem('${LS}')`));
   const buscar = (p, nombre) => { let r = null; walk(p, (x) => { if (!r && x.name === nombre) r = x; }); return r; };
-  const cargar = async (p) => { await d.get(urlEd); await d.executeScript(`localStorage.setItem('${LS}', arguments[0])`, JSON.stringify(p)); await d.get(urlEd); await esperar(700); };
+  const cargar = async (p) => { await d.get(urlEd); await d.executeScript(`localStorage.setItem('editor-landings:niveles','{"esencial":true,"estilo":true,"avanzado":true}');localStorage.setItem('${LS}', arguments[0])`, JSON.stringify(p)); await d.get(urlEd); await esperar(700); };
   const modo = async (m) => { await d.findElement(By.css(m === 'mobile' ? '#vista-mobile' : '#vista-desktop')).click(); await esperar(250); };
 
   const pe = pag(createBlock('navbar', 'claro'), createBlock('hero'));

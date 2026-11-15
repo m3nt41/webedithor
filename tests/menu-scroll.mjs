@@ -76,7 +76,7 @@ try {
   await d.manage().window().setRect({ width: 1400, height: 1000 });
   const urlEd = pathToFileURL(resolve('dist/editor.html')).href;
   const LS = 'editor-landings:pagina';
-  const cargar = async (p) => { await d.get(urlEd); await js(`localStorage.setItem('${LS}', arguments[0])`, JSON.stringify(p)); await d.get(urlEd); await esperar(800); };
+  const cargar = async (p) => { await d.get(urlEd); await js(`localStorage.setItem('editor-landings:niveles','{"esencial":true,"estilo":true,"avanzado":true}');localStorage.setItem('${LS}', arguments[0])`, JSON.stringify(p)); await d.get(urlEd); await esperar(800); };
   const guardada = async () => JSON.parse(await js(`return localStorage.getItem('${LS}')`));
   for (const [vari, etiqueta] of variantes) {
     for (const caso of Object.keys(casos)) {

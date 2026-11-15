@@ -133,7 +133,7 @@ try {
   const buscar = (p, f) => { let r = null; walk(p, (x) => { if (!r && f(x)) r = x; }); return r; };
   const marq = async () => buscar(await guardada(), (x) => x.content?.marquesina)?.content.marquesina;
   const p0 = pag(createBlock('marquesina', 'cintaClaro'), createBlock('marquesina', 'contornoOscuro'));
-  await d.get(urlEd); await js(`localStorage.setItem('${LS}', arguments[0])`, JSON.stringify(p0)); await d.get(urlEd); await esperar(700);
+  await d.get(urlEd); await js(`localStorage.setItem('editor-landings:niveles','{"esencial":true,"estilo":true,"avanzado":true}');localStorage.setItem('${LS}', arguments[0])`, JSON.stringify(p0)); await d.get(urlEd); await esperar(700);
   const idMq = (await guardada()).children[0].children[0].id;
 
   const ed = await js(`const pv=document.querySelector('#preview'); const fr=pv.querySelector('[data-id="${idMq}"]'); const cs=getComputedStyle(fr); const hijos=[...fr.children]; return { pistas: pv.querySelectorAll('.mq-p,.mq-g').length, anim: pv.getAnimations({subtree:true}).length, wrap: cs.flexWrap, n: hijos.length, visibles: hijos.filter(h=>h.getBoundingClientRect().width>0 && h.getBoundingClientRect().right<=innerWidth).length, edit: hijos.every(h=>h.dataset.id) }`);

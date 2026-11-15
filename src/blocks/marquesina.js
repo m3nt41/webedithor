@@ -17,12 +17,16 @@ export const contornoTira = (m = MODOS.claro) => tira('Marquesina contorno', m, 
     WebkitTextFillColor: 'transparent', WebkitTextStroke: `1px ${m.fg}`,
   }, { fontSize: '56px' }, 'Palabra')));
 
-/** 2. Cinta con separadores (texto + icono entre items, línea fina arriba y abajo). */
+/** Separador de la Cinta: ✦ (U+2726), el más parecido a las chispas del icono anterior. Se cambia como cualquier texto. */
+const SEPARADOR = '✦';
+
+/** 2. Cinta con separadores (texto + carácter separador entre items, línea fina arriba y abajo). */
 export const cintaTira = (m = MODOS.claro) => tira('Marquesina cinta', m, { vel: 30, gap: 40 },
   { padding: '20px 0', borderTop: `${BORDE} ${m.linea}`, borderBottom: `${BORDE} ${m.linea}` },
   ['Diseño a medida', 'Entrega rápida', 'Soporte cercano', 'Resultados reales', 'Sin letra chica'].flatMap((t) => [
     texto(t, { fontSize: '14px', lineHeight: '1.4', letterSpacing: '0.18em', textTransform: 'uppercase', fontWeight: '500', whiteSpace: 'nowrap' }, {}, 'Texto'),
-    icono('sparkles', { width: '16px', height: '16px', color: m.acento }, 'Separador'),
+    // separador = CARÁCTER DE TEXTO (no SVG): en Firefox un SVG avanza con subpíxel y el texto pegado al píxel, y el separador "tiembla" respecto a las letras
+    texto(SEPARADOR, { fontFamily: FUENTE.cuerpo, fontSize: '16px', lineHeight: '1', letterSpacing: '0', color: m.acento, whiteSpace: 'nowrap' }, {}, 'Separador'),
   ]));
 
 /** 3. Tira de logos (iconos en gris, todos del mismo tamaño). */

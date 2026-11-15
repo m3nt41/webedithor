@@ -50,7 +50,7 @@ t('export animado: marco, pista, K grupos (1 visible + K-1 aria-hidden/inert), s
   assert.equal((html.match(/class="mq-g" aria-hidden="true" inert/g) || []).length, 3, 'K-1 copias ocultas');
   assert.equal((html.match(/Item 0/g) || []).length, 4, 'cada item aparece K veces');
   assert.ok(!html.includes('<script'), 'CSS puro: sin <script>');
-  assert.match(html, /\.n\d+>\.mq-p\{display:flex;width:max-content;filter:opacity\(1\);animation:mq4 25s linear infinite\}/);
+  assert.match(html, /\.n\d+>\.mq-p\{display:flex;width:max-content;animation:mq4 25s linear infinite\}/);
   assert.match(html, /@keyframes mq4\{from\{translate:0 0\}to\{translate:calc\(-100% \/ 4\) 0\}\}/, 'el bucle cierra en -100%/K exacto');
   assert.match(html, /\.mq-g\{display:flex;flex:none;align-items:center;gap:48px;padding-inline-end:48px\}/, 'padding final = separación (grupos idénticos)');
   assert.match(html, /overflow:hidden/);
@@ -82,7 +82,7 @@ t('prefers-reduced-motion: quieta, centrada y sin copias', () => {
   const html = exp({});
   const bloque = html.split('@media (prefers-reduced-motion:reduce){').filter((x) => x.includes('.mq-p{animation:none'))[0];
   assert.ok(bloque, 'hay un bloque reduced-motion de la marquesina');
-  assert.match(bloque, /\.mq-p\{animation:none;filter:none;width:auto;justify-content:center\}/);
+  assert.match(bloque, /\.mq-p\{animation:none;width:auto;justify-content:center\}/);
   assert.match(bloque, /\.mq-g\[aria-hidden\]\{display:none\}/);
   assert.match(bloque, /flex-wrap:wrap/);
 });
@@ -119,7 +119,10 @@ t('bloque: 6 variantes (3 estilos × clara/oscura), todas con marquesina válida
   assert.match(exportHTML(pagina(createBlock('marquesina', 'contornoClaro'))), /-webkit-text-stroke:1px #111111/);
   const cinta = createBlock('marquesina', 'cintaOscuro').children[0];
   assert.match(cinta.styles.base.borderTop, /^1px solid/); assert.match(cinta.styles.base.borderBottom, /^1px solid/);
-  assert.ok(cinta.children.some((x) => x.type === 'icon') && cinta.children.some((x) => x.type === 'text'));
+  const seps = cinta.children.filter((x) => x.name === 'Separador');
+  assert.ok(seps.length === 5 && seps.every((x) => x.type === 'text' && x.content.text === '✦'), 'separadores = carácter de texto, editables como cualquier texto');
+  assert.ok(!cinta.children.some((x) => x.type === 'icon'), 'la Cinta no lleva SVG (en Firefox el SVG tiembla respecto al texto)');
+  assert.ok(!exportHTML(pagina(createBlock('marquesina', 'cintaClaro'))).includes('<svg'), 'el export de la Cinta no tiene SVG');
   const logos = createBlock('marquesina', 'logosClaro').children[0].children;
   assert.ok(logos.every((x) => x.type === 'icon' && x.styles.base.width === '40px' && x.styles.base.height === '40px'));
   assert.equal(new Set(logos.map((x) => x.styles.base.color)).size, 1);

@@ -180,6 +180,8 @@ details.bloque .variantes button:hover { background: #3b3470; }
 #inspector details.avanzado { margin: 4px 0 8px; font-size: 12px; color: #9a9aa8; }
 #inspector details.avanzado summary, #inspector details.json summary { cursor: pointer; padding: 4px 0; }
 #inspector details.avanzado[open] > summary { margin-bottom: 8px; }
+#inspector .efectos-acciones { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+#inspector .efectos-acciones button { font-size: 12px; }
 #inspector label.ov::before { content: '● '; color: #7c5cff; }
 #inspector input.invalido { outline: 1px solid #e5484d; border-color: #e5484d; }
 #inspector .aviso-css { color: #ff8a8a; font-size: 11px; margin: -4px 0 8px 92px; }

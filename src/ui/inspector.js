@@ -17,6 +17,7 @@ import { iconoSvg, TAMANOS_ICONO, TAMANO_ICONO_DEFECTO } from '../core/icono.js'
 import { modeloControl, columnasAuto, kebab, KINDS_CONTROL, KINDS_BOTONES, TAMANOS_BOTON, leerEstiloBoton, valoresEstiloBoton } from './controles.js';
 import { usaMarquesina, MQ_VELOCIDADES, MQ_GAPS, MQ_COPIAS, MQ_VEL_MIN, MQ_VEL_MAX } from '../core/marquesina.js';
 import { GRUPOS_ANIM } from '../animations/index.js';
+import { accionCopiarEfectos, accionPegarEfectos, accionPegarEnHermanos } from './efectos.js';
 import { ancestrosConScroll } from '../animations/parallax.js';
 import { DISPAROS_VARIANT, CAMPOS_PROPS, CAMPOS_TIEMPO, DEF_TIEMPO } from '../animations/variants.js';
 
@@ -335,6 +336,10 @@ export function initInspector(host) {
     }
 
     // ---- Animaciones (los grupos viven en src/animations/) ----
+    if (nodo.type !== 'page') N.avanzado += '<h3>Copiar y pegar efectos</h3><div class="efectos-acciones">'
+      + '<button type="button" data-efectos="copiar" title="Ctrl+Alt+C">Copiar efectos</button>'
+      + '<button type="button" data-efectos="pegar" title="Ctrl+Alt+V">Pegar efectos</button>'
+      + '<button type="button" data-efectos="hermanos" title="Pega en este y en sus hermanos del mismo tipo">Pegar en hermanos del mismo tipo</button></div>';
     for (const g of GRUPOS_ANIM) {
       if (!g.tipos.includes(nodo.type)) continue;
       // "Paso de escena" solo se ofrece a hijos directos de una escena (o si ya lo tienen puesto)
@@ -524,6 +529,16 @@ export function initInspector(host) {
     if (b.dataset.ia === 'copiar') copiarGuia(); else abrirDialogoPlan();
   });
 
+  // Copiar / pegar efectos (el panel se redibuja solo: pegarEfectos emite 'efectos')
+  host.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-efectos]');
+    const id = idDibujado;
+    if (!b || !id) return;
+    if (b.dataset.efectos === 'copiar') accionCopiarEfectos(id);
+    else if (b.dataset.efectos === 'pegar') accionPegarEfectos([id]);
+    else accionPegarEnHermanos(id);
+  });
+
   // Botones ↑ ↓ ⧉ ✕ del elemento seleccionado
   host.addEventListener('click', (e) => {
     const act = e.target.closest('[data-act]')?.dataset.act;
@@ -574,7 +589,7 @@ export function initInspector(host) {
   });
 
   subscribe((state, cambio) => {
-    if (cambio === 'selection' || cambio === 'view' || cambio === 'verestado') return dibujar();
+    if (cambio === 'selection' || cambio === 'view' || cambio === 'verestado' || cambio === 'efectos') return dibujar();
     if (cambio === 'text') return; // se escribe en el preview: no tocar el panel
     // Arrastre de un tirador: NO se reconstruye el panel (saltaba el scroll y se recreaban todos los nodos);
     // solo se ponen al día los campos de texto CSS. Al soltar (pointerup) se reconstruye UNA vez.

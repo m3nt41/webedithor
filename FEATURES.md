@@ -70,6 +70,8 @@ Motion vs CSS puro: m3nt41 ya decidió la opción (a), CSS puro donde se pueda y
 
 > Nota (2026-11-15): tiradores de espaciado en el preview: con un nodo seleccionado se arrastra su padding (secciones y contenedores) o su margen (títulos, textos, botones, imágenes e iconos) directamente en el lienzo; Shift = lado opuesto, Alt = 4 lados, Ctrl = múltiplos de 8; escribe en escritorio o móvil según la vista y es un solo paso de Undo. Es una herramienta del editor (no se exporta); la lista de funciones no cambió.
 
+> Nota (2026-11-15): copiar y pegar efectos entre elementos (botones "Copiar efectos", "Pegar efectos" y "Pegar en hermanos del mismo tipo" en el inspector; atajos Ctrl+Alt+C / Ctrl+Alt+V): copia solo la configuración de animación, pega copias independientes, omite con aviso lo que el destino no admite y es un solo paso de Undo. Herramienta del editor; la lista de funciones no cambió.
+
 ## Elementos (añadido 2026-11-14, mini-etapa iconos)
 - [x] Icono: elemento propio (tipo `icon`) con SVG de línea de una biblioteca de 41 iconos (Lucide, ISC); tamaño y color editables (también en móvil); sin emoticonos en bloques ni en la interfaz; las animaciones existentes (al aparecer, hover, press, scroll, estados) funcionan sobre él
 

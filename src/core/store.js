@@ -7,6 +7,7 @@
 import { createPage, createNode, findNode, findParent, cloneWithNewIds, normalizePage, canContain } from './tree.js';
 import { DEFAULTS, PRINCIPAL } from '../animations/index.js';
 import { crearEstado } from '../animations/variants.js';
+import { copiarAnimacion, efectosParaNodo } from '../animations/copiar.js';
 import { normalizarMarquesina } from './marquesina.js';
 
 const CLAVE_LS = 'editor-landings:pagina';
@@ -319,6 +320,55 @@ export function setAnimation(id, grupo, key, value) {
     }
     if (!Object.keys(anim).length) n.animation = null;
   }, 'page', `a:${id}:${grupo}:${key}`);
+}
+
+// ---- Copiar / pegar efectos ----
+// El portapapeles de efectos vive solo en memoria del editor (no se guarda ni toca el del sistema).
+let portaEfectos = null; // { anim, origenId }
+
+/** Copia la animación del nodo. Devuelve cuántos grupos de efectos copió (0 = no tiene efectos, no copia nada). */
+export function copiarEfectos(id) {
+  const n = findNode(state.page, id);
+  const anim = copiarAnimacion(n);
+  if (!anim) return 0;
+  portaEfectos = { anim, origenId: id };
+  return Object.keys(anim).length;
+}
+
+export const hayEfectosCopiados = () => portaEfectos != null;
+
+/** Ids de los hermanos del mismo tipo que `id` (incluido él mismo). */
+export function hermanosMismoTipo(id) {
+  const n = findNode(state.page, id);
+  const padre = n && findParent(state.page, id);
+  return padre ? padre.children.filter((h) => h.type === n.type).map((h) => h.id) : [];
+}
+
+/** Pega los efectos copiados en los nodos `ids` (se salta el nodo de origen). UN solo mutate = UN paso de undo.
+ *  Devuelve { pegados, omitidos: [{ nombre, motivos }], sinPortapapeles }. Solo se escribe lo que es válido para cada destino. */
+export function pegarEfectos(ids) {
+  if (!portaEfectos) return { pegados: 0, omitidos: [], sinPortapapeles: true };
+  const resultado = { pegados: 0, omitidos: [], sinPortapapeles: false };
+  const plan = []; // [id, animación a escribir]
+  for (const id of ids) {
+    if (id === portaEfectos.origenId) continue;
+    const n = findNode(state.page, id);
+    if (!n || n.type === 'page') continue;
+    const { anim, omitidos } = efectosParaNodo(portaEfectos.anim, n, findParent(state.page, id));
+    if (omitidos.length) resultado.omitidos.push({ nombre: n.name || n.type, motivos: omitidos });
+    if (anim) { plan.push([id, anim]); resultado.pegados++; }
+  }
+  if (!plan.length) return resultado;
+  mutate((page) => {
+    for (const [id, anim] of plan) {
+      const n = findNode(page, id);
+      if (!n) continue;
+      // Reemplaza los grupos que traía el portapapeles y deja los demás del destino como estaban. Copia propia para cada nodo.
+      n.animation = { ...(n.animation ?? {}), ...structuredClone(anim) };
+    }
+  }); // sin clave: paso propio de undo
+  emit('efectos'); // el inspector se redibuja aunque el foco esté dentro del panel (botón Pegar)
+  return resultado;
 }
 
 // ---- Variants (estados con nombre) ----

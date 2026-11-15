@@ -6,15 +6,22 @@ import { initPreview } from './ui/preview.js';
 import { initInspector } from './ui/inspector.js';
 import { initToolbar } from './ui/toolbar.js';
 import { SVG_AVISO } from './ui/iconos.js';
+import { accionCopiarEfectos, accionPegarEfectos } from './ui/efectos.js';
 import { getState, subscribe, recargarGuardado, seguirConEsta, removeNode, duplicateNode, moveBy } from './core/store.js';
 
-// Atajos del elemento seleccionado: Supr borra, Ctrl+D duplica, Alt+↑/↓ mueve.
+// Atajos del elemento seleccionado: Supr borra, Ctrl+D duplica, Alt+↑/↓ mueve, Ctrl+Alt+C/V copia/pega efectos.
 // No actúan mientras se escribe en un campo o en un texto editable (ahí manda el navegador).
 document.addEventListener('keydown', (e) => {
   const t = e.target;
   if (t.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(t.tagName)) return;
   const { selectedId, page } = getState();
   if (!selectedId || selectedId === page.id) return;
+  // Ctrl+Alt+C / Ctrl+Alt+V: copiar / pegar efectos (e.code porque con Alt/AltGr la tecla puede cambiar de carácter)
+  if (e.ctrlKey && e.altKey && !e.shiftKey && !e.metaKey && (e.code === 'KeyC' || e.code === 'KeyV')) {
+    e.preventDefault();
+    if (e.code === 'KeyC') accionCopiarEfectos(selectedId); else accionPegarEfectos([selectedId]);
+    return;
+  }
   if (e.key === 'Delete') { e.preventDefault(); removeNode(selectedId); }
   else if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'd') { e.preventDefault(); duplicateNode(selectedId); }
   else if (e.altKey && e.key === 'ArrowUp') { e.preventDefault(); moveBy(selectedId, -1); }

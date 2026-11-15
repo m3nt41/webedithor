@@ -53,26 +53,32 @@ Motion vs CSS puro: m3nt41 ya decidió la opción (a), CSS puro donde se pueda y
 - [ ] Rotación X / Y (estática y animada) → Etapa 8
 
 ## Extras
-- [ ] Marquee / ticker → Etapa 9
+- [x] Marquee / ticker (elemento "+ Marquesina" y bloque de 6 variantes; CSS puro con bucle exacto, pausa al pasar el mouse, respeta "reducir movimiento"; la pista se ve quieta en el editor y se anima en 👁 Vista previa y en el export) (Etapa 9)
 - [ ] Cursor personalizado → Etapa 9
 - [x] Scroll suave (interruptor "Scroll suave" en Ajustes de la página, apagado por defecto; script propio aislado en `animations/scrollsuave.js`, solo viaja si está activado; solo rueda de mouse en escritorio con inercia; táctil, teclado, barra, anclas, trackpad y scroll interno quedan nativos; no corre con "reducir movimiento") (Etapa 7)
 - [ ] Page transitions → Etapa 9
 
 > Nota (2026-11-13): se quitó el botón "▶ Reproducir" del editor; las animaciones se siguen viendo, ahora en 👁 Vista previa (con ↻ Reiniciar para verlas de nuevo). La lista de funciones no cambió.
 
-> Nota (2026-11-14): inspector con controles visuales de Forma (redondeo) y Tamaño de botón (padding + tamaño de fuente en un clic); escriben el mismo CSS de siempre. La lista de funciones no cambió.
 > Nota (2026-11-13): ajustes de imagen en el inspector: campo "Proporción" (aspect-ratio) en imágenes y "Proporción de los hijos" en contenedores grid (CSS puro `:where(.cls>img)`); la Galería nace con ella. La lista de funciones no cambió.
-
 > Nota (2026-11-13): imagen de fondo para secciones y contenedores (grupo "Fondo e imagen": subir o pegar URL, Cubrir/Contener, posición y capa oscura 0–80 %; CSS puro en el export) y hero "Con fondo". La lista de funciones no cambió.
+
+> Nota (2026-11-14): inspector con controles visuales de Forma (redondeo) y Tamaño de botón (padding + tamaño de fuente en un clic); escriben el mismo CSS de siempre. La lista de funciones no cambió.
 
 ## Elementos (añadido 2026-11-14, mini-etapa iconos)
 - [x] Icono: elemento propio (tipo `icon`) con SVG de línea de una biblioteca de 41 iconos (Lucide, ISC); tamaño y color editables (también en móvil); sin emoticonos en bloques ni en la interfaz; las animaciones existentes (al aparecer, hover, press, scroll, estados) funcionan sobre él
+
+- [x] Marquesina: se añade desde Elem. ("+ Marquesina") o como bloque; ver "Marquee / ticker" en Extras (mini-etapa marquesina)
+
+## Botones (añadido 2026-11-14)
+- [x] Estilo del botón: Relleno / Contorno / Suave en un clic (escribe fondo, color y borde juntos; también en móvil)
+- [x] Forma y Tamaño de botón: Forma Recto / Suave / Redondo / Pastilla y Tamaño Pequeño / Mediano / Grande (escriben el mismo CSS de siempre)
 
 ## Estilo de los bloques
 - [x] Estilo base elegante para todos los bloques: tema único `src/blocks/tema.js` (editorial minimalista + moderno oscuro, un solo acento, todo recto, sin sombras ni degradados) y landing de muestra `docs/demo-estilo.json` (mini-etapa estética)
 
 ## Navbar en móvil
-- [x] Menú hamburguesa opcional en el Navbar (`content.menuMovil`, activo de fábrica en las 4 variantes; interruptor "Menú hamburguesa en móvil" en el inspector): el primer hijo (logo) queda visible y el resto va a un panel desplegable; en el export es CSS puro (checkbox + label, sin nodos nuevos) con un script mínimo solo si se usa (Esc, cerrar al pulsar un enlace, Enter, aria-expanded); en el editor móvil el panel se ve siempre abierto (mini-etapa menú móvil)
+- [x] Menú hamburguesa opcional en el Navbar (`content.menuMovil`, activo de fábrica en las 4 variantes; interruptor "Menú hamburguesa en móvil" en el inspector): el primer hijo (logo) queda visible y el resto va a un panel desplegable; en el export es CSS puro (checkbox + label, sin nodos nuevos) con un script mínimo solo si se usa (Esc, cerrar al pulsar un enlace, Enter, aria-expanded); en el editor móvil el panel empieza cerrado (se abre con la hamburguesa o al seleccionar un hijo del panel) y se superpone al contenido, igual que en el export (mini-etapa menú móvil)
 
 ## Landing con IA (camino 1, sin servidor)
 - [x] "Copiar guía para IA" y "Pegar plan o JSON" en Ajustes de la página: la guía se genera sola del código (bloques, variantes y huecos numerados; también en `docs/guia-ia.md`); el formato compacto "plan" (`{"plan":1,"titulo":…,"secciones":[{"bloque","variante","valores"}]}`) o el JSON completo de una página se carga con Reemplazar o Añadir al final, en un solo paso de Undo, con errores/avisos en lenguaje claro y tolerando ``` y texto alrededor (mini-etapa IA camino 1). Los caminos 2 (clave de API propia) y 3 (servidor público) quedan como ideas en `PROGRESS.md`

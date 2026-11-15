@@ -121,12 +121,13 @@ export function cssNodo(node, sel, { scroll = true, forzar = null, padre = null 
   ].filter(Boolean).join('\n');
 }
 
-/** CSS de toda la página para el PREVIEW (selector por data-id). scroll=false → solo hover.
+/** CSS de toda la página para el PREVIEW (selector `.stage [data-id]`). scroll=false → solo hover.
  *  forzar = { id, estado }: muestra fijo ese estado de un nodo ("Ver este estado"). */
 export function cssPagina(page, { scroll = false, forzar = null } = {}) {
   const reglas = [];
   const recorre = (n, padre) => {
-    const r = cssNodo(n, `[data-id="${n.id}"]`, { scroll, forzar, padre });
+    // Acotado al lienzo (.stage): otras partes del editor (p. ej. las filas de Capas) también usan data-id.
+    const r = cssNodo(n, `.stage [data-id="${n.id}"]`, { scroll, forzar, padre });
     if (r) reglas.push(r);
     n.children.forEach((h) => recorre(h, n));
   };

@@ -36,7 +36,7 @@ export const MAPA = {
   'src/ui/imagen.js': ['fondo'],
   'src/ui/iconos.js': ['inspector', 'vistaprevia', 'sidebar', 'iconos'],
   'src/ui/toolbar.js': ['vistaprevia', 'persistencia', 'editor-file'],
-  'src/ui/sidebar.js': ['sidebar', 'editor-file'],
+  'src/ui/sidebar.js': ['sidebar', 'editor-file', 'fuga-estilos'],
   'src/ui/vistaprevia.js': ['vistaprevia'],
 
   // ---- IA: guía y plan ----
@@ -58,6 +58,7 @@ export const MAPA = {
   // ---- Animaciones (CSS exportado, validación y su panel) ----
   'src/animations/hover.js': ['hover', 'selenium', 'ronda7'],
   'src/animations/focus.js': ['hover', 'selenium', 'ronda7'],
+  'src/animations/index.js': ['hover', 'selenium', 'ronda7', 'fuga-estilos'],
   'src/animations/base.js': ['hover', 'selenium', 'ronda7', 'inspector', 'vistaprevia'],
   'src/animations/': ['selenium', 'ronda7', 'inspector', 'vistaprevia'],
 

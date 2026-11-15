@@ -1,0 +1,359 @@
+{
+  "app": "editor-landings",
+  "version": 1,
+  "page": {
+    "id": "994e9f550",
+    "type": "page",
+    "name": "Página",
+    "styles": {
+      "base": {
+        "fontFamily": "system-ui, sans-serif",
+        "color": "#111",
+        "background": "#fff"
+      },
+      "mobile": {}
+    },
+    "content": {
+      "title": "Demo parallax nativo"
+    },
+    "animation": null,
+    "children": [
+      {
+        "id": "7c89ee323",
+        "type": "section",
+        "name": "Intro",
+        "styles": {
+          "base": {
+            "padding": "120px 24px",
+            "background": "#111",
+            "color": "#fff",
+            "textAlign": "center"
+          },
+          "mobile": {}
+        },
+        "content": {},
+        "animation": null,
+        "children": [
+          {
+            "id": "0bef8d5d1",
+            "type": "heading",
+            "name": "Título",
+            "styles": {
+              "base": {
+                "margin": "0 0 12px",
+                "fontSize": "44px"
+              },
+              "mobile": {}
+            },
+            "content": {
+              "text": "Parallax con CSS nativo",
+              "level": 1
+            },
+            "animation": null,
+            "children": []
+          },
+          {
+            "id": "728e2b742",
+            "type": "text",
+            "name": "Texto",
+            "styles": {
+              "base": {
+                "margin": "0",
+                "opacity": ".7"
+              },
+              "mobile": {}
+            },
+            "content": {
+              "text": "Baja: cada imagen se mueve 200 px a cada lado mientras cruza la pantalla."
+            },
+            "animation": null,
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": "c7c4af077",
+        "type": "section",
+        "name": "Primera imagen",
+        "styles": {
+          "base": {
+            "padding": "90px 0",
+            "background": "#111"
+          },
+          "mobile": {}
+        },
+        "content": {},
+        "animation": null,
+        "children": [
+          {
+            "id": "57d0d0ba6",
+            "type": "container",
+            "name": "Marco Primera imagen",
+            "styles": {
+              "base": {
+                "display": "grid",
+                "gridTemplateRows": "minmax(0,1fr)",
+                "height": "520px",
+                "overflow": "hidden"
+              },
+              "mobile": {}
+            },
+            "content": {},
+            "animation": null,
+            "children": [
+              {
+                "id": "43128dd54",
+                "type": "image",
+                "name": "Foto Primera imagen",
+                "styles": {
+                  "base": {
+                    "gridArea": "1 / 1",
+                    "alignSelf": "center",
+                    "width": "100%",
+                    "height": "920px",
+                    "objectFit": "cover"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%221600%22%20height%3D%22920%22%20viewBox%3D%220%200%201600%20920%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23ff7a59%22%2F%3E%3Cstop%20offset%3D%22.55%22%20stop-color%3D%22%237c5cff%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%2318181b%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%221600%22%20height%3D%22920%22%20fill%3D%22url(%23g)%22%2F%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-opacity%3D%22.35%22%20stroke-width%3D%223%22%3E%3Ccircle%20cx%3D%22400%22%20cy%3D%22260%22%20r%3D%22150%22%2F%3E%3Ccircle%20cx%3D%221180%22%20cy%3D%22620%22%20r%3D%22230%22%2F%3E%3Cpath%20d%3D%22M0%20760%20Q400%20560%20800%20700%20T1600%20600%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E",
+                  "alt": "Primera imagen"
+                },
+                "animation": {
+                  "parallax": {
+                    "effect": "y",
+                    "amount": 200
+                  }
+                },
+                "children": []
+              },
+              {
+                "id": "d4ff200e5",
+                "type": "heading",
+                "name": "Texto Primera imagen",
+                "styles": {
+                  "base": {
+                    "gridArea": "1 / 1",
+                    "alignSelf": "center",
+                    "justifySelf": "center",
+                    "margin": "0",
+                    "color": "#fff",
+                    "fontSize": "56px",
+                    "textAlign": "center"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "text": "Primera imagen",
+                  "level": 2
+                },
+                "animation": null,
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "53a866d7b",
+        "type": "section",
+        "name": "Segunda imagen",
+        "styles": {
+          "base": {
+            "padding": "90px 0",
+            "background": "#111"
+          },
+          "mobile": {}
+        },
+        "content": {},
+        "animation": null,
+        "children": [
+          {
+            "id": "859850bda",
+            "type": "container",
+            "name": "Marco Segunda imagen",
+            "styles": {
+              "base": {
+                "display": "grid",
+                "gridTemplateRows": "minmax(0,1fr)",
+                "height": "520px",
+                "overflow": "hidden"
+              },
+              "mobile": {}
+            },
+            "content": {},
+            "animation": null,
+            "children": [
+              {
+                "id": "0440d97d8",
+                "type": "image",
+                "name": "Foto Segunda imagen",
+                "styles": {
+                  "base": {
+                    "gridArea": "1 / 1",
+                    "alignSelf": "center",
+                    "width": "100%",
+                    "height": "920px",
+                    "objectFit": "cover"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%221600%22%20height%3D%22920%22%20viewBox%3D%220%200%201600%20920%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%2322d3ee%22%2F%3E%3Cstop%20offset%3D%22.55%22%20stop-color%3D%22%233b82f6%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230f172a%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%221600%22%20height%3D%22920%22%20fill%3D%22url(%23g)%22%2F%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-opacity%3D%22.35%22%20stroke-width%3D%223%22%3E%3Ccircle%20cx%3D%22400%22%20cy%3D%22260%22%20r%3D%22150%22%2F%3E%3Ccircle%20cx%3D%221180%22%20cy%3D%22620%22%20r%3D%22230%22%2F%3E%3Cpath%20d%3D%22M0%20760%20Q400%20560%20800%20700%20T1600%20600%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E",
+                  "alt": "Segunda imagen"
+                },
+                "animation": {
+                  "parallax": {
+                    "effect": "y",
+                    "amount": 200
+                  }
+                },
+                "children": []
+              },
+              {
+                "id": "d979f17c9",
+                "type": "heading",
+                "name": "Texto Segunda imagen",
+                "styles": {
+                  "base": {
+                    "gridArea": "1 / 1",
+                    "alignSelf": "center",
+                    "justifySelf": "center",
+                    "margin": "0",
+                    "color": "#fff",
+                    "fontSize": "56px",
+                    "textAlign": "center"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "text": "Segunda imagen",
+                  "level": 2
+                },
+                "animation": null,
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "78507de3f",
+        "type": "section",
+        "name": "Tercera imagen",
+        "styles": {
+          "base": {
+            "padding": "90px 0",
+            "background": "#111"
+          },
+          "mobile": {}
+        },
+        "content": {},
+        "animation": null,
+        "children": [
+          {
+            "id": "32defa11e",
+            "type": "container",
+            "name": "Marco Tercera imagen",
+            "styles": {
+              "base": {
+                "display": "grid",
+                "gridTemplateRows": "minmax(0,1fr)",
+                "height": "520px",
+                "overflow": "hidden"
+              },
+              "mobile": {}
+            },
+            "content": {},
+            "animation": null,
+            "children": [
+              {
+                "id": "ba4d089cc",
+                "type": "image",
+                "name": "Foto Tercera imagen",
+                "styles": {
+                  "base": {
+                    "gridArea": "1 / 1",
+                    "alignSelf": "center",
+                    "width": "100%",
+                    "height": "920px",
+                    "objectFit": "cover"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "src": "data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%221600%22%20height%3D%22920%22%20viewBox%3D%220%200%201600%20920%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23fbbf24%22%2F%3E%3Cstop%20offset%3D%22.55%22%20stop-color%3D%22%23ef4444%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%234c0519%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%221600%22%20height%3D%22920%22%20fill%3D%22url(%23g)%22%2F%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-opacity%3D%22.35%22%20stroke-width%3D%223%22%3E%3Ccircle%20cx%3D%22400%22%20cy%3D%22260%22%20r%3D%22150%22%2F%3E%3Ccircle%20cx%3D%221180%22%20cy%3D%22620%22%20r%3D%22230%22%2F%3E%3Cpath%20d%3D%22M0%20760%20Q400%20560%20800%20700%20T1600%20600%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E",
+                  "alt": "Tercera imagen"
+                },
+                "animation": {
+                  "parallax": {
+                    "effect": "y",
+                    "amount": 200
+                  }
+                },
+                "children": []
+              },
+              {
+                "id": "066b9eaad",
+                "type": "heading",
+                "name": "Texto Tercera imagen",
+                "styles": {
+                  "base": {
+                    "gridArea": "1 / 1",
+                    "alignSelf": "center",
+                    "justifySelf": "center",
+                    "margin": "0",
+                    "color": "#fff",
+                    "fontSize": "56px",
+                    "textAlign": "center"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "text": "Tercera imagen",
+                  "level": 2
+                },
+                "animation": null,
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "69551a18h",
+        "type": "section",
+        "name": "Fin",
+        "styles": {
+          "base": {
+            "padding": "160px 24px",
+            "background": "#111",
+            "color": "#fff",
+            "textAlign": "center"
+          },
+          "mobile": {}
+        },
+        "content": {},
+        "animation": null,
+        "children": [
+          {
+            "id": "6f9ec804g",
+            "type": "text",
+            "name": "Fin",
+            "styles": {
+              "base": {
+                "margin": "0"
+              },
+              "mobile": {}
+            },
+            "content": {
+              "text": "Fin de la demo."
+            },
+            "animation": null,
+            "children": []
+          }
+        ]
+      }
+    ]
+  }
+}

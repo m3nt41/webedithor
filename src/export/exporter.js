@@ -10,7 +10,7 @@ import { tagFor, TIPOS_TEXTO } from '../render/renderer.js';
 import { iconoSvg, estilosIcono } from '../core/icono.js';
 import { usaMenuMovil, paginaUsaMenuMovil, cssMenuMovil, varsMenu, necesitaAncla, SCRIPT_MENU } from '../core/menumovil.js';
 import { usaMarquesina, cssMarquesina, htmlMarquesina, keyframesMarquesina } from '../core/marquesina.js';
-import { usaEscena, varsEscena, esNavPegado, paginaUsaEscena, CSS_ESCENA, usaScrollLink, paginaUsaScrollLink, SCRIPT_SCROLLMOTOR, SCRIPT_SCROLLSUAVE, paginaUsaScrollSuave, cssNodo, usaScroll, usaCarga, usaClic, paginaUsaScroll, paginaUsaEntrada, paginaUsaMedida, paginaUsaClic, esMedida, splitText, KEYFRAMES, SCRIPT_SCROLL, SCRIPT_LINEAS, SCRIPT_CLIC } from '../animations/index.js';
+import { usaEscena, varsEscena, esNavPegado, paginaUsaEscena, CSS_ESCENA, atributosScroll, paginaUsaScrollLink, SCRIPT_SCROLLMOTOR, SCRIPT_SCROLLSUAVE, paginaUsaScrollSuave, cssNodo, usaScroll, usaCarga, usaClic, paginaUsaScroll, paginaUsaEntrada, paginaUsaMedida, paginaUsaClic, esMedida, splitText, KEYFRAMES, SCRIPT_SCROLL, SCRIPT_LINEAS, SCRIPT_CLIC } from '../animations/index.js';
 
 export const BREAKPOINT_MOVIL = 768;
 
@@ -61,7 +61,7 @@ export function exportHTML(page) {
     // data-rv: el script de scroll le pone .in · data-ld: corre sola al cargar (solo para reduced-motion)
     const idAttr = anchorValido(node.content?.anchor) ? ` id="${node.content.anchor}"` : '';
     const esc = usaEscena(node);
-    const rv = (esc ? ' data-es' : '') + (usaEscena0 && esNavPegado(node) ? ' data-nav' : '') + (usaScroll(node) ? ' data-rv' : '') + (usaCarga(node) ? ' data-ld' : '') + (esMedida(node.animation?.text?.mode) ? ' data-lm' : '') + (usaClic(node) ? ' data-vc' : '') + (usaScrollLink(node) ? ' data-sc' : '');
+    const rv = (esc ? ' data-es' : '') + (usaEscena0 && esNavPegado(node) ? ' data-nav' : '') + (usaScroll(node) ? ' data-rv' : '') + (usaCarga(node) ? ' data-ld' : '') + (esMedida(node.animation?.text?.mode) ? ' data-lm' : '') + (usaClic(node) ? ' data-vc' : '') + atributosScroll(node, padre);
 
     const tag = tagFor(node);
     const sangria = '  '.repeat(nivel);

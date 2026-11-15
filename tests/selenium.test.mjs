@@ -261,7 +261,8 @@ test('scroll suave: un ancla cancela y respeta el scroll-margin del navbar', opt
 
 test('scroll suave: convive con parallax y sticky', opts, async () => {
   await abrir('suave'); await irA(0);
-  assert.match(await driver.executeScript('return document.documentElement.className'), /sc/);
+  // el parallax ahora es nativo (CSS): el motor ya no pone .sc en una página solo con parallax; lo que importa es que Lenis esté activo
+  assert.match(await driver.executeScript('return document.documentElement.className'), /lenis/);
   for (let i = 0; i < 6; i++) await rueda(200);
   await esperar(1800);
   const y = await sy();

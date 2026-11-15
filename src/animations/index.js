@@ -8,7 +8,7 @@ import press from './press.js';
 import focus from './focus.js';
 import text from './text.js';
 import stagger from './stagger.js';
-import parallax from './parallax.js';
+import parallax, { parallaxNativo } from './parallax.js';
 import scrolllink from './scrolllink.js';
 import scene, { CSS_ESCENA, usaEscena, varsEscena } from './scene.js';
 import scenestep from './scenestep.js';
@@ -53,6 +53,14 @@ export const esNavPegado = (n) => n.type === 'section' && !usaEscena(n) && n.sty
 
 /** ¿El nodo usa parallax o "ligado al scroll"? (necesita el motor de scroll: data-sc) */
 export const usaScrollLink = (node) => Boolean(node.animation?.parallax?.effect || node.animation?.scrolllink?.effect);
+
+/** Atributos del motor de scroll para un nodo: data-sc = siempre lo mueve el motor (ligado al scroll, o parallax que no puede
+ *  ser nativo); data-sp = parallax con respaldo (el motor solo lo toma si el navegador NO soporta animation-timeline). */
+export const atributosScroll = (node, padre = null) => {
+  const nativo = parallaxNativo(node, padre);
+  const motor = node.animation?.scrolllink?.effect || (node.animation?.parallax?.effect && !nativo);
+  return (motor ? ' data-sc' : '') + (nativo ? ' data-sp' : '');
+};
 
 /** ¿Hay parallax o scroll-linked en la página? (el export lleva el motor solo entonces) */
 export function paginaUsaScrollLink(page) {

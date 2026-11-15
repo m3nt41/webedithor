@@ -35,6 +35,7 @@ export const s = (n) => (n / 1000).toFixed(1) + 's';
 export const SUITE = [ // [nombre, comando, timeout en segundos]
   ['selenium', 'node --test --test-reporter=spec tests/selenium.test.mjs', 300],
   ['ronda7', 'node tests/ronda7.mjs', 120],
+  ['parallax-nativo', 'node tests/parallax-nativo.mjs', 120],
   ['hover', 'node tests/hover.mjs', 60],
   ['hover-texto', 'node tests/hover-texto.mjs', 120],
   ['hover-borde', 'node tests/hover-borde.mjs', 120],

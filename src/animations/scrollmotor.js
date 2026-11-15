@@ -13,7 +13,10 @@
 export function motorScroll(vista, raiz, marca) {
   if (matchMedia('(prefers-reduced-motion:reduce)').matches) return () => {};
   const ventana = vista === window;
-  const els = [...raiz.querySelectorAll('[data-sc],[data-ew]')]; // data-ew = contenedor alto de una escena
+  // data-sc = lo mueve siempre el motor; data-sp = parallax: si el navegador tiene animation-timeline lo hace el CSS
+  // (nativo) y el motor ni lo mira (ni escribe --sp ni lo mete en el listener); si no, es el respaldo.
+  const nativo = !!(window.CSS && CSS.supports && CSS.supports('animation-timeline', 'view()'));
+  const els = [...raiz.querySelectorAll('[data-sc],[data-ew]' + (nativo ? '' : ',[data-sp]'))]; // data-ew = contenedor alto de una escena
   const esc = (el) => el.hasAttribute('data-ew');
   const prop = (el) => (esc(el) ? '--ep' : '--sp'); // escena: progreso de la escena; el resto: progreso al cruzar la ventana
   if (!els.length) return () => {};

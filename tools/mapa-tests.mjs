@@ -58,7 +58,9 @@ export const MAPA = {
   // ---- Animaciones (CSS exportado, validación y su panel) ----
   'src/animations/hover.js': ['hover', 'hover-texto', 'hover-borde', 'selenium', 'ronda7'],
   'src/animations/focus.js': ['hover', 'hover-texto', 'hover-borde', 'selenium', 'ronda7'],
-  'src/animations/index.js': ['hover', 'selenium', 'ronda7', 'fuga-estilos'],
+  'src/animations/parallax.js': ['parallax-nativo', 'selenium', 'ronda7'],
+  'src/animations/scrollmotor.js': ['parallax-nativo', 'selenium', 'ronda7'],
+  'src/animations/index.js': ['parallax-nativo', 'hover', 'selenium', 'ronda7', 'fuga-estilos'],
   'src/animations/base.js': ['hover', 'hover-texto', 'hover-borde', 'selenium', 'ronda7', 'inspector', 'vistaprevia'],
   'src/animations/': ['selenium', 'ronda7', 'inspector', 'vistaprevia'],
 
@@ -73,6 +75,7 @@ export const MAPA = {
   'tools/test-todo.mjs': TODOS,
   'tools/test-firefox.mjs': ['firefox'],
   'tools/gen-guia-ia.mjs': ['plan-ia'],
+  'tools/gen-demo-parallax.mjs': NINGUNO,
   'tools/gen-demo-estilo.mjs': ['tema'],
   'tools/gen-lenis.mjs': ['selenium'],
   'tools/renombrar-build.mjs': ['editor-file'],

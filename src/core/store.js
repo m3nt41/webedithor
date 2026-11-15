@@ -292,7 +292,9 @@ export function setAnimation(id, grupo, key, value) {
     if (key === PRINCIPAL[grupo] && !value) {
       delete anim[grupo];
     } else {
+      const nuevo = !anim[grupo];
       const g = anim[grupo] ?? (anim[grupo] = { ...DEFAULTS[grupo] });
+      if (nuevo && grupo === 'hover' && key === 'effect' && value === 'fill') g.duration = 0.25; // Relleno: 0.25 s por defecto
       if (value === '' || value == null) delete g[key];
       else g[key] = value;
     }

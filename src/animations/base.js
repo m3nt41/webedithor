@@ -119,8 +119,11 @@ export const sinSpring = (g) => g.ease !== 'springreal';
 /** `transition` para los estados hover/press/focus (transform, sombra, filtro y contorno). */
 export const transicion = (g) => {
   const t = `${duracion(g, 0.2)}s ${curva(g)}`;
-  const color = g?.effect === 'color' ? `,color ${t}` : ''; // solo el hover "Color" (no cambia el CSS de lo ya guardado)
-  return `transition:transform ${t},box-shadow ${t},text-shadow ${t},filter ${t},outline-color ${t},outline-offset ${t}${color}`;
+  const fill = g?.effect === 'fill';
+  // color: solo el hover "Color" o el Relleno con texto cambiante (no cambia el CSS de lo ya guardado)
+  const color = g?.effect === 'color' || (fill && g.textoCambia === 'si') ? `,color ${t}` : '';
+  const fondo = fill && g.modo !== 'barrido' ? `,background-color ${t}` : '';
+  return `transition:transform ${t},box-shadow ${t},text-shadow ${t},filter ${t},outline-color ${t},outline-offset ${t}${color}${fondo}`;
 };
 
 // ¿Un valor CSS "no pinta nada"? (vacío, none, transparent, 0, alfa 0)

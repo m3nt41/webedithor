@@ -9,6 +9,14 @@ const NUEVOS = [
   ['color', 'Color'],
   ['soft', 'Fondo suave'],
 ];
+const RELLENO = ['fill', 'Relleno'];
+// Relleno: modos y direcciones del barrido. [transform-origin FIJO (reposo y :hover), eje]
+const MODOS = [['fundido', 'Fundido'], ['barrido', 'Barrido']];
+const BARRIDO = {
+  izq: ['left', 'X', 'Desde la izquierda'], der: ['right', 'X', 'Desde la derecha'],
+  arriba: ['top', 'Y', 'Desde arriba'], abajo: ['bottom', 'Y', 'Desde abajo'],
+};
+const DIR_BARRIDO = Object.entries(BARRIDO).map(([k, v]) => [k, v[2]]);
 const CLASICOS = [
   ['lift', 'Elevar'],
   ['grow', 'Agrandar'],
@@ -25,13 +33,16 @@ const DIRECCIONES = [
   ['centro', 'Desde el centro'],
   ['pasa', 'Pasa de lado a lado (puede verse brusca con pasadas rápidas)'],
 ];
-const EFECTOS = [['', 'Ninguno'], ...CLASICOS, ...NUEVOS];
+const EFECTOS = [['', 'Ninguno'], ...CLASICOS, ...NUEVOS, RELLENO];
 
 // Texto, título o botón SIN caja: los 3 efectos que no mueven las letras van primero y el primero se sugiere.
 // Con caja o imagen: el orden de siempre y los nuevos al final. Solo cambia el orden de la lista, no lo guardado.
-const opcionesNodo = (node) => (esTexto(node) && sinCaja(node)
-  ? [['', 'Ninguno'], ['underline', 'Subrayado (sugerido)'], ...NUEVOS.slice(1), ...CLASICOS]
-  : EFECTOS);
+// Botón o texto CON caja: "Relleno" va primero y es el sugerido (el relleno de color solo existía como estilo permanente).
+const opcionesNodo = (node) => {
+  if (!esTexto(node)) return EFECTOS;
+  if (sinCaja(node)) return [['', 'Ninguno'], ['underline', 'Subrayado (sugerido)'], ...NUEVOS.slice(1), ...CLASICOS, RELLENO];
+  return [['', 'Ninguno'], ['fill', 'Relleno (sugerido)'], ...CLASICOS, ...NUEVOS];
+};
 
 // Qué cambia al hacer hover en cada efecto
 // 2º parámetro = modoSombra: 'texto' (sin caja y con texto: text-shadow, sin capa compuesta, el texto no se
@@ -71,21 +82,30 @@ const ZONA = {
 const sinPosicion = (node) => [node?.styles?.base, node?.styles?.mobile]
   .every((e) => !e?.position || String(e.position).trim() === 'static');
 
+// ¿El nodo no recorta por sí mismo? (overflow vacío o visible en escritorio y móvil). Si ya recorta (hidden, clip, auto…) no se toca.
+const sinOverflow = (node) => [node?.styles?.base, node?.styles?.mobile]
+  .every((e) => !e?.overflow || String(e.overflow).trim() === 'visible');
+
 export default {
   id: 'hover',
   estado: true, // se ve siempre en el preview
   titulo: 'Al pasar el mouse',
   principal: 'effect',
-  defaults: { effect: 'lift', duration: 0.2, ease: 'suave', ...DEF_CURVA, color: '#7c5cff', lineaColor: 'texto', direccion: 'izq', grosor: 2, separacion: 0 },
+  defaults: { effect: 'lift', duration: 0.2, ease: 'suave', ...DEF_CURVA, color: '#7c5cff', lineaColor: 'texto', direccion: 'izq', grosor: 2, separacion: 0, modo: 'fundido', dirRelleno: 'izq', textoCambia: 'no', textoColor: '#ffffff' },
   campos: [
     { key: 'effect', label: 'Efecto', kind: 'select', options: EFECTOS, opcionesNodo },
     { key: 'direccion', label: 'Dirección', kind: 'select', options: DIRECCIONES, cuando: (g, efecto) => efecto === 'underline' },
     { key: 'grosor', label: 'Grosor (px)', kind: 'num', step: 1, min: 1, max: 4, cuando: (g, efecto) => efecto === 'underline' },
     { key: 'separacion', label: 'Separación del texto (px)', kind: 'num', step: 1, min: 0, max: 8, cuando: (g, efecto) => efecto === 'underline' },
     { key: 'lineaColor', label: 'Color de la línea', kind: 'select', options: [['texto', 'El del texto'], ['otro', 'Otro color']], cuando: (g, efecto) => efecto === 'underline' },
+    { key: 'modo', label: 'Modo', kind: 'select', options: MODOS, cuando: (g, efecto) => efecto === 'fill' },
+    { key: 'dirRelleno', label: 'Dirección del barrido', kind: 'select', options: DIR_BARRIDO, cuando: (g, efecto) => efecto === 'fill' && g?.modo === 'barrido' },
+    { key: 'textoCambia', label: 'Color del texto al pasar', kind: 'select', options: [['no', 'Sin cambio'], ['si', 'Cambiar']], cuando: (g, efecto) => efecto === 'fill' },
+    { key: 'textoColor', label: 'Color del texto', kind: 'color', cuando: (g, efecto) => efecto === 'fill' && g?.textoCambia === 'si' },
     { key: 'duration', label: 'Duración (s)', kind: 'num', step: 0.05, min: 0.05, cuando: sinSpring },
     { key: 'ease', label: 'Curva', kind: 'select', options: EASES },
     ...camposCurva,
+    { key: 'color', label: 'Color de relleno', kind: 'color', cuando: (g, efecto) => efecto === 'fill' },
     { key: 'color', label: 'Color', kind: 'color', cuando: (g, efecto) => ['glow', 'color', 'soft'].includes(efecto) || (efecto === 'underline' && g?.lineaColor === 'otro') },
   ],
 
@@ -114,6 +134,24 @@ export default {
       return [`${sel}{${pos}isolation:isolate}`,
         `${sel}::before{content:'';position:absolute;top:-.2em;right:-.5em;bottom:-.2em;left:-.5em;border-radius:.4em;background:${c};opacity:0;z-index:-1;transition:opacity ${t};pointer-events:none}`,
         `${sel}:hover::before{opacity:.2}`].join('\n');
+    }
+    // Relleno (botones y texto con caja). Texto: color de texto opcional con transition (color se añade en base.js).
+    //  fundido: background-color con transition. barrido: ::before inset:0 con scaleX/Y(0→1) y transform-origin FIJO
+    //  (igual en reposo y :hover, no salta con pasadas rápidas), z-index:-1 + isolation:isolate en el nodo (el texto queda
+    //  encima), y overflow:clip en el nodo (recorta con su border-radius sin ser contenedor de scroll: no rompe el parallax).
+    //  Sin will-change, filter ni transform sobre el texto. Las imágenes no admiten ::before y se saltan.
+    if (h?.effect === 'fill') {
+      if (node?.type === 'image') return '';
+      const c = h.color || '#7c5cff';
+      const txt = h.textoCambia === 'si' ? `;color:${h.textoColor || '#ffffff'}!important` : '';
+      if (h.modo !== 'barrido') return `${sel}:hover{${transicion(h)};background-color:${c}!important${txt}}`;
+      const [origen, eje] = BARRIDO[h.dirRelleno] || BARRIDO.izq;
+      const t = `${duracion(h, 0.25)}s ${curva(h)}`;
+      const pos = sinPosicion(node) ? 'position:relative;' : '';
+      return [`${sel}{${pos}isolation:isolate${sinOverflow(node) ? ';overflow:clip' : ''}}`,
+        `${sel}::before{content:'';position:absolute;inset:0;background:${c};transform:scale${eje}(0);transform-origin:${origen};transition:transform ${t};z-index:-1;pointer-events:none}`,
+        `${sel}:hover::before{transform:scale${eje}(1)}`,
+        txt && `${sel}:hover{${transicion(h)}${txt}}`].filter(Boolean).join('\n');
     }
     // Color: cambia el color del texto con transition (la de color se añade en base.js). !important porque en el
     // lienzo el color del nodo va en style inline.

@@ -28,6 +28,17 @@ const nodos = {
   Color: mk('Color', { effect: 'color', color: '#00aa00', duration: 0.2 }),
   Fondo: mk('Fondo', { effect: 'soft', color: '#0000ff', duration: 0.2 }),
 };
+// Relleno: botón con caja (fondo oscuro, esquinas redondeadas de 40 px), relleno ROJO, 1.5 s lineal para poder capturar a medias
+const caja = { background: '#111111', color: '#ffffff', borderRadius: '40px', padding: '14px 40px' };
+const rl = (nombre, extra, base = {}) => mk(nombre, { effect: 'fill', color: '#ff0000', duration: 1.5, ease: 'lineal', ...extra }, { ...caja, ...base });
+Object.assign(nodos, {
+  RelFundido: rl('RelFundido', { modo: 'fundido', textoCambia: 'si', textoColor: '#00ff00' }),
+  RelIzq: rl('RelIzq', { modo: 'barrido', dirRelleno: 'izq' }),
+  RelDer: rl('RelDer', { modo: 'barrido', dirRelleno: 'der' }),
+  RelArriba: rl('RelArriba', { modo: 'barrido', dirRelleno: 'arriba' }),
+  RelAbajo: rl('RelAbajo', { modo: 'barrido', dirRelleno: 'abajo' }),
+  RelTexto: rl('RelTexto', { modo: 'barrido', textoCambia: 'si', textoColor: '#00ff00', duration: 0.2 }),
+});
 const pagina = n('page', { name: 'Página', content: { title: 'Hover nuevos' } });
 const sec = n('section', { name: 'Sec', children: Object.values(nodos) });
 sec.styles.base = { display: 'flex', flexDirection: 'column', gap: '60px', padding: '80px', alignItems: 'flex-start', background: '#ffffff' };
@@ -45,6 +56,15 @@ v(c('Subrayado').includes('background:#ff0000') && c('SubrayadoTexto').includes(
 v(!c('Subrayado').includes('::after'), 'subrayado: no toca el ::after anti-parpadeo');
 v(/color:#00aa00!important/.test(c('Color')) && c('Color').includes(',color 0.2s'), 'color: color destino con transition de color');
 v(/\.x::before\{[^}]*border-radius[^}]*opacity:0/.test(c('Fondo')) && /\.x:hover::before\{opacity:\.2\}/.test(c('Fondo')), 'fondo suave: pastilla con opacity y esquinas redondeadas');
+// Relleno
+v(/\.x:hover\{[^}]*background-color 1\.5s[^}]*;background-color:#ff0000!important;color:#00ff00!important\}/.test(c('RelFundido')) && !c('RelFundido').includes('::before'), 'relleno fundido: background-color con transition y color de texto al pasar, sin pseudo-elemento');
+v(/\.x\{position:relative;isolation:isolate;overflow:clip\}/.test(c('RelIzq')) && /\.x::before\{[^}]*inset:0;background:#ff0000;transform:scaleX\(0\);transform-origin:left;transition:transform 1\.5s[^}]*z-index:-1/.test(c('RelIzq')) && /\.x:hover::before\{transform:scaleX\(1\)\}/.test(c('RelIzq')), 'relleno barrido izq: ::before inset:0 scaleX(0→1), origin left fijo, z-index:-1, isolation:isolate y overflow:clip');
+v(/transform:scaleX\(0\);transform-origin:right/.test(c('RelDer')) && /transform:scaleY\(0\);transform-origin:top/.test(c('RelArriba')) && /transform:scaleY\(0\);transform-origin:bottom/.test(c('RelAbajo')), 'relleno barrido: der = origin right, arriba = scaleY origin top, abajo = scaleY origin bottom');
+v(!/(^|[;{])(transform|filter):/.test(c('RelTexto').split('\n').filter((r) => /^\.x(:hover)?\{/.test(r)).join('')) && !/will-change/.test(c('RelTexto')) && /,color 0\.2s/.test(c('RelTexto')), 'relleno: sin transform, filter ni will-change sobre el texto; color con transition');
+v(!c('RelIzq').includes('::after'), 'relleno: no toca el ::after anti-parpadeo');
+v(!/overflow:clip/.test(cssNodo(rl('RelHid', { modo: 'barrido' }, { overflow: 'hidden' }), '.x', { scroll: false })), 'relleno: si el nodo ya recorta (overflow:hidden) no se le pisa');
+const campoRel = GRUPOS_ANIM.find((g) => g.id === 'hover').campos[0];
+v(campoRel.opcionesNodo(rl('Caja', {}))[1][0] === 'fill' && campoRel.opcionesNodo(nodos.Color)[1][0] === 'underline', 'inspector: "Relleno" sale primero (sugerido) en botones con caja; el subrayado sigue primero sin caja');
 // reglas que caen sobre el elemento (.x y .x:hover, no los pseudo): sin declaraciones filter: / transform: / will-change
 for (const k of Object.keys(nodos)) {
   const sobreTexto = c(k).split('\n').filter((r) => /^\.x(:hover)?\{/.test(r)).join('');
@@ -52,7 +72,7 @@ for (const k of Object.keys(nodos)) {
 }
 // el orden de la lista: nuevos primero en texto sin caja; clásicos primero con caja
 const campo = GRUPOS_ANIM.find((g) => g.id === 'hover').campos[0];
-v(campo.opcionesNodo(nodos.Color)[1][0] === 'underline' && campo.opcionesNodo(mk('Caja', { effect: 'lift' }, { background: '#111' }))[1][0] === 'lift', 'inspector: nuevos primero en texto sin caja; clásicos primero con caja');
+v(campo.opcionesNodo(nodos.Color)[1][0] === 'underline' && campo.opcionesNodo(mk('Caja', { effect: 'lift' }, { background: '#111' }))[2][0] === 'lift', 'inspector: nuevos primero en texto sin caja; con caja, Relleno y luego los clásicos');
 
 mkdirSync('tests/out', { recursive: true });
 writeFileSync('tests/out/hover-nuevos.html', exportHTML(pagina));
@@ -66,13 +86,14 @@ async function rojos(el) {
   // la captura se decodifica en la página con un canvas y se cuentan los píxeles rojos dentro de la caja (+6 px abajo)
   const m = await d.executeAsyncScript(`const [b64,r]=arguments;const done=arguments[arguments.length-1];
     const im=new Image();im.onload=()=>{const cv=document.createElement('canvas');cv.width=im.width;cv.height=im.height;
-    const cx=cv.getContext('2d');cx.drawImage(im,0,0);let mn=1e9,mx=-1,cuenta=0;
+    const cx=cv.getContext('2d');cx.drawImage(im,0,0);let mn=1e9,mx=-1,cuenta=0,ay=1e9,by=-1;
     const x0=Math.floor(r.x*r.dpr),x1=Math.ceil((r.x+r.w)*r.dpr),y0=Math.floor(r.y*r.dpr),y1=Math.ceil((r.y+r.h+6)*r.dpr);
     const dt=cx.getImageData(x0,y0,x1-x0,y1-y0).data;
     for(let y=0;y<y1-y0;y++)for(let x=0;x<x1-x0;x++){const i=(y*(x1-x0)+x)*4;
-      if(dt[i]>200&&dt[i+1]<60&&dt[i+2]<60){cuenta++;mn=Math.min(mn,x);mx=Math.max(mx,x);}}
-    done({cuenta,ancho:mx<0?0:mx-mn+1,izq:mn,der:mx+1});};im.src='data:image/png;base64,'+b64;`, b64, r);
-  return { ...m, caja: r.w * r.dpr, x0: Math.floor(r.x * r.dpr) };
+      if(dt[i]>200&&dt[i+1]<60&&dt[i+2]<60){cuenta++;mn=Math.min(mn,x);mx=Math.max(mx,x);ay=Math.min(ay,y);by=Math.max(by,y);}}
+    const q=(x,y)=>{const j=(y*(x1-x0)+x)*4;return dt[j]>200&&dt[j+1]<60&&dt[j+2]<60;};
+    done({cuenta,ancho:mx<0?0:mx-mn+1,izq:mn,der:mx+1,arr:ay,aba:by+1,alto:by<0?0:by-ay+1,esq:q(1,1)});};im.src='data:image/png;base64,'+b64;`, b64, r);
+  return { ...m, caja: r.w * r.dpr, cajaAlto: r.h * r.dpr, x0: Math.floor(r.x * r.dpr) };
 }
 const estilo = (el, pseudo) => d.executeScript(`const c=getComputedStyle(arguments[0],arguments[1]);return {color:c.color,bg:c.backgroundColor,op:c.opacity,tr:c.transform,f:c.filter,wc:c.willChange}`, el, pseudo);
 async function subrayado(contexto, buscar, nombre, dir) {
@@ -116,7 +137,52 @@ async function rapido(contexto, buscar) {
     await esperar(2200);
   }
 }
+// Relleno por píxeles: sin rojo antes; a medias entra por el lado correcto; al final cubre el botón y respeta el border-radius
+async function relleno(contexto, buscar, nombre, dir) {
+  const el = await buscar(nombre);
+  await d.executeScript('arguments[0].scrollIntoView({block:"center"})', el);
+  await d.actions({ async: true }).move({ x: 3, y: 3 }).perform(); await esperar(500);
+  const L = `${contexto} relleno ${nombre}`;
+  const antes = await rojos(el); v(antes.cuenta === 0, `${L}: sin rojo antes del hover`);
+  await d.actions({ async: true }).move({ origin: el }).perform();
+  let medio = await rojos(el);
+  for (let i = 0; i < 6 && medio.cuenta === 0; i++) medio = await rojos(el);
+  await esperar(2000); const fin = await rojos(el);
+  const area = fin.caja * fin.cajaAlto;
+  v(fin.cuenta / area > 0.7 && Math.abs(fin.ancho - fin.caja) <= 2 && Math.abs(fin.alto - fin.cajaAlto) <= 2, `${L}: al final el rojo cubre el botón (${Math.round(100 * fin.cuenta / area)} % del área, ${fin.ancho}x${fin.alto} de ${Math.round(fin.caja)}x${Math.round(fin.cajaAlto)})`);
+  v(!fin.esq, `${L}: la esquina queda sin rojo (respeta el border-radius)`);
+  if (dir !== 'fundido') {
+    const tocaI = medio.izq <= 2, tocaD = medio.der >= fin.ancho - 2, tocaA = medio.arr <= 2, tocaB = medio.aba >= fin.alto - 2;
+    const lado = { izq: tocaI && !tocaD, der: tocaD && !tocaI, arriba: tocaA && !tocaB, abajo: tocaB && !tocaA }[dir];
+    const parcial = dir === 'izq' || dir === 'der' ? medio.ancho > 0 && medio.ancho < fin.ancho - 3 : medio.alto > 0 && medio.alto < fin.alto - 3;
+    v(parcial && lado, `${L}: a medias entra desde ${dir} (${medio.ancho}x${medio.alto} → ${fin.ancho}x${fin.alto})`);
+  }
+  await d.actions({ async: true }).move({ x: 3, y: 3 }).perform(); await esperar(2000);
+  v((await rojos(el)).cuenta === 0, `${L}: sin rojo tras salir`);
+}
+// Entradas y salidas rápidas: el transform-origin del ::before no cambia nunca
+async function rellenoRapido(contexto, buscar) {
+  for (const nombre of ['RelIzq', 'RelDer', 'RelArriba', 'RelAbajo']) {
+    const el = await buscar(nombre);
+    await d.executeScript('arguments[0].scrollIntoView({block:"center"})', el);
+    await d.actions({ async: true }).move({ x: 3, y: 3 }).perform(); await esperar(2200);
+    const lee = () => d.executeScript('return getComputedStyle(arguments[0],"::before").transformOrigin', el);
+    const vistos = new Set([await lee()]);
+    for (let i = 0; i < 4; i++) {
+      await d.actions({ async: true }).move({ origin: el }).perform(); vistos.add(await lee());
+      await d.actions({ async: true }).move({ x: 3, y: 3 }).perform(); vistos.add(await lee());
+    }
+    v(vistos.size === 1, `${contexto} relleno rápido ${nombre}: transform-origin no cambia (${[...vistos].join(' | ')})`);
+    await esperar(2200);
+  }
+}
 async function revisar(contexto, buscar) {
+  for (const [nombre, dir] of [['RelFundido', 'fundido'], ['RelIzq', 'izq'], ['RelDer', 'der'], ['RelArriba', 'arriba'], ['RelAbajo', 'abajo']]) await relleno(contexto, buscar, nombre, dir);
+  await rellenoRapido(contexto, buscar);
+  const rt = await buscar('RelTexto');
+  await d.actions({ async: true }).move({ origin: rt }).perform(); await esperar(600);
+  const et = await estilo(rt, ''); v(et.color === 'rgb(0, 255, 0)' && et.tr === 'none' && et.f === 'none' && et.wc === 'auto', `${contexto} relleno: el texto pasa a verde sin transform, filter ni will-change (${et.color})`);
+  await d.actions({ async: true }).move({ x: 3, y: 3 }).perform(); await esperar(400);
   const DIRS = { Subrayado: 'izq', SubDer: 'der', SubCentro: 'centro', SubPasa: 'pasa' };
   for (const [nombre, dir] of Object.entries(DIRS)) await subrayado(contexto, buscar, nombre, dir);
   await rapido(contexto, buscar);

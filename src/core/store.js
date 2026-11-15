@@ -165,6 +165,9 @@ export function mutate(fn, tipo = 'page', clave = null) {
   emit(tipo);
 }
 
+/** ¿El último cambio fue parte de un gesto (arrastre de tirador)? El inspector lo usa para no reconstruirse en cada paso. */
+export const gestoActivo = () => typeof ultimaClave === 'string' && ultimaClave.startsWith('gesto:');
+
 /** Redibuja sin cambiar datos (p. ej. al terminar de editar texto). */
 export function refresh() {
   emit('page');

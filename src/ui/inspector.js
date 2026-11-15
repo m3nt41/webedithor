@@ -5,7 +5,7 @@
 //   página mientras el foco está dentro (salvo que cambie la selección o un
 //   select altere qué campos se muestran: ahí se fuerza).
 
-import { getState, subscribe, setStyle, setStyles, setPosicion, setContent, setName, setAnimation, moveBy, duplicateNode, removeNode, addVariant, removeVariant, moveVariant, setVariant, setVariantProp, verEstado, setIconSize, setMarquesina } from '../core/store.js';
+import { getState, subscribe, gestoActivo, setStyle, setStyles, setPosicion, setContent, setName, setAnimation, moveBy, duplicateNode, removeNode, addVariant, removeVariant, moveVariant, setVariant, setVariantProp, verEstado, setIconSize, setMarquesina } from '../core/store.js';
 import { findNode, findParent, anchorValido, contarAncla, aspectoValido, capaValida } from '../core/tree.js';
 import { reducirImagen } from './imagen.js';
 import { effectiveStyles, TIPOS_TEXTO } from '../render/renderer.js';
@@ -167,6 +167,7 @@ function avisoAncla(page, nodo, valor) {
 
 export function initInspector(host) {
   let idDibujado = null; // id del nodo para el que está construido el panel
+  let huboGesto = false; // un arrastre de tirador actualizó el panel sin reconstruirlo
   let forzar = false; // un select pidió reconstruir el panel
   const abiertos = new Set(); // grupos cuyo "Avanzado" el usuario abrió (se conservan al reconstruir el panel)
 
@@ -376,7 +377,7 @@ export function initInspector(host) {
       cuerpo += `<details class="nivel nivel-${k}" data-nivel="${k}"${niveles[k] ? ' open' : ''}><summary>${titulo}</summary><div class="nivel-cuerpo">${N[k]}</div></details>`;
     }
     host.innerHTML = cabecera + `<div class="insp-cuerpo">${cuerpo}</div>`;
-    if (scrollPrevio) host.querySelector('.insp-cuerpo').scrollTop = scrollPrevio;
+    if (scrollPrevio) host.querySelector('.insp-cuerpo').scrollTo({ top: scrollPrevio, behavior: 'instant' }); // 'instant': el scroll-behavior:smooth del CSS lo animaba desde 0 (rebote)
   }
 
   // ---- Eventos (delegados: un solo listener para todo el panel) ----
@@ -575,6 +576,18 @@ export function initInspector(host) {
   subscribe((state, cambio) => {
     if (cambio === 'selection' || cambio === 'view' || cambio === 'verestado') return dibujar();
     if (cambio === 'text') return; // se escribe en el preview: no tocar el panel
+    // Arrastre de un tirador: NO se reconstruye el panel (saltaba el scroll y se recreaban todos los nodos);
+    // solo se ponen al día los campos de texto CSS. Al soltar (pointerup) se reconstruye UNA vez.
+    if (cambio === 'page' && gestoActivo() && state.selectedId === idDibujado && idDibujado) {
+      huboGesto = true;
+      const nodo = findNode(state.page, idDibujado);
+      const estilos = nodo && effectiveStyles(nodo, state.viewMode);
+      if (estilos) host.querySelectorAll('input[data-s]').forEach((inp) => {
+        const nuevo = estilos[inp.dataset.s] ?? '';
+        if (inp !== document.activeElement && inp.value !== String(nuevo)) inp.value = nuevo;
+      });
+      return;
+    }
     // Cambio de página: reconstruir solo si cambió el nodo, o se forzó, o el foco no está aquí
     const enfocado = host.contains(document.activeElement) && document.activeElement !== host;
     if (forzar || state.selectedId !== idDibujado || !enfocado) {
@@ -582,6 +595,9 @@ export function initInspector(host) {
       dibujar();
     }
   });
+
+  // Al soltar el tirador: una sola reconstrucción para que los controles visuales queden al día
+  window.addEventListener('pointerup', () => { if (huboGesto) { huboGesto = false; dibujar(); } });
 
   // Cuando se escribe en el preview, refresca la caja de "Texto" del panel
   subscribe((state, cambio) => {

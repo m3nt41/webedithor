@@ -1,0 +1,626 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Banco de pruebas de rendimiento</title>
+<!-- GENERADO el 15-nov-2026 con los módulos reales de src/ (animations/*, core/marquesina.js). No es parte del editor. -->
+<style>
+
+*{box-sizing:border-box}body{margin:0}img{max-width:100%;display:block}
+body{background:#0f1117;color:#e8e9ef;font:16px/1.5 system-ui,sans-serif}
+a{color:#8ab4ff}
+.wrap{max-width:1100px;margin:0 auto;padding:0 24px}
+.panel{background:#171a26;border-bottom:1px solid #2a2f45;padding:24px 0 32px}
+.panel h1{margin:0 0 4px;font-size:1.6rem}
+.panel .sub{margin:0 0 16px;color:#9aa0b8}
+.guia{margin:0 0 20px;padding:14px 20px 14px 36px;background:#1d2236;border-radius:12px}
+.guia li{margin:4px 0}
+.barra{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin:0 0 16px}
+.btn{display:inline-block;padding:6px 12px;border:1px solid #3a4163;border-radius:8px;text-decoration:none;color:#e8e9ef;background:#222742}
+.btn.on{background:#2b6a3d;border-color:#3f9a58}
+table.idx{width:100%;border-collapse:collapse;font-size:.92rem}
+.idx th,.idx td{padding:6px 8px;border-bottom:1px solid #2a2f45;text-align:left}
+.idx select{background:#0f1117;color:#e8e9ef;border:1px solid #3a4163;border-radius:6px;padding:3px 6px}
+.tag{font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:99px;letter-spacing:.04em}
+.tag.REAL{background:#5b2a2a;color:#ffb4b4}.tag.REFERENCIA{background:#1f4a2c;color:#a8f0bc}.tag.VARIANTE{background:#4a3f12;color:#f3df8a}.tag.CONTROL{background:#2a3350;color:#b9c6ff}
+details{margin:12px 0;background:#1d2236;border-radius:12px;padding:10px 16px}
+summary{cursor:pointer;font-weight:600}
+textarea{width:100%;height:150px;background:#0f1117;color:#e8e9ef;border:1px solid #3a4163;border-radius:8px;padding:8px;font:13px/1.4 ui-monospace,monospace}
+.aviso{background:#5b2a2a;color:#ffd0d0;padding:10px 16px;border-radius:10px;margin:0 0 16px}
+.t{padding:0 0 60px}
+.t[hidden]{display:none}
+.t-head{background:#171a26;border-top:3px solid #7c5cff;border-bottom:1px solid #2a2f45;padding:18px 0;margin-bottom:28px}
+.t-head h2{margin:0 0 4px;font-size:1.25rem}
+.t-head p{margin:0;color:#b5bad0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+@media(max-width:700px){.grid2{grid-template-columns:1fr}}
+.c{background:#1d2030;border-radius:14px;padding:20px;min-height:230px}
+.c h3{margin:0 0 8px}.c p{margin:0;color:#b5bad0}
+.txt p{color:#b5bad0;max-width:70ch}
+.mi{white-space:nowrap;font-size:1.5rem;font-style:italic}
+.pw{overflow:hidden;height:420px;margin:0 0 60px;border-radius:12px}
+.pim{height:540px;width:100%;object-fit:cover;margin-top:-60px}
+.paso h2{margin:0 0 8px;font-size:2rem}.paso p{margin:0 0 12px;color:#b5bad0}
+#fps{position:fixed;right:10px;bottom:10px;z-index:99;background:#000c;color:#7fffa0;font:12px/1.3 ui-monospace,monospace;padding:6px 10px;border-radius:8px}
+.t:not(.vis) .mq-p{animation-play-state:paused!important}
+
+/* ===== @keyframes reales del export (animations/base.js) ===== */
+@keyframes a-fade{from{opacity:0}}
+@keyframes a-up{from{opacity:0;translate:0 var(--ad,40px)}}
+@keyframes a-down{from{opacity:0;translate:0 calc(var(--ad,40px)*-1)}}
+@keyframes a-left{from{opacity:0;translate:calc(var(--ad,40px)*-1) 0}}
+@keyframes a-right{from{opacity:0;translate:var(--ad,40px) 0}}
+@keyframes a-zoom{from{opacity:0;scale:.8}}
+@keyframes a-blur{from{opacity:0;filter:blur(12px)}}
+@keyframes a-flip{from{opacity:0;transform:perspective(600px) rotateX(-70deg)}}
+@keyframes a-rotate{from{opacity:0;rotate:var(--ar,-90deg)}}
+/* ===== CSS REAL de cada sección (lo que genera el exportador) y CSS de REFERENCIA ===== */
+/* ---- 1 Hover con transform (Agrandar) (REAL) ---- */
+.s-ht .c{transition:transform 0.25s cubic-bezier(.22,1,.36,1),box-shadow 0.25s cubic-bezier(.22,1,.36,1),filter 0.25s cubic-bezier(.22,1,.36,1),outline-color 0.25s cubic-bezier(.22,1,.36,1),outline-offset 0.25s cubic-bezier(.22,1,.36,1)}
+.s-ht .c:hover{transition:transform 0.25s cubic-bezier(.22,1,.36,1),box-shadow 0.25s cubic-bezier(.22,1,.36,1),filter 0.25s cubic-bezier(.22,1,.36,1),outline-color 0.25s cubic-bezier(.22,1,.36,1),outline-offset 0.25s cubic-bezier(.22,1,.36,1);transform:scale(1.06)}
+/* ---- 2 Hover con box-shadow (Elevar, elemento con caja) (REAL) ---- */
+.s-hs .c{transition:transform 0.25s cubic-bezier(.22,1,.36,1),box-shadow 0.25s cubic-bezier(.22,1,.36,1),filter 0.25s cubic-bezier(.22,1,.36,1),outline-color 0.25s cubic-bezier(.22,1,.36,1),outline-offset 0.25s cubic-bezier(.22,1,.36,1)}
+.s-hs .c:hover{transition:transform 0.25s cubic-bezier(.22,1,.36,1),box-shadow 0.25s cubic-bezier(.22,1,.36,1),filter 0.25s cubic-bezier(.22,1,.36,1),outline-color 0.25s cubic-bezier(.22,1,.36,1),outline-offset 0.25s cubic-bezier(.22,1,.36,1);transform:translateY(-6px);box-shadow:0 14px 30px rgba(0,0,0,.28)}
+/* ---- 3 Hover con filter (Aclarar, imágenes grandes) (REAL) ---- */
+.s-hf .im{transition:transform 0.25s cubic-bezier(.22,1,.36,1),box-shadow 0.25s cubic-bezier(.22,1,.36,1),filter 0.25s cubic-bezier(.22,1,.36,1),outline-color 0.25s cubic-bezier(.22,1,.36,1),outline-offset 0.25s cubic-bezier(.22,1,.36,1)}
+.s-hf .im:hover{transition:transform 0.25s cubic-bezier(.22,1,.36,1),box-shadow 0.25s cubic-bezier(.22,1,.36,1),filter 0.25s cubic-bezier(.22,1,.36,1),outline-color 0.25s cubic-bezier(.22,1,.36,1),outline-offset 0.25s cubic-bezier(.22,1,.36,1);filter:brightness(1.2)}
+/* ---- 4 Hover con drop-shadow (Elevar, elemento SIN caja) (REAL) ---- */
+.s-hd .im{transition:transform 0.25s cubic-bezier(.22,1,.36,1),box-shadow 0.25s cubic-bezier(.22,1,.36,1),filter 0.25s cubic-bezier(.22,1,.36,1),outline-color 0.25s cubic-bezier(.22,1,.36,1),outline-offset 0.25s cubic-bezier(.22,1,.36,1)}
+.s-hd .im:hover{transition:transform 0.25s cubic-bezier(.22,1,.36,1),box-shadow 0.25s cubic-bezier(.22,1,.36,1),filter 0.25s cubic-bezier(.22,1,.36,1),outline-color 0.25s cubic-bezier(.22,1,.36,1),outline-offset 0.25s cubic-bezier(.22,1,.36,1);transform:translateY(-6px);filter:drop-shadow(0 8px 10px rgba(0,0,0,.28))}
+/* ---- 6 Aparecer: @keyframes pausado (opacity + translate) (REAL) ---- */
+.s-ak .c{--ad:40px;--ar:-90deg;animation:a-up 0.8s cubic-bezier(.22,1,.36,1) 0s backwards paused}
+.s-ak .c.in{animation-play-state:running}
+/* ---- 8 Marquesina con translate, 4 copias (como el export actual) (REAL) ---- */
+@keyframes mq4{from{translate:0 0}to{translate:calc(-100% / 4) 0}}
+.mqA{display:block;max-width:100%;min-width:0;overflow:hidden}
+.mqA>.mq-p{display:flex;width:max-content;animation:mq4 25s linear infinite}
+.mqA .mq-g{display:flex;flex:none;align-items:center;gap:48px;padding-inline-end:48px}
+.mqA:hover>.mq-p{animation-play-state:paused}
+/* ---- 9 Marquesina con transform, 4 copias (VARIANTE) ---- */
+@keyframes mqT4{from{transform:translateX(0)}to{transform:translateX(-25%)}}
+.mqB{display:block;max-width:100%;min-width:0;overflow:hidden}
+.mqB>.mq-p{display:flex;width:max-content;animation:mqT4 25s linear infinite}
+.mqB .mq-g{display:flex;flex:none;align-items:center;gap:48px;padding-inline-end:48px}
+.mqB:hover>.mq-p{animation-play-state:paused}
+/* ---- 11 Parallax vertical 60 px (scrollmotor.js) (REAL) ---- */
+.sc .s-pa .pim{translate:0 calc((var(--sp,.5) - .5) * 120px);will-change:translate}
+/* ---- 12 Escena sticky de 3 pasos (scrollmotor.js + --ep) (REAL) ---- */
+[data-ew]{display:contents}
+.sc [data-ew]{display:block;height:calc(var(--len,3) * var(--alto-v,100svh))}
+.sc [data-es]{position:sticky!important;top:var(--arr,0px)!important;height:calc(var(--alto-v,100svh) - var(--arr,0px))!important;min-height:0!important;box-sizing:border-box;display:grid!important;grid-template-columns:minmax(0,1fr)!important;grid-template-rows:minmax(0,1fr)!important;gap:0!important;overflow:hidden}
+.sc [data-es]>*{grid-area:1/1!important;min-width:0}
+.sc .esc{justify-items:center!important;align-items:center!important}
+.sc [data-es] > .es1{--qi:1;--qo:clamp(0,calc((var(--ep,0) * var(--n,3) - 1) * 2.5),1);opacity:calc(var(--qi) * (1 - var(--qo)))!important;translate:0 calc((1 - var(--qi)) * 40px - var(--qo) * 40px)}
+.sc [data-es] > .es2{--qi:clamp(0,calc((var(--ep,0) * var(--n,3) - 1) * 2.5),1);--qo:clamp(0,calc((var(--ep,0) * var(--n,3) - 2) * 2.5),1);opacity:calc(var(--qi) * (1 - var(--qo)))!important;translate:0 calc((1 - var(--qi)) * 40px - var(--qo) * 40px)}
+.sc [data-es] > .es3{--qi:clamp(0,calc((var(--ep,0) * var(--n,3) - 2) * 2.5),1);--qo:0;opacity:calc(var(--qi) * (1 - var(--qo)))!important;translate:0 calc((1 - var(--qi)) * 40px - var(--qo) * 40px)}
+.esc{background:#12141f;padding:0 24px;text-align:center}.paso{max-width:760px}
+@media (prefers-reduced-motion:reduce){
+.mqA>.mq-p{animation:none;width:auto;justify-content:center}
+.mqA .mq-g{display:flex;flex:0 1 auto;flex-wrap:wrap;align-items:center;justify-content:center;gap:48px}.mqA .mq-g{padding-inline-end:0}
+.mqA .mq-g[aria-hidden]{display:none}
+.mqB>.mq-p{animation:none;width:auto;justify-content:center}
+.mqB .mq-g{display:flex;flex:0 1 auto;flex-wrap:wrap;align-items:center;justify-content:center;gap:48px}.mqB .mq-g{padding-inline-end:0}
+.mqB .mq-g[aria-hidden]{display:none}
+}
+
+/* referencia: reveals (transition sobre clase) */
+.s-ar .reveal{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s ease;transition-delay:var(--d,0s)}
+.s-ar .reveal.in{opacity:1;transform:none}
+/* referencia: hover (transform + box-shadow, transition .3s = all) */
+.s-hr .c{transition:.3s}
+.s-hr .c:hover{transform:translateY(-6px);box-shadow:0 14px 30px rgba(0,0,0,.28)}
+/* referencia: marquesina (transform: translateX(-50%), 2 grupos, 30s) */
+.mqC{overflow:hidden;padding:1rem 0;background:#14161f}
+.mqC .mq-p{display:flex;width:max-content;animation:desfile 30s linear infinite}
+.mqC .mq-g{display:flex;gap:3rem;padding-right:3rem;align-items:center}
+@keyframes desfile{to{transform:translateX(-50%)}}
+
+</style>
+</head>
+<body>
+
+<header class="panel"><div class="wrap">
+<h1>Banco de pruebas de rendimiento</h1>
+<p class="sub">Una sección por efecto. <b>REAL</b> = CSS/JS que sale del export tal cual · <b>REFERENCIA</b> = estilo de masajes-version2 (va bien en tu Firefox) · <b>VARIANTE</b> = la real con un solo cambio.</p>
+<div id="aviso-reduce" class="aviso" hidden>Tu sistema tiene "reducir movimiento" activado: el export real NO corre parallax, escena ni scroll suave en ese caso. Desactívalo para probar.</div>
+<ol class="guia">
+<li><b>Qué hacer:</b> abre cada sección sola ("ver solo"), baja con la rueda a velocidad normal y, en las de hover, pasa el mouse de tarjeta en tarjeta.</li>
+<li><b>Fluido</b> = todo se mueve parejo, sin saltos ni tirones.</li>
+<li><b>Escalonado</b> = la página baja bien pero el efecto (parallax, escena, texto) llega tarde o a saltitos.</li>
+<li><b>Pegado</b> = se frena o se congela un instante (también si el mouse tarda en responder).</li>
+<li><b>Empieza por la 0 (control)</b>; luego compara pares: REAL vs REFERENCIA, 8 vs 9 (translate vs transform), scroll suave apagado vs encendido.</li>
+<li><b>Anota</b> tu veredicto en la columna de la tabla (se guarda solo) y para números usa el Profiler (más abajo).</li>
+</ol>
+<div class="barra">
+<span><b>Sección 13 · Scroll suave</b> (Lenis 1.3.27, el del export):</span>
+<a class="btn" id="b-suave" href="#">…</a>
+<a class="btn" id="b-todo" href="#">ver todas las secciones</a>
+<a class="btn" id="b-fps" href="#">…</a>
+</div>
+<p class="sub" style="margin:0 0 12px">El scroll suave cambia toda la página, por eso es un interruptor: combínalo con "ver solo" (p. ej. control, parallax o escena con scroll suave encendido y apagado). El contador de FPS es opcional y gasta algo; para medir en serio, usa el Profiler.</p>
+<table class="idx"><thead><tr><th>#</th><th>Sección</th><th>Ir</th><th>Mi veredicto</th></tr></thead><tbody>
+<tr><td>0</td><td>Nada (control) <span class="tag CONTROL">CONTROL</span></td><td><a href="#s-control">ir</a> · <a class="solo" data-s="control" href="#">ver solo</a></td><td><select data-nota="control"><option value="">—</option><option>fluido</option><option>escalonado</option><option>pegado</option></select></td></tr>
+<tr><td>1</td><td>Hover con transform (Agrandar) <span class="tag REAL">REAL</span></td><td><a href="#s-hover-transform">ir</a> · <a class="solo" data-s="hover-transform" href="#">ver solo</a></td><td><select data-nota="hover-transform"><option value="">—</option><option>fluido</option><option>escalonado</option><option>pegado</option></select></td></tr>
+<tr><td>2</td><td>Hover con box-shadow (Elevar, elemento con caja) <span class="tag REAL">REAL</span></td><td><a href="#s-hover-sombra">ir</a> · <a class="solo" data-s="hover-sombra" href="#">ver solo</a></td><td><select data-nota="hover-sombra"><option value="">—</option><option>fluido</option><option>escalonado</option><option>pegado</option></select></td></tr>
+<tr><td>3</td><td>Hover con filter (Aclarar, imágenes grandes) <span class="tag REAL">REAL</span></td><td><a href="#s-hover-filter">ir</a> · <a class="solo" data-s="hover-filter" href="#">ver solo</a></td><td><select data-nota="hover-filter"><option value="">—</option><option>fluido</option><option>escalonado</option><option>pegado</option></select></td></tr>
+<tr><td>4</td><td>Hover con drop-shadow (Elevar, elemento SIN caja) <span class="tag REAL">REAL</span></td><td><a href="#s-hover-dropshadow">ir</a> · <a class="solo" data-s="hover-dropshadow" href="#">ver solo</a></td><td><select data-nota="hover-dropshadow"><option value="">—</option><option>fluido</option><option>escalonado</option><option>pegado</option></select></td></tr>
+<tr><td>5</td><td>Hover de referencia (transform + box-shadow, transition .3s) <span class="tag REFERENCIA">REFERENCIA</span></td><td><a href="#s-hover-ref">ir</a> · <a class="solo" data-s="hover-ref" href="#">ver solo</a></td><td><select data-nota="hover-ref"><option value="">—</option><option>fluido</option><option>escalonado</option><option>pegado</option></select></td></tr>
+<tr><td>6</td><td>Aparecer: @keyframes pausado (opacity + translate) <span class="tag REAL">REAL</span></td><td><a href="#s-aparecer-keyframes">ir</a> · <a class="solo" data-s="aparecer-keyframes" href="#">ver solo</a></td><td><select data-nota="aparecer-keyframes"><option value="">—</option><option>fluido</option><option>escalonado</option><option>pegado</option></select></td></tr>
+<tr><td>7</td><td>Aparecer de referencia (transition + clase .in) <span class="tag REFERENCIA">REFERENCIA</span></td><td><a href="#s-aparecer-ref">ir</a> · <a class="solo" data-s="aparecer-ref" href="#">ver solo</a></td><td><select data-nota="aparecer-ref"><option value="">—</option><option>fluido</option><option>escalonado</option><option>pegado</option></select></td></tr>
+<tr><td>8</td><td>Marquesina con translate, 4 copias (como el export actual) <span class="tag REAL">REAL</span></td><td><a href="#s-marq-translate">ir</a> · <a class="solo" data-s="marq-translate" href="#">ver solo</a></td><td><select data-nota="marq-translate"><option value="">—</option><option>fluido</option><option>escalonado</option><option>pegado</option></select></td></tr>
+<tr><td>9</td><td>Marquesina con transform, 4 copias <span class="tag VARIANTE">VARIANTE</span></td><td><a href="#s-marq-transform">ir</a> · <a class="solo" data-s="marq-transform" href="#">ver solo</a></td><td><select data-nota="marq-transform"><option value="">—</option><option>fluido</option><option>escalonado</option><option>pegado</option></select></td></tr>
+<tr><td>10</td><td>Marquesina de referencia (transform, 2 grupos, 30 s) <span class="tag REFERENCIA">REFERENCIA</span></td><td><a href="#s-marq-ref">ir</a> · <a class="solo" data-s="marq-ref" href="#">ver solo</a></td><td><select data-nota="marq-ref"><option value="">—</option><option>fluido</option><option>escalonado</option><option>pegado</option></select></td></tr>
+<tr><td>11</td><td>Parallax vertical 60 px (scrollmotor.js) <span class="tag REAL">REAL</span></td><td><a href="#s-parallax">ir</a> · <a class="solo" data-s="parallax" href="#">ver solo</a></td><td><select data-nota="parallax"><option value="">—</option><option>fluido</option><option>escalonado</option><option>pegado</option></select></td></tr>
+<tr><td>12</td><td>Escena sticky de 3 pasos (scrollmotor.js + --ep) <span class="tag REAL">REAL</span></td><td><a href="#s-escena">ir</a> · <a class="solo" data-s="escena" href="#">ver solo</a></td><td><select data-nota="escena"><option value="">—</option><option>fluido</option><option>escalonado</option><option>pegado</option></select></td></tr>
+</tbody></table>
+<p><a class="btn" href="#" id="b-copiar">Copiar mis veredictos</a></p>
+<textarea id="out" readonly hidden></textarea>
+
+<details><summary>Cómo medir con el Profiler de Firefox (paso a paso)</summary>
+<ol>
+<li>Cierra pestañas y extensiones pesadas (o usa una ventana privada). Abre <code>about:support</code> y anota <b>Gráficos → Compositing</b> (WebRender o WebRender (Software)) y tu versión de Firefox.</li>
+<li>Abre esta página con "ver solo" de UNA sección (así lo medido es solo ese efecto).</li>
+<li><b>F12 → pestaña Rendimiento</b> (Performance). Pulsa <b>Iniciar grabación</b> (Start recording). Si pide un preset, elige "Web Developer" (o "Graphics" para ver pintado).</li>
+<li>Haz scroll por la sección 5–10 s a velocidad normal (en las de hover, pasa el mouse por las tarjetas). Pulsa <b>Capturar grabación</b> (Capture recording): se abre profiler.firefox.com con los datos.</li>
+<li>Mira: (a) la línea de tiempo con marcadores de <b>Jank</b> y huecos entre cuadros; (b) pestaña <b>Call Tree</b> con <b>Invert call stack</b>: arriba están las cosas más caras; busca <b>Styles/Restyle</b> (variables CSS), <b>Layout</b>, <b>Paint/Rasterize</b> y <b>JavaScript</b> (requestAnimationFrame); (c) en <b>Stack Chart</b> mira si cada cuadro dura más de 16 ms.</li>
+<li>Apunta por sección: FPS típico, el peor, y qué categoría domina. Repite con scroll suave encendido.</li>
+</ol>
+<p><b>Aviso "scroll-linked positioning effect":</b> F12 → pestaña <b>Consola</b>, con el filtro de <b>Advertencias</b> activado. Recarga, entra en las secciones 11 (parallax) y 12 (escena) y haz scroll: si Firefox lo detecta, sale <i>"This site appears to use a scroll-linked positioning effect…"</i> con el archivo y la línea. Anota en qué sección apareció. (Los nombres exactos de menús cambian un poco según la versión de Firefox.)</p>
+</details>
+</div></header>
+
+
+<section class="t " id="s-control" data-id="control">
+<div class="t-head"><div class="wrap"><h2>SECCIÓN 0 · Nada (control) <span class="tag CONTROL">CONTROL</span></h2><p>Solo texto e imágenes quietas. Haz scroll de arriba abajo. Si aquí ya no es fluido, el problema es tu equipo/Firefox y no el export.</p></div></div>
+<div class="wrap">
+<div class="txt"><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido. Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido. Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido. Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido. Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido. Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido. Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div><div class="grid2"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'600'%20height%3D'340'%20viewBox%3D'0%200%20600%20340'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%237c5cff'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%2322d3ee'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D'600'%20height%3D'340'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'0'%20cy%3D'0'%20r%3D'27'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'222'%20cy%3D'207'%20r%3D'50'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'444'%20cy%3D'75'%20r%3D'73'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'66'%20cy%3D'282'%20r%3D'39'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'288'%20cy%3D'150'%20r%3D'61'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'510'%20cy%3D'17'%20r%3D'27'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'132'%20cy%3D'224'%20r%3D'50'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'354'%20cy%3D'92'%20r%3D'73'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'576'%20cy%3D'299'%20r%3D'39'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3C%2Fsvg%3E" width="600" height="340" alt=""><img src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'600'%20height%3D'340'%20viewBox%3D'0%200%20600%20340'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%23f97316'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%23ec4899'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D'600'%20height%3D'340'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'318'%20cy%3D'99'%20r%3D'27'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'540'%20cy%3D'306'%20r%3D'50'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'162'%20cy%3D'173'%20r%3D'73'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'384'%20cy%3D'41'%20r%3D'39'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'6'%20cy%3D'248'%20r%3D'61'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'228'%20cy%3D'116'%20r%3D'27'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'450'%20cy%3D'323'%20r%3D'50'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'72'%20cy%3D'190'%20r%3D'73'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'294'%20cy%3D'58'%20r%3D'39'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3C%2Fsvg%3E" width="600" height="340" alt=""><img src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'600'%20height%3D'340'%20viewBox%3D'0%200%20600%20340'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%2310b981'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%233b82f6'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D'600'%20height%3D'340'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'36'%20cy%3D'197'%20r%3D'27'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'258'%20cy%3D'65'%20r%3D'50'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'480'%20cy%3D'272'%20r%3D'73'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'102'%20cy%3D'139'%20r%3D'39'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'324'%20cy%3D'7'%20r%3D'61'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'546'%20cy%3D'214'%20r%3D'27'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'168'%20cy%3D'82'%20r%3D'50'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'390'%20cy%3D'289'%20r%3D'73'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'12'%20cy%3D'156'%20r%3D'39'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3C%2Fsvg%3E" width="600" height="340" alt=""></div><div class="txt"><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido. Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido. Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido. Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido. Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido. Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido. Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+</div>
+</section>
+
+<section class="t s-ht" id="s-hover-transform" data-id="hover-transform">
+<div class="t-head"><div class="wrap"><h2>SECCIÓN 1 · Hover con transform (Agrandar) <span class="tag REAL">REAL</span></h2><p>Pasa el mouse de tarjeta en tarjeta, rápido y lento. Mira si la tarjeta se agranda sin saltos.</p></div></div>
+<div class="wrap">
+<div class="grid"><div class="c"><h3>Tarjeta 1</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 2</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 3</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 4</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 5</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 6</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 7</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 8</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 9</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 10</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 11</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 12</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div></div>
+</div>
+</section>
+
+<section class="t s-hs" id="s-hover-sombra" data-id="hover-sombra">
+<div class="t-head"><div class="wrap"><h2>SECCIÓN 2 · Hover con box-shadow (Elevar, elemento con caja) <span class="tag REAL">REAL</span></h2><p>Igual: pasa el mouse por las tarjetas. Compáralo con la sección 1: ¿la sombra se siente más pesada?</p></div></div>
+<div class="wrap">
+<div class="grid"><div class="c"><h3>Tarjeta 1</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 2</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 3</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 4</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 5</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 6</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 7</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 8</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 9</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 10</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 11</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 12</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div></div>
+</div>
+</section>
+
+<section class="t s-hf" id="s-hover-filter" data-id="hover-filter">
+<div class="t-head"><div class="wrap"><h2>SECCIÓN 3 · Hover con filter (Aclarar, imágenes grandes) <span class="tag REAL">REAL</span></h2><p>Pasa el mouse sobre las imágenes grandes. filter:brightness repinta toda la imagen en cada cuadro de la transición.</p></div></div>
+<div class="wrap">
+<div class="grid2"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'900'%20height%3D'420'%20viewBox%3D'0%200%20900%20420'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%237c5cff'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%2322d3ee'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D'900'%20height%3D'420'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'0'%20cy%3D'0'%20r%3D'34'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'333'%20cy%3D'256'%20r%3D'62'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'666'%20cy%3D'92'%20r%3D'90'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'99'%20cy%3D'349'%20r%3D'48'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'432'%20cy%3D'185'%20r%3D'76'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'765'%20cy%3D'21'%20r%3D'34'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'198'%20cy%3D'277'%20r%3D'62'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'531'%20cy%3D'113'%20r%3D'90'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'864'%20cy%3D'370'%20r%3D'48'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3C%2Fsvg%3E" width="900" height="420" alt="" class="im"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'900'%20height%3D'420'%20viewBox%3D'0%200%20900%20420'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%23f97316'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%23ec4899'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D'900'%20height%3D'420'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'477'%20cy%3D'122'%20r%3D'34'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'810'%20cy%3D'378'%20r%3D'62'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'243'%20cy%3D'214'%20r%3D'90'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'576'%20cy%3D'50'%20r%3D'48'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'9'%20cy%3D'307'%20r%3D'76'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'342'%20cy%3D'143'%20r%3D'34'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'675'%20cy%3D'399'%20r%3D'62'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'108'%20cy%3D'235'%20r%3D'90'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'441'%20cy%3D'71'%20r%3D'48'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3C%2Fsvg%3E" width="900" height="420" alt="" class="im"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'900'%20height%3D'420'%20viewBox%3D'0%200%20900%20420'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%2310b981'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%233b82f6'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D'900'%20height%3D'420'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'54'%20cy%3D'244'%20r%3D'34'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'387'%20cy%3D'80'%20r%3D'62'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'720'%20cy%3D'336'%20r%3D'90'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'153'%20cy%3D'172'%20r%3D'48'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'486'%20cy%3D'8'%20r%3D'76'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'819'%20cy%3D'265'%20r%3D'34'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'252'%20cy%3D'101'%20r%3D'62'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'585'%20cy%3D'357'%20r%3D'90'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'18'%20cy%3D'193'%20r%3D'48'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3C%2Fsvg%3E" width="900" height="420" alt="" class="im"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'900'%20height%3D'420'%20viewBox%3D'0%200%20900%20420'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%23eab308'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%23ef4444'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D'900'%20height%3D'420'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'531'%20cy%3D'365'%20r%3D'34'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'864'%20cy%3D'202'%20r%3D'62'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'297'%20cy%3D'38'%20r%3D'90'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'630'%20cy%3D'294'%20r%3D'48'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'63'%20cy%3D'130'%20r%3D'76'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'396'%20cy%3D'386'%20r%3D'34'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'729'%20cy%3D'223'%20r%3D'62'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'162'%20cy%3D'59'%20r%3D'90'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'495'%20cy%3D'315'%20r%3D'48'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3C%2Fsvg%3E" width="900" height="420" alt="" class="im"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'900'%20height%3D'420'%20viewBox%3D'0%200%20900%20420'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%237c5cff'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%2322d3ee'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D'900'%20height%3D'420'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'108'%20cy%3D'67'%20r%3D'34'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'441'%20cy%3D'323'%20r%3D'62'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'774'%20cy%3D'160'%20r%3D'90'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'207'%20cy%3D'416'%20r%3D'48'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'540'%20cy%3D'252'%20r%3D'76'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'873'%20cy%3D'88'%20r%3D'34'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'306'%20cy%3D'344'%20r%3D'62'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'639'%20cy%3D'181'%20r%3D'90'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'72'%20cy%3D'17'%20r%3D'48'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3C%2Fsvg%3E" width="900" height="420" alt="" class="im"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'900'%20height%3D'420'%20viewBox%3D'0%200%20900%20420'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%23f97316'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%23ec4899'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D'900'%20height%3D'420'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'585'%20cy%3D'189'%20r%3D'34'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'18'%20cy%3D'25'%20r%3D'62'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'351'%20cy%3D'281'%20r%3D'90'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'684'%20cy%3D'118'%20r%3D'48'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'117'%20cy%3D'374'%20r%3D'76'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'450'%20cy%3D'210'%20r%3D'34'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'783'%20cy%3D'46'%20r%3D'62'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'216'%20cy%3D'302'%20r%3D'90'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'549'%20cy%3D'139'%20r%3D'48'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3C%2Fsvg%3E" width="900" height="420" alt="" class="im"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'900'%20height%3D'420'%20viewBox%3D'0%200%20900%20420'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%2310b981'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%233b82f6'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D'900'%20height%3D'420'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'162'%20cy%3D'311'%20r%3D'34'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'495'%20cy%3D'147'%20r%3D'62'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'828'%20cy%3D'403'%20r%3D'90'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'261'%20cy%3D'239'%20r%3D'48'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'594'%20cy%3D'76'%20r%3D'76'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'27'%20cy%3D'332'%20r%3D'34'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'360'%20cy%3D'168'%20r%3D'62'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'693'%20cy%3D'4'%20r%3D'90'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'126'%20cy%3D'260'%20r%3D'48'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3C%2Fsvg%3E" width="900" height="420" alt="" class="im"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'900'%20height%3D'420'%20viewBox%3D'0%200%20900%20420'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%23eab308'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%23ef4444'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D'900'%20height%3D'420'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'639'%20cy%3D'13'%20r%3D'34'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'72'%20cy%3D'269'%20r%3D'62'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'405'%20cy%3D'105'%20r%3D'90'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'738'%20cy%3D'361'%20r%3D'48'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'171'%20cy%3D'197'%20r%3D'76'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'504'%20cy%3D'34'%20r%3D'34'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'837'%20cy%3D'290'%20r%3D'62'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'270'%20cy%3D'126'%20r%3D'90'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'603'%20cy%3D'382'%20r%3D'48'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3C%2Fsvg%3E" width="900" height="420" alt="" class="im"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'900'%20height%3D'420'%20viewBox%3D'0%200%20900%20420'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%237c5cff'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%2322d3ee'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D'900'%20height%3D'420'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'216'%20cy%3D'134'%20r%3D'34'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'549'%20cy%3D'391'%20r%3D'62'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'882'%20cy%3D'227'%20r%3D'90'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'315'%20cy%3D'63'%20r%3D'48'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'648'%20cy%3D'319'%20r%3D'76'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'81'%20cy%3D'155'%20r%3D'34'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'414'%20cy%3D'412'%20r%3D'62'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'747'%20cy%3D'248'%20r%3D'90'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'180'%20cy%3D'84'%20r%3D'48'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3C%2Fsvg%3E" width="900" height="420" alt="" class="im"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'900'%20height%3D'420'%20viewBox%3D'0%200%20900%20420'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%23f97316'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%23ec4899'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D'900'%20height%3D'420'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'693'%20cy%3D'256'%20r%3D'34'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'126'%20cy%3D'92'%20r%3D'62'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'459'%20cy%3D'349'%20r%3D'90'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'792'%20cy%3D'185'%20r%3D'48'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'225'%20cy%3D'21'%20r%3D'76'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'558'%20cy%3D'277'%20r%3D'34'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'891'%20cy%3D'113'%20r%3D'62'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'324'%20cy%3D'370'%20r%3D'90'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'657'%20cy%3D'206'%20r%3D'48'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3C%2Fsvg%3E" width="900" height="420" alt="" class="im"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'900'%20height%3D'420'%20viewBox%3D'0%200%20900%20420'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%2310b981'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%233b82f6'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D'900'%20height%3D'420'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'270'%20cy%3D'378'%20r%3D'34'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'603'%20cy%3D'214'%20r%3D'62'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'36'%20cy%3D'50'%20r%3D'90'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'369'%20cy%3D'307'%20r%3D'48'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'702'%20cy%3D'143'%20r%3D'76'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'135'%20cy%3D'399'%20r%3D'34'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'468'%20cy%3D'235'%20r%3D'62'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'801'%20cy%3D'71'%20r%3D'90'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'234'%20cy%3D'328'%20r%3D'48'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3C%2Fsvg%3E" width="900" height="420" alt="" class="im"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'900'%20height%3D'420'%20viewBox%3D'0%200%20900%20420'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%23eab308'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%23ef4444'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D'900'%20height%3D'420'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'747'%20cy%3D'80'%20r%3D'34'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'180'%20cy%3D'336'%20r%3D'62'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'513'%20cy%3D'172'%20r%3D'90'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'846'%20cy%3D'8'%20r%3D'48'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'279'%20cy%3D'265'%20r%3D'76'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'612'%20cy%3D'101'%20r%3D'34'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'45'%20cy%3D'357'%20r%3D'62'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'378'%20cy%3D'193'%20r%3D'90'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'711'%20cy%3D'29'%20r%3D'48'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3C%2Fsvg%3E" width="900" height="420" alt="" class="im"></div>
+</div>
+</section>
+
+<section class="t s-hd" id="s-hover-dropshadow" data-id="hover-dropshadow">
+<div class="t-head"><div class="wrap"><h2>SECCIÓN 4 · Hover con drop-shadow (Elevar, elemento SIN caja) <span class="tag REAL">REAL</span></h2><p>Formas sin fondo: la sombra va con filter:drop-shadow (es lo que exporta el editor si no hay caja).</p></div></div>
+<div class="wrap">
+<div class="grid2"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'900'%20height%3D'420'%20viewBox%3D'0%200%20900%20420'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%237c5cff'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%2322d3ee'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Ccircle%20cx%3D'0'%20cy%3D'0'%20r%3D'34'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'333'%20cy%3D'256'%20r%3D'62'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'666'%20cy%3D'92'%20r%3D'90'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'99'%20cy%3D'349'%20r%3D'48'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'432'%20cy%3D'185'%20r%3D'76'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'765'%20cy%3D'21'%20r%3D'34'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'198'%20cy%3D'277'%20r%3D'62'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'531'%20cy%3D'113'%20r%3D'90'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'864'%20cy%3D'370'%20r%3D'48'%20fill%3D'url(%23g)'%2F%3E%3C%2Fsvg%3E" width="900" height="420" alt="" class="im"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'900'%20height%3D'420'%20viewBox%3D'0%200%20900%20420'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%23f97316'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%23ec4899'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Ccircle%20cx%3D'477'%20cy%3D'122'%20r%3D'34'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'810'%20cy%3D'378'%20r%3D'62'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'243'%20cy%3D'214'%20r%3D'90'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'576'%20cy%3D'50'%20r%3D'48'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'9'%20cy%3D'307'%20r%3D'76'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'342'%20cy%3D'143'%20r%3D'34'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'675'%20cy%3D'399'%20r%3D'62'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'108'%20cy%3D'235'%20r%3D'90'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'441'%20cy%3D'71'%20r%3D'48'%20fill%3D'url(%23g)'%2F%3E%3C%2Fsvg%3E" width="900" height="420" alt="" class="im"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'900'%20height%3D'420'%20viewBox%3D'0%200%20900%20420'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%2310b981'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%233b82f6'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Ccircle%20cx%3D'54'%20cy%3D'244'%20r%3D'34'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'387'%20cy%3D'80'%20r%3D'62'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'720'%20cy%3D'336'%20r%3D'90'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'153'%20cy%3D'172'%20r%3D'48'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'486'%20cy%3D'8'%20r%3D'76'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'819'%20cy%3D'265'%20r%3D'34'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'252'%20cy%3D'101'%20r%3D'62'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'585'%20cy%3D'357'%20r%3D'90'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'18'%20cy%3D'193'%20r%3D'48'%20fill%3D'url(%23g)'%2F%3E%3C%2Fsvg%3E" width="900" height="420" alt="" class="im"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'900'%20height%3D'420'%20viewBox%3D'0%200%20900%20420'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%23eab308'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%23ef4444'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Ccircle%20cx%3D'531'%20cy%3D'365'%20r%3D'34'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'864'%20cy%3D'202'%20r%3D'62'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'297'%20cy%3D'38'%20r%3D'90'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'630'%20cy%3D'294'%20r%3D'48'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'63'%20cy%3D'130'%20r%3D'76'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'396'%20cy%3D'386'%20r%3D'34'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'729'%20cy%3D'223'%20r%3D'62'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'162'%20cy%3D'59'%20r%3D'90'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'495'%20cy%3D'315'%20r%3D'48'%20fill%3D'url(%23g)'%2F%3E%3C%2Fsvg%3E" width="900" height="420" alt="" class="im"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'900'%20height%3D'420'%20viewBox%3D'0%200%20900%20420'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%237c5cff'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%2322d3ee'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Ccircle%20cx%3D'108'%20cy%3D'67'%20r%3D'34'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'441'%20cy%3D'323'%20r%3D'62'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'774'%20cy%3D'160'%20r%3D'90'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'207'%20cy%3D'416'%20r%3D'48'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'540'%20cy%3D'252'%20r%3D'76'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'873'%20cy%3D'88'%20r%3D'34'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'306'%20cy%3D'344'%20r%3D'62'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'639'%20cy%3D'181'%20r%3D'90'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'72'%20cy%3D'17'%20r%3D'48'%20fill%3D'url(%23g)'%2F%3E%3C%2Fsvg%3E" width="900" height="420" alt="" class="im"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'900'%20height%3D'420'%20viewBox%3D'0%200%20900%20420'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%23f97316'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%23ec4899'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Ccircle%20cx%3D'585'%20cy%3D'189'%20r%3D'34'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'18'%20cy%3D'25'%20r%3D'62'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'351'%20cy%3D'281'%20r%3D'90'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'684'%20cy%3D'118'%20r%3D'48'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'117'%20cy%3D'374'%20r%3D'76'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'450'%20cy%3D'210'%20r%3D'34'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'783'%20cy%3D'46'%20r%3D'62'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'216'%20cy%3D'302'%20r%3D'90'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'549'%20cy%3D'139'%20r%3D'48'%20fill%3D'url(%23g)'%2F%3E%3C%2Fsvg%3E" width="900" height="420" alt="" class="im"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'900'%20height%3D'420'%20viewBox%3D'0%200%20900%20420'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%2310b981'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%233b82f6'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Ccircle%20cx%3D'162'%20cy%3D'311'%20r%3D'34'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'495'%20cy%3D'147'%20r%3D'62'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'828'%20cy%3D'403'%20r%3D'90'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'261'%20cy%3D'239'%20r%3D'48'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'594'%20cy%3D'76'%20r%3D'76'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'27'%20cy%3D'332'%20r%3D'34'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'360'%20cy%3D'168'%20r%3D'62'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'693'%20cy%3D'4'%20r%3D'90'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'126'%20cy%3D'260'%20r%3D'48'%20fill%3D'url(%23g)'%2F%3E%3C%2Fsvg%3E" width="900" height="420" alt="" class="im"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'900'%20height%3D'420'%20viewBox%3D'0%200%20900%20420'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%23eab308'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%23ef4444'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Ccircle%20cx%3D'639'%20cy%3D'13'%20r%3D'34'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'72'%20cy%3D'269'%20r%3D'62'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'405'%20cy%3D'105'%20r%3D'90'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'738'%20cy%3D'361'%20r%3D'48'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'171'%20cy%3D'197'%20r%3D'76'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'504'%20cy%3D'34'%20r%3D'34'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'837'%20cy%3D'290'%20r%3D'62'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'270'%20cy%3D'126'%20r%3D'90'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'603'%20cy%3D'382'%20r%3D'48'%20fill%3D'url(%23g)'%2F%3E%3C%2Fsvg%3E" width="900" height="420" alt="" class="im"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'900'%20height%3D'420'%20viewBox%3D'0%200%20900%20420'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%237c5cff'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%2322d3ee'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Ccircle%20cx%3D'216'%20cy%3D'134'%20r%3D'34'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'549'%20cy%3D'391'%20r%3D'62'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'882'%20cy%3D'227'%20r%3D'90'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'315'%20cy%3D'63'%20r%3D'48'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'648'%20cy%3D'319'%20r%3D'76'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'81'%20cy%3D'155'%20r%3D'34'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'414'%20cy%3D'412'%20r%3D'62'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'747'%20cy%3D'248'%20r%3D'90'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'180'%20cy%3D'84'%20r%3D'48'%20fill%3D'url(%23g)'%2F%3E%3C%2Fsvg%3E" width="900" height="420" alt="" class="im"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'900'%20height%3D'420'%20viewBox%3D'0%200%20900%20420'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%23f97316'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%23ec4899'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Ccircle%20cx%3D'693'%20cy%3D'256'%20r%3D'34'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'126'%20cy%3D'92'%20r%3D'62'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'459'%20cy%3D'349'%20r%3D'90'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'792'%20cy%3D'185'%20r%3D'48'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'225'%20cy%3D'21'%20r%3D'76'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'558'%20cy%3D'277'%20r%3D'34'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'891'%20cy%3D'113'%20r%3D'62'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'324'%20cy%3D'370'%20r%3D'90'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'657'%20cy%3D'206'%20r%3D'48'%20fill%3D'url(%23g)'%2F%3E%3C%2Fsvg%3E" width="900" height="420" alt="" class="im"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'900'%20height%3D'420'%20viewBox%3D'0%200%20900%20420'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%2310b981'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%233b82f6'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Ccircle%20cx%3D'270'%20cy%3D'378'%20r%3D'34'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'603'%20cy%3D'214'%20r%3D'62'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'36'%20cy%3D'50'%20r%3D'90'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'369'%20cy%3D'307'%20r%3D'48'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'702'%20cy%3D'143'%20r%3D'76'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'135'%20cy%3D'399'%20r%3D'34'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'468'%20cy%3D'235'%20r%3D'62'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'801'%20cy%3D'71'%20r%3D'90'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'234'%20cy%3D'328'%20r%3D'48'%20fill%3D'url(%23g)'%2F%3E%3C%2Fsvg%3E" width="900" height="420" alt="" class="im"><img src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'900'%20height%3D'420'%20viewBox%3D'0%200%20900%20420'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%23eab308'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%23ef4444'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Ccircle%20cx%3D'747'%20cy%3D'80'%20r%3D'34'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'180'%20cy%3D'336'%20r%3D'62'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'513'%20cy%3D'172'%20r%3D'90'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'846'%20cy%3D'8'%20r%3D'48'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'279'%20cy%3D'265'%20r%3D'76'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'612'%20cy%3D'101'%20r%3D'34'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'45'%20cy%3D'357'%20r%3D'62'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'378'%20cy%3D'193'%20r%3D'90'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'711'%20cy%3D'29'%20r%3D'48'%20fill%3D'url(%23g)'%2F%3E%3C%2Fsvg%3E" width="900" height="420" alt="" class="im"></div>
+</div>
+</section>
+
+<section class="t s-hr" id="s-hover-ref" data-id="hover-ref">
+<div class="t-head"><div class="wrap"><h2>SECCIÓN 5 · Hover de referencia (transform + box-shadow, transition .3s) <span class="tag REFERENCIA">REFERENCIA</span></h2><p>Lo que hace masajes-version2 y va bien en tu Firefox. Compáralo con 1 y 2.</p></div></div>
+<div class="wrap">
+<div class="grid"><div class="c"><h3>Tarjeta 1</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 2</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 3</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 4</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 5</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 6</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 7</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 8</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 9</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 10</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 11</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c"><h3>Tarjeta 12</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div></div>
+</div>
+</section>
+
+<section class="t s-ak" id="s-aparecer-keyframes" data-id="aparecer-keyframes">
+<div class="t-head"><div class="wrap"><h2>SECCIÓN 6 · Aparecer: @keyframes pausado (opacity + translate) <span class="tag REAL">REAL</span></h2><p>Baja despacio: cada tarjeta entra al verse. Hay 12 animaciones pausadas desde que carga la página. Recarga para repetirlo.</p></div></div>
+<div class="wrap">
+<div class="grid"><div class="c" data-rv><h3>Tarjeta 1</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c" data-rv><h3>Tarjeta 2</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c" data-rv><h3>Tarjeta 3</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c" data-rv><h3>Tarjeta 4</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c" data-rv><h3>Tarjeta 5</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c" data-rv><h3>Tarjeta 6</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c" data-rv><h3>Tarjeta 7</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c" data-rv><h3>Tarjeta 8</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c" data-rv><h3>Tarjeta 9</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c" data-rv><h3>Tarjeta 10</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c" data-rv><h3>Tarjeta 11</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c" data-rv><h3>Tarjeta 12</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div></div>
+</div>
+</section>
+
+<section class="t s-ar" id="s-aparecer-ref" data-id="aparecer-ref">
+<div class="t-head"><div class="wrap"><h2>SECCIÓN 7 · Aparecer de referencia (transition + clase .in) <span class="tag REFERENCIA">REFERENCIA</span></h2><p>Mismo efecto (opacity + translate) pero con transition sobre una clase, como la referencia. Compáralo con la 6. Recarga para repetirlo.</p></div></div>
+<div class="wrap">
+<div class="grid"><div class="c reveal" data-rf style="--d:0.0s"><h3>Tarjeta 1</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c reveal" data-rf style="--d:0.1s"><h3>Tarjeta 2</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c reveal" data-rf style="--d:0.2s"><h3>Tarjeta 3</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c reveal" data-rf style="--d:0.0s"><h3>Tarjeta 4</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c reveal" data-rf style="--d:0.1s"><h3>Tarjeta 5</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c reveal" data-rf style="--d:0.2s"><h3>Tarjeta 6</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c reveal" data-rf style="--d:0.0s"><h3>Tarjeta 7</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c reveal" data-rf style="--d:0.1s"><h3>Tarjeta 8</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c reveal" data-rf style="--d:0.2s"><h3>Tarjeta 9</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c reveal" data-rf style="--d:0.0s"><h3>Tarjeta 10</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c reveal" data-rf style="--d:0.1s"><h3>Tarjeta 11</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div>
+<div class="c reveal" data-rf style="--d:0.2s"><h3>Tarjeta 12</h3><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p></div></div>
+</div>
+</section>
+
+<section class="t s-mq" id="s-marq-translate" data-id="marq-translate">
+<div class="t-head"><div class="wrap"><h2>SECCIÓN 8 · Marquesina con translate, 4 copias (como el export actual) <span class="tag REAL">REAL</span></h2><p>Mira si el texto se mueve parejo o tiembla. Pruébala también con zoom 125 % (Ctrl +).</p></div></div>
+<div class="wrap">
+<div class="mqA">
+    <div class="mq-p">
+      <div class="mq-g">
+<span class="mi">Diseño</span>
+<span class="mi">•</span>
+<span class="mi">Movimiento</span>
+<span class="mi">•</span>
+<span class="mi">Scroll</span>
+<span class="mi">•</span>
+<span class="mi">Landing</span>
+<span class="mi">•</span>
+<span class="mi">Animación</span>
+<span class="mi">•</span>
+<span class="mi">Rendimiento</span>
+<span class="mi">•</span>
+      </div>
+      <div class="mq-g" aria-hidden="true" inert>
+<span class="mi">Diseño</span>
+<span class="mi">•</span>
+<span class="mi">Movimiento</span>
+<span class="mi">•</span>
+<span class="mi">Scroll</span>
+<span class="mi">•</span>
+<span class="mi">Landing</span>
+<span class="mi">•</span>
+<span class="mi">Animación</span>
+<span class="mi">•</span>
+<span class="mi">Rendimiento</span>
+<span class="mi">•</span>
+      </div>
+      <div class="mq-g" aria-hidden="true" inert>
+<span class="mi">Diseño</span>
+<span class="mi">•</span>
+<span class="mi">Movimiento</span>
+<span class="mi">•</span>
+<span class="mi">Scroll</span>
+<span class="mi">•</span>
+<span class="mi">Landing</span>
+<span class="mi">•</span>
+<span class="mi">Animación</span>
+<span class="mi">•</span>
+<span class="mi">Rendimiento</span>
+<span class="mi">•</span>
+      </div>
+      <div class="mq-g" aria-hidden="true" inert>
+<span class="mi">Diseño</span>
+<span class="mi">•</span>
+<span class="mi">Movimiento</span>
+<span class="mi">•</span>
+<span class="mi">Scroll</span>
+<span class="mi">•</span>
+<span class="mi">Landing</span>
+<span class="mi">•</span>
+<span class="mi">Animación</span>
+<span class="mi">•</span>
+<span class="mi">Rendimiento</span>
+<span class="mi">•</span>
+      </div>
+    </div>
+</div>
+</div>
+</section>
+
+<section class="t s-mq" id="s-marq-transform" data-id="marq-transform">
+<div class="t-head"><div class="wrap"><h2>SECCIÓN 9 · Marquesina con transform, 4 copias <span class="tag VARIANTE">VARIANTE</span></h2><p>Idéntica a la 8 pero animando transform: translateX(-25%). Si esta va mejor, la culpa es de la propiedad translate.</p></div></div>
+<div class="wrap">
+<div class="mqB">
+    <div class="mq-p">
+      <div class="mq-g">
+<span class="mi">Diseño</span>
+<span class="mi">•</span>
+<span class="mi">Movimiento</span>
+<span class="mi">•</span>
+<span class="mi">Scroll</span>
+<span class="mi">•</span>
+<span class="mi">Landing</span>
+<span class="mi">•</span>
+<span class="mi">Animación</span>
+<span class="mi">•</span>
+<span class="mi">Rendimiento</span>
+<span class="mi">•</span>
+      </div>
+      <div class="mq-g" aria-hidden="true" inert>
+<span class="mi">Diseño</span>
+<span class="mi">•</span>
+<span class="mi">Movimiento</span>
+<span class="mi">•</span>
+<span class="mi">Scroll</span>
+<span class="mi">•</span>
+<span class="mi">Landing</span>
+<span class="mi">•</span>
+<span class="mi">Animación</span>
+<span class="mi">•</span>
+<span class="mi">Rendimiento</span>
+<span class="mi">•</span>
+      </div>
+      <div class="mq-g" aria-hidden="true" inert>
+<span class="mi">Diseño</span>
+<span class="mi">•</span>
+<span class="mi">Movimiento</span>
+<span class="mi">•</span>
+<span class="mi">Scroll</span>
+<span class="mi">•</span>
+<span class="mi">Landing</span>
+<span class="mi">•</span>
+<span class="mi">Animación</span>
+<span class="mi">•</span>
+<span class="mi">Rendimiento</span>
+<span class="mi">•</span>
+      </div>
+      <div class="mq-g" aria-hidden="true" inert>
+<span class="mi">Diseño</span>
+<span class="mi">•</span>
+<span class="mi">Movimiento</span>
+<span class="mi">•</span>
+<span class="mi">Scroll</span>
+<span class="mi">•</span>
+<span class="mi">Landing</span>
+<span class="mi">•</span>
+<span class="mi">Animación</span>
+<span class="mi">•</span>
+<span class="mi">Rendimiento</span>
+<span class="mi">•</span>
+      </div>
+    </div>
+</div>
+</div>
+</section>
+
+<section class="t s-mq" id="s-marq-ref" data-id="marq-ref">
+<div class="t-head"><div class="wrap"><h2>SECCIÓN 10 · Marquesina de referencia (transform, 2 grupos, 30 s) <span class="tag REFERENCIA">REFERENCIA</span></h2><p>Lo que usa masajes-version2. Compara con 8 y 9.</p></div></div>
+<div class="wrap">
+<div class="mqC"><div class="mq-p">
+<div class="mq-g"><span class="mi">Diseño</span><span class="mi">•</span><span class="mi">Movimiento</span><span class="mi">•</span><span class="mi">Scroll</span><span class="mi">•</span><span class="mi">Landing</span><span class="mi">•</span><span class="mi">Animación</span><span class="mi">•</span><span class="mi">Rendimiento</span><span class="mi">•</span></div>
+<div class="mq-g"><span class="mi">Diseño</span><span class="mi">•</span><span class="mi">Movimiento</span><span class="mi">•</span><span class="mi">Scroll</span><span class="mi">•</span><span class="mi">Landing</span><span class="mi">•</span><span class="mi">Animación</span><span class="mi">•</span><span class="mi">Rendimiento</span><span class="mi">•</span></div>
+</div></div>
+</div>
+</section>
+
+<section class="t s-pa" id="s-parallax" data-id="parallax">
+<div class="t-head"><div class="wrap"><h2>SECCIÓN 11 · Parallax vertical 60 px (scrollmotor.js) <span class="tag REAL">REAL</span></h2><p>Baja despacio: las imágenes se mueven a otra velocidad que el scroll. ¿Se mueven pegadas al scroll, o llegan tarde / a saltitos?</p></div></div>
+<div class="wrap">
+<div class="pw"><img class="pim" data-sc src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'1200'%20height%3D'520'%20viewBox%3D'0%200%201200%20520'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%237c5cff'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%2322d3ee'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D'1200'%20height%3D'520'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'0'%20cy%3D'0'%20r%3D'42'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'444'%20cy%3D'317'%20r%3D'76'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'888'%20cy%3D'114'%20r%3D'111'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'132'%20cy%3D'432'%20r%3D'59'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'576'%20cy%3D'229'%20r%3D'94'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'1020'%20cy%3D'26'%20r%3D'42'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'264'%20cy%3D'343'%20r%3D'76'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'708'%20cy%3D'140'%20r%3D'111'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'1152'%20cy%3D'458'%20r%3D'59'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3C%2Fsvg%3E" width="1200" height="520" alt=""></div>
+<div class="pw"><img class="pim" data-sc src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'1200'%20height%3D'520'%20viewBox%3D'0%200%201200%20520'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%23f97316'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%23ec4899'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D'1200'%20height%3D'520'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'636'%20cy%3D'151'%20r%3D'42'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'1080'%20cy%3D'468'%20r%3D'76'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'324'%20cy%3D'265'%20r%3D'111'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'768'%20cy%3D'62'%20r%3D'59'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'12'%20cy%3D'380'%20r%3D'94'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'456'%20cy%3D'177'%20r%3D'42'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'900'%20cy%3D'494'%20r%3D'76'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'144'%20cy%3D'291'%20r%3D'111'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'588'%20cy%3D'88'%20r%3D'59'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3C%2Fsvg%3E" width="1200" height="520" alt=""></div>
+<div class="pw"><img class="pim" data-sc src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'1200'%20height%3D'520'%20viewBox%3D'0%200%201200%20520'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%2310b981'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%233b82f6'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D'1200'%20height%3D'520'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'72'%20cy%3D'302'%20r%3D'42'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'516'%20cy%3D'99'%20r%3D'76'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'960'%20cy%3D'416'%20r%3D'111'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'204'%20cy%3D'213'%20r%3D'59'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'648'%20cy%3D'10'%20r%3D'94'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'1092'%20cy%3D'328'%20r%3D'42'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'336'%20cy%3D'125'%20r%3D'76'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'780'%20cy%3D'442'%20r%3D'111'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'24'%20cy%3D'239'%20r%3D'59'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3C%2Fsvg%3E" width="1200" height="520" alt=""></div>
+</div>
+</section>
+
+<section class="t s-es" id="s-escena" data-id="escena">
+<div class="t-head"><div class="wrap"><h2>SECCIÓN 12 · Escena sticky de 3 pasos (scrollmotor.js + --ep) <span class="tag REAL">REAL</span></h2><p>La pantalla se queda fija y cambia de paso al bajar. Mira si el cambio sigue el scroll o va atrasado.</p></div></div>
+<div class="wrap">
+<div data-ew data-auto style="--len:4;--n:3">
+<section data-es class="esc">
+<div class="es1 paso"><h2>Paso 1</h2><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p><img src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'720'%20height%3D'300'%20viewBox%3D'0%200%20720%20300'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%23f97316'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%23ec4899'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D'720'%20height%3D'300'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'382'%20cy%3D'87'%20r%3D'24'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'648'%20cy%3D'270'%20r%3D'44'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'194'%20cy%3D'153'%20r%3D'64'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'461'%20cy%3D'36'%20r%3D'34'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'7'%20cy%3D'219'%20r%3D'54'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'274'%20cy%3D'102'%20r%3D'24'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'540'%20cy%3D'285'%20r%3D'44'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'86'%20cy%3D'168'%20r%3D'64'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'353'%20cy%3D'51'%20r%3D'34'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3C%2Fsvg%3E" width="720" height="300" alt=""></div>
+<div class="es2 paso"><h2>Paso 2</h2><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p><img src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'720'%20height%3D'300'%20viewBox%3D'0%200%20720%20300'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%2310b981'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%233b82f6'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D'720'%20height%3D'300'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'43'%20cy%3D'174'%20r%3D'24'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'310'%20cy%3D'57'%20r%3D'44'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'576'%20cy%3D'240'%20r%3D'64'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'122'%20cy%3D'123'%20r%3D'34'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'389'%20cy%3D'6'%20r%3D'54'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'655'%20cy%3D'189'%20r%3D'24'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'202'%20cy%3D'72'%20r%3D'44'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'468'%20cy%3D'255'%20r%3D'64'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'14'%20cy%3D'138'%20r%3D'34'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3C%2Fsvg%3E" width="720" height="300" alt=""></div>
+<div class="es3 paso"><h2>Paso 3</h2><p>Texto de relleno para que la tarjeta pese lo mismo que una de verdad: dos líneas de contenido.</p><img src="data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20width%3D'720'%20height%3D'300'%20viewBox%3D'0%200%20720%20300'%3E%3Cdefs%3E%3ClinearGradient%20id%3D'g'%20x1%3D'0'%20y1%3D'0'%20x2%3D'1'%20y2%3D'1'%3E%3Cstop%20offset%3D'0'%20stop-color%3D'%23eab308'%2F%3E%3Cstop%20offset%3D'1'%20stop-color%3D'%23ef4444'%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D'720'%20height%3D'300'%20fill%3D'url(%23g)'%2F%3E%3Ccircle%20cx%3D'425'%20cy%3D'261'%20r%3D'24'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'691'%20cy%3D'144'%20r%3D'44'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'238'%20cy%3D'27'%20r%3D'64'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'504'%20cy%3D'210'%20r%3D'34'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'50'%20cy%3D'93'%20r%3D'54'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'317'%20cy%3D'276'%20r%3D'24'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'583'%20cy%3D'159'%20r%3D'44'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'130'%20cy%3D'42'%20r%3D'64'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3Ccircle%20cx%3D'396'%20cy%3D'225'%20r%3D'34'%20fill%3D'rgba(255%2C255%2C255%2C.18)'%2F%3E%3C%2Fsvg%3E" width="720" height="300" alt=""></div>
+</section>
+</div>
+</div>
+</section>
+
+<script type="text/plain" id="src-appear">const io=new IntersectionObserver((es)=>es.forEach((e)=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.15});
+document.querySelectorAll('[data-rv]').forEach((el)=>io.observe(el));</script>
+<script type="text/plain" id="src-motor">const motorScroll=function motorScroll(vista, raiz, marca) {
+  if (matchMedia('(prefers-reduced-motion:reduce)').matches) return () => {};
+  const ventana = vista === window;
+  const els = [...raiz.querySelectorAll('[data-sc],[data-ew]')]; // data-ew = contenedor alto de una escena
+  const esc = (el) => el.hasAttribute('data-ew');
+  const prop = (el) => (esc(el) ? '--ep' : '--sp'); // escena: progreso de la escena; el resto: progreso al cruzar la ventana
+  if (!els.length) return () => {};
+  const vis = new Set();
+  let raf = 0;
+  let yAntes = 0;
+  const abs = (n) => { let t = 0; while (n) { t += n.offsetTop; n = n.offsetParent; } return t; };
+  const calcular = () => {
+    raf = 0;
+    const alto = ventana ? innerHeight : vista.clientHeight;
+    const y = ventana ? scrollY : vista.scrollTop;
+    const base = ventana ? 0 : abs(vista);
+    const res = [];
+    vis.forEach((el) => { // primero se lee todo...
+      if (esc(el)) { // escena: cuánto se ha corrido la capa pegada dentro del contenedor alto (0..1)
+        const capa = el.firstElementChild;
+        const rango = el.offsetHeight - capa.offsetHeight;
+        res.push([el, rango > 0 ? Math.min(1, Math.max(0, (capa.getBoundingClientRect().top - el.getBoundingClientRect().top) / rango)) : 0]);
+      } else res.push([el, Math.min(1, Math.max(0, (alto - (abs(el) - base - y)) / (alto + el.offsetHeight)))]);
+    });
+    // Salto grande (enlace de ancla, volver arriba): los de fuera pudieron cruzar la pantalla sin
+    // avisar; se recolocan en su extremo (0 = quedó debajo, 1 = quedó arriba). Con scroll normal no se tocan.
+    if (Math.abs(y - yAntes) > alto) {
+      els.forEach((el) => { if (!vis.has(el)) res.push([el, abs(el) - base - y > alto / 2 ? 0 : 1]); });
+    }
+    yAntes = y;
+    res.forEach(([el, p]) => el.style.setProperty(prop(el), p.toFixed(4))); // ...y luego se escribe
+  };
+  // Escenas: la capa pegada deja libre arriba el alto de un navbar pegado (los que tengan data-nav), medido aquí.
+  const navs = [...raiz.querySelectorAll('[data-nav]')];
+  const medirNav = () => {
+    // solo cuenta un navbar que de verdad esté pegado ahora (en móvil puede ser "Normal" = static)
+    const h = Math.max(0, ...navs.filter((n) => getComputedStyle(n).position === 'sticky').map((n) => n.offsetHeight + (parseFloat(getComputedStyle(n).top) || 0)));
+    els.forEach((el) => { if (esc(el) && el.hasAttribute('data-auto')) el.style.setProperty('--arr', h + 'px'); });
+  };
+  const tick = () => { if (!raf) raf = requestAnimationFrame(calcular); };
+  const alCambiar = () => { medirNav(); tick(); };
+  const io = new IntersectionObserver((es) => {
+    es.forEach((e) => {
+      if (e.isIntersecting) vis.add(e.target);
+      else { // se fue: lo deja en su extremo (0 si quedó debajo, 1 si quedó arriba)
+        vis.delete(e.target);
+        // (se compara con el centro de la zona observada, que no depende del margen ni de iframes)
+        if (e.rootBounds) e.target.style.setProperty(prop(e.target), e.boundingClientRect.top > (e.rootBounds.top + e.rootBounds.bottom) / 2 ? 0 : 1);
+      }
+    });
+    tick();
+  }, { root: ventana ? null : vista, rootMargin: '50% 0px' });
+  els.forEach((el) => io.observe(el));
+  vista.addEventListener('scroll', tick, { passive: true });
+  addEventListener('resize', alCambiar, { passive: true });
+  addEventListener('load', alCambiar);
+  marca.classList.add('sc');
+  medirNav();
+  tick();
+  return () => {
+    io.disconnect();
+    cancelAnimationFrame(raf);
+    vista.removeEventListener('scroll', tick);
+    removeEventListener('resize', alCambiar);
+    removeEventListener('load', alCambiar);
+    marca.classList.remove('sc');
+  };
+};motorScroll(window,document,document.documentElement);</script>
+<script type="text/plain" id="src-suave">(function(){var e=`1.3.27`;function t(e,t,n){return Math.max(e,Math.min(t,n))}function n(e,t,n){return(1-n)*e+n*t}function r(e,t,r,i){return n(e,t,1-Math.exp(-r*i))}function i(e,t){return(e%t+t)%t}var a=class{isRunning=!1;value=0;from=0;to=0;currentTime=0;lerp;duration;easing;onUpdate;advance(e){if(!this.isRunning)return;let n=!1;if(this.duration&&this.easing){this.currentTime+=e;let r=t(0,this.currentTime/this.duration,1);n=r>=1;let i=n?1:this.easing(r);this.value=this.from+(this.to-this.from)*i}else this.lerp?(this.value=r(this.value,this.to,this.lerp*60,e),Math.round(this.value)===Math.round(this.to)&&(this.value=this.to,n=!0)):(this.value=this.to,n=!0);n&&this.stop(),this.onUpdate?.(this.value,n)}stop(){this.isRunning=!1}fromTo(e,t,{lerp:n,duration:r,easing:i,onStart:a,onUpdate:o}){this.from=this.value=e,this.to=t,this.lerp=n,this.duration=r,this.easing=i,this.currentTime=0,this.isRunning=!0,a?.(),this.onUpdate=o}};function o(e,t){let n;return function(...r){clearTimeout(n),n=setTimeout(()=>{n=void 0,e.apply(this,r)},t)}}var s=class{width=0;height=0;scrollHeight=0;scrollWidth=0;debouncedResize;wrapperResizeObserver;contentResizeObserver;constructor(e,t,{autoResize:n=!0,debounce:r=250}={}){this.wrapper=e,this.content=t,n&&(this.debouncedResize=o(this.resize,r),this.wrapper instanceof Window?window.addEventListener(`resize`,this.debouncedResize):(this.wrapperResizeObserver=new ResizeObserver(this.debouncedResize),this.wrapperResizeObserver.observe(this.wrapper)),this.contentResizeObserver=new ResizeObserver(this.debouncedResize),this.contentResizeObserver.observe(this.content)),this.resize()}destroy(){this.wrapperResizeObserver?.disconnect(),this.contentResizeObserver?.disconnect(),this.wrapper===window&&this.debouncedResize&&window.removeEventListener(`resize`,this.debouncedResize)}resize=()=>{this.onWrapperResize(),this.onContentResize()};onWrapperResize=()=>{this.wrapper instanceof Window?(this.width=window.innerWidth,this.height=window.innerHeight):(this.width=this.wrapper.clientWidth,this.height=this.wrapper.clientHeight)};onContentResize=()=>{this.wrapper instanceof Window?(this.scrollHeight=this.content.scrollHeight,this.scrollWidth=this.content.scrollWidth):(this.scrollHeight=this.wrapper.scrollHeight,this.scrollWidth=this.wrapper.scrollWidth)};get limit(){return{x:this.scrollWidth-this.width,y:this.scrollHeight-this.height}}},c=class{events={};emit(e,...t){let n=this.events[e]||[];for(let e=0,r=n.length;e<r;e++)n[e]?.(...t)}on(e,t){return this.events[e]?this.events[e].push(t):this.events[e]=[t],()=>{this.events[e]=this.events[e]?.filter(e=>t!==e)}}off(e,t){this.events[e]=this.events[e]?.filter(e=>t!==e)}destroy(){this.events={}}};let l={passive:!1};function u(e,t){return e===1?16.666666666666668:e===2?t:1}var d=class{touchStart={x:0,y:0};lastDelta={x:0,y:0};window={width:0,height:0};emitter=new c;constructor(e,t={wheelMultiplier:1,touchMultiplier:1}){this.element=e,this.options=t,window.addEventListener(`resize`,this.onWindowResize),this.onWindowResize(),this.element.addEventListener(`wheel`,this.onWheel,l),this.element.addEventListener(`touchstart`,this.onTouchStart,l),this.element.addEventListener(`touchmove`,this.onTouchMove,l),this.element.addEventListener(`touchend`,this.onTouchEnd,l)}on(e,t){return this.emitter.on(e,t)}destroy(){this.emitter.destroy(),window.removeEventListener(`resize`,this.onWindowResize),this.element.removeEventListener(`wheel`,this.onWheel,l),this.element.removeEventListener(`touchstart`,this.onTouchStart,l),this.element.removeEventListener(`touchmove`,this.onTouchMove,l),this.element.removeEventListener(`touchend`,this.onTouchEnd,l)}onTouchStart=e=>{let{clientX:t,clientY:n}=e.targetTouches?e.targetTouches[0]:e;this.touchStart.x=t,this.touchStart.y=n,this.lastDelta={x:0,y:0},this.emitter.emit(`scroll`,{deltaX:0,deltaY:0,event:e})};onTouchMove=e=>{let{clientX:t,clientY:n}=e.targetTouches?e.targetTouches[0]:e,r=-(t-this.touchStart.x)*this.options.touchMultiplier,i=-(n-this.touchStart.y)*this.options.touchMultiplier;this.touchStart.x=t,this.touchStart.y=n,this.lastDelta={x:r,y:i},this.emitter.emit(`scroll`,{deltaX:r,deltaY:i,event:e})};onTouchEnd=e=>{this.emitter.emit(`scroll`,{deltaX:this.lastDelta.x,deltaY:this.lastDelta.y,event:e})};onWheel=e=>{let{deltaX:t,deltaY:n,deltaMode:r}=e,i=u(r,this.window.width),a=u(r,this.window.height);t*=i,n*=a,t*=this.options.wheelMultiplier,n*=this.options.wheelMultiplier,this.emitter.emit(`scroll`,{deltaX:t,deltaY:n,event:e})};onWindowResize=()=>{this.window={width:window.innerWidth,height:window.innerHeight}}};let f=e=>Math.min(1,1.001-2**(-10*e));var p=class{_isScrolling=!1;_isStopped=!1;_isLocked=!1;_preventNextNativeScrollEvent=!1;_resetVelocityTimeout=null;_rafId=null;_isDraggingSelection=!1;reducedMotionMediaQuery=window.matchMedia(`(prefers-reduced-motion: reduce)`);isTouching;isIos;time=0;userData={};lastVelocity=0;velocity=0;direction=0;options;targetScroll;animatedScroll;animate=new a;emitter=new c;dimensions;virtualScroll;constructor({wrapper:t=window,content:n=document.documentElement,eventsTarget:r=t,smoothWheel:i=!0,syncTouch:a=!1,syncTouchLerp:o=.075,touchInertiaExponent:c=1.7,duration:l,easing:u,lerp:p=.1,infinite:m=!1,orientation:h=`vertical`,gestureOrientation:g=h===`horizontal`?`both`:`vertical`,touchMultiplier:_=1,wheelMultiplier:v=1,autoResize:y=!0,prevent:b,virtualScroll:x,overscroll:S=!0,autoRaf:C=!1,anchors:w=!1,autoToggle:T=!1,allowNestedScroll:E=!1,__experimental__naiveDimensions:D=!1,naiveDimensions:O=D,stopInertiaOnNavigate:k=!1,respectReducedMotion:A=!0}={}){window.lenisVersion=e,window.lenis||(window.lenis={}),window.lenis.version=e,h===`horizontal`&&(window.lenis.horizontal=!0),a===!0&&(window.lenis.touch=!0),this.isIos=/(iPad|iPhone|iPod)/g.test(navigator.userAgent),(!t||t===document.documentElement)&&(t=window),typeof l==`number`&&typeof u!=`function`?u=f:typeof u==`function`&&typeof l!=`number`&&(l=1),this.options={wrapper:t,content:n,eventsTarget:r,smoothWheel:i,syncTouch:a,syncTouchLerp:o,touchInertiaExponent:c,duration:l,easing:u,lerp:p,infinite:m,gestureOrientation:g,orientation:h,touchMultiplier:_,wheelMultiplier:v,autoResize:y,prevent:b,virtualScroll:x,overscroll:S,autoRaf:C,anchors:w,autoToggle:T,allowNestedScroll:E,naiveDimensions:O,stopInertiaOnNavigate:k,respectReducedMotion:A},this.dimensions=new s(t,n,{autoResize:y}),this.updateClassName(),this.targetScroll=this.animatedScroll=this.actualScroll,this.options.wrapper.addEventListener(`scroll`,this.onNativeScroll),this.options.wrapper.addEventListener(`scrollend`,this.onScrollEnd,{capture:!0}),(this.options.anchors||this.options.stopInertiaOnNavigate)&&this.options.wrapper.addEventListener(`click`,this.onClick),this.options.wrapper.addEventListener(`pointerdown`,this.onPointerDown),this.virtualScroll=new d(r,{touchMultiplier:_,wheelMultiplier:v}),this.virtualScroll.on(`scroll`,this.onVirtualScroll),this.options.autoToggle&&(this.checkOverflow(),this.rootElement.addEventListener(`transitionend`,this.onTransitionEnd)),this.options.autoRaf&&(this._rafId=requestAnimationFrame(this.raf))}destroy(){this.emitter.destroy(),this._resetVelocityTimeout!==null&&(clearTimeout(this._resetVelocityTimeout),this._resetVelocityTimeout=null),this.options.wrapper.removeEventListener(`scroll`,this.onNativeScroll),this.options.wrapper.removeEventListener(`scrollend`,this.onScrollEnd,{capture:!0}),this.options.wrapper.removeEventListener(`pointerdown`,this.onPointerDown),(this.options.anchors||this.options.stopInertiaOnNavigate)&&this.options.wrapper.removeEventListener(`click`,this.onClick),this.virtualScroll.destroy(),this.dimensions.destroy(),this.cleanUpClassName(),this._rafId&&cancelAnimationFrame(this._rafId)}on(e,t){return this.emitter.on(e,t)}off(e,t){return this.emitter.off(e,t)}onScrollEnd=e=>{e instanceof CustomEvent||(this.isScrolling===`smooth`||this.isScrolling===!1)&&e.stopPropagation()};dispatchScrollendEvent=()=>{this.options.wrapper.dispatchEvent(new CustomEvent(`scrollend`,{bubbles:this.options.wrapper===window,detail:{lenisScrollEnd:!0}}))};get overflow(){let e=this.isHorizontal?`overflow-x`:`overflow-y`;return getComputedStyle(this.rootElement)[e]}checkOverflow(){[`hidden`,`clip`].includes(this.overflow)?this.internalStop():this.internalStart()}onTransitionEnd=e=>{e.propertyName?.includes(`overflow`)&&e.target===this.rootElement&&this.checkOverflow()};setScroll(e){this.isHorizontal?this.options.wrapper.scrollTo({left:e,behavior:`instant`}):this.options.wrapper.scrollTo({top:e,behavior:`instant`})}onClick=e=>{let t=e.composedPath().filter(e=>e instanceof HTMLAnchorElement&&e.href).map(e=>new URL(e.href)),n=new URL(window.location.href);if(this.options.anchors){let e=t.find(e=>n.host===e.host&&n.pathname===e.pathname&&e.hash);if(e){let t=typeof this.options.anchors==`object`&&this.options.anchors?this.options.anchors:void 0,n=decodeURIComponent(e.hash);this.scrollTo(n,t);return}}if(this.options.stopInertiaOnNavigate&&t.some(e=>n.host===e.host&&n.pathname!==e.pathname)){this.reset();return}};onPointerDown=e=>{e.button===1&&this.reset()};isTouchOnSelectionHandle(e){let t=window.getSelection();if(!t||t.isCollapsed||t.rangeCount===0)return!1;let n=e.targetTouches[0]??e.changedTouches[0];if(!n)return!1;let r=t.getRangeAt(0).getClientRects();if(r.length===0)return!1;let i=r[0],a=r[r.length-1],o=Math.hypot(n.clientX-i.left,n.clientY-i.top)<=40,s=Math.hypot(n.clientX-a.right,n.clientY-a.bottom)<=40;return o||s}onVirtualScroll=e=>{if(typeof this.options.virtualScroll==`function`&&this.options.virtualScroll(e)===!1)return;let{deltaX:t,deltaY:n,event:r}=e;if(this.emitter.emit(`virtual-scroll`,{deltaX:t,deltaY:n,event:r}),r.ctrlKey||r.lenisStopPropagation)return;let i=r.type.includes(`touch`),a=r.type.includes(`wheel`);if(i&&this.isIos&&(r.type===`touchstart`&&(this._isDraggingSelection=this.isTouchOnSelectionHandle(r)),this._isDraggingSelection)){r.type===`touchend`&&(this._isDraggingSelection=!1);return}this.isTouching=r.type===`touchstart`||r.type===`touchmove`;let o=t===0&&n===0;if(this.options.syncTouch&&i&&r.type===`touchstart`&&o&&!this.isStopped&&!this.isLocked){this.reset();return}let s=this.options.gestureOrientation===`vertical`&&n===0||this.options.gestureOrientation===`horizontal`&&t===0;if(o||s)return;let c=r.composedPath();c=c.slice(0,c.indexOf(this.rootElement));let l=this.options.prevent,u=Math.abs(t)>=Math.abs(n)?`horizontal`:`vertical`;if(c.find(e=>e instanceof HTMLElement&&(typeof l==`function`&&l?.(e)||e.hasAttribute?.(`data-lenis-prevent`)||u===`vertical`&&e.hasAttribute?.(`data-lenis-prevent-vertical`)||u===`horizontal`&&e.hasAttribute?.(`data-lenis-prevent-horizontal`)||i&&e.hasAttribute?.(`data-lenis-prevent-touch`)||a&&e.hasAttribute?.(`data-lenis-prevent-wheel`)||this.options.allowNestedScroll&&this.hasNestedScroll(e,{deltaX:t,deltaY:n}))))return;if(this.isStopped||this.isLocked){r.cancelable&&r.preventDefault();return}if(!(this.options.syncTouch&&i||this.options.smoothWheel&&a)){this.isScrolling=`native`,this.animate.stop(),r.lenisStopPropagation=!0;return}let d=n;this.options.gestureOrientation===`both`?d=Math.abs(n)>Math.abs(t)?n:t:this.options.gestureOrientation===`horizontal`&&(d=t),(!this.options.overscroll||this.options.infinite||this.options.wrapper!==window&&this.limit>0&&(this.animatedScroll>0&&this.animatedScroll<this.limit||this.animatedScroll===0&&n>0||this.animatedScroll===this.limit&&n<0))&&(r.lenisStopPropagation=!0),r.cancelable&&r.preventDefault();let f=i&&this.options.syncTouch,p=i&&r.type===`touchend`;p&&(d=Math.sign(d)*Math.abs(this.velocity)**this.options.touchInertiaExponent),this.scrollTo(this.targetScroll+d,{programmatic:!1,...f?{lerp:p?this.options.syncTouchLerp:1}:{lerp:this.options.lerp,duration:this.options.duration,easing:this.options.easing}})};resize(){this.dimensions.resize(),this.animatedScroll=this.targetScroll=this.actualScroll,this.emit()}emit(){this.emitter.emit(`scroll`,this)}onNativeScroll=()=>{if(this._resetVelocityTimeout!==null&&(clearTimeout(this._resetVelocityTimeout),this._resetVelocityTimeout=null),this._preventNextNativeScrollEvent){this._preventNextNativeScrollEvent=!1;return}if(this.isScrolling===!1||this.isScrolling===`native`){let e=this.animatedScroll;this.animatedScroll=this.targetScroll=this.actualScroll,this.lastVelocity=this.velocity,this.velocity=this.animatedScroll-e,this.direction=Math.sign(this.animatedScroll-e),this.isStopped||(this.isScrolling=`native`),this.emit(),this.velocity!==0&&(this._resetVelocityTimeout=setTimeout(()=>{this.lastVelocity=this.velocity,this.velocity=0,this.isScrolling=!1,this.emit()},400))}};reset(){this.isLocked=!1,this.isScrolling=!1,this.animatedScroll=this.targetScroll=this.actualScroll,this.lastVelocity=this.velocity=0,this.animate.stop()}start(){if(this.isStopped){if(this.options.autoToggle){this.rootElement.style.removeProperty(`overflow`);return}this.internalStart()}}internalStart(){this.isStopped&&(this.reset(),this.isStopped=!1,this.emit())}stop(){if(!this.isStopped){if(this.options.autoToggle){this.rootElement.style.setProperty(`overflow`,`clip`);return}this.internalStop()}}internalStop(){this.isStopped||(this.reset(),this.isStopped=!0,this.emit())}raf=e=>{let t=e-(this.time||e);this.time=e,this.animate.advance(t*.001),this.options.autoRaf&&(this._rafId=requestAnimationFrame(this.raf))};scrollTo(e,{offset:n=0,immediate:r=!1,lock:i=!1,programmatic:a=!0,lerp:o=a?this.options.lerp:void 0,duration:s=a?this.options.duration:void 0,easing:c=a?this.options.easing:void 0,onStart:l,onComplete:u,force:d=!1,userData:p}={}){if(this.prefersReducedMotion&&(a?r=!0:(o=1,s=void 0,c=void 0)),(this.isStopped||this.isLocked)&&!d)return;let m=e,h=n;if(typeof m==`string`&&[`top`,`left`,`start`,`#`].includes(m))m=0;else if(typeof m==`string`&&[`bottom`,`right`,`end`].includes(m))m=this.limit;else{let e=null;if(typeof m==`string`?(e=m.startsWith(`#`)?document.getElementById(m.slice(1)):document.querySelector(m),e||(m===`#top`?m=0:console.warn(`Lenis: Target not found`,m))):m instanceof Element&&(e=m),e){if(this.options.wrapper!==window){let e=this.rootElement.getBoundingClientRect();h-=this.isHorizontal?e.left:e.top}let t=e.getBoundingClientRect(),n=getComputedStyle(e),r=this.isHorizontal?Number.parseFloat(n.scrollMarginLeft):Number.parseFloat(n.scrollMarginTop),i=getComputedStyle(this.rootElement),a=this.isHorizontal?Number.parseFloat(i.scrollPaddingLeft):Number.parseFloat(i.scrollPaddingTop);m=(this.isHorizontal?t.left:t.top)+this.animatedScroll-(Number.isNaN(r)?0:r)-(Number.isNaN(a)?0:a)}}if(typeof m==`number`){if(m+=h,this.options.infinite){if(a){this.targetScroll=this.animatedScroll=this.scroll;let e=m-this.animatedScroll;e>this.limit/2?m-=this.limit:e<-this.limit/2&&(m+=this.limit)}}else m=t(0,m,this.limit);if(m===this.targetScroll){l?.(this),u?.(this);return}if(this.userData=p??{},r){this.animatedScroll=this.targetScroll=m,this.setScroll(this.scroll),this.reset(),this.preventNextNativeScrollEvent(),this.emit(),u?.(this),this.userData={},requestAnimationFrame(()=>{this.dispatchScrollendEvent()});return}a||(this.targetScroll=m),typeof s==`number`&&typeof c!=`function`?c=f:typeof c==`function`&&typeof s!=`number`&&(s=1),this.animate.fromTo(this.animatedScroll,m,{duration:s,easing:c,lerp:o,onStart:()=>{i&&(this.isLocked=!0),this.isScrolling=`smooth`,l?.(this)},onUpdate:(e,t)=>{this.isScrolling=`smooth`,this.lastVelocity=this.velocity,this.velocity=e-this.animatedScroll,this.direction=Math.sign(this.velocity),this.animatedScroll=e,this.setScroll(this.scroll),a&&(this.targetScroll=e),t||this.emit(),t&&(this.reset(),this.emit(),u?.(this),this.userData={},requestAnimationFrame(()=>{this.dispatchScrollendEvent()}),this.preventNextNativeScrollEvent())}})}}preventNextNativeScrollEvent(){this._preventNextNativeScrollEvent=!0,requestAnimationFrame(()=>{this._preventNextNativeScrollEvent=!1})}hasNestedScroll(e,{deltaX:t,deltaY:n}){let r=Date.now();e._lenis||={};let i=e._lenis,a,o,s,c,l,u,d,f,p,m;if(r-(i.time??0)>2e3){i.time=Date.now();let t=window.getComputedStyle(e);if(i.computedStyle=t,a=[`auto`,`overlay`,`scroll`].includes(t.overflowX),o=[`auto`,`overlay`,`scroll`].includes(t.overflowY),l=[`auto`].includes(t.overscrollBehaviorX),u=[`auto`].includes(t.overscrollBehaviorY),i.hasOverflowX=a,i.hasOverflowY=o,!(a||o))return!1;d=e.scrollWidth,f=e.scrollHeight,p=e.clientWidth,m=e.clientHeight,s=d>p,c=f>m,i.isScrollableX=s,i.isScrollableY=c,i.scrollWidth=d,i.scrollHeight=f,i.clientWidth=p,i.clientHeight=m,i.hasOverscrollBehaviorX=l,i.hasOverscrollBehaviorY=u}else s=i.isScrollableX,c=i.isScrollableY,a=i.hasOverflowX,o=i.hasOverflowY,d=i.scrollWidth,f=i.scrollHeight,p=i.clientWidth,m=i.clientHeight,l=i.hasOverscrollBehaviorX,u=i.hasOverscrollBehaviorY;if(!(a&&s||o&&c))return!1;let h=Math.abs(t)>=Math.abs(n)?`horizontal`:`vertical`,g,_,v,y,b,x;if(h===`horizontal`)g=Math.round(e.scrollLeft),_=d-p,v=t,y=a,b=s,x=l;else if(h===`vertical`)g=Math.round(e.scrollTop),_=f-m,v=n,y=o,b=c,x=u;else return!1;return!x&&(g>=_||g<=0)?!0:(v>0?g<_:g>0)&&y&&b}get rootElement(){return this.options.wrapper===window?document.documentElement:this.options.wrapper}get limit(){return this.options.naiveDimensions?this.isHorizontal?this.rootElement.scrollWidth-this.rootElement.clientWidth:this.rootElement.scrollHeight-this.rootElement.clientHeight:this.dimensions.limit[this.isHorizontal?`x`:`y`]}get isHorizontal(){return this.options.orientation===`horizontal`}get actualScroll(){let e=this.options.wrapper;return this.isHorizontal?e.scrollX??e.scrollLeft:e.scrollY??e.scrollTop}get scroll(){return this.options.infinite?i(this.animatedScroll,this.limit):this.animatedScroll}get progress(){return this.limit===0?1:this.scroll/this.limit}get isScrolling(){return this._isScrolling}set isScrolling(e){this._isScrolling!==e&&(this._isScrolling=e,this.updateClassName())}get isStopped(){return this._isStopped}set isStopped(e){this._isStopped!==e&&(this._isStopped=e,this.updateClassName())}get isLocked(){return this._isLocked}set isLocked(e){this._isLocked!==e&&(this._isLocked=e,this.updateClassName())}get isSmooth(){return this.isScrolling===`smooth`}get prefersReducedMotion(){return this.options.respectReducedMotion&&this.reducedMotionMediaQuery.matches}get className(){let e=`lenis`;return this.options.autoToggle&&(e+=` lenis-autoToggle`),this.isStopped&&(e+=` lenis-stopped`),this.isLocked&&(e+=` lenis-locked`),this.isScrolling&&(e+=` lenis-scrolling`),this.isScrolling===`smooth`&&(e+=` lenis-smooth`),e}updateClassName(){this.cleanUpClassName(),this.className.split(` `).forEach(e=>{this.rootElement.classList.add(e)})}cleanUpClassName(){for(let e of Array.from(this.rootElement.classList))(e===`lenis`||e.startsWith(`lenis-`))&&this.rootElement.classList.remove(e)}};globalThis.Lenis=p,globalThis.Lenis.prototype=p.prototype})();
+const scrollSuave=function scrollSuave(cfg) {
+  if (matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  if (!matchMedia('(hover:hover) and (pointer:fine)').matches) return; // solo escritorio con mouse
+  if (typeof Lenis === 'undefined') return;
+  // CSS mínimo de lenis.css (altura automática y scroll interno aislado)
+  const st = document.createElement('style');
+  st.textContent = 'html.lenis,html.lenis body{height:auto}.lenis [data-lenis-prevent]{overscroll-behavior:contain}';
+  document.head.appendChild(st);
+  const lenis = new Lenis({
+    lerp: cfg.lerp,
+    wheelMultiplier: cfg.wheelMultiplier,
+    smoothWheel: true,
+    syncTouch: false,        // táctil: nativo
+    anchors: false,          // anclas nativas (respetan scroll-margin-top)
+    allowNestedScroll: true, // elementos con scroll propio siguen nativos
+  });
+  // Teclado, barra de scroll (mousedown) y anclas: manda el navegador. Lenis se pausa para no tirar de vuelta
+  // hacia su destino viejo, y se reanuda (re-leyendo el scroll real) en la siguiente rueda.
+  const ceder = () => { if (!lenis.isStopped) lenis.stop(); };
+  addEventListener('keydown', ceder, true);
+  addEventListener('mousedown', ceder, true);
+  addEventListener('hashchange', ceder);
+  addEventListener('click', (e) => { if (e.target.closest && e.target.closest('a[href^="#"]')) ceder(); }, true);
+  addEventListener('wheel', () => { if (lenis.isStopped) lenis.start(); }, { capture: true, passive: true });
+  const raf = (t) => { lenis.raf(t); requestAnimationFrame(raf); };
+  requestAnimationFrame(raf);
+};scrollSuave({"lerp":0.1,"wheelMultiplier":1});</script>
+<script>
+(function () {
+  var q = new URLSearchParams(location.search);
+  var solo = q.get('solo'), suave = q.get('suave') === '1', fps = q.get('fps') === '1';
+  var reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if (reduce) document.getElementById('aviso-reduce').hidden = false;
+
+  // enlaces del panel (conservan los demás parámetros)
+  function url(cambios) {
+    var p = new URLSearchParams(location.search);
+    Object.keys(cambios).forEach(function (k) { if (cambios[k] === null) p.delete(k); else p.set(k, cambios[k]); });
+    var s = p.toString();
+    return location.pathname + (s ? '?' + s : '');
+  }
+  var bs = document.getElementById('b-suave');
+  bs.textContent = 'Scroll suave: ' + (suave ? 'ENCENDIDO (clic para apagar)' : 'apagado (clic para encender)');
+  bs.className = 'btn' + (suave ? ' on' : '');
+  bs.href = url({ suave: suave ? null : '1' });
+  document.getElementById('b-todo').href = url({ solo: null });
+  var bf = document.getElementById('b-fps');
+  bf.textContent = 'Contador FPS: ' + (fps ? 'ENCENDIDO (clic para apagar)' : 'apagado (clic para encender)');
+  bf.className = 'btn' + (fps ? ' on' : '');
+  bf.href = url({ fps: fps ? null : '1' });
+  document.querySelectorAll('a.solo').forEach(function (a) { a.href = url({ solo: a.dataset.s }); });
+
+  // ver solo una sección
+  var secs = [].slice.call(document.querySelectorAll('.t'));
+  if (solo) secs.forEach(function (s) { s.hidden = s.dataset.id !== solo; });
+
+  // veredictos (se guardan en este navegador; si no se puede, no pasa nada)
+  var KEY = 'banco-rendimiento-notas';
+  var notas = {};
+  try { notas = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
+  document.querySelectorAll('select[data-nota]').forEach(function (sel) {
+    var k = sel.dataset.nota + (suave ? '|suave' : '');
+    sel.value = notas[k] || '';
+    sel.addEventListener('change', function () {
+      notas[k] = sel.value;
+      try { localStorage.setItem(KEY, JSON.stringify(notas)); } catch (e) {}
+    });
+  });
+  document.getElementById('b-copiar').addEventListener('click', function (e) {
+    e.preventDefault();
+    var out = document.getElementById('out');
+    out.value = Object.keys(notas).filter(function (k) { return notas[k]; }).map(function (k) { return k.replace('|suave', ' (scroll suave)') + ': ' + notas[k]; }).join('\n') || '(sin veredictos todavía)';
+    out.hidden = false; out.select();
+  });
+
+  // solo anima lo que está a la vista (si no, las marquesinas de abajo gastarían CPU en todas las pruebas)
+  var vio = new IntersectionObserver(function (es) { es.forEach(function (e) { e.target.classList.toggle('vis', e.isIntersecting); }); });
+  secs.forEach(function (s) { vio.observe(s); });
+
+  // ---- scripts REALES del export (copiados de exporter.js / scrollmotor.js / scrollsuave.js) ----
+  function correr(id) { var s = document.createElement('script'); s.textContent = document.getElementById(id).textContent; document.body.appendChild(s); }
+  function esta(id) { return !solo || solo === id; }
+  correr('src-appear');                                   // appear (keyframes): pone .in
+  if (esta('parallax') || esta('escena')) correr('src-motor'); // motor de scroll: solo si la sección lo usa
+  if (suave) correr('src-suave');                         // Lenis
+
+  // ---- script de REFERENCIA: reveals con IntersectionObserver (masajes-version2) ----
+  var ioRef = new IntersectionObserver(function (es) {
+    es.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); ioRef.unobserve(en.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('[data-rf]').forEach(function (el) { ioRef.observe(el); });
+
+  // ---- contador de FPS opcional ----
+  if (fps) {
+    var el = document.createElement('div'); el.id = 'fps'; document.body.appendChild(el);
+    var t0 = performance.now(), last = t0, n = 0, peor = 0;
+    (function f(t) {
+      var d = t - last; last = t; n++; if (d > peor) peor = d;
+      if (t - t0 >= 1000) { el.textContent = n + ' fps · peor cuadro ' + Math.round(peor) + ' ms'; t0 = t; n = 0; peor = 0; }
+      requestAnimationFrame(f);
+    })(t0);
+  }
+})();
+</script>
+</body>
+</html>

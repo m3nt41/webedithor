@@ -1,6 +1,6 @@
 # Editor visual de landings — contexto del proyecto
 
-Al empezar cualquier sesión lee este archivo, `FEATURES.md` (no se toca) y `PROGRESS.md` (estado actual, próxima etapa, pendientes, decisiones vigentes y lo pendiente de Firefox). **`docs/historial.md` (detalle de las etapas 1 a 7) solo se lee si hace falta** saber cómo o por qué se hizo algo. Al cerrar una etapa: mueve su detalle a `docs/historial.md` y deja en `PROGRESS.md` solo el estado al día. (Las dos referencias de `FEATURES.md` a `PROGRESS.md` — "Decisión tomada" y "Etapa 6, bloque 4" — ahora están en `docs/historial.md`.) Este proyecto es independiente de `C:\Proyectos\CLAUDE.md` (el de m3nt41.com).
+Al empezar cualquier sesión lee este archivo, `FEATURES.md` (no se toca) y `PROGRESS.md` (estado actual, próxima etapa, pendientes, decisiones vigentes y lo pendiente de Firefox). **`docs/historial.md` (detalle de las etapas 1 a 7) solo se lee si hace falta** saber cómo o por qué se hizo algo. Al cerrar una etapa: mueve su detalle a `docs/historial.md` y deja en `PROGRESS.md` solo el estado al día. (Las dos referencias de `FEATURES.md` a `PROGRESS.md` — "Decisión tomada" y "Etapa 6, bloque 4" — ahora están en `docs/historial.md`.) Este proyecto es independiente de `C:\Proyectos\CLAUDE.md` (que solo trae las reglas comunes de trabajo y el mapa de proyectos).
 
 **FEATURES.md es la lista oficial de animaciones. Nunca recortes ni cambies esa lista sin preguntarme. Lee FEATURES.md al empezar cada sesión.**
 

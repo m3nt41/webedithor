@@ -22,7 +22,9 @@ export function huecosDe(nodo) {
   return lista;
 }
 
-const bloqueDe = (id) => BLOCKS.find((b) => b.id === id);
+// Los bloques con excluidoIA (marquesina) no se ofrecen a la IA: el plan los trata como inexistentes
+const bloquesIA = () => BLOCKS.filter((b) => !b.excluidoIA);
+const bloqueDe = (id) => bloquesIA().find((b) => b.id === id);
 const esObjeto = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 const limpiar = (s) => (s.length > MAX_TEXTO ? s.slice(0, MAX_TEXTO) : s);
 
@@ -113,7 +115,7 @@ export function construirPlan(plan) {
     const ctx = `Sección ${i + 1}`;
     if (!esObjeto(s)) { errores.push(`${ctx}: debe ser un objeto con "bloque".`); return; }
     const b = bloqueDe(s.bloque);
-    if (!b) { errores.push(`${ctx}: el bloque "${s.bloque}" no existe. Bloques válidos: ${BLOCKS.map((x) => x.id).join(', ')}.`); return; }
+    if (!b) { errores.push(`${ctx}: el bloque "${s.bloque}" no existe. Bloques válidos: ${bloquesIA().map((x) => x.id).join(', ')}.`); return; }
     const claves = Object.keys(b.variants);
     if (s.variante != null && !claves.includes(s.variante)) { errores.push(`${ctx} (${b.id}): la variante "${s.variante}" no existe. Variantes válidas: ${claves.join(', ')}.`); return; }
     if (s.valores != null && !esObjeto(s.valores)) { errores.push(`${ctx} (${b.id}): "valores" debe ser un objeto {"1": "texto", ...}.`); return; }

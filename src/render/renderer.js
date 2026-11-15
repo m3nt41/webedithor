@@ -6,6 +6,7 @@
 import { anchorValido, aspectoValido, CLAVES_PROPIAS, fondoDeclaraciones } from '../core/tree.js';
 import { iconoSvg, estilosIcono } from '../core/icono.js';
 import { usaMenuMovil, varsMenu, necesitaAncla } from '../core/menumovil.js';
+import { usaMarquesina, estilosMarquesinaEditor } from '../core/marquesina.js';
 
 // Qué etiqueta HTML usa cada tipo de nodo (también la usa el exportador)
 const TAGS = { page: 'div', section: 'section', container: 'div', heading: 'h2', text: 'p', button: 'a', image: 'img', icon: 'span' };
@@ -61,6 +62,9 @@ export function renderNode(node, viewMode = 'desktop') {
     }
     el.appendChild(h);
   });
+
+  // Marquesina: en el editor se ve QUIETA y con wrap (todos los items visibles y editables); la animación va en 👁 y en el export
+  if (usaMarquesina(node)) Object.assign(el.style, estilosMarquesinaEditor(usaMarquesina(node)));
 
   // Menú hamburguesa (vista móvil del editor): icono + panel SUPERPUESTO (como en el export). Empieza cerrado; se abre con
   // la clase .abierto (la maneja preview.js: clic en el icono o selección de un hijo del panel). Los hijos del panel van en un

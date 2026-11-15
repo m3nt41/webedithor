@@ -21,6 +21,8 @@ export const SUITE = [ // [nombre, comando, timeout en segundos]
   ['plan-ia-ui', 'node tests/plan-ia-ui.mjs', 180],
   ['menu-movil', 'node tests/menu-movil.mjs', 240],
   ['menu-scroll', 'node tests/menu-scroll.mjs', 240],
+  ['marquesina', 'node tests/marquesina.mjs', 60],
+  ['marquesina-ui', 'node tests/marquesina-ui.mjs', 240],
   ['editor-file', 'node tests/editor-file.mjs', 120],
   ['firefox', 'node tools/test-firefox.mjs', 120],
 ];

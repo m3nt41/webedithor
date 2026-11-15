@@ -5,7 +5,7 @@
 //   página mientras el foco está dentro (salvo que cambie la selección o un
 //   select altere qué campos se muestran: ahí se fuerza).
 
-import { getState, subscribe, setStyle, setStyles, setPosicion, setContent, setName, setAnimation, moveBy, duplicateNode, removeNode, addVariant, removeVariant, moveVariant, setVariant, setVariantProp, verEstado, setIconSize } from '../core/store.js';
+import { getState, subscribe, setStyle, setStyles, setPosicion, setContent, setName, setAnimation, moveBy, duplicateNode, removeNode, addVariant, removeVariant, moveVariant, setVariant, setVariantProp, verEstado, setIconSize, setMarquesina } from '../core/store.js';
 import { findNode, findParent, anchorValido, contarAncla, aspectoValido, capaValida } from '../core/tree.js';
 import { reducirImagen } from './imagen.js';
 import { effectiveStyles, TIPOS_TEXTO } from '../render/renderer.js';
@@ -15,6 +15,7 @@ import { copiarGuia, abrirDialogoPlan } from './plania.js';
 import { ICONOS } from '../blocks/iconos-data.js';
 import { iconoSvg, TAMANOS_ICONO, TAMANO_ICONO_DEFECTO } from '../core/icono.js';
 import { modeloControl, columnasAuto, kebab, KINDS_CONTROL, KINDS_BOTONES, TAMANOS_BOTON, leerEstiloBoton, valoresEstiloBoton } from './controles.js';
+import { usaMarquesina, MQ_VELOCIDADES, MQ_GAPS, MQ_COPIAS, MQ_VEL_MIN, MQ_VEL_MAX } from '../core/marquesina.js';
 import { GRUPOS_ANIM } from '../animations/index.js';
 import { DISPAROS_VARIANT, CAMPOS_PROPS, CAMPOS_TIEMPO, DEF_TIEMPO } from '../animations/variants.js';
 
@@ -75,6 +76,25 @@ function htmlControl(f, v, modo, ov, tieneValor) {
     ? `<button type="button" class="quitar" data-est="">${modo === 'mobile' ? '↺ igual que escritorio' : '✕ quitar'}</button>`
     :`<button type="button" class="quitar" data-ctl="${f.key}" data-val="">${modo === 'mobile' ? '↺ igual que escritorio' : '✕ quitar'}</button>`;
   return `<div class="campo ctl">${etiqueta(f.label, ov)}<div class="botones${modo === 'mobile' && !ov ? ' heredado' : ''}">${botones}${otro}${min}${quitar}</div></div>`;
+}
+
+/** Grupo "Marquesina": controles visuales (botones). Cada botón lleva data-mq="campo" y data-val; "Repetición" va en Avanzado. */
+function htmlMarq(mq, abierto) {
+  const b = (k, val, txt, on, title = '') => `<button type="button" data-mq="${k}" data-val="${val}" class="${on ? 'on' : ''}"${title ? ` title="${esc(title)}"` : ''}>${txt}</button>`;
+  const fila = (label, botones, extra = '') => `<div class="campo ctl"><label>${label}</label><div class="botones">${botones}${extra}</div></div>`;
+  const velPreset = MQ_VELOCIDADES.some(([, , seg]) => seg === mq.vel);
+  const reps = MQ_COPIAS.map((n) => b('copias', n, n, mq.copias === n)).join('');
+  return '<h3>Marquesina</h3>' +
+    fila('Movimiento', b('mov', 1, 'Con movimiento', mq.mov) + b('mov', 0, 'Sin movimiento (fija)', !mq.mov)) +
+    (mq.mov ? fila('Velocidad', MQ_VELOCIDADES.map(([, txt, seg]) => b('vel', seg, txt, mq.vel === seg, `${seg} s por vuelta`)).join('')) +
+      `<div class="campo"><label>Segundos por vuelta</label><input type="number" min="${MQ_VEL_MIN}" max="${MQ_VEL_MAX}" step="1" data-mq-num="vel" value="${mq.vel}" class="${velPreset ? '' : 'on'}"></div>` +
+      fila('Dirección', b('dir', 'izq', '← Izquierda', mq.dir === 'izq') + b('dir', 'der', 'Derecha →', mq.dir === 'der')) +
+      fila('Pausa al pasar el ratón', b('pausa', 1, 'Sí', mq.pausa) + b('pausa', 0, 'No', !mq.pausa)) : '') +
+    fila('Separación', MQ_GAPS.map((g) => b('gap', g, `${g}`, mq.gap === g)).join(''), '<span class="mini">px</span>') +
+    (mq.mov ? `<details class="avanzado" data-g="Marquesina"${abierto ? ' open' : ''}><summary>Avanzado</summary>` +
+      fila('Repetición (copias de la tira)', reps) +
+      '<p class="modo">Cuántas veces se repite la tira para que no queden huecos en pantallas anchas. Con pocos items o items cortos, sube el número. Solo cuenta en el HTML exportado y en la Vista previa. Los botones o enlaces de las copias repetidas no se pueden pulsar (solo los de la primera tira).</p></details>' : '') +
+    '<p class="modo">En el editor la marquesina se ve quieta, con todos los items a la vista para editarlos; la animación se ve en 👁 Vista previa y en el export. Cada item es un elemento normal (selecciónalo en Capas o en el preview).</p>';
 }
 
 /** Sección "Estados (variants)": lista de estados con su disparo, lo que cambian y su tiempo. */
@@ -199,6 +219,9 @@ export function initInspector(host) {
         <p class="modo">En móvil el primer elemento (el logo) queda visible y todo lo demás va al panel de la hamburguesa. El panel se superpone al contenido. En la vista móvil del editor empieza cerrado: ábrelo con la hamburguesa o seleccionando un enlace desde Capas.</p>`;
     }
 
+    const mq = usaMarquesina(nodo);
+    if (mq) html += htmlMarq(mq, abiertos.has('Marquesina'));
+
     // ---- Estilos ----
     for (const g of GRUPOS) {
       if (!g.tipos.includes(nodo.type)) continue;
@@ -313,6 +336,11 @@ export function initInspector(host) {
       if (+t.value > 0) setStyle(id, t.dataset.ctlMin, columnasAuto(+t.value));
       return;
     }
+    if (t.dataset.mqNum !== undefined) { // Marquesina: segundos por vuelta libres (no se reconstruye el panel: se perdería el foco)
+      const x = +t.value;
+      if (x >= MQ_VEL_MIN && x <= MQ_VEL_MAX) setMarquesina(id, { vel: x });
+      return;
+    }
     if (t.dataset.iszNum !== undefined) { // Icono: tamaño libre (no se reconstruye el panel: se perdería el foco)
       if (+t.value > 0) setIconSize(id, Math.min(512, +t.value));
       return;
@@ -382,6 +410,13 @@ export function initInspector(host) {
       const campo = host.querySelector(`details.avanzado [data-s="${otro.dataset.ctlOtro}"]`)
         ?? (otro.dataset.ctlOtro === 'background' ? host.querySelector('[data-s="background"]') : null);
       if (campo) { const det = campo.closest('details'); if (det) det.open = true; campo.focus(); }
+      return;
+    }
+    const mqb = e.target.closest('[data-mq]'); // Marquesina: botones visuales
+    if (mqb && idDibujado) {
+      const raw = mqb.dataset.val;
+      forzar = true;
+      setMarquesina(idDibujado, { [mqb.dataset.mq]: raw === '1' && ['mov', 'pausa'].includes(mqb.dataset.mq) ? true : raw === '0' && ['mov', 'pausa'].includes(mqb.dataset.mq) ? false : Number.isNaN(+raw) ? raw : +raw });
       return;
     }
     const ic = e.target.closest('[data-icono]'); // Icono: elegir de la cuadrícula

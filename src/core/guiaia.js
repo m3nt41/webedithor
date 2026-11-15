@@ -45,7 +45,7 @@ function lineasHuecos(nodo) {
 
 /** Lista de bloques y variantes con sus huecos (también la usan los tests). */
 export function catalogoHuecos() {
-  return BLOCKS.map((b) => ({
+  return BLOCKS.filter((b) => !b.excluidoIA).map((b) => ({
     bloque: b.id, etiqueta: b.label, ancla: b.ancla ?? null,
     variantes: Object.entries(b.variants).map(([clave, v]) => {
       const nodo = createBlock(b.id, clave);

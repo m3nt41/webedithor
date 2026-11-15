@@ -7,6 +7,7 @@
 import { createPage, createNode, findNode, findParent, cloneWithNewIds, normalizePage, canContain } from './tree.js';
 import { DEFAULTS, PRINCIPAL } from '../animations/index.js';
 import { crearEstado } from '../animations/variants.js';
+import { normalizarMarquesina } from './marquesina.js';
 
 const CLAVE_LS = 'editor-landings:pagina';
 const MAX_HISTORIAL = 100;
@@ -263,6 +264,16 @@ export function setPosicion(id, value) {
 }
 
 /** Cambia un dato de content (text, href, src, level...). */
+/** Marquesina: cambia uno o varios campos de content.marquesina (se valida con normalizarMarquesina; un paso de Undo por clic). */
+export function setMarquesina(id, cambios) {
+  mutate((page) => {
+    const n = findNode(page, id);
+    const actual = n?.content?.marquesina;
+    if (!n || !actual) return;
+    n.content.marquesina = normalizarMarquesina({ ...actual, ...cambios });
+  }, 'page', `mq:${id}:${Object.keys(cambios).join(',')}`);
+}
+
 export function setContent(id, key, value, tipo = 'page') {
   mutate((page) => {
     const n = findNode(page, id);

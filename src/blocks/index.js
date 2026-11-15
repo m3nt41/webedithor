@@ -11,8 +11,9 @@ import contact from './contact.js';
 import footer from './footer.js';
 import navbar from './navbar.js';
 import scene from './scene.js';
+import marquesina from './marquesina.js';
 
-export const BLOCKS = [navbar, hero, services, gallery, testimonials, pricing, scene, contact, footer];
+export const BLOCKS = [navbar, hero, services, gallery, testimonials, pricing, scene, marquesina, contact, footer];
 
 /** Crea un bloque nuevo. variant opcional (por defecto la primera). */
 export function createBlock(blockId, variant) {

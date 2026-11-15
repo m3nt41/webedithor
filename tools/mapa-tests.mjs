@@ -1,6 +1,6 @@
 // MAPA "archivo cambiado -> tests que le corresponden" para `npm run test:cambios` (tools/test-cambios.mjs).
 // Los nombres de test son los de SUITE en tools/lib-tests.mjs (selenium, ronda7, controles, inspector, vistaprevia,
-// persistencia, fondo, sidebar, iconos, tema, plan-ia, plan-ia-ui, menu-movil, menu-scroll, editor-file, firefox).
+// persistencia, fondo, sidebar, iconos, tema, plan-ia, plan-ia-ui, menu-movil, menu-scroll, marquesina, marquesina-ui, editor-file, firefox).
 //
 // CÓMO AÑADIR UNA ENTRADA: una línea en MAPA con la ruta (con barras `/`, desde la raíz del proyecto) y la lista de tests.
 //   - 'src/ui/fields.js': [...]   -> ese archivo exacto.
@@ -25,10 +25,14 @@ export const MAPA = {
   'src/core/menumovil.js': ['menu-movil', 'menu-scroll'],
   'src/blocks/navbar.js': ['menu-movil', 'menu-scroll', 'tema', 'plan-ia', 'plan-ia-ui'],
 
+  // ---- Marquesina (ticker) ----
+  'src/core/marquesina.js': ['marquesina', 'marquesina-ui'],
+  'src/blocks/marquesina.js': ['marquesina', 'marquesina-ui', 'tema', 'plan-ia', 'plan-ia-ui'],
+
   // ---- Inspector y controles visuales ----
   'src/ui/controles.js': ['controles', 'inspector'],
   'src/ui/fields.js': ['controles', 'inspector'],
-  'src/ui/inspector.js': ['controles', 'inspector'],
+  'src/ui/inspector.js': ['controles', 'inspector', 'marquesina-ui'],
   'src/ui/imagen.js': ['fondo'],
   'src/ui/iconos.js': ['inspector', 'vistaprevia', 'sidebar', 'iconos'],
   'src/ui/toolbar.js': ['vistaprevia', 'persistencia', 'editor-file'],

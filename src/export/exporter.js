@@ -9,6 +9,7 @@ import { anchorValido, walk, aspectoValido, CLAVES_PROPIAS, fondoDeclaraciones, 
 import { tagFor, TIPOS_TEXTO } from '../render/renderer.js';
 import { iconoSvg, estilosIcono } from '../core/icono.js';
 import { usaMenuMovil, paginaUsaMenuMovil, cssMenuMovil, varsMenu, necesitaAncla, SCRIPT_MENU } from '../core/menumovil.js';
+import { usaMarquesina, cssMarquesina, htmlMarquesina, keyframesMarquesina } from '../core/marquesina.js';
 import { usaEscena, varsEscena, esNavPegado, paginaUsaEscena, CSS_ESCENA, usaScrollLink, paginaUsaScrollLink, SCRIPT_SCROLLMOTOR, SCRIPT_SCROLLSUAVE, paginaUsaScrollSuave, cssNodo, usaScroll, usaCarga, usaClic, paginaUsaScroll, paginaUsaEntrada, paginaUsaMedida, paginaUsaClic, esMedida, splitText, KEYFRAMES, SCRIPT_SCROLL, SCRIPT_LINEAS, SCRIPT_CLIC } from '../animations/index.js';
 
 export const BREAKPOINT_MOVIL = 768;
@@ -35,6 +36,8 @@ export function exportHTML(page) {
   const cssMovil = [];
   const cssAnim = [];
   const cssMenuReducido = []; // reglas del menú hamburguesa para prefers-reduced-motion
+  const cssMqReducido = []; // reglas de la marquesina para prefers-reduced-motion
+  const kfMarquesina = new Set(); // @keyframes de marquesina usados (uno por número de copias)
   let contador = 0;
 
   function nodoAHtml(node, nivel, padre = null) {
@@ -97,7 +100,14 @@ export function exportHTML(page) {
         ...resto,
         `${s2}</div>`);
     }
-    const hijos = partes.join('\n');
+    const mq = usaMarquesina(node);
+    if (mq) { // Marquesina: pista y grupos GENERADOS (no son nodos); ver core/marquesina.js
+      const m = cssMarquesina(`.${clase}`, mq);
+      css.push(...m.base);
+      cssMqReducido.push(...m.reducido);
+      if (mq.mov) kfMarquesina.add(mq.copias);
+    }
+    const hijos = mq ? htmlMarquesina(partes, nivel, mq) : partes.join('\n');
     const html = `${sangria}${abre}\n${hijos}\n${sangria}</${tag}>`;
     if (!esc) return html;
     // escena: contenedor alto (da el recorrido de scroll) + la sección como capa pegada
@@ -137,6 +147,8 @@ export function exportHTML(page) {
     usaEntrada ? '@media (prefers-reduced-motion:reduce){[data-rv],[data-ld],[data-rv] .w,[data-ld] .w,[data-rv]>*,[data-ld]>*{animation:none!important}}' : '',
     cssAnim.length ? '@media (prefers-reduced-motion:reduce){*{transition:none!important}}' : '',
     cssMenuReducido.length ? `@media (prefers-reduced-motion:reduce){${cssMenuReducido.join('')}}` : '',
+    ...[...kfMarquesina].sort().map(keyframesMarquesina),
+    cssMqReducido.length ? `@media (prefers-reduced-motion:reduce){${cssMqReducido.join('')}}` : '',
   ].filter(Boolean).join('\n');
   const noscript = usaRv ? '<noscript><style>[data-rv],[data-rv] .w,[data-rv]>*{animation:none!important}</style></noscript>\n' : '';
   // El script de medición solo viaja si algún texto usa "Por línea (medida)"

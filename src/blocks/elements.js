@@ -2,7 +2,8 @@
 // Cada uno es { id, label, type, crear }. Para añadir otro: una entrada aquí.
 
 import { n, texto, boton, imagen, placeholder, icono, tit } from './util.js';
-import { C, CUERPO, AIRE, colorPh } from './tema.js';
+import { C, CUERPO, AIRE, colorPh, MODOS } from './tema.js';
+import { cintaTira } from './marquesina.js';
 
 export const ELEMENTS = [
   { id: 'section', label: 'Sección vacía', type: 'section', crear: () =>
@@ -21,6 +22,7 @@ export const ELEMENTS = [
   { id: 'button', label: 'Botón', type: 'button', crear: () => boton('Botón', '#') },
   { id: 'image', label: 'Imagen', type: 'image', crear: () => imagen(placeholder(800, 500, colorPh(0)), 'Imagen') },
   { id: 'icon', label: 'Icono', type: 'icon', crear: () => icono('star') },
+  { id: 'marquesina', label: 'Marquesina', type: 'container', crear: () => cintaTira(MODOS.claro) },
 ];
 
 export function createElement(id) {

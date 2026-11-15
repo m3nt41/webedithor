@@ -12,6 +12,7 @@
 // - children: nodos hijos (layout flex/grid, NUNCA posiciones absolutas)
 
 import { normalizarAnimacion } from '../animations/normalizar.js';
+import { normalizarMarquesina } from './marquesina.js';
 
 let contador = 0;
 
@@ -150,6 +151,10 @@ function limpiarContenido(n) {
   const c = { ...objeto(n.content) };
   if (n.type === 'page' && c.smoothScroll !== true) delete c.smoothScroll;
   if (c.menuMovil !== true || n.type !== 'section') delete c.menuMovil; // menú hamburguesa del Navbar: solo vale exactamente true y en secciones
+  if ('marquesina' in c) { // marquesina: solo en contenedores y con sus campos validados (ver core/marquesina.js)
+    const m = n.type === 'container' ? normalizarMarquesina(c.marquesina) : undefined;
+    if (m) c.marquesina = m; else delete c.marquesina;
+  }
   if (n.type === 'icon' && typeof c.name !== 'string') c.name = 'star'; // un name que no exista en la biblioteca se deja: se dibuja el icono neutro
   return c;
 }

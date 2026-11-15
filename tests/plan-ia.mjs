@@ -16,7 +16,7 @@ const heroClaro = (valores) => ({ plan: 1, titulo: 'X', secciones: [{ bloque: 'h
 
 t('la guía lista todos los bloques, variantes y huecos', () => {
   const g = guiaIA();
-  for (const b of BLOCKS) {
+  for (const b of BLOCKS.filter((x) => !x.excluidoIA)) {
     assert.ok(g.includes(`### ${b.id} `), `falta el bloque ${b.id}`);
     for (const k of Object.keys(b.variants)) {
       assert.ok(g.includes(`variante "${k}"`), `falta ${b.id}/${k}`);

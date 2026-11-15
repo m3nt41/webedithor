@@ -33,6 +33,24 @@ const REGLAS = {
   bright: () => 'filter:brightness(1.2)',
 };
 
+// ZONA DE HOVER EXTRA (anti-parpadeo). Si el efecto mueve el elemento y el cursor estaba en el borde,
+// al moverse el cursor queda fuera, el hover se apaga, el elemento vuelve, se reactiva... sin parar.
+// Solución en CSS puro: un ::after transparente (hijo del elemento, así se mueve con él y cuenta como parte
+// del hover) que cubre la zona original. Sin pointer-events:none, para que reciba el cursor.
+//  lift   -> sube 6px: franja de 6px por debajo, ancho completo.
+//  shrink -> scale .95 encoge ~2.6% por lado: el ::after sobresale 3% (se encoge con el elemento).
+//  tilt   -> rotate(-2deg) + scale(1.04): las esquinas se mueven unos px: margen de 6px por todos lados.
+// grow, glow y bright no dejan el cursor fuera. Las imágenes (<img>) no admiten ::after: se saltan.
+const ZONA = {
+  lift: 'top:100%;left:0;right:0;height:6px',
+  shrink: 'top:-3%;right:-3%;bottom:-3%;left:-3%',
+  tilt: 'top:-6px;right:-6px;bottom:-6px;left:-6px',
+};
+
+// ¿Hace falta ponerle position:relative? Solo si hoy es estática (vacía o static) en escritorio y móvil.
+const sinPosicion = (node) => [node?.styles?.base, node?.styles?.mobile]
+  .every((e) => !e?.position || String(e.position).trim() === 'static');
+
 export default {
   id: 'hover',
   estado: true, // se ve siempre en el preview
@@ -51,6 +69,11 @@ export default {
     const regla = REGLAS[h?.effect];
     if (!regla) return '';
     // la transición base (para soltar) la pone cssNodo; aquí va la de entrar al estado
-    return `${sel}:hover{${transicion(h)};${regla(h, modoSombra(node))}}`;
+    const zona = ZONA[h.effect];
+    const extra = zona && node?.type !== 'image'
+      ? [sinPosicion(node) ? `${sel}{position:relative}` : '',
+        `${sel}:hover::after{content:'';position:absolute;${zona}}`]
+      : [];
+    return [extra[0], `${sel}:hover{${transicion(h)};${regla(h, modoSombra(node))}}`, extra[1]].filter(Boolean).join('\n');
   },
 };

@@ -50,7 +50,7 @@ t('export animado: marco, pista, K grupos (1 visible + K-1 aria-hidden/inert), s
   assert.equal((html.match(/class="mq-g" aria-hidden="true" inert/g) || []).length, 3, 'K-1 copias ocultas');
   assert.equal((html.match(/Item 0/g) || []).length, 4, 'cada item aparece K veces');
   assert.ok(!html.includes('<script'), 'CSS puro: sin <script>');
-  assert.match(html, /\.n\d+>\.mq-p\{display:flex;width:max-content;animation:mq4 25s linear infinite\}/);
+  assert.match(html, /\.n\d+>\.mq-p\{display:flex;width:max-content;filter:opacity\(1\);animation:mq4 25s linear infinite\}/);
   assert.match(html, /@keyframes mq4\{from\{translate:0 0\}to\{translate:calc\(-100% \/ 4\) 0\}\}/, 'el bucle cierra en -100%/K exacto');
   assert.match(html, /\.mq-g\{display:flex;flex:none;align-items:center;gap:48px;padding-inline-end:48px\}/, 'padding final = separación (grupos idénticos)');
   assert.match(html, /overflow:hidden/);
@@ -82,7 +82,7 @@ t('prefers-reduced-motion: quieta, centrada y sin copias', () => {
   const html = exp({});
   const bloque = html.split('@media (prefers-reduced-motion:reduce){').filter((x) => x.includes('.mq-p{animation:none'))[0];
   assert.ok(bloque, 'hay un bloque reduced-motion de la marquesina');
-  assert.match(bloque, /\.mq-p\{animation:none;width:auto;justify-content:center\}/);
+  assert.match(bloque, /\.mq-p\{animation:none;filter:none;width:auto;justify-content:center\}/);
   assert.match(bloque, /\.mq-g\[aria-hidden\]\{display:none\}/);
   assert.match(bloque, /flex-wrap:wrap/);
 });

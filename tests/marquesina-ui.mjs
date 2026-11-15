@@ -70,6 +70,10 @@ try {
     ver(loop.every((l) => { const [a, b] = l.rev ? [l.ini, l.fin] : [l.fin, l.ini]; return Math.abs(a + 100 / l.K) < 0.05 && Math.abs(b) < 0.05; }), `A${w}g. el bucle cierra exacto (la vuelta recorre justo un grupo: -100/K %)`, JSON.stringify(loop.map((l) => [l.rev, l.ini, l.fin])));
     ver(loop.every((l) => l.cubre), `A${w}h. nunca queda hueco (copias × ancho ≥ pantalla)`);
 
+    // suavidad en Firefox (temblor del texto): la pista se pinta en su propia superficie (filter:opacity(1)) y la animación sigue lineal
+    const suave = await js(`return [...document.querySelectorAll('.mq-p')].map(p=>[getComputedStyle(p).filter, p.getAnimations()[0].effect.getTiming().easing])`);
+    ver(suave.every(([f, e]) => f === 'opacity(1)' && e === 'linear'), `A${w}h2. la pista lleva filter:opacity(1) y easing lineal`, JSON.stringify(suave));
+
     // copias: aria-hidden + inert, y no se leen/enfocan
     const cop = await js(`const p=document.querySelector('.mq-p'); return {ocultas:[...p.children].filter(g=>g.getAttribute('aria-hidden')==='true'&&g.inert).length, vis: p.children[0].hasAttribute('aria-hidden')}`);
     ver(cop.ocultas === 3 && !cop.vis, `A${w}i. 3 copias aria-hidden + inert, la primera normal`);
@@ -114,6 +118,7 @@ try {
     await abrir(w);
     ver(await js(`return matchMedia('(prefers-reduced-motion:reduce)').matches`), `B${w}. el perfil emula reducir movimiento`);
     const r = await js(`const ps=[...document.querySelectorAll('.mq-p')]; return { anim: ps.reduce((a,p)=>a+p.getAnimations().length,0), copias: [...document.querySelectorAll('.mq-g[aria-hidden]')].filter(g=>getComputedStyle(g).display!=='none').length, sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth, tr: ps.map(p=>getComputedStyle(p).translate), ancho: ps.map(p=>Math.round(p.getBoundingClientRect().width)), marco: ps.map(p=>Math.round(p.parentElement.getBoundingClientRect().width)) }`);
+    ver((await js(`return [...document.querySelectorAll('.mq-p')].every(p=>getComputedStyle(p).filter==='none')`)), `B${w}a. reduced-motion: sin filtro en la pista`);
     ver(r.anim === 0 && r.copias === 0 && r.sw <= r.cw, `B${w}b. quieta: sin animación, sin copias visibles, sin desborde`, JSON.stringify(r));
     ver(r.ancho.every((a, i) => a <= r.marco[i] + 1), `B${w}c. la tira cabe en su marco (con wrap)`, JSON.stringify([r.ancho, r.marco]));
     await salir();

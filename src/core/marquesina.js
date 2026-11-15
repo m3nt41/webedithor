@@ -9,6 +9,7 @@
 //       <div class="mq-g" aria-hidden="true" inert> items sin id </div>   copias duplicadas (K-1)
 // Bucle exacto: cada grupo lleva padding-inline-end = separación (todos miden lo mismo) y la animación
 // mueve la pista -(100/K)% = justo un grupo. Velocidad = segundos por vuelta (una copia).
+// Suavidad en Firefox: la pista lleva filter:opacity(1) (ver cssMarquesina y PROGRESS.md, "temblor").
 // Sin movimiento: una sola tira estática (.mq-g) centrada y con wrap. prefers-reduced-motion = igual que la estática.
 // Editor: los items se ven UNA vez, quietos, con wrap (editables); la animación se ve en 👁 y en el export.
 
@@ -60,12 +61,14 @@ export function cssMarquesina(sel, cfg) {
   const anim = `mq${cfg.copias} ${cfg.vel}s linear infinite${cfg.dir === 'der' ? ' reverse' : ''}`;
   const base = [
     marco,
-    `${sel}>.mq-p{display:flex;width:max-content;animation:${anim}}`,
+    // filter:opacity(1) = la pista se pinta UNA vez en su propia superficie y se desplaza entera: texto e iconos se mueven rígidos.
+    // Sin esto, en Firefox el texto se redondea a píxeles de pantalla en cada cuadro mientras los SVG avanzan suave (el "temblor").
+    `${sel}>.mq-p{display:flex;width:max-content;filter:opacity(1);animation:${anim}}`,
     `${sel} .mq-g{display:flex;flex:none;align-items:center;gap:${g};padding-inline-end:${g}}`,
   ];
   if (cfg.pausa) base.push(`${sel}:hover>.mq-p{animation-play-state:paused}`);
   const reducido = [
-    `${sel}>.mq-p{animation:none;width:auto;justify-content:center}`,
+    `${sel}>.mq-p{animation:none;filter:none;width:auto;justify-content:center}`,
     estatica.replace('flex:none;', 'flex:0 1 auto;') + `${sel} .mq-g{padding-inline-end:0}`,
     `${sel} .mq-g[aria-hidden]{display:none}`,
   ];

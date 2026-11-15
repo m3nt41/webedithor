@@ -17,6 +17,14 @@ const CLASICOS = [
   ['glow', 'Resplandor'],
   ['bright', 'Aclarar'],
 ];
+// Subrayado: [transform-origin en reposo, transform-origin en :hover (null = el mismo)]
+const ORIGEN = { izq: ['left', null], der: ['right', null], centro: ['center', null], pasa: ['right', 'left'] };
+const DIRECCIONES = [
+  ['izq', 'Desde la izquierda'],
+  ['der', 'Desde la derecha'],
+  ['centro', 'Desde el centro'],
+  ['pasa', 'Pasa de lado a lado (puede verse brusca con pasadas rápidas)'],
+];
 const EFECTOS = [['', 'Ninguno'], ...CLASICOS, ...NUEVOS];
 
 // Texto, título o botón SIN caja: los 3 efectos que no mueven las letras van primero y el primero se sugiere.
@@ -68,9 +76,12 @@ export default {
   estado: true, // se ve siempre en el preview
   titulo: 'Al pasar el mouse',
   principal: 'effect',
-  defaults: { effect: 'lift', duration: 0.2, ease: 'suave', ...DEF_CURVA, color: '#7c5cff', lineaColor: 'texto' },
+  defaults: { effect: 'lift', duration: 0.2, ease: 'suave', ...DEF_CURVA, color: '#7c5cff', lineaColor: 'texto', direccion: 'izq', grosor: 2, separacion: 0 },
   campos: [
     { key: 'effect', label: 'Efecto', kind: 'select', options: EFECTOS, opcionesNodo },
+    { key: 'direccion', label: 'Dirección', kind: 'select', options: DIRECCIONES, cuando: (g, efecto) => efecto === 'underline' },
+    { key: 'grosor', label: 'Grosor (px)', kind: 'num', step: 1, min: 1, max: 4, cuando: (g, efecto) => efecto === 'underline' },
+    { key: 'separacion', label: 'Separación del texto (px)', kind: 'num', step: 1, min: 0, max: 8, cuando: (g, efecto) => efecto === 'underline' },
     { key: 'lineaColor', label: 'Color de la línea', kind: 'select', options: [['texto', 'El del texto'], ['otro', 'Otro color']], cuando: (g, efecto) => efecto === 'underline' },
     { key: 'duration', label: 'Duración (s)', kind: 'num', step: 0.05, min: 0.05, cuando: sinSpring },
     { key: 'ease', label: 'Curva', kind: 'select', options: EASES },
@@ -89,9 +100,16 @@ export default {
       const pos = sinPosicion(node) ? 'position:relative;' : '';
       if (h.effect === 'underline') {
         const col = h.lineaColor === 'otro' ? c : 'currentColor';
+        // Dirección: en las 3 primeras el transform-origin es el MISMO en reposo y en :hover (no salta con pasadas rápidas).
+        // Solo 'pasa' lo cambia (entra por la izquierda, sale por la derecha). Sin dirección guardada = 'izq'.
+        const dir = ORIGEN[h.direccion] ? h.direccion : 'izq';
+        const grosor = Math.min(4, Math.max(1, Number(h.grosor) || 2));
+        const sep = Math.min(8, Math.max(0, Number(h.separacion) || 0));
+        const [origen, origenHover] = ORIGEN[dir];
+        const hover = `transform:scaleX(1)${origenHover ? `;transform-origin:${origenHover}` : ''}`;
         return [pos && `${sel}{${pos}}`,
-          `${sel}::before{content:'';position:absolute;left:0;right:0;bottom:-2px;height:2px;background:${col};transform:scaleX(0);transform-origin:right;transition:transform ${t};pointer-events:none}`,
-          `${sel}:hover::before{transform:scaleX(1);transform-origin:left}`].filter(Boolean).join('\n');
+          `${sel}::before{content:'';position:absolute;left:0;right:0;bottom:-${grosor + sep}px;height:${grosor}px;background:${col};transform:scaleX(0);transform-origin:${origen};transition:transform ${t};pointer-events:none}`,
+          `${sel}:hover::before{${hover}}`].filter(Boolean).join('\n');
       }
       return [`${sel}{${pos}isolation:isolate}`,
         `${sel}::before{content:'';position:absolute;top:-.2em;right:-.5em;bottom:-.2em;left:-.5em;border-radius:.4em;background:${c};opacity:0;z-index:-1;transition:opacity ${t};pointer-events:none}`,

@@ -21,7 +21,7 @@ Motion vs CSS puro: m3nt41 ya decidió la opción (a), CSS puro donde se pueda y
 
 ## Hover / press / focus
 - [x] Hover con transición: elevar, agrandar, encoger, inclinar, resplandor, aclarar (Etapa 4)
-- [x] Hover para texto y botones sin caja, sin mover las letras: subrayado (crece de izquierda a derecha y se va por la derecha), color y fondo suave (CSS puro; mini-etapa 2026-11-15)
+- [x] Hover para texto y botones sin caja, sin mover las letras: subrayado (dirección elegible: desde la izquierda por defecto, derecha, centro o de lado a lado; grosor 1–4 px y separación 0–8 px), color y fondo suave (CSS puro; mini-etapa 2026-11-15)
 - [x] Press (al mantener clic/tocar) con transición (Etapa 6)
 - [x] Focus (`:focus-visible`) con transición, solo en botones/enlaces (Etapa 6)
 

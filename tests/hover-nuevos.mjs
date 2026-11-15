@@ -1,5 +1,5 @@
 // Hover "Subrayado", "Color" y "Fondo suave" (texto sin mover las letras) en Firefox real, sobre el HTML exportado
-// y el lienzo del editor. Subrayado: se mide POR PÍXELES (captura) que la línea crece de izquierda a derecha.
+// y el lienzo del editor. Subrayado: se mide POR PÍXELES (captura) de dónde crece la línea en cada Dirección, y que con entradas y salidas rápidas el transform-origin no cambia (izq, der, centro).
 // Ejecutar: npm run build && node tests/hover-nuevos.mjs
 import assert from 'node:assert/strict';
 import { pathToFileURL } from 'node:url';
@@ -19,7 +19,11 @@ const mk = (nombre, hover, base = {}) => {
   x.styles.base = { color: '#111111', fontSize: '28px', display: 'inline-block', ...base }; x.animation = { hover }; return x;
 };
 const nodos = {
-  Subrayado: mk('Subrayado', { effect: 'underline', lineaColor: 'otro', color: '#ff0000', duration: 1.5, ease: 'lineal' }),
+  Subrayado: mk('Subrayado', { effect: 'underline', lineaColor: 'otro', color: '#ff0000', duration: 1.5, ease: 'lineal' }), // sin dirección guardada = izquierda
+  SubDer: mk('SubDer', { effect: 'underline', direccion: 'der', lineaColor: 'otro', color: '#ff0000', duration: 1.5, ease: 'lineal' }),
+  SubCentro: mk('SubCentro', { effect: 'underline', direccion: 'centro', lineaColor: 'otro', color: '#ff0000', duration: 1.5, ease: 'lineal' }),
+  SubPasa: mk('SubPasa', { effect: 'underline', direccion: 'pasa', lineaColor: 'otro', color: '#ff0000', duration: 1.5, ease: 'lineal' }),
+  SubGrueso: mk('SubGrueso', { effect: 'underline', grosor: 4, separacion: 6, duration: 0.2 }),
   SubrayadoTexto: mk('SubrayadoTexto', { effect: 'underline', duration: 0.2 }),
   Color: mk('Color', { effect: 'color', color: '#00aa00', duration: 0.2 }),
   Fondo: mk('Fondo', { effect: 'soft', color: '#0000ff', duration: 0.2 }),
@@ -31,7 +35,12 @@ pagina.children.push(sec);
 
 // ---- CSS sin navegador ----
 const c = (k) => cssNodo(nodos[k], '.x', { scroll: false });
-v(/\.x::before\{[^}]*transform:scaleX\(0\);transform-origin:right/.test(c('Subrayado')) && /\.x:hover::before\{transform:scaleX\(1\);transform-origin:left\}/.test(c('Subrayado')), 'subrayado: ::before con scaleX y transform-origin que cambia');
+v(/\.x::before\{[^}]*transform:scaleX\(0\);transform-origin:left/.test(c('Subrayado')) && /\.x:hover::before\{transform:scaleX\(1\)\}/.test(c('Subrayado')), 'subrayado: por defecto (sin dirección guardada) = izquierda, origin fijo left');
+v(/transform-origin:right;/.test(c('SubDer')) && /\.x:hover::before\{transform:scaleX\(1\)\}/.test(c('SubDer')), 'subrayado: derecha = origin right fijo');
+v(/transform-origin:center;/.test(c('SubCentro')) && /\.x:hover::before\{transform:scaleX\(1\)\}/.test(c('SubCentro')), 'subrayado: centro = origin center fijo');
+v(/transform-origin:right;/.test(c('SubPasa')) && /\.x:hover::before\{transform:scaleX\(1\);transform-origin:left\}/.test(c('SubPasa')), 'subrayado: lado a lado = el origin cambia right → left');
+v(/bottom:-10px;height:4px/.test(c('SubGrueso')), 'subrayado: grosor 4 y separación 6 (bottom:-10px)');
+v(/bottom:-2px;height:2px/.test(c('Subrayado')), 'subrayado: grosor 2 y separación 0 por defecto');
 v(c('Subrayado').includes('background:#ff0000') && c('SubrayadoTexto').includes('background:currentColor'), 'subrayado: color elegible o el del texto');
 v(!c('Subrayado').includes('::after'), 'subrayado: no toca el ::after anti-parpadeo');
 v(/color:#00aa00!important/.test(c('Color')) && c('Color').includes(',color 0.2s'), 'color: color destino con transition de color');
@@ -66,23 +75,51 @@ async function rojos(el) {
   return { ...m, caja: r.w * r.dpr, x0: Math.floor(r.x * r.dpr) };
 }
 const estilo = (el, pseudo) => d.executeScript(`const c=getComputedStyle(arguments[0],arguments[1]);return {color:c.color,bg:c.backgroundColor,op:c.opacity,tr:c.transform,f:c.filter,wc:c.willChange}`, el, pseudo);
-async function revisar(contexto, buscar) {
-  const sub = await buscar('Subrayado');
+async function subrayado(contexto, buscar, nombre, dir) {
+  const sub = await buscar(nombre);
   await d.executeScript('arguments[0].scrollIntoView({block:"center"})', sub);
   await d.actions({ async: true }).move({ x: 3, y: 3 }).perform(); await esperar(500);
   const antes = await rojos(sub);
   await d.actions({ async: true }).move({ origin: sub }).perform();
   let medio = await rojos(sub);
-  for (let i = 0; i < 6 && medio.cuenta === 0; i++) medio = await rojos(sub); // primera captura con línea visible (mitad del crecimiento)   // a mitad de la transición
+  for (let i = 0; i < 6 && medio.cuenta === 0; i++) medio = await rojos(sub); // primera captura con línea visible
   await esperar(2000); const fin = await rojos(sub);
-  v(antes.cuenta === 0, `${contexto} subrayado: sin línea antes del hover`);
-  v(fin.cuenta > 0 && Math.abs(fin.ancho - fin.caja) <= 2, `${contexto} subrayado: línea roja del ancho del texto (${fin.ancho}/${fin.caja} px, ${fin.cuenta} px rojos)`);
-  v(medio.ancho > 0 && medio.ancho < fin.ancho - 3 && medio.izq <= 2, `${contexto} subrayado: la línea CRECE desde la izquierda (${medio.ancho} → ${fin.ancho} px, empieza en x+${medio.izq})`);
-  const t = await estilo(sub, ''); v(t.tr === 'none' && t.f === 'none' && t.wc === 'auto', `${contexto} subrayado: el texto sin transform, filter ni will-change`);
+  const L = `${contexto} subrayado ${dir}`;
+  v(antes.cuenta === 0, `${L}: sin línea antes del hover`);
+  v(fin.cuenta > 0 && Math.abs(fin.ancho - fin.caja) <= 2, `${L}: línea roja del ancho del texto (${fin.ancho}/${fin.caja} px)`);
+  const parcial = (m) => m.ancho > 0 && m.ancho < fin.ancho - 3;
+  const tocaIzq = (m) => m.izq <= 2, tocaDer = (m) => m.der >= fin.ancho - 2;
+  const soloIzq = (m) => tocaIzq(m) && !tocaDer(m), soloDer = (m) => tocaDer(m) && !tocaIzq(m), centro = (m) => !tocaIzq(m) && !tocaDer(m);
+  const entra = { izq: soloIzq, pasa: soloIzq, der: soloDer, centro }[dir];
+  v(parcial(medio) && entra(medio), `${L}: al entrar crece desde ${{ izq: 'la izquierda', pasa: 'la izquierda', der: 'la derecha', centro: 'el centro' }[dir]} (${medio.ancho} → ${fin.ancho} px, x+${medio.izq}..x+${medio.der})`);
+  const t = await estilo(sub, ''); v(t.tr === 'none' && t.f === 'none' && t.wc === 'auto', `${L}: el texto sin transform, filter ni will-change`);
   await d.actions({ async: true }).move({ x: 3, y: 3 }).perform();
   const sale = await rojos(sub); await esperar(2000);
-  v(sale.ancho > 0 && sale.ancho < fin.ancho - 3 && sale.der >= fin.ancho - 2, `${contexto} subrayado: al salir se encoge hacia la DERECHA (${sale.ancho} px, termina en x+${sale.der})`);
-  v((await rojos(sub)).cuenta === 0, `${contexto} subrayado: línea fuera tras salir`);
+  const recoge = { izq: soloIzq, der: soloDer, pasa: soloDer, centro }[dir];
+  v(parcial(sale) && recoge(sale), `${L}: al salir se recoge hacia ${{ izq: 'la izquierda', der: 'la derecha', pasa: 'la derecha', centro: 'el centro' }[dir]} (${sale.ancho} px, x+${sale.izq}..x+${sale.der})`);
+  v((await rojos(sub)).cuenta === 0, `${L}: línea fuera tras salir`);
+}
+// Entradas y salidas rápidas (varias en ~300 ms): se lee el transform-origin del ::before en cada paso.
+// En izq, der y centro no cambia nunca; en "pasa" sí (por eso la etiqueta avisa).
+async function rapido(contexto, buscar) {
+  for (const [nombre, fijo] of [['Subrayado', true], ['SubDer', true], ['SubCentro', true], ['SubPasa', false]]) {
+    const el = await buscar(nombre);
+    await d.executeScript('arguments[0].scrollIntoView({block:"center"})', el);
+    await d.actions({ async: true }).move({ x: 3, y: 3 }).perform(); await esperar(2200);
+    const lee = () => d.executeScript('return getComputedStyle(arguments[0],"::before").transformOrigin', el);
+    const vistos = new Set([await lee()]);
+    for (let i = 0; i < 4; i++) {
+      await d.actions({ async: true }).move({ origin: el }).perform(); vistos.add(await lee());
+      await d.actions({ async: true }).move({ x: 3, y: 3 }).perform(); vistos.add(await lee());
+    }
+    v(fijo ? vistos.size === 1 : vistos.size > 1, `${contexto} rápido ${nombre}: transform-origin ${fijo ? 'no cambia' : 'sí cambia (esperado)'} (${[...vistos].join(' | ')})`);
+    await esperar(2200);
+  }
+}
+async function revisar(contexto, buscar) {
+  const DIRS = { Subrayado: 'izq', SubDer: 'der', SubCentro: 'centro', SubPasa: 'pasa' };
+  for (const [nombre, dir] of Object.entries(DIRS)) await subrayado(contexto, buscar, nombre, dir);
+  await rapido(contexto, buscar);
   // Color
   const col = await buscar('Color');
   await d.actions({ async: true }).move({ origin: col }).perform(); await esperar(500);

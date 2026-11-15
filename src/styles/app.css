@@ -104,7 +104,7 @@ details.bloque .variantes button:hover { background: #3b3470; }
 .bloques button:hover { background: #3b3470; }
 
 /* Preview */
-#preview { overflow: auto; background: #111; padding: 20px; }
+#preview { overflow: auto; background: #111; padding: 20px; position: relative; }
 /* font-size/line-height y img: iguales al HTML exportado (para que preview = resultado) */
 .stage { background: #fff; margin: 0 auto; max-width: 100%; min-height: 100%; box-shadow: 0 0 0 1px #333; font-size: 16px; line-height: normal; }
 .stage.movil { width: 390px; }
@@ -265,3 +265,17 @@ details.bloque .variantes button:hover { background: #3b3470; }
 #inspector input[type=file] { width: 100%; min-width: 0; font-size: 11.5px; color: #9a9aa8; }
 #inspector input[type=file]::file-selector-button { margin-right: 8px; padding: 4px 8px; background: #2f2f38; color: #e8e8ee; border: 1px solid #44444f; border-radius: 6px; cursor: pointer; font: inherit; }
 #inspector input[type=file]::file-selector-button:hover { background: #3b3470; }
+
+/* Tiradores de espaciado (capa del editor sobre el preview; src/ui/tiradores.js). Fuera del .stage: no se exporta. */
+.tir-capa { position: absolute; left: 0; top: 0; width: 0; height: 0; z-index: 200; pointer-events: none; }
+.tir-capa [hidden] { display: none !important; }
+.tir-sombra { position: absolute; pointer-events: none; background: rgba(76, 201, 160, .30); }
+.tir-capa[data-modo="margin"] .tir-sombra { background: rgba(255, 176, 46, .32); }
+.tir-h { position: absolute; pointer-events: auto; touch-action: none; user-select: none; border-radius: 4px; background: #4cc9a0; border: 1.5px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.5); }
+.tir-capa[data-modo="margin"] .tir-h { background: #ffb02e; }
+.tir-h.horiz { cursor: ns-resize; }
+.tir-h.vert { cursor: ew-resize; }
+.tir-h:hover, .tir-h.activo { filter: brightness(1.15); }
+.tir-et { position: absolute; transform: translate(-50%, -50%); pointer-events: none; padding: 1px 6px; border-radius: 4px; background: #111; color: #fff; font: 600 11px/1.5 system-ui, sans-serif; white-space: nowrap; }
+.tir-modo { position: absolute; pointer-events: auto; padding: 1px 8px; border: 1px solid #44444f; border-radius: 4px; background: #1f1f26; color: #ddd; font: 11px/1.6 system-ui, sans-serif; cursor: pointer; }
+.tir-modo:hover { background: #2f2f38; color: #fff; }

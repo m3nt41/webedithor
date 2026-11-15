@@ -68,6 +68,8 @@ Motion vs CSS puro: m3nt41 ya decidió la opción (a), CSS puro donde se pueda y
 > Nota (2026-11-14): inspector con controles visuales de Forma (redondeo) y Tamaño de botón (padding + tamaño de fuente en un clic); escriben el mismo CSS de siempre. La lista de funciones no cambió.
 > Nota (2026-11-15): rediseño del inspector: cabecera fija (icono, nombre, tipo) y campos en 3 niveles plegables (Esencial / Estilo / Avanzado) por tipo de nodo; Esencial abierto y lo que el usuario abre se recuerda. Sin funciones nuevas ni quitadas; la lista no cambió.
 
+> Nota (2026-11-15): tiradores de espaciado en el preview: con un nodo seleccionado se arrastra su padding (secciones y contenedores) o su margen (títulos, textos, botones, imágenes e iconos) directamente en el lienzo; Shift = lado opuesto, Alt = 4 lados, Ctrl = múltiplos de 8; escribe en escritorio o móvil según la vista y es un solo paso de Undo. Es una herramienta del editor (no se exporta); la lista de funciones no cambió.
+
 ## Elementos (añadido 2026-11-14, mini-etapa iconos)
 - [x] Icono: elemento propio (tipo `icon`) con SVG de línea de una biblioteca de 41 iconos (Lucide, ISC); tamaño y color editables (también en móvil); sin emoticonos en bloques ni en la interfaz; las animaciones existentes (al aparecer, hover, press, scroll, estados) funcionan sobre él
 

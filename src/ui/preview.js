@@ -7,6 +7,7 @@ import { getState, subscribe, select, setContent, refresh } from '../core/store.
 import { renderNode, TIPOS_TEXTO, estadoMenu } from '../render/renderer.js';
 import { cssPagina, medirLineas } from '../animations/index.js';
 import { CSS_MENU_EDITOR } from '../core/menumovil.js';
+import { initTiradores } from './tiradores.js';
 
 export function initPreview(host) {
   // 'stage' es la "pantalla"; en la Etapa 3 cambiará de ancho (móvil/escritorio)
@@ -132,4 +133,5 @@ export function initPreview(host) {
     // 'text': no hacer nada
   });
   dibujar();
+  initTiradores(host, stage); // capa de tiradores de espaciado (fuera del .stage: no entra al export)
 }

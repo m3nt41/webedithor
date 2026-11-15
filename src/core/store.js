@@ -147,7 +147,10 @@ export function mutate(fn, tipo = 'page', clave = null) {
   fn(copia);
 
   const ahora = Date.now();
-  const agrupar = clave && clave === ultimaClave && ahora - ultimoCambio < VENTANA_AGRUPAR_MS;
+  // Una clave que empieza por "gesto:" (arrastres, p. ej. los tiradores de espaciado) agrupa SIN tope de tiempo:
+  // un arrastre lento con pausas sigue siendo un solo paso de undo. Cada gesto usa una clave nueva.
+  const sinTope = typeof clave === 'string' && clave.startsWith('gesto:');
+  const agrupar = clave && clave === ultimaClave && (sinTope || ahora - ultimoCambio < VENTANA_AGRUPAR_MS);
   if (!agrupar) {
     pasado.push(state.page); // el árbol anterior no se muta nunca, así que no hace falta copiarlo
     if (pasado.length > MAX_HISTORIAL) pasado.shift();
@@ -221,6 +224,19 @@ export function setStyles(id, valores) {
       if (n.autoPos) delete n.autoPos[modo === 'mobile' ? 'mobile' : 'base'][k];
     }
   }, 'page');
+}
+
+/** Como setStyles, pero para un GESTO (arrastre de tiradores): `clave` debe empezar por "gesto:" y es la misma durante todo
+ *  el arrastre, así que todo el gesto es UN solo paso de undo. `borrar` = claves a quitar en el mismo nivel (base o mobile). */
+export function setEstilosGesto(id, valores, borrar, clave) {
+  const modo = state.viewMode;
+  mutate((page) => {
+    const n = findNode(page, id);
+    if (!n) return;
+    const destino = modo === 'mobile' ? n.styles.mobile : n.styles.base;
+    for (const k of borrar) delete destino[k];
+    for (const [k, v] of Object.entries(valores)) destino[k] = v;
+  }, 'page', clave);
 }
 
 /** Tamaño de un Icono: escribe width Y height (cuadrado) en UN solo mutate. En móvil va a styles.mobile.

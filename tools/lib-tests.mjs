@@ -3,6 +3,32 @@
 //   correr  = build (una vez, opcional) + un test tras otro con timeout, sin reintentos, una línea por test y un resumen.
 // test:firefox sale con código 3 cuando Playwright no puede lanzar Firefox: cuenta como "omitido", no como fallo.
 import { spawnSync } from 'node:child_process';
+import { mkdirSync, readdirSync, rmSync } from 'node:fs';
+import { resolve, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import firefox from 'selenium-webdriver/firefox.js';
+
+// DESCARGAS DE LOS TESTS: el Firefox de prueba guarda lo que "descarga" (el .html exportado) en tmp-tests/ del
+// proyecto, NO en la carpeta Descargas del usuario. Un único sitio: todos los tests piden sus opciones aquí.
+const RAIZ = resolve(fileURLToPath(new URL('..', import.meta.url)));
+export const DESCARGAS = join(RAIZ, 'tmp-tests');
+
+/** Vacía tmp-tests/ (solo el CONTENIDO de esa carpeta; nunca toca nada fuera de ella). */
+export function vaciarDescargas() {
+  mkdirSync(DESCARGAS, { recursive: true });
+  for (const f of readdirSync(DESCARGAS)) rmSync(join(DESCARGAS, f), { recursive: true, force: true });
+}
+
+/** Opciones de Firefox para los tests: headless + binario + descargas a tmp-tests/ sin preguntar. */
+export function opcionesFirefox() {
+  mkdirSync(DESCARGAS, { recursive: true });
+  return new firefox.Options().addArguments('-headless')
+    .setBinary(process.env.FIREFOX_BIN || 'C:/Program Files/Mozilla Firefox/firefox.exe')
+    .setPreference('browser.download.folderList', 2)
+    .setPreference('browser.download.dir', DESCARGAS)
+    .setPreference('browser.download.useDownloadDir', true)
+    .setPreference('browser.helperApps.neverAsk.saveToDisk', 'text/html');
+}
 
 export const s = (n) => (n / 1000).toFixed(1) + 's';
 
@@ -41,6 +67,8 @@ export const ejecutar = (cmd, seg) => {
 /** Corre `lista` (entradas de SUITE) en orden. build: true = `npm run build` una vez antes. Imprime y termina el proceso con 0/1. */
 export function correr(lista, { build = true } = {}) {
   const T0 = Date.now();
+  vaciarDescargas(); // al empezar
+  process.on('exit', vaciarDescargas); // y al terminar (aunque salga con fallo)
   if (build) {
     const b = ejecutar('npm run build', 180);
     if (b.status !== 0) { console.log('✘ build ' + s(b.ms) + '\n' + b.out.split('\n').slice(-40).join('\n')); process.exit(1); }

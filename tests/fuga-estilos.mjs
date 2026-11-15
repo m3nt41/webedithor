@@ -7,6 +7,7 @@ import { Builder, By } from 'selenium-webdriver';
 import firefox from 'selenium-webdriver/firefox.js';
 import { createNode as n, walk } from '../src/core/tree.js';
 import { cssPagina } from '../src/animations/index.js';
+import { opcionesFirefox } from '../tools/lib-tests.mjs';
 
 const FIREFOX = process.env.FIREFOX_BIN || 'C:/Program Files/Mozilla Firefox/firefox.exe';
 const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -22,7 +23,7 @@ pagina.children.push(n('section', { name: 'Sec', children: [boton] }));
 const css = cssPagina(pagina);
 v(css.includes(`.stage [data-id="${boton.id}"]:hover`) && !/(^|[\n}])\[data-id=/.test(css), 'cssPagina acota los selectores a .stage');
 
-const d = await new Builder().forBrowser('firefox').setFirefoxOptions(new firefox.Options().addArguments('-headless').setBinary(FIREFOX)).build();
+const d = await new Builder().forBrowser('firefox').setFirefoxOptions(opcionesFirefox()).build();
 try {
   await d.manage().window().setRect({ width: 1400, height: 1000 });
   const url = pathToFileURL(resolve('dist/editor.html')).href;

@@ -12,6 +12,7 @@ import firefox from 'selenium-webdriver/firefox.js';
 import { createNode as n, walk } from '../src/core/tree.js';
 import { createBlock } from '../src/blocks/index.js';
 import { exportHTML } from '../src/export/exporter.js';
+import { opcionesFirefox } from '../tools/lib-tests.mjs';
 
 const FIREFOX = process.env.FIREFOX_BIN || 'C:/Program Files/Mozilla Firefox/firefox.exe';
 const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -36,7 +37,7 @@ const principal = () => pag(
 guardar('mq-base', exportHTML(principal()));
 
 const nuevo = async (reducido = false) => {
-  const o = new firefox.Options().addArguments('-headless').setBinary(FIREFOX);
+  const o = opcionesFirefox();
   if (reducido) o.setPreference('ui.prefersReducedMotion', 1);
   const dr = await new Builder().forBrowser('firefox').setFirefoxOptions(o).build();
   await dr.manage().window().setRect({ width: 1400, height: 1000 });

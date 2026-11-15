@@ -9,6 +9,7 @@ import { Builder, By } from 'selenium-webdriver';
 import firefox from 'selenium-webdriver/firefox.js';
 import { createNode as n } from '../src/core/tree.js';
 import { exportHTML } from '../src/export/exporter.js';
+import { opcionesFirefox } from '../tools/lib-tests.mjs';
 
 const FIREFOX = process.env.FIREFOX_BIN || 'C:/Program Files/Mozilla Firefox/firefox.exe';
 const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -32,7 +33,7 @@ const ids = Object.fromEntries(Object.entries(nodos).map(([k, x]) => [k, x.id]))
 mkdirSync('tests/out', { recursive: true });
 writeFileSync('tests/out/hover-texto.html', exportHTML(pagina));
 
-const d = await new Builder().forBrowser('firefox').setFirefoxOptions(new firefox.Options().addArguments('-headless').setBinary(FIREFOX)).build();
+const d = await new Builder().forBrowser('firefox').setFirefoxOptions(opcionesFirefox()).build();
 // Estilo calculado de un elemento tras pasar el mouse
 async function medir(sel) {
   const el = await d.findElement(By.css(sel));

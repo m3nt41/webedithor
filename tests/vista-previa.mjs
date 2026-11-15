@@ -8,6 +8,7 @@ import firefox from 'selenium-webdriver/firefox.js';
 import { createNode as n } from '../src/core/tree.js';
 import { createBlock } from '../src/blocks/index.js';
 import { exportHTML } from '../src/export/exporter.js';
+import { opcionesFirefox } from '../tools/lib-tests.mjs';
 
 const FIREFOX = process.env.FIREFOX_BIN || 'C:/Program Files/Mozilla Firefox/firefox.exe';
 const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -19,7 +20,7 @@ const pie = pagina.children[pagina.children.length - 1];
 pie.content = { ...(pie.content || {}), anchor: 'pie' };
 pagina.children[0].children.push(n('button', { name: 'IrAlPie', content: { text: 'IrAlPie', href: '#pie' } }));
 
-const d = await new Builder().forBrowser('firefox').setFirefoxOptions(new firefox.Options().addArguments('-headless').setBinary(FIREFOX)).build();
+const d = await new Builder().forBrowser('firefox').setFirefoxOptions(opcionesFirefox()).build();
 try {
   await d.manage().window().setRect({ width: 1300, height: 1000 });
   const url = pathToFileURL(resolve('dist/editor.html')).href;

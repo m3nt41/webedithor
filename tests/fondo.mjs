@@ -11,6 +11,7 @@ import firefox from 'selenium-webdriver/firefox.js';
 import { createNode as n, walk } from '../src/core/tree.js';
 import { createBlock } from '../src/blocks/index.js';
 import { exportHTML } from '../src/export/exporter.js';
+import { opcionesFirefox } from '../tools/lib-tests.mjs';
 
 const FIREFOX = process.env.FIREFOX_BIN || 'C:/Program Files/Mozilla Firefox/firefox.exe';
 const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -19,7 +20,7 @@ const LS = 'editor-landings:pagina';
 const pagina = n('page', { name: 'Página' });
 pagina.children.push(createBlock('hero', 'oscuro'));
 
-const d = await new Builder().forBrowser('firefox').setFirefoxOptions(new firefox.Options().addArguments('-headless').setBinary(FIREFOX)).build();
+const d = await new Builder().forBrowser('firefox').setFirefoxOptions(opcionesFirefox()).build();
 try {
   await d.manage().window().setRect({ width: 1400, height: 1100 });
   const url = pathToFileURL(resolve('dist/editor.html')).href;

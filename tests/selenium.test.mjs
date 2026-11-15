@@ -9,13 +9,14 @@ import { readFileSync } from 'node:fs';
 import { Builder, By, Key } from 'selenium-webdriver';
 import firefox from 'selenium-webdriver/firefox.js';
 import './generar.mjs'; // genera tests/out/*.html con el código actual del editor
+import { opcionesFirefox } from '../tools/lib-tests.mjs';
 
 const out = join(dirname(fileURLToPath(import.meta.url)), 'out');
 const FIREFOX = process.env.FIREFOX_BIN || 'C:\\Program Files\\Mozilla Firefox\\firefox.exe';
 let driver;
 
 before(async () => {
-  const opts = new firefox.Options().addArguments('-headless').setBinary(FIREFOX); // sin -profile: perfil temporal limpio
+  const opts = opcionesFirefox(); // sin -profile: perfil temporal limpio
   driver = await new Builder().forBrowser('firefox').setFirefoxOptions(opts).build();
   const caps = await driver.getCapabilities();
   console.log(`   Firefox ${caps.get('browserVersion')} · perfil temporal: ${caps.get('moz:profile')}`);
@@ -283,7 +284,7 @@ test('scroll suave: convive con escenas por scroll', opts, async () => {
 });
 
 test('scroll suave: con "reducir movimiento" no intercepta (Firefox con ui.prefersReducedMotion=1)', opts, async () => {
-  const o = new firefox.Options().addArguments('-headless').setBinary(FIREFOX);
+  const o = opcionesFirefox();
   o.setPreference('ui.prefersReducedMotion', 1);
   const d2 = await new Builder().forBrowser('firefox').setFirefoxOptions(o).build();
   try {

@@ -14,6 +14,7 @@ import { ICONOS } from '../src/blocks/iconos-data.js';
 import { exportHTML } from '../src/export/exporter.js';
 import { createPage, walk, normalizePage } from '../src/core/tree.js';
 import { iconoSvg } from '../src/core/icono.js';
+import { opcionesFirefox } from '../tools/lib-tests.mjs';
 
 let ok = 0;
 const v = (c, m) => { assert.ok(c, m); ok++; console.log('OK   ' + m); };
@@ -50,7 +51,7 @@ v(/stroke-dasharray/.test(iconoSvg('no-existe')), 'un name inexistente dibuja el
 // ---------- Parte 2: Firefox ----------
 const FIREFOX = process.env.FIREFOX_BIN || 'C:/Program Files/Mozilla Firefox/firefox.exe';
 const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
-const d = await new Builder().forBrowser('firefox').setFirefoxOptions(new firefox.Options().addArguments('-headless').setBinary(FIREFOX)).build();
+const d = await new Builder().forBrowser('firefox').setFirefoxOptions(opcionesFirefox()).build();
 const $ = (c) => d.findElement(By.css(c));
 const $$ = (c) => d.findElements(By.css(c));
 const js = (code, ...a) => d.executeScript(code, ...a);

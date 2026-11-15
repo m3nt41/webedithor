@@ -4,3 +4,4 @@ dist
 tests/out
 test-results
 playwright-report
+tmp-tests

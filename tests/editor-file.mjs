@@ -5,9 +5,10 @@ import { pathToFileURL } from 'node:url';
 import { resolve } from 'node:path';
 import { Builder, By } from 'selenium-webdriver';
 import firefox from 'selenium-webdriver/firefox.js';
+import { opcionesFirefox } from '../tools/lib-tests.mjs';
 
 const FIREFOX = process.env.FIREFOX_BIN || 'C:/Program Files/Mozilla Firefox/firefox.exe';
-const opts = new firefox.Options().addArguments('-headless').setBinary(FIREFOX);
+const opts = opcionesFirefox();
 const d = await new Builder().forBrowser('firefox').setFirefoxOptions(opts).build();
 const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
 try {

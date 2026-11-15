@@ -11,6 +11,7 @@ import firefox from 'selenium-webdriver/firefox.js';
 import { createNode as n } from '../src/core/tree.js';
 import { exportHTML } from '../src/export/exporter.js';
 import { cssNodo } from '../src/animations/index.js';
+import { opcionesFirefox } from '../tools/lib-tests.mjs';
 
 const FIREFOX = process.env.FIREFOX_BIN || 'C:/Program Files/Mozilla Firefox/firefox.exe';
 const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -38,7 +39,7 @@ v(!cssNodo(sticky, '.x', { scroll: false }).includes('position:relative') && css
 mkdirSync('tests/out', { recursive: true });
 writeFileSync('tests/out/hover-borde.html', exportHTML(pagina));
 
-const d = await new Builder().forBrowser('firefox').setFirefoxOptions(new firefox.Options().addArguments('-headless').setBinary(FIREFOX)).build();
+const d = await new Builder().forBrowser('firefox').setFirefoxOptions(opcionesFirefox()).build();
 // Mueve el mouse al borde indicado y cuenta cuántas veces cambia :hover en ~1.2 s
 async function oscila(el, borde) {
   await d.executeScript('arguments[0].scrollIntoView({block:"center"})', el);

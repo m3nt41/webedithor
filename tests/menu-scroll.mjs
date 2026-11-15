@@ -10,6 +10,7 @@ import firefox from 'selenium-webdriver/firefox.js';
 import { createNode as n } from '../src/core/tree.js';
 import { createBlock } from '../src/blocks/index.js';
 import { exportHTML } from '../src/export/exporter.js';
+import { opcionesFirefox } from '../tools/lib-tests.mjs';
 
 const FIREFOX = process.env.FIREFOX_BIN || 'C:/Program Files/Mozilla Firefox/firefox.exe';
 const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -32,7 +33,7 @@ const armar = (variante, caso) => { const nav = createBlock('navbar', variante);
 writeFileSync('tests/out/scroll-host.html', `<!doctype html><body style="margin:0"><iframe id="f" style="border:0;display:block" width="390" height="700"></iframe>
 <script>document.getElementById('f').src=new URLSearchParams(location.search).get('src')</script></body>`);
 
-const d = await new Builder().forBrowser('firefox').setFirefoxOptions(new firefox.Options().addArguments('-headless').setBinary(FIREFOX)).build();
+const d = await new Builder().forBrowser('firefox').setFirefoxOptions(opcionesFirefox()).build();
 const fu = (nombre) => pathToFileURL(resolve(`tests/out/${nombre}.html`)).href;
 const js = (s, ...a) => d.executeScript(s, ...a);
 // sin sticky la barra solo es alcanzable cerca de arriba (a mitad de página no se ve ni se puede pulsar); con sticky, a mitad

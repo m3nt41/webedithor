@@ -8,6 +8,7 @@ import { Builder, By, Key } from 'selenium-webdriver';
 import firefox from 'selenium-webdriver/firefox.js';
 import { createNode as n, walk } from '../src/core/tree.js';
 import { createBlock } from '../src/blocks/index.js';
+import { opcionesFirefox } from '../tools/lib-tests.mjs';
 
 const FIREFOX = process.env.FIREFOX_BIN || 'C:/Program Files/Mozilla Firefox/firefox.exe';
 const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -16,7 +17,7 @@ const LS = 'editor-landings:pagina';
 const pagina = n('page', { name: 'Página' });
 pagina.children.push(createBlock('navbar', 'oscuro'), createBlock('gallery', 'oscura'), createBlock('footer'));
 
-const d = await new Builder().forBrowser('firefox').setFirefoxOptions(new firefox.Options().addArguments('-headless').setBinary(FIREFOX)).build();
+const d = await new Builder().forBrowser('firefox').setFirefoxOptions(opcionesFirefox()).build();
 let fallas = 0;
 const ver = (ok, msg, extra = '') => { if (!ok) fallas++; console.log(`${ok ? 'OK   ' : 'FALLA'} ${msg}${extra ? '  → ' + extra : ''}`); };
 const url = pathToFileURL(resolve('dist/editor.html')).href;

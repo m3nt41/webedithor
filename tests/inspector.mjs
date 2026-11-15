@@ -9,6 +9,7 @@ import { createNode as n, walk } from '../src/core/tree.js';
 import { createBlock } from '../src/blocks/index.js';
 import { exportHTML } from '../src/export/exporter.js';
 import { botonTema, MODOS } from '../src/blocks/tema.js';
+import { opcionesFirefox } from '../tools/lib-tests.mjs';
 
 const FIREFOX = process.env.FIREFOX_BIN || 'C:/Program Files/Mozilla Firefox/firefox.exe';
 const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -34,7 +35,7 @@ g3.children[0].name = 'FotoG3'; // nombre único: la foto de la galería "cuadri
 gAuto.styles.base.margin = '20px 0';
 gAuto.styles.base.maxWidth = '900';   // sin unidad: el navegador lo ignora
 
-const d = await new Builder().forBrowser('firefox').setFirefoxOptions(new firefox.Options().addArguments('-headless').setBinary(FIREFOX)).build();
+const d = await new Builder().forBrowser('firefox').setFirefoxOptions(opcionesFirefox()).build();
 try {
   await d.manage().window().setRect({ width: 1400, height: 1100 });
   const url = pathToFileURL(resolve('dist/editor.html')).href;

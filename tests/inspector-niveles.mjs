@@ -8,6 +8,7 @@ import { resolve } from 'node:path';
 import { Builder, By, Key } from 'selenium-webdriver';
 import firefox from 'selenium-webdriver/firefox.js';
 import { createNode as n, walk } from '../src/core/tree.js';
+import { opcionesFirefox } from '../tools/lib-tests.mjs';
 
 const FIREFOX = process.env.FIREFOX_BIN || 'C:/Program Files/Mozilla Firefox/firefox.exe';
 const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -24,7 +25,7 @@ pagina.children.push(n('section', { name: 'Sec', styles: { base: { padding: '10p
   ] }),
 ] }));
 
-const d = await new Builder().forBrowser('firefox').setFirefoxOptions(new firefox.Options().addArguments('-headless').setBinary(FIREFOX)).build();
+const d = await new Builder().forBrowser('firefox').setFirefoxOptions(opcionesFirefox()).build();
 try {
   await d.manage().window().setRect({ width: 1400, height: 1100 });
   const url = pathToFileURL(resolve('dist/editor.html')).href;

@@ -41,7 +41,7 @@ export const MAPA = {
   'src/ui/tiradores.js': ['tiradores', 'tiradores-interruptor', 'rebote-inspector'],
   'src/ui/tiradores-pref.js': ['tiradores-interruptor'],
   'src/ui/efectos.js': ['copiar-efectos'],
-  'src/animations/text.js': ['cascada-tope', 'texto-final-letras', 'texto-capas', 'selenium', 'ronda7', 'vistaprevia'],
+  'src/animations/text.js': ['cascada-tope', 'texto-final-letras', 'texto-capas', 'export-igual-vista', 'selenium', 'ronda7', 'vistaprevia'],
   'src/animations/copiar.js': ['copiar-efectos', 'hover-crece'],
   'src/ui/espaciado.js': ['tiradores'],
   'src/ui/imagen.js': ['fondo'],
@@ -67,7 +67,7 @@ export const MAPA = {
   'src/blocks/': ['tema', 'plan-ia', 'plan-ia-ui', 'ronda7'], // cualquier otro bloque (hero, services, gallery, index.js, util.js...)
 
   // ---- Animaciones (CSS exportado, validación y su panel) ----
-  'src/animations/hover.js': ['hover-crece', 'sombra-reposo', 'hover', 'hover-texto', 'hover-borde', 'hover-nuevos', 'selenium', 'ronda7'],
+  'src/animations/hover.js': ['hover-crece', 'export-igual-vista', 'sombra-reposo', 'hover', 'hover-texto', 'hover-borde', 'hover-nuevos', 'selenium', 'ronda7'],
   'src/animations/focus.js': ['sombra-reposo', 'hover', 'hover-texto', 'hover-borde', 'hover-nuevos', 'selenium', 'ronda7'],
   'src/animations/parallax.js': ['parallax-nativo', 'parallax-recorte', 'selenium', 'ronda7'],
   'src/animations/scrollmotor.js': ['parallax-nativo', 'selenium', 'ronda7'],

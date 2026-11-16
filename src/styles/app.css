@@ -249,8 +249,12 @@ details.bloque .variantes button:hover { background: #3b3470; }
 #inspector details.nivel-avanzado > summary { font-size: 10.5px; opacity: .85; }
 
 /* Títulos de grupo dentro de un nivel */
-#inspector .nivel-cuerpo h3 { margin: 16px 0 8px; font-size: 12px; font-weight: 600; color: #b9a8ff; letter-spacing: .01em; }
-#inspector .nivel-cuerpo h3:first-child { margin-top: 4px; }
+#inspector :is(.nivel-cuerpo, .nivel-plano) h3 { margin: 16px 0 8px; font-size: 12px; font-weight: 600; color: #b9a8ff; letter-spacing: .01em; }
+#inspector :is(.nivel-cuerpo, .nivel-plano) h3:first-child { margin-top: 4px; }
+/* Vista plana (nodo page): mismo relleno lateral que el cuerpo de un nivel, para que nada toque el borde (ni la barra de scroll) */
+#inspector .nivel-plano { padding: 8px 16px 12px; min-width: 0; }
+#inspector .nivel-plano > h3 { margin-top: 24px; padding-top: 12px; border-top: 1px solid #2f2f38; }
+#inspector .nivel-plano > h3:first-child { margin-top: 0; padding-top: 0; border-top: 0; }
 #inspector details.nivel-avanzado h3 { color: #9a9aa8; }
 
 /* Campos: etiqueta a la izquierda (84px) o, en filas de columnas, arriba */

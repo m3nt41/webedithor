@@ -13,6 +13,8 @@ import { createNode as n } from '../src/core/tree.js';
 const FIREFOX = process.env.FIREFOX_BIN || 'C:/Program Files/Mozilla Firefox/firefox.exe';
 const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
 const MOVIL = process.argv.includes('--movil');
+const ANCHO = Number((process.argv.find((a) => a.startsWith('--ancho=')) || '--ancho=1400').slice(8)); // ancho de ventana; distinto de 1400 añade -w<ancho> al nombre
+const SOLO_PAGE = process.argv.includes('--solo-page');
 const SALIDA = resolve('docs/capturas-inspector');
 mkdirSync(SALIDA, { recursive: true });
 
@@ -28,7 +30,7 @@ const casos = [
 
 const d = await new Builder().forBrowser('firefox').setFirefoxOptions(new firefox.Options().addArguments('-headless').setBinary(FIREFOX)).build();
 try {
-  await d.manage().window().setRect({ width: 1400, height: 1000 });
+  await d.manage().window().setRect({ width: ANCHO, height: 1000 });
   const url = pathToFileURL(resolve('dist/editor.html')).href;
   await d.get(url);
   await d.executeScript(`localStorage.setItem('editor-landings:pagina', arguments[0]); localStorage.removeItem('editor-landings:niveles')`, JSON.stringify(pagina));
@@ -43,17 +45,18 @@ try {
   const foto = async (nombre) => {
     // El panel mide el alto de la ventana: para ver TODO el contenido se alarga la ventana hasta que el cuerpo entre sin scroll
     const alto = await d.executeScript(`const c=document.querySelector('#inspector .insp-cuerpo'); const cab=document.querySelector('#inspector .insp-cab'); return c.scrollHeight+(cab?cab.offsetHeight:0)+44+8`);
-    await d.manage().window().setRect({ width: 1400, height: Math.min(Math.max(alto + 90, 500), 4000) });
+    await d.manage().window().setRect({ width: ANCHO, height: Math.min(Math.max(alto + 90, 500), 4000) });
     await esperar(200);
     const el = await d.findElement(By.css('#inspector'));
     writeFileSync(`${SALIDA}/${nombre}.png`, await el.takeScreenshot(), 'base64');
   };
-  const sufijo = MOVIL ? '-movil' : '';
+  const sufijo = (MOVIL ? '-movil' : '') + (ANCHO !== 1400 ? '-w' + ANCHO : '');
   for (const [tipo, nodo] of casos) {
-    await d.manage().window().setRect({ width: 1400, height: 1000 });
+    if (SOLO_PAGE && tipo !== 'page') continue;
+    await d.manage().window().setRect({ width: ANCHO, height: 1000 });
     await seleccionar(nodo.id);
     await niveles(true); await esperar(150); await foto(`${tipo}-abierto${sufijo}`);
-    await d.manage().window().setRect({ width: 1400, height: 1000 });
+    await d.manage().window().setRect({ width: ANCHO, height: 1000 });
     await niveles(false); await esperar(150); await foto(`${tipo}-plegado${sufijo}`);
     console.log('captura', tipo);
   }

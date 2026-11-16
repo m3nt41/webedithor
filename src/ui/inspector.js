@@ -337,8 +337,10 @@ export function initInspector(host) {
           G[niv] += `<details class="avanzado" data-g="${esc(g.titulo)}"${abrir ? ' open' : ''}><summary>Valor CSS exacto</summary>` +
             conControl[niv].map((c) => crudosDe(c).map((r) => htmlTexto(r.key, r.v, r.placeholder, r.label, r.ov)).join('')).join('') + '</details>';
         }
-        if (G[niv]) { if (planoPage) planoEstilos += `<h3>${g.titulo}</h3>` + G[niv]; else N[niv] += `<h3>${g.titulo}</h3>` + G[niv]; }
+        if (G[niv] && !planoPage) N[niv] += `<h3>${g.titulo}</h3>` + G[niv];
       }
+      // Vista plana (page): los 3 niveles del grupo se juntan bajo UN solo título
+      if (planoPage) { const todo = G.esencial + G.estilo + G.avanzado; if (todo) planoEstilos += `<h3>${g.titulo}</h3>` + todo; }
     }
 
     // ---- Animaciones (los grupos viven en src/animations/) ----

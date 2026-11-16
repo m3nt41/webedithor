@@ -44,7 +44,7 @@ try {
   await new Promise((r) => setTimeout(r, 600));
   const R = await d.executeScript(`const o={};document.querySelectorAll('h2[id]').forEach(h=>{
     const L=[...h.querySelectorAll('.w')].filter(w=>!w.classList.contains('ln')||true);
-    const an=h.getAnimations({subtree:true}).map(a=>a.effect.getComputedTiming());
+    const an=h.getAnimations({subtree:true}).filter(a=>!a.effect.target.classList.contains('tw')).map(a=>a.effect.getComputedTiming()); // (el contenedor .tw de Subir/Bajar no es una pieza de la cascada)
     const dl=an.map(t=>t.delay);o[h.id]={n:an.length,ultimoRetardo:Math.max(...dl),primero:Math.min(...dl),fin:Math.max(...an.map(t=>t.endTime))};});return o;`);
   console.log(JSON.stringify(R));
   for (const [id, , modo, st, de, topado] of casos) {

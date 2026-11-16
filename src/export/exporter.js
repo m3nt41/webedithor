@@ -13,7 +13,7 @@ import { usaMenuMovil, paginaUsaMenuMovil, cssMenuMovil, varsMenu, necesitaAncla
 import { usaMarquesina, cssMarquesina, htmlMarquesina, keyframesMarquesina } from '../core/marquesina.js';
 import { declaracionesSombra } from '../animations/base.js';
 import { tieneParallaxNativoDentro } from '../animations/parallax.js';
-import { usaEscena, varsEscena, esNavPegado, paginaUsaEscena, CSS_ESCENA, atributosScroll, paginaUsaScrollLink, SCRIPT_SCROLLMOTOR, SCRIPT_SCROLLSUAVE, paginaUsaScrollSuave, cssNodo, usaScroll, usaCarga, usaClic, paginaUsaScroll, paginaUsaEntrada, paginaUsaMedida, paginaUsaClic, esMedida, splitText, saltosCascada, KEYFRAMES, SCRIPT_SCROLL, SCRIPT_LINEAS, SCRIPT_CLIC } from '../animations/index.js';
+import { usaEscena, varsEscena, esNavPegado, paginaUsaEscena, CSS_ESCENA, atributosScroll, paginaUsaScrollLink, SCRIPT_SCROLLMOTOR, SCRIPT_SCROLLSUAVE, paginaUsaScrollSuave, cssNodo, usaScroll, usaCarga, usaClic, paginaUsaScroll, paginaUsaEntrada, paginaUsaMedida, paginaUsaClic, esMedida, splitText, saltosCascada, usaContenedor, KEYFRAMES, SCRIPT_SCROLL, SCRIPT_LINEAS, SCRIPT_CLIC } from '../animations/index.js';
 
 export const BREAKPOINT_MOVIL = 768;
 
@@ -91,7 +91,9 @@ export function exportHTML(page) {
     const abre = `<${tag} class="${clase}"${attrs}>`;
     if (TIPOS_TEXTO.includes(node.type)) {
       const modo = node.animation?.text?.mode;
-      const interior = modo ? textoPartidoHtml(c.text, modo) : escHtml(c.text).replace(/\n/g, '<br>');
+      // Subir/Bajar por letras o palabras: UN contenedor .tw hace la subida y las piezas solo se funden (animations/text.js, usaContenedor)
+      const partido = modo ? textoPartidoHtml(c.text, modo) : '';
+      const interior = modo ? (usaContenedor(node.animation.text) ? `<span class="tw">${partido}</span>` : partido) : escHtml(c.text).replace(/\n/g, '<br>');
       // --g = nº de saltos de la cascada: el CSS de texto lo usa para topar la cascada total (animations/text.js)
       const abreTexto = modo && modo !== 'linesm' ? abre.replace(/>$/, ` style="--g:${saltosCascada(c.text, modo)}">`) : abre;
       return `${sangria}${abreTexto}${interior}</${tag}>`;
@@ -160,13 +162,13 @@ export function exportHTML(page) {
     usaEscena0 ? CSS_ESCENA : '',
     ...cssAnim,
     // "Reducir movimiento": sin animaciones de entrada y sin transiciones (hover/press/focus/estados cambian de golpe)
-    usaEntrada ? '@media (prefers-reduced-motion:reduce){[data-rv],[data-ld],[data-rv] .w,[data-ld] .w,[data-rv]>*,[data-ld]>*{animation:none!important}}' : '',
+    usaEntrada ? '@media (prefers-reduced-motion:reduce){[data-rv],[data-ld],[data-rv] .w,[data-ld] .w,[data-rv] .tw,[data-ld] .tw,[data-rv]>*,[data-ld]>*{animation:none!important}}' : '',
     cssAnim.length ? '@media (prefers-reduced-motion:reduce){*{transition:none!important}}' : '',
     cssMenuReducido.length ? `@media (prefers-reduced-motion:reduce){${cssMenuReducido.join('')}}` : '',
     ...[...kfMarquesina].sort().map(keyframesMarquesina),
     cssMqReducido.length ? `@media (prefers-reduced-motion:reduce){${cssMqReducido.join('')}}` : '',
   ].filter(Boolean).join('\n');
-  const noscript = usaRv ? '<noscript><style>[data-rv],[data-rv] .w,[data-rv]>*{animation:none!important}</style></noscript>\n' : '';
+  const noscript = usaRv ? '<noscript><style>[data-rv],[data-rv] .w,[data-rv] .tw,[data-rv]>*{animation:none!important}</style></noscript>\n' : '';
   // El script de medición solo viaja si algún texto usa "Por línea (medida)"
   // (y el de clic solo si algún estado "al hacer clic" lo necesita)
   const scripts = [paginaUsaMedida(page) ? SCRIPT_LINEAS : '', usaRv ? SCRIPT_SCROLL : '', paginaUsaClic(page) ? SCRIPT_CLIC : '', paginaUsaScrollLink(page) ? SCRIPT_SCROLLMOTOR : '', paginaUsaScrollSuave(page) ? SCRIPT_SCROLLSUAVE : '', paginaUsaMenuMovil(page) ? SCRIPT_MENU : ''].filter(Boolean).join('\n');

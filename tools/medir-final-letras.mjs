@@ -26,7 +26,7 @@ export const PAG = (extraBase = {}, extraAnim = {}) => {
   }
   p.children.push(s);
   // Las animaciones nacen PAUSADAS (así no hay carrera con el reloj): la medición las coloca a 1 ms del final y las termina.
-  return exportHTML(p).replace('</body>', () => '<style id="pausa">.w{animation-play-state:paused!important}</style></body>');
+  return exportHTML(p).replace('</body>', () => '<style id="pausa">.w,.tw{animation-play-state:paused!important}</style></body>');
 };
 
 const lum = (p) => 0.299 * p[0] + 0.587 * p[1] + 0.114 * p[2];
@@ -46,7 +46,7 @@ export async function medir(d, etiqueta = '') {
       const wr=[...el.querySelectorAll('.ww')].map(w=>{const r=w.getBoundingClientRect();return [+r.left.toFixed(3),+r.width.toFixed(3)]});
       const rr=document.createRange();rr.selectNodeContents(ref);const tr=rr.getBoundingClientRect();
       const sp=[...el.childNodes].filter(x=>x.nodeType===3).map(x=>x.textContent);
-      return {anchoPartido:+tr.width.toFixed(3)&&+(()=>{const q=document.createRange();q.selectNodeContents(el);return q.getBoundingClientRect().width})().toFixed(3),anchoNormal:+tr.width.toFixed(3),
+      return {anchoPartido:+(()=>{const L=[...el.querySelectorAll('.w')].map(w=>w.getBoundingClientRect());return Math.max(...L.map(r=>r.right))-Math.min(...L.map(r=>r.left))})().toFixed(3),anchoNormal:+tr.width.toFixed(3),
         palabrasX:wr,fuente:getComputedStyle(el).fontFamily,lineas:new Set([...el.querySelectorAll('.w')].map(w=>w.offsetTop)).size,
         hijosAntes:el.querySelectorAll('*').length,nodosTextoEntrePalabras:JSON.stringify(sp)};`, el, ref);
     // A: todas las animaciones congeladas a 1 ms del final
@@ -63,10 +63,12 @@ export async function medir(d, etiqueta = '') {
     const refRect = await d.executeScript('const r=arguments[0].getBoundingClientRect();return [r.left,r.top,r.width,r.height]', ref);
     const fr = await d.takeScreenshot();
     const A = leerPng(fa), B = leerPng(fb), F = leerPng(fr);
-    const [bx, by, bw, bh] = gA.b.map(Math.round); const dy = Math.round(refRect[1] - gA.b[1]);
+    // Las capturas salen en píxeles de DISPOSITIVO: con zoom/DPR distinto de 1 hay que escalar las regiones (a DPR 1 no cambia nada)
+    const k = await d.executeScript('return devicePixelRatio');
+    const [bx, by, bw, bh] = gA.b.map((v) => Math.round(v * k)); const dy = Math.round((refRect[1] - gA.b[1]) * k);
     const Fy = { px: (x, y) => F.px(x, y + dy), w: F.w, h: F.h };
     const palabras = gA.w.map((w, i) => {
-      const x0 = Math.floor(w[0]) - 4, ww = Math.ceil(w[2]) + 8;
+      const x0 = Math.floor(w[0] * k) - 4, ww = Math.ceil(w[2] * k) + 8;
       const cA = centro(A, x0, by, ww, bh), cB = centro(B, x0, by, ww, bh), cF = centro(Fy, x0, by, ww, bh);
       return { i, anchoA: +w[2].toFixed(3), anchoB: +gB.w[i][2].toFixed(3), xA: +w[0].toFixed(3), xB: +gB.w[i][0].toFixed(3),
         centroTintaA: +cA.toFixed(3), centroTintaB: +cB.toFixed(3), centroTintaNormal: +cF.toFixed(3), desplazaAaB: +(cB - cA).toFixed(3), desplazaBaNormal: +(cB - cF).toFixed(3) };

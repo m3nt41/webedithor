@@ -184,7 +184,9 @@ export const KEYFRAMES = `@keyframes a-fade{from{opacity:0}}
 @keyframes a-zoom{from{opacity:0;scale:.8}}
 @keyframes a-blur{from{opacity:0;filter:blur(12px)}}
 @keyframes a-flip{from{opacity:0;transform:perspective(600px) rotateX(-70deg)}}
-@keyframes a-rotate{from{opacity:0;rotate:var(--ar,-90deg)}}`;
+@keyframes a-rotate{from{opacity:0;rotate:var(--ar,-90deg)}}
+@keyframes a-subir{from{translate:0 var(--ad,40px)}}
+@keyframes a-bajar{from{translate:0 calc(var(--ad,40px)*-1)}}`;
 
 /** Campos comunes (duración, retraso, curva, distancia). */
 export const camposComunes = [

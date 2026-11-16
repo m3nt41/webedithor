@@ -41,7 +41,7 @@ export const MAPA = {
   'src/ui/tiradores.js': ['tiradores', 'tiradores-interruptor', 'rebote-inspector'],
   'src/ui/tiradores-pref.js': ['tiradores-interruptor'],
   'src/ui/efectos.js': ['copiar-efectos'],
-  'src/animations/text.js': ['cascada-tope', 'texto-final-letras', 'selenium', 'ronda7', 'vistaprevia'],
+  'src/animations/text.js': ['cascada-tope', 'texto-final-letras', 'texto-capas', 'selenium', 'ronda7', 'vistaprevia'],
   'src/animations/copiar.js': ['copiar-efectos'],
   'src/ui/espaciado.js': ['tiradores'],
   'src/ui/imagen.js': ['fondo'],
@@ -72,7 +72,7 @@ export const MAPA = {
   'src/animations/parallax.js': ['parallax-nativo', 'parallax-recorte', 'selenium', 'ronda7'],
   'src/animations/scrollmotor.js': ['parallax-nativo', 'selenium', 'ronda7'],
   'src/animations/index.js': ['parallax-nativo', 'hover', 'selenium', 'ronda7', 'fuga-estilos'],
-  'src/animations/base.js': ['sombra-reposo', 'hover', 'hover-texto', 'hover-borde', 'hover-nuevos', 'selenium', 'ronda7', 'inspector', 'vistaprevia'],
+  'src/animations/base.js': ['texto-capas', 'sombra-reposo', 'hover', 'hover-texto', 'hover-borde', 'hover-nuevos', 'selenium', 'ronda7', 'inspector', 'vistaprevia'],
   'src/animations/': ['selenium', 'ronda7', 'inspector', 'vistaprevia'],
 
   // ---- Tests (cada archivo de tests/ corre su propio test; ver también `testDeArchivo` en test-cambios.mjs) ----

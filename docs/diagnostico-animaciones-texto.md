@@ -118,3 +118,54 @@ Notas: **no existe ningún hover que mueva letras sueltas** (todos actúan sobre
 **Chrome 157 (Claude in Chrome, dpr 1,25):** misma cascada topada (retardo de la última letra 2 s en 354 letras), mismos anchos de kerning (+4,5 y +34,7 px en "Waveform"/"AVATAR" solo con letras `inline-block`; 0 con `inline`/`contents`), mismo A' (0 px de cambio de posición, DOM intacto, ancho partido = normal ±0,05 px). **Sin verificar en Chrome:** todo lo que sea por píxeles (la extensión no los lee) y el aspecto del botón en vuelo.
 
 **Sigue sin resolverse (otra tarea, a petición):** el cambio de antialiasing al terminar las animaciones con movimiento y el posible lag de los hovers con `text-shadow` (Elevar y Resplandor).
+
+## 7. Llevar al editor lo que ganó en el banco (2026-11-16): qué quedó resuelto y qué no
+
+Veredicto de m3nt41 a ojo (Firefox y Chrome, zoom por encima de 120 %) en `tools/banco-texto.html` (el banco NO se borra todavía). Hipótesis de partida (sin confirmar): el redibujado sale cuando la letra deja su capa animada al terminar; sin transform por letra no pasa.
+
+### A. "Por letras" y "Por palabras" al aparecer
+
+**Inventario de animaciones por pieza** (qué usa translate/scale/rotate/transform):
+
+| Dónde | Pieza | Propiedad que anima | Qué se hizo |
+|---|---|---|---|
+| Por letras / palabras, Subir y Bajar | letra / palabra (`.w`) | `translate` + opacity | **V10**: la subida la hace UN contenedor `<span class="tw">`; cada pieza solo anima opacidad en cascada |
+| Por letras / palabras, Izquierda y Derecha | `.w` | `translate` + opacity | **V11**: `will-change: translate, opacity` en cada pieza |
+| Por letras / palabras, Zoom | `.w` | `scale` + opacity | **V11**: `will-change: scale, opacity` |
+| Por letras / palabras, Voltear | `.w` | `transform` + opacity | **V11**: `will-change: transform, opacity` |
+| Por letras / palabras, Rotar | `.w` | `rotate` + opacity | **V11**: `will-change: rotate, opacity` |
+| Por letras / palabras, Fade y Desenfoque | `.w` | opacity / `filter` + opacity | sin cambios (ya iban bien) |
+| Por línea (mis saltos) | `.w.ln` | translate + opacity | sin cambios (pedido); ya medía 0 px |
+| Por línea (medida) | `.w` (palabras medidas) | translate + opacity | sin cambios (pedido). **Sigue con el redibujado** (3407 px en la medición del apartado 2) |
+| Cascada de hijos (`stagger.js`) | cada hijo (caja entera, no texto) | los mismos efectos | no se toca: son cajas, no letras, y un `will-change` en cajas grandes cuesta mucha más memoria |
+| Al aparecer (`appear.js`) sobre el elemento | el elemento | los mismos efectos | sin cambios (0 px) |
+
+**Cómo queda (código):** `animations/text.js` (`usaContenedor`, `MUEVEN`, `TOPE_CAPAS`), `base.js` (keyframes `a-subir` y `a-bajar`) y `export/exporter.js` (envuelve el texto en `.tw` solo en Subir/Bajar por letras o palabras). El lienzo del editor no parte el texto, así que no cambia; la Vista previa es el export. `.tw` es `display:block` (equivale al título entero), lleva el retardo propio y arranca con `.in` igual que las piezas; "reducir movimiento" y la salvaguarda sin JS también lo apagan.
+
+**Medición (Firefox 160, Selenium, headless, píxeles distintos entre el último ms de la animación y el estado final; `node tools/medir-capas.mjs antes|despues`):**
+
+| Caso | Galería 1x | Lo que hacemos 1x | Galería 1,25x | Lo que hacemos 1,25x |
+|---|---|---|---|---|
+| Letras, Subir/Bajar — antes | 551 | 1039 | 478 | 1241 |
+| Letras, Subir/Bajar — **después (V10)** | **0** | **0** | **0** | **0** |
+| Palabras, Subir — antes | 0 | 1291 | 0 | 1442 |
+| Palabras, Subir — **después (V10)** | **0** | **0** | **0** | **0** |
+| Letras, Izq./Der./Zoom/Voltear/Rotar — antes | 551 | 1039 | 478 | 1241 |
+| Letras, mismos efectos — **después (V11)** | **0** | **0** | **0** | **0** |
+| Fade y Desenfoque (control) antes y después | 0 | 0 | 0 | 0 |
+
+En Subir/Bajar el texto terminado además queda **idéntico por píxeles** a un título normal (0 px). Con V11 el último ms ya no cambia, pero el texto terminado queda en el otro dibujado que un título normal (551 y 1039 px a 1x): es lo ya conocido del apartado 2, ítem 2 ("`will-change` quita el cambio pero deja el texto permanentemente en el otro dibujado"). Es el precio que decidió m3nt41 al elegir V11; a ojo es lo que valida.
+
+**Coste de V11 con texto largo (`node tools/medir-coste-capas.mjs`, Zoom, 28 px, memoria = reportes de memoria de Firefox de todos los procesos, CON menos SIN `will-change`):**
+
+| Letras | Estructuras de capas/pantalla extra | Fotogramas durante la animación (p95, largos >20 ms) | Fotogramas al hacer scroll después |
+|---|---|---|---|
+| 100 | ≈ 0 (menos de 16 KB) | 16,7 ms, 0 (igual que SIN) | 16,7 ms, 0 |
+| 354 | ≈ 0,38 MB (webrender +197 KB, display list +181 KB) | 16,7 ms, 0 (SIN: 1 largo) | 16,7 ms, 0 |
+| 1000 | ≈ 1,5 MB (webrender +763 KB con texturas +213 KB, display list +390 KB, propiedades de marco +103 KB) | **33,3 ms, 20 largos** (SIN: 16,7 ms, 5) | 16,7 ms, 0 |
+
+El coste crece en línea (≈ 1,2–1,5 KB por letra en el motor) y a 1000 letras ya hay fotogramas largos. **Tope propuesto y aplicado: `TOPE_CAPAS = 200` piezas** (letras o palabras, según el modo): por encima de 200 el efecto se sustituye por un **fundido simple** (`a-fade`, sin `will-change`), es decir, sin movimiento y sin capas. Se eligió 200 porque con 354 letras no hubo coste de fotogramas y deja margen para lo que aquí no se midió (GPU). Subir/Bajar no lleva `will-change` por pieza (las piezas solo hacen opacidad), así que con ellas no hay tope.
+
+**Test:** `tests/texto-capas.mjs` (127 comprobaciones; falla sin el cambio: sin `.tw` y 551/1039 px; pasa con él): estructura del export en cada modo y efecto, fade/blur/por línea intactos, `will-change` con las propiedades justas, tope en 200 y 201 piezas, píxeles en los dos textos a 1x y 1,25x, estilos calculados en Firefox, y el editor (lienzo sin `.tw`, selección, edición de texto, Ctrl+Z, Vista previa con el mismo `.tw`). `tests/cascada-tope.mjs` ya no cuenta el contenedor como una pieza de la cascada y `tools/medir-final-letras.mjs` mide el ancho por la unión de las letras (un `Range` sobre el contenedor de bloque medía toda la línea) y escala las capturas por el DPR.
+
+**Sin verificar (A):** la memoria de GPU y el pintado real en pantalla (headless pinta por software y no tiene compositor); que V10 y V11 se vean bien a ojo en tu Firefox y Chrome a más de 120 % (el criterio de aceptación es tu ojo; en headless V10 da 0 px, pero el banco ya advertía que V10 en software podía salir peor, y no salió).

@@ -42,6 +42,7 @@ export const SUITE = [ // [nombre, comando, timeout en segundos]
   ['sombra-reposo', 'node tests/sombra-reposo.mjs', 240],
   ['texto-final-letras', 'node tests/texto-final-letras.mjs', 120],
   ['cascada-tope', 'node tests/cascada-tope.mjs', 120],
+  ['texto-capas', 'node tests/texto-capas.mjs', 240],
   ['hover-borde', 'node tests/hover-borde.mjs', 120],
   ['hover-nuevos', 'node tests/hover-nuevos.mjs', 420],
   ['fuga-estilos', 'node tests/fuga-estilos.mjs', 120],

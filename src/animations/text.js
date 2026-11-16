@@ -9,6 +9,20 @@ import { EFECTOS, camposComunes, campoDisparo, animEntrada, cargaInmediata, curv
  *  (33 saltos x 0,06 s) queda igual que siempre; un párrafo largo ya no tarda decenas de segundos. */
 export const TOPE_CASCADA = 2;
 
+/** Efectos de subida/bajada vertical: la subida la hace UN contenedor (.tw, ver `usaContenedor`) y cada pieza solo hace fundido
+ *  (técnica "V10" del banco de comparación). Así ninguna letra anima transform/translate y Firefox no la redibuja al terminar. */
+const VERTICALES = ['up', 'down'];
+/** Efectos que sí mueven cada pieza (translate/scale/rotate/transform) y por eso llevan `will-change` en la pieza (técnica "V11"):
+ *  propiedades que REALMENTE se animan (más opacity). `blur` y `fade` no mueven nada y se quedan como estaban. */
+const MUEVEN = { left: 'translate', right: 'translate', zoom: 'scale', flip: 'transform', rotate: 'rotate' };
+/** Tope de piezas con capa propia (`will-change` permanente: una capa por pieza cuesta memoria y pintado). Pasado el tope el
+ *  efecto se sustituye por un fundido simple (sin movimiento y sin capas). Ver docs/diagnostico-animaciones-texto.md, sección 7. */
+export const TOPE_CAPAS = 200;
+
+const porPiezas = (t) => t?.mode === 'chars' || t?.mode === 'words';
+/** ¿La animación sube/baja con UN contenedor (.tw) en vez de mover cada pieza? Solo "Por letras" y "Por palabras" con Subir/Bajar. */
+export const usaContenedor = (t) => porPiezas(t) && VERTICALES.includes(t.effect || 'up');
+
 export default {
   id: 'text',
   titulo: 'Animación de texto',
@@ -22,7 +36,7 @@ export default {
     ...camposComunes,
   ],
 
-  css(t, sel) {
+  css(t, sel, node) {
     if (!t?.mode) return '';
     const efecto = t.effect || 'up';
     const d = duracion(t, 0.7);
@@ -32,10 +46,28 @@ export default {
     // TOPE_CASCADA s: la cascada efectiva es min(cascada, TOPE / nº de saltos). --g (nº de saltos) lo pone el
     // exportador en el elemento. En 'linesm' --i cuenta líneas (pocas), así que no lleva tope.
     const paso = t.mode === 'linesm' ? `${st}s` : `min(${st}s, ${TOPE_CASCADA}s / var(--g, 1))`;
-    const base = `${sel} .w{display:inline-block;--ad:${t.distance ?? 30}px;--ar:${t.angle ?? -90}deg;animation:${animEntrada(efecto, d, curva(t), `calc(${de}s + var(--i)*${paso})`, t)}}
-${sel} .ww{display:inline-block;white-space:nowrap}${t.mode === 'lines' ? `
+    const retardo = `calc(${de}s + var(--i)*${paso})`;
+    const vars = `--ad:${t.distance ?? 30}px;--ar:${t.angle ?? -90}deg`;
+    const resto = `${sel} .ww{display:inline-block;white-space:nowrap}${t.mode === 'lines' ? `
 ${sel} .ln{display:block}` : ''}`;
-    return cargaInmediata(t) ? base : `${base}\n${sel}.in .w{animation-play-state:running}`;
+    let base;
+    if (usaContenedor(t)) {
+      // V10: el contenedor .tw sube (solo translate, sin opacidad) y cada pieza solo hace fundido en cascada.
+      const sube = efecto === 'down' ? 'a-bajar' : 'a-subir';
+      base = `${sel} .tw{display:block;${vars};animation:${sube} ${d}s ${curva(t)} ${de}s backwards${cargaInmediata(t) ? '' : ' paused'}}
+${sel} .w{display:inline-block;animation:${animEntrada('fade', d, curva(t), retardo, t)}}
+${resto}`;
+    } else {
+      // V11: efectos que mueven cada pieza llevan `will-change` (solo lo que anima) en la pieza. Con demasiadas piezas se pasa a fundido.
+      const mueve = porPiezas(t) && MUEVEN[efecto];
+      const demasiadas = mueve && node?.content && saltosCascada(node.content.text, t.mode) + 1 > TOPE_CAPAS;
+      const ef = demasiadas ? 'fade' : efecto;
+      const capa = mueve && !demasiadas ? `will-change:${MUEVEN[efecto]},opacity;` : '';
+      base = `${sel} .w{display:inline-block;${vars};${capa}animation:${animEntrada(ef, d, curva(t), retardo, t)}}
+${resto}`;
+    }
+    return cargaInmediata(t) ? base : `${base}
+${sel}.in ${usaContenedor(t) ? '.tw,' + sel + '.in ' : ''}.w{animation-play-state:running}`;
   },
 };
 

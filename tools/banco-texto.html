@@ -10,6 +10,8 @@
       (src/animations/text.js, base.js). Tipografía = H2 de blocks/tema.js (serif, 44 px, 500, -0.015em).
     - Botón: botonTema(claro, 'l'|'m', 'secundario') (contorno 1 px, tinta sobre papel) + hover Agrandar
       scale(1.03) con transition 0.2 s cubic-bezier(.22,1,.36,1) (src/animations/hover.js). Fuente de la página: system-ui.
+  RONDA 3 (sección 3): Elevar/Agrandar/Encoger/Inclinar. Las variantes «actual» usan el CSS de hover.css() copiado tal cual
+  (ver tmp-logs/banco-r3-css-real.log); .rb replica botonTema(..., 'secundario').
   Velocidad: una variable --k (1, 2, 4, 10) multiplica TODAS las duraciones y retardos.
 -->
 <html lang="es">
@@ -163,6 +165,62 @@ p.nota{margin:0 0 16px;color:#4a4740;font-size:14px;line-height:1.5;max-width:90
 .b10:is(:hover,.f) .t{transform:scale(.970874)}
 
 .pie{font-size:12.5px;color:#6a665d;margin-top:2px}
+
+/* ===== RONDA 3 · Elevar / Agrandar / Encoger / Inclinar =====
+   .rb = botón secundario de botonTema() con la MISMA lista de transition que el export (base.js transicion(), 0.2 s suave).
+   Las variantes "actual" son el CSS que genera hover.css() copiado tal cual (tmp-logs/banco-r3-css-real.log); lo único que cambia
+   es 0.2s -> calc(.2s*var(--k)) para poder ir lento. ".f" = "Mantener" (mismo estado que :hover). */
+:root{--tr:transform calc(.2s*var(--k)) var(--ease),box-shadow calc(.2s*var(--k)) var(--ease),text-shadow calc(.2s*var(--k)) var(--ease),filter calc(.2s*var(--k)) var(--ease),outline-color calc(.2s*var(--k)) var(--ease),outline-offset calc(.2s*var(--k)) var(--ease)}
+.rb{display:inline-block;border-radius:0;text-decoration:none;font-weight:500;letter-spacing:.02em;background:transparent;color:#111111;border:1px solid #111111;cursor:pointer;font-family:system-ui,sans-serif;transition:var(--tr)}
+.rb.g{padding:16px 32px;font-size:18px}
+.rb.p{padding:12px 24px;font-size:16px}
+.rb.xl{padding:20px 40px;font-size:28px}
+.rb.st{padding:17px 33px;font-size:18px;border:0}       /* "solo texto": sin fondo ni borde (sinCaja = true en el editor) */
+.rb:is(:hover,.f){transition:var(--tr)}                   /* el export repite la transition dentro de :hover */
+
+/* ELEVAR a — actual del editor (con caja: translateY(-4px) + box-shadow 0 14px 30px; position:relative; ::after de zona anti-parpadeo) */
+.rl-a{position:relative}
+.rl-a:is(:hover,.f){transform:translateY(-4px);box-shadow:0 14px 30px rgba(0,0,0,.28)}
+.rl-a:is(:hover,.f)::after{content:'';position:absolute;top:100%;left:0;right:0;height:4px}
+.rl-a.st:is(:hover,.f){box-shadow:none;text-shadow:0 8px 10px rgba(0,0,0,.28)}   /* sin caja el editor usa text-shadow */
+/* ELEVAR b — V8 de la ronda 2 (translateY(-3px) + box-shadow 0 8px 16px .22; sin position ni ::after) */
+.rl-b:is(:hover,.f){transform:translateY(-3px);box-shadow:0 8px 16px rgba(0,0,0,.22)}
+/* ELEVAR c — solo translate, sin sombra (misma distancia que el actual: 4 px) */
+.rl-c:is(:hover,.f){transform:translateY(-4px)}
+/* ELEVAR d — translate + sombra en un ::before cuya OPACIDAD se anima (el blur es fijo: 0 14px 30px como el actual) */
+.rl-d{position:relative;isolation:isolate}
+.rl-d::before{content:'';position:absolute;inset:-1px;z-index:-1;pointer-events:none;box-shadow:0 14px 30px rgba(0,0,0,.28);opacity:0;transition:opacity calc(.2s*var(--k)) var(--ease)}
+.rl-d.st::before{inset:0}
+.rl-d:is(:hover,.f){transform:translateY(-4px)}
+.rl-d:is(:hover,.f)::before{opacity:1}
+
+/* AGRANDAR a — actual (scale 1.03, sin position ni ::after) */
+.rg-a:is(:hover,.f){transform:scale(1.03)}
+/* ENCOGER a — actual (scale .97; position:relative + ::after que sobresale 2 %) */
+.rs-a{position:relative}
+.rs-a:is(:hover,.f){transform:scale(.97)}
+.rs-a:is(:hover,.f)::after{content:'';position:absolute;top:-2%;right:-2%;bottom:-2%;left:-2%}
+/* INCLINAR a — actual (rotate(-1deg); position:relative + ::after de 4 px) */
+.rt-a{position:relative}
+.rt-a:is(:hover,.f){transform:rotate(-1deg)}
+.rt-a:is(:hover,.f)::after{content:'';position:absolute;top:-4px;right:-4px;bottom:-4px;left:-4px}
+
+/* b — el fondo (un ::before) se mueve y el texto queda fijo (sin transform ni will-change en el botón).
+   Con borde: el borde lo dibuja el ::before y es lo que escala. Sin borde ni fondo (.st): no hay nada que escalar; aparece un
+   fondo suave (rgba tinta .07) que sí escala, y eso ES un cambio de aspecto respecto al "actual". */
+.rx{position:relative;isolation:isolate;border-color:transparent}
+.rx::before{content:'';position:absolute;inset:-1px;border:1px solid #111111;background:rgba(17,17,17,0);z-index:-1;pointer-events:none;
+  transition:transform calc(.2s*var(--k)) var(--ease),background-color calc(.2s*var(--k)) var(--ease)}
+.rx.st{border:0}
+.rx.st::before{inset:0;border-color:transparent}
+.rx.st:is(:hover,.f)::before{background:rgba(17,17,17,.07)}
+.rg-b:is(:hover,.f)::before{transform:scale(1.03)}
+.rs-b:is(:hover,.f)::before{transform:scale(.97)}
+.rt-b:is(:hover,.f)::before{transform:rotate(-1deg)}
+
+.ronda.r3{background:#7fe0b5}
+h3.sub{font-size:16px;margin:26px 0 8px;color:#2b2823}
+.pie-r3{font-size:12.5px;color:#6a665d;margin-top:2px}
 </style>
 </head>
 <body>
@@ -195,6 +253,11 @@ p.nota{margin:0 0 16px;color:#4a4740;font-size:14px;line-height:1.5;max-width:90
   <h2 class="sec">2 · Botón «Ver más» con hover que se agranda</h2>
   <p class="nota">Pasa el ratón por encima. Con velocidad 0,1x la transición dura 2 s y se ve el cambio con calma. «Mantener agrandado» deja el botón en el estado de hover para mirarlo quieto (y al soltarlo, hace la animación de vuelta). Cada fila lleva el botón «Grande» (18 px), el «Mediano» (16 px) y uno extra de 28 px. Las de «ronda 2» (V6 a V10) buscan que el texto no cambie de tamaño.</p>
   <div class="rejilla" id="rej-botones"></div>
+
+  <h2 class="sec">3 · Ronda 3 · Elevar, Agrandar, Encoger e Inclinar <span class="ronda r3">ronda 3</span></h2>
+  <p class="nota">Cada tarjeta lleva cuatro botones «Ver más»: Grande (18 px), Mediano (16 px), Extra (28 px) y «Solo texto» (18 px, sin fondo ni borde: así es el botón sin caja del editor). Las tarjetas «Actual del editor» llevan el CSS que genera el exportador, copiado tal cual (lista de transition completa, position:relative y ::after de zona anti-parpadeo donde el editor los pone). Velocidad y «Mantener» funcionan igual que arriba. Aquí no hay veredicto: lo decides tú a ojo, con zoom por encima del 120 % en Firefox y en Chrome.</p>
+  <p class="nota"><b>Limitación del truco del fondo («b»):</b> solo sirve si el botón tiene fondo o borde visible, porque lo que escala es ese fondo/borde. Con un botón solo de texto no hay nada que escalar: en las tarjetas «b» la muestra «Solo texto» enseña lo único posible, que es que APAREZCA un fondo suave y crezca. Eso ya no es «el mismo efecto sin tocar el texto», es otro efecto (como «Fondo que crece» del editor). Si quieres que un botón solo de texto se mueva, el texto tiene que moverse, y vuelve el riesgo de borrosidad.</p>
+  <div id="r3"></div>
 
 </main>
 
@@ -288,6 +351,7 @@ p.nota{margin:0 0 16px;color:#4a4740;font-size:14px;line-height:1.5;max-width:90
       '<button class="ui" type="button"></button></div>' + cuerpoHTML;
     t.querySelector('strong').textContent = v.t;
     if (v.r2) { var etq = document.createElement('span'); etq.className = 'ronda'; etq.textContent = 'ronda 2'; t.querySelector('strong').appendChild(etq); }
+    if (v.r3) { var etq3 = document.createElement('span'); etq3.className = 'ronda r3'; etq3.textContent = 'ronda 3'; t.querySelector('strong').appendChild(etq3); }
     t.querySelector('.desc').textContent = v.d;
     t.querySelector('.cab button').textContent = botonTxt;
     return t;
@@ -325,10 +389,51 @@ p.nota{margin:0 0 16px;color:#4a4740;font-size:14px;line-height:1.5;max-width:90
   });
   function alternar(t, btnM, forzar) {
     var on = typeof forzar === 'boolean' ? forzar : btnM.getAttribute('aria-pressed') !== 'true';
-    t.querySelectorAll('.btn').forEach(function (a) { a.classList.toggle('f', on); });
+    t.querySelectorAll('.btn, .rb').forEach(function (a) { a.classList.toggle('f', on); });
     btnM.setAttribute('aria-pressed', String(on));
     btnM.textContent = on ? 'Soltar' : 'Mantener agrandado';
   }
+
+  // ---------- Montaje: ronda 3 (Elevar / Agrandar / Encoger / Inclinar) ----------
+  // c = clases CSS de la variante; ".rx" = fondo que se mueve y texto fijo
+  var RONDA3 = [
+    { h: 'Elevar', items: [
+      { id: 'r3-lift-a', c: 'rl-a', t: 'Elevar (a) · Actual del editor', d: 'translateY(-4px) + box-shadow 0 14px 30px rgba(0,0,0,.28); position:relative y ::after de 4 px. Solo texto: text-shadow 0 8px 10px.' },
+      { id: 'r3-lift-b', c: 'rl-b', t: 'Elevar (b) · V8 de la ronda 2', d: 'translateY(-3px) + box-shadow 0 8px 16px rgba(0,0,0,.22). Sin position ni ::after.' },
+      { id: 'r3-lift-c', c: 'rl-c', t: 'Elevar (c) · Solo translate, sin sombra', d: 'translateY(-4px) y nada más (misma distancia que el actual).' },
+      { id: 'r3-lift-d', c: 'rl-d', t: 'Elevar (d) · Translate + sombra en ::before con opacidad', d: 'translateY(-4px) en el botón; la sombra (0 14px 30px, fija) vive en un ::before cuya opacidad pasa de 0 a 1. Sin ::after de zona.' }
+    ] },
+    { h: 'Agrandar', items: [
+      { id: 'r3-grow-a', c: 'rg-a', t: 'Agrandar (a) · Actual del editor', d: 'transform: scale(1.03) en el botón entero (el texto escala con él).' },
+      { id: 'r3-grow-b', c: 'rx rg-b', t: 'Agrandar (b) · El fondo escala, el texto queda fijo', d: 'El borde es un ::before que hace scale(1.03); el botón no lleva transform.' }
+    ] },
+    { h: 'Encoger', items: [
+      { id: 'r3-shrink-a', c: 'rs-a', t: 'Encoger (a) · Actual del editor', d: 'transform: scale(.97); position:relative y ::after que sobresale 2 %.' },
+      { id: 'r3-shrink-b', c: 'rx rs-b', t: 'Encoger (b) · El fondo escala, el texto queda fijo', d: 'El borde es un ::before que hace scale(.97); el botón no lleva transform.' }
+    ] },
+    { h: 'Inclinar', items: [
+      { id: 'r3-tilt-a', c: 'rt-a', t: 'Inclinar (a) · Actual del editor', d: 'transform: rotate(-1deg); position:relative y ::after de 4 px.' },
+      { id: 'r3-tilt-b', c: 'rx rt-b', t: 'Inclinar (b) · El fondo se inclina, el texto queda fijo', d: 'El borde es un ::before que hace rotate(-1deg); el texto no se gira.' }
+    ] }
+  ];
+  var cont3 = document.getElementById('r3');
+  RONDA3.forEach(function (grupo) {
+    var h3 = document.createElement('h3'); h3.className = 'sub'; h3.textContent = grupo.h; cont3.appendChild(h3);
+    var rej = document.createElement('div'); rej.className = 'rejilla'; cont3.appendChild(rej);
+    grupo.items.forEach(function (v) {
+      v.r3 = 1;
+      var cuerpo = '<div class="lienzo"><div class="fila-botones">' +
+        ['g', 'p', 'xl', 'st'].map(function (tam) { return '<a class="rb ' + tam + ' ' + v.c + '" href="#" data-bt>Ver más</a>'; }).join('') +
+        '</div><p class="pie-r3">Grande 18 px · Mediano 16 px · Extra 28 px · Solo texto 18 px (sin fondo ni borde).</p></div>';
+      var t = tarjeta(v, cuerpo, 'Mantener agrandado');
+      var btnM = t.querySelector('.cab button');
+      btnM.setAttribute('aria-pressed', 'false');
+      btnM.addEventListener('click', function () { alternar(t, btnM); });
+      t.querySelectorAll('[data-bt]').forEach(function (a) { a.addEventListener('click', function (e) { e.preventDefault(); }); });
+      rej.appendChild(t);
+      botonesMantener.push({ t: t, b: btnM });
+    });
+  });
 
   // ---------- Controles globales ----------
   document.getElementById('repetir-todo').addEventListener('click', repetirTodas);

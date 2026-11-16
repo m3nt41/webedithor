@@ -27,7 +27,7 @@ export function initPreview(host) {
   function dibujar() {
     const { page, viewMode } = getState();
     stage.classList.toggle('movil', viewMode === 'mobile'); // ancho 390px en vista móvil
-    estilo.textContent = cssPagina(page, { forzar: getState().verEstado }) + '\n' + CSS_MENU_EDITOR;
+    estilo.textContent = cssPagina(page, { forzar: getState().verEstado, viewMode }) + '\n' + CSS_MENU_EDITOR;
     if (viewMode !== 'mobile') estadoMenu.abiertos.clear(); // al volver a escritorio el menú se cierra
     stage.replaceChildren(estilo, renderNode(page, viewMode));
     marcarSeleccion();

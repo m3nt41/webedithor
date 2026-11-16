@@ -22,6 +22,10 @@ export const MAPA = {
   'src/styles/app.css': TODOS,
   'src/ui/preview.js': TODOS,
 
+  // ---- Sombra en reposo ----
+  'src/core/sombra.js': ['sombra-reposo', 'xss-import', 'hover'],
+  'tools/png.mjs': ['sombra-reposo'],
+
   // ---- Menú hamburguesa del navbar ----
   'src/core/menumovil.js': ['menu-movil', 'menu-scroll'],
   'src/blocks/navbar.js': ['menu-movil', 'menu-scroll', 'tema', 'plan-ia', 'plan-ia-ui'],
@@ -62,12 +66,12 @@ export const MAPA = {
   'src/blocks/': ['tema', 'plan-ia', 'plan-ia-ui', 'ronda7'], // cualquier otro bloque (hero, services, gallery, index.js, util.js...)
 
   // ---- Animaciones (CSS exportado, validación y su panel) ----
-  'src/animations/hover.js': ['hover', 'hover-texto', 'hover-borde', 'hover-nuevos', 'selenium', 'ronda7'],
-  'src/animations/focus.js': ['hover', 'hover-texto', 'hover-borde', 'hover-nuevos', 'selenium', 'ronda7'],
+  'src/animations/hover.js': ['sombra-reposo', 'hover', 'hover-texto', 'hover-borde', 'hover-nuevos', 'selenium', 'ronda7'],
+  'src/animations/focus.js': ['sombra-reposo', 'hover', 'hover-texto', 'hover-borde', 'hover-nuevos', 'selenium', 'ronda7'],
   'src/animations/parallax.js': ['parallax-nativo', 'parallax-recorte', 'selenium', 'ronda7'],
   'src/animations/scrollmotor.js': ['parallax-nativo', 'selenium', 'ronda7'],
   'src/animations/index.js': ['parallax-nativo', 'hover', 'selenium', 'ronda7', 'fuga-estilos'],
-  'src/animations/base.js': ['hover', 'hover-texto', 'hover-borde', 'hover-nuevos', 'selenium', 'ronda7', 'inspector', 'vistaprevia'],
+  'src/animations/base.js': ['sombra-reposo', 'hover', 'hover-texto', 'hover-borde', 'hover-nuevos', 'selenium', 'ronda7', 'inspector', 'vistaprevia'],
   'src/animations/': ['selenium', 'ronda7', 'inspector', 'vistaprevia'],
 
   // ---- Tests (cada archivo de tests/ corre su propio test; ver también `testDeArchivo` en test-cambios.mjs) ----

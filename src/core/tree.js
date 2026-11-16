@@ -91,7 +91,7 @@ export function cloneWithNewIds(node) {
 export const aspectoValido = (v) => typeof v === 'string' && /^(auto|(auto\s+)?\d{1,3}(\.\d{1,3})?(\s*\/\s*\d{1,3}(\.\d{1,3})?)?)$/.test(v.trim());
 
 /** Claves de estilo que NO son CSS directo del elemento (el exportador las convierte en una regla para los hijos). */
-export const CLAVES_PROPIAS = ['hijosAspectRatio', 'fondoImagen', 'fondoAjuste', 'fondoPosicion', 'fondoCapa'];
+export const CLAVES_PROPIAS = ['hijosAspectRatio', 'fondoImagen', 'fondoAjuste', 'fondoPosicion', 'fondoCapa', 'sombra'];
 
 // ---- Imagen de fondo (secciones y contenedores) ----
 export const FONDO_AJUSTES = ['cover', 'contain'];

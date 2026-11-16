@@ -8,6 +8,8 @@
 import { getState, subscribe, gestoActivo, setStyle, setStyles, setPosicion, setContent, setName, setAnimation, moveBy, duplicateNode, removeNode, addVariant, removeVariant, moveVariant, setVariant, setVariantProp, verEstado, setIconSize, setMarquesina } from '../core/store.js';
 import { findNode, findParent, anchorValido, contarAncla, aspectoValido, capaValida } from '../core/tree.js';
 import { reducirImagen } from './imagen.js';
+import { PRESETS_SOMBRA, SOMBRA_PERSONALIZADA, leerSombraUi, colorSombra, armarSombra } from '../core/sombra.js';
+import { modoSombra } from '../animations/base.js';
 import { effectiveStyles, TIPOS_TEXTO } from '../render/renderer.js';
 import { GRUPOS } from './fields.js';
 import { SVG_AVISO, SVG_COPIAR, SVG_PEGAR } from './iconos.js';
@@ -99,6 +101,35 @@ function htmlControl(f, v, modo, ov, tieneValor) {
     ? `<button type="button" class="quitar" data-est="">${modo === 'mobile' ? '↺ igual que escritorio' : '✕ quitar'}</button>`
     :`<button type="button" class="quitar" data-ctl="${f.key}" data-val="">${modo === 'mobile' ? '↺ igual que escritorio' : '✕ quitar'}</button>`;
   return `<div class="campo ctl">${etiqueta(f.label, ov)}<div class="botones${modo === 'mobile' && !ov ? ' heredado' : ''}">${botones}${otro}${min}${quitar}</div></div>`;
+}
+
+/** Campo "Sombra": presets (botones) + números y color si hay sombra. Los presets escriben el mismo valor que escribirías a mano
+ *  (data-ctl="sombra", como los demás controles); los números/color se leen del DOM en el listener de 'input' (data-sh). */
+function htmlSombra(f, v, modo, ov, tieneValor, nodo) {
+  const movil = modo === 'mobile';
+  const l = leerSombraUi(v);
+  const tecnica = modoSombra(nodo); // 'texto' | 'plano' | false
+  const donde = tecnica === 'texto' ? 'Sigue las letras (text-shadow).' : tecnica === 'plano' ? 'Sigue la forma del icono o la imagen (si la imagen tiene transparencia, sigue su silueta; si es un rectángulo opaco, un rectángulo).' : 'Sigue la caja del elemento y sus esquinas.';
+  const botones = PRESETS_SOMBRA.map((p) => {
+    const val = p.k === 'ninguna' ? (movil ? 'none' : '') : p.val;
+    const on = p.k === 'ninguna' ? l.tipo === 'ninguna' && (!movil || ov || v !== '') : l.tipo === 'preset' && l.k === p.k;
+    return `<button type="button" data-ctl="sombra" data-val="${esc(val)}" class="${on ? 'on' : ''}" title="${esc(p.ayuda)}">${p.txt}</button>`;
+  }).join('');
+  const custom = `<button type="button" data-sh-custom class="${l.tipo === 'custom' ? 'on' : ''}" title="Elegir tú el desplazamiento, el desfoque y el color">Personalizada</button>`;
+  const quitar = tieneValor ? `<button type="button" class="quitar" data-ctl="sombra" data-val="">${movil ? '↺ igual que escritorio' : '✕ quitar'}</button>` : '';
+  let h = `<div class="campo ctl">${etiqueta(f.label, ov)}<div class="botones${movil && !ov ? ' heredado' : ''}">${botones}${custom}${quitar}</div></div>`;
+  if (l.tipo === 'otro') return h + '<p class="modo">Esta sombra tiene varias capas o un formato especial: se respeta tal cual. Elige un preset para reemplazarla.</p>';
+  if (l.tipo === 'ninguna') return h;
+  const c = l.capa, col = colorSombra(c.color);
+  const px = (t) => Math.round(parseFloat(t) || 0);
+  const anillo = px(c.x) === 0 && px(c.y) === 0 && px(c.blur) === 0;
+  const campoNum = (k, txt, val, min, max) => `<label class="sh-n">${txt}<input type="number" data-sh="${k}" min="${min}" max="${max}" step="1" value="${val}"></label>`;
+  h += `<div class="sombra-ed" data-sombra-ed>` +
+    `<div class="fila" style="--n:${tecnica === false || anillo ? 4 : 3}">${campoNum('x', 'Horizontal', px(c.x), -200, 200)}${campoNum('y', 'Vertical', px(c.y), -200, 200)}${campoNum('blur', 'Desfoque', px(c.blur), 0, 200)}${tecnica === false || anillo ? campoNum('spread', anillo && tecnica ? 'Grosor' : 'Expansión', px(c.spread), -100, 100) : ''}</div>` +
+    `<div class="campo"><label>Color</label><span class="color"><input type="color" data-sh="hex" value="${col.hex}" aria-label="Color de la sombra"></span></div>` +
+    `<div class="campo rango"><label>Opacidad</label><span class="rango-fila"><input type="range" min="0" max="100" step="1" data-sh="alfa" value="${Math.round(col.alfa * 100)}"><output data-sh-out>${Math.round(col.alfa * 100)}%</output></span></div>` +
+    `<p class="modo">${donde}</p></div>`;
+  return h;
 }
 
 /** Grupo "Marquesina": controles visuales (botones). Cada botón lleva data-mq="campo" y data-val; "Repetición" va en Avanzado. */
@@ -299,6 +330,8 @@ export function initInspector(host) {
           const n = capaValida(v) ?? 0;
           h = `<div class="campo rango">${etiqueta(f.label, ov)}<span class="rango-fila"><input type="range" min="0" max="80" step="1" data-capa value="${n}"><output data-capa-out>${n}%</output></span></div>` +
             (ov || (viewMode !== 'mobile' && f.key in nodo.styles.base) ? `<div class="campo ctl"><label></label><div class="botones"><button type="button" class="quitar" data-ctl="fondoCapa" data-val="">${viewMode === 'mobile' ? '↺ igual que escritorio' : '✕ quitar'}</button></div></div>` : '');
+        } else if (f.kind === 'sombra') {
+          h = htmlSombra(f, v, viewMode, ov, viewMode === 'mobile' ? ov : f.key in nodo.styles.base, nodo);
         } else if (KINDS_BOTONES.includes(f.kind)) {
           const tieneValor = viewMode === 'mobile' ? ov : f.key in nodo.styles.base;
           h = htmlControl(f, v, viewMode, ov, tieneValor);
@@ -427,6 +460,13 @@ export function initInspector(host) {
       if (+t.value > 0) setIconSize(id, Math.min(512, +t.value));
       return;
     }
+    if (t.dataset.sh !== undefined) { // Sombra: números, color y opacidad -> un solo valor (no se reconstruye el panel: se perdería el foco)
+      const ed = t.closest('[data-sombra-ed]');
+      const g = (k) => ed.querySelector(`[data-sh="${k}"]`)?.value;
+      if (t.dataset.sh === 'alfa') ed.querySelector('[data-sh-out]').textContent = `${t.value}%`;
+      setStyle(id, 'sombra', armarSombra({ x: g('x'), y: g('y'), blur: g('blur'), spread: g('spread') ?? 0, hex: g('hex'), alfa: (+g('alfa')) / 100 }));
+      return;
+    }
     // Un select puede mostrar/ocultar campos: pedimos reconstruir el panel (antes del cambio)
     if (t.tagName === 'SELECT' && (t.dataset.s || t.dataset.a || t.dataset.v)) forzar = true;
     // Estados (variants): los campos viven dentro de un [data-vs] con el id del estado
@@ -493,6 +533,11 @@ export function initInspector(host) {
         ?? (otro.dataset.ctlOtro === 'background' ? host.querySelector('[data-s="background"]') : null);
       if (campo) { for (let det = campo.closest('details'); det; det = det.parentElement?.closest('details')) det.open = true; campo.focus(); }
       return;
+    }
+    if (e.target.closest('[data-sh-custom]') && idDibujado) { // Sombra "Personalizada": si no hay sombra escribe una de partida; si ya hay, lleva el cursor al primer número
+      const ed = host.querySelector('[data-sombra-ed] [data-sh="x"]');
+      if (ed) { ed.focus(); return; }
+      forzar = true; setStyle(idDibujado, 'sombra', SOMBRA_PERSONALIZADA); return;
     }
     const mqb = e.target.closest('[data-mq]'); // Marquesina: botones visuales
     if (mqb && idDibujado) {

@@ -63,9 +63,12 @@ const t1 = nodo('t1', 'text', { content: { text: 'Texto con CSS malo' }, styles:
 const t2 = nodo('t2', 'text', { content: { text: 'Texto sano' }, styles: { base: { width: '100px', backgroundColor: `expression(${XSS})`, backgroundImage: 'url(data:image/gif;base64,R0lGODlhAQABAAAAACw=)' }, mobile: { color: `red;}</style><script>${XSS}</script>` } } }); // backgroundColor (1) + mobile color (1); el data:image se conserva
 const im = nodo('im', 'image', { content: { src: `javascript:${XSS}`, alt: 'foto' } });                                                                                                                                                  // src (1)
 const idMalo = nodo('"]{}</style><script>window.__xss=1</script>', 'text', { content: { text: 'Id malo' } });                                                                                                                      // id (1)
-const QUITADOS = 11;
+// Sombras: boxShadow con url(https://…), textShadow con var(), `sombra` con una 2ª capa colada tras un ";" y filter (propiedad no permitida): 4 quitados.
+// La `sombra` sana de la 2ª clave (mobile) se conserva.
+const t3 = nodo('t3', 'text', { content: { text: 'Sombras malas' }, styles: { base: { boxShadow: '0 0 0 url(https://evil.example/x.png) red', textShadow: '0 0 4px var(--x)', sombra: '0 0 4px red; background:url(https://evil.example/y.png)', filter: 'drop-shadow(0 0 4px red)', color: '#222222' }, mobile: { sombra: '0 4px 12px 0 rgba(0,0,0,0.2)' } } });
+const QUITADOS = 15;
 const hostil = nodo('pg', 'page', { name: 'Página', content: { title: 'Hostil </title><script>window.__xss=1</script>' }, styles: { base: { fontFamily: 'system-ui, sans-serif' }, mobile: {} },
-  children: [nodo('s1', 'section', { name: 'Sec', styles: { base: { padding: '20px' }, mobile: {} }, children: [h1, h2, b1, b2, t1, t2, im, idMalo] })] });
+  children: [nodo('s1', 'section', { name: 'Sec', styles: { base: { padding: '20px' }, mobile: {} }, children: [h1, h2, b1, b2, t1, t2, im, idMalo, t3] })] });
 let nNodos = 0; walk(hostil, () => nNodos++);
 
 mkdirSync(DESCARGAS, { recursive: true });
@@ -109,6 +112,9 @@ try {
   v(hallar('b1').styles.base.padding === '10px 20px' && hallar('b1').content.href === undefined, 'b1: padding se queda; href javascript: se quita');
   v(hallar('b2').content.href === undefined && hallar('im').content.src === undefined, 'href camuflado y src javascript: quitados');
   v(hallar('h2').content.level === undefined && hallar('h2').content.text.includes('<img'), 'h2: level malo quitado; el texto con <img> se guarda como TEXTO');
+  const s3 = hallar('t3').styles;
+  v(s3.base.boxShadow === undefined && s3.base.textShadow === undefined && s3.base.sombra === undefined && s3.base.filter === undefined && s3.base.color === '#222222', 't3: boxShadow con url(), textShadow con var(), sombra con ";" y filter se descartan; el color sano se queda');
+  v(s3.mobile.sombra === '0 4px 12px 0 rgba(0,0,0,0.2)', 't3: la sombra sana (mobile) se conserva');
   const ids = []; walk(pg, (n) => ids.push(n.id));
   v(!ids.some((i) => /[^A-Za-z0-9_-]/.test(i)), 'ningún id con caracteres raros');
   v(!/javascript:|<script|@import|expression\(/i.test(JSON.stringify(pg).replace(/"text":"[^"]*"|"name":"[^"]*"|"title":"[^"]*"/g, '')), 'el JSON guardado no trae nada peligroso fuera de textos');

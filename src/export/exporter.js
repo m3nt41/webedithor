@@ -8,9 +8,10 @@
 import { anchorValido, walk, aspectoValido, CLAVES_PROPIAS, fondoDeclaraciones, tocaFondo } from '../core/tree.js';
 import { tagFor, TIPOS_TEXTO } from '../render/renderer.js';
 import { iconoSvg, estilosIcono } from '../core/icono.js';
-import { propiedadPermitida, valorCss, hrefSeguro, srcSeguro } from '../core/seguridad.js';
+import { propiedadPermitida, valorCss, valorSombraOk, hrefSeguro, srcSeguro } from '../core/seguridad.js';
 import { usaMenuMovil, paginaUsaMenuMovil, cssMenuMovil, varsMenu, necesitaAncla, SCRIPT_MENU } from '../core/menumovil.js';
 import { usaMarquesina, cssMarquesina, htmlMarquesina, keyframesMarquesina } from '../core/marquesina.js';
+import { declaracionesSombra } from '../animations/base.js';
 import { tieneParallaxNativoDentro } from '../animations/parallax.js';
 import { usaEscena, varsEscena, esNavPegado, paginaUsaEscena, CSS_ESCENA, atributosScroll, paginaUsaScrollLink, SCRIPT_SCROLLMOTOR, SCRIPT_SCROLLSUAVE, paginaUsaScrollSuave, cssNodo, usaScroll, usaCarga, usaClic, paginaUsaScroll, paginaUsaEntrada, paginaUsaMedida, paginaUsaClic, esMedida, splitText, KEYFRAMES, SCRIPT_SCROLL, SCRIPT_LINEAS, SCRIPT_CLIC } from '../animations/index.js';
 
@@ -20,7 +21,7 @@ const escHtml = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt
 const escAttr = (s) => escHtml(s).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 const kebab = (k) => k.replace(/[A-Z]/g, (m) => '-' + m.toLowerCase());
 // Estilos del USUARIO: defensa en la salida (aunque la entrada ya esté saneada): solo propiedades permitidas y valores seguros.
-const declaraciones = (obj) => Object.entries(obj).filter(([k, v]) => !CLAVES_PROPIAS.includes(k) && propiedadPermitida(k) && valorCss(v) !== null).map(([k, v]) => `${kebab(k)}:${v}`).join(';');
+const declaraciones = (obj) => Object.entries(obj).filter(([k, v]) => !CLAVES_PROPIAS.includes(k) && propiedadPermitida(k) && valorCss(v) !== null && valorSombraOk(k, v)).map(([k, v]) => `${kebab(k)}:${v}`).join(';');
 // Declaraciones GENERADAS por el editor (fondo con url("…") escapada con urlCss: lleva barras invertidas legítimas): sin filtro de valor.
 const declaracionesGeneradas = (obj) => Object.entries(obj).map(([k, v]) => `${kebab(k)}:${v}`).join(';');
 
@@ -51,8 +52,8 @@ export function exportHTML(page) {
     // En móvil se re-emite entera (con los valores efectivos) si el override toca el fondo.
     const fondo = (d) => Object.keys(d).length ? declaracionesGeneradas(d) : '';
     const unir = (...p) => p.filter(Boolean).join(';');
-    const dBase = unir(declaraciones(node.type === 'icon' ? estilosIcono(node.styles.base) : node.styles.base), fondo(fondoDeclaraciones(node.styles.base)));
-    const dMovil = unir(declaraciones(node.styles.mobile), tocaFondo(node.styles.mobile) ? fondo(fondoDeclaraciones({ ...node.styles.base, ...node.styles.mobile })) : '');
+    const dBase = unir(declaraciones(node.type === 'icon' ? estilosIcono(node.styles.base) : node.styles.base), fondo(fondoDeclaraciones(node.styles.base)), fondo(declaracionesSombra(node, node.styles.base)));
+    const dMovil = unir(declaraciones(node.styles.mobile), tocaFondo(node.styles.mobile) ? fondo(fondoDeclaraciones({ ...node.styles.base, ...node.styles.mobile })) : '', 'sombra' in node.styles.mobile ? fondo(declaracionesSombra(node, node.styles.mobile)) : '');
     if (dBase) css.push(`.${clase}{${dBase}}`);
     if (dMovil) cssMovil.push(`.${clase}{${dMovil}}`);
     // Parallax nativo dentro: un ancestro con overflow:hidden es un scroller y view() deja de moverse. Con overflow:clip recorta

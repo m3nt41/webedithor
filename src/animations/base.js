@@ -6,6 +6,8 @@
 // inicial hasta que recibe la clase .in; al terminar vuelve a su estilo normal.
 // Así no pelea con el hover (que usa transform/transition).
 
+import { haySombra, sombraDeclaraciones, filtroReposo } from '../core/sombra.js';
+
 export const EFECTOS = [
   ['', 'Ninguna'],
   ['fade', 'Aparecer (fade)'],
@@ -143,6 +145,9 @@ export function sinCaja(node) {
       else if (k === 'backgroundImage') { if (!vacio(v)) return false; }
       else if (k === 'fondoImagen') { if (String(v ?? '').trim()) return false; }
       else if (k === 'boxShadow') { if (!vacio(v)) return false; }
+      // sombra en reposo: en un contenedor/sección ES su caja (box-shadow), así hover/focus la reemplazan con box-shadow y no con drop-shadow.
+      // En texto, icono e imagen NO cuenta (es justo lo que decide la técnica: text-shadow / drop-shadow).
+      else if (k === 'sombra') { if ((node?.type === 'container' || node?.type === 'section') && haySombra(v)) return false; }
       else if (/^border(Top|Right|Bottom|Left)?$/.test(k)) { if (!vacio(v) && !/\b(none|hidden)\b/i.test(String(v)) && !/^0/.test(String(v).trim())) return false; }
       else if (/^border(Top|Right|Bottom|Left)?(Width|Style)$/.test(k)) { if (!vacio(v)) return false; }
     }
@@ -157,6 +162,18 @@ export const esTexto = (node) => ['heading', 'text', 'button'].includes(node?.ty
 
 /** Modo de sombra para hover/focus: 'texto' | 'plano' | false (con caja: box-shadow). */
 export const modoSombra = (node) => (sinCaja(node) ? (esTexto(node) ? 'texto' : 'plano') : false);
+
+/** Declaraciones CSS de la sombra en reposo de un nodo para unos estilos (base, o base+móvil ya mezclados).
+ *  La técnica sale de modoSombra: text-shadow | drop-shadow (filter) | box-shadow. {} si no hay sombra. */
+export const declaracionesSombra = (node, est) => (est && 'sombra' in est ? sombraDeclaraciones(est.sombra, modoSombra(node)) : {});
+
+/** filter de un efecto (brillo...) CONSERVANDO el drop-shadow en reposo si el nodo lo usa (modo 'plano'): el filter del
+ *  estado reemplaza al de reposo, así que se suman. Lift y glow no lo necesitan: su sombra REEMPLAZA a la de reposo a propósito. */
+export function filtroConReposo(node, filtro) {
+  const est = { ...node?.styles?.base, ...node?.styles?.mobile };
+  const rep = modoSombra(node) === 'plano' ? filtroReposo(est.sombra) : '';
+  return `filter:${rep ? rep + ' ' : ''}${filtro}`;
+}
 
 /** Todos los @keyframes (una sola vez por página). --ad = distancia en px. */
 export const KEYFRAMES = `@keyframes a-fade{from{opacity:0}}

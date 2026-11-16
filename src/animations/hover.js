@@ -1,7 +1,7 @@
 // ANIMACIÓN "AL PASAR EL MOUSE": CSS puro (transition + :hover), sin JS.
 // Datos en node.animation.hover = { effect, duration, ease, color }
 
-import { EASES, transicion, camposCurva, sinSpring, DEF_CURVA, modoSombra, sinCaja, esTexto, duracion, curva } from './base.js';
+import { EASES, transicion, camposCurva, sinSpring, DEF_CURVA, modoSombra, sinCaja, esTexto, duracion, curva, filtroConReposo } from './base.js';
 
 // Lista completa (la usa la validación del .json). El orden mostrado depende del nodo: ver opcionesNodo.
 const NUEVOS = [
@@ -61,7 +61,7 @@ const REGLAS = {
     : modo
       ? `filter:drop-shadow(0 0 10px ${h.color || '#7c5cff'})`
       : `box-shadow:0 0 28px ${h.color || '#7c5cff'}`,
-  bright: () => 'filter:brightness(1.2)',
+  bright: (h, modo, node) => filtroConReposo(node, 'brightness(1.2)'), // conserva el drop-shadow en reposo (modo plano)
 };
 
 // ZONA DE HOVER EXTRA (anti-parpadeo). Si el efecto mueve el elemento y el cursor estaba en el borde,
@@ -164,6 +164,6 @@ export default {
       ? [sinPosicion(node) ? `${sel}{position:relative}` : '',
         `${sel}:hover::after{content:'';position:absolute;${zona}}`]
       : [];
-    return [extra[0], `${sel}:hover{${transicion(h)};${regla(h, modoSombra(node))}}`, extra[1]].filter(Boolean).join('\n');
+    return [extra[0], `${sel}:hover{${transicion(h)};${regla(h, modoSombra(node), node)}}`, extra[1]].filter(Boolean).join('\n');
   },
 };

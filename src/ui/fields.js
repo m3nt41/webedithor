@@ -83,6 +83,9 @@ export const GRUPOS = [
       { key: 'borderRadius', label: 'Esquinas', crudo: 'Redondeo', kind: 'forma', placeholder: '12px', tipos: [...CONTENEDOR, 'page', 'image', 'heading', 'text', 'icon'] },
       { key: 'border', label: 'Borde', kind: 'text', placeholder: '1px solid #ccc' },
       { key: 'opacity', label: 'Opacidad', kind: 'text', placeholder: '1' },
+      // Sombra en reposo (clave propia `sombra`, ver core/sombra.js). La técnica CSS (box-shadow / text-shadow / drop-shadow) la elige
+      // el editor según el elemento. Sin valor "a mano": los presets y los números ya lo cubren. No va en la página.
+      { key: 'sombra', label: 'Sombra', kind: 'sombra', tipos: [...TEXTO, ...CONTENEDOR, 'image', 'icon'] },
     ],
   },
   {

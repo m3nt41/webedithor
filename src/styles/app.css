@@ -300,3 +300,9 @@ details.bloque .variantes button:hover { background: #3b3470; }
 .tir-et { position: absolute; transform: translate(-50%, -50%); pointer-events: none; padding: 1px 6px; border-radius: 4px; background: #111; color: #fff; font: 600 11px/1.5 system-ui, sans-serif; white-space: nowrap; }
 .tir-modo { position: absolute; pointer-events: auto; padding: 1px 8px; border: 1px solid #44444f; border-radius: 4px; background: #1f1f26; color: #ddd; font: 11px/1.6 system-ui, sans-serif; cursor: pointer; }
 .tir-modo:hover { background: #2f2f38; color: #fff; }
+
+/* Sombra en reposo (inspector): números en fila y color/opacidad debajo */
+#inspector .sombra-ed { margin: 4px 0 8px; padding-left: 4px; border-left: 2px solid #44444f; }
+#inspector .sombra-ed .fila { display: grid; grid-template-columns: repeat(var(--n, 3), 1fr); gap: 6px; margin-bottom: 6px; }
+#inspector .sombra-ed .sh-n { display: flex; flex-direction: column; gap: 2px; font-size: 11px; color: #c9c9d6; }
+#inspector .sombra-ed .sh-n input { width: 100%; min-width: 0; box-sizing: border-box; }

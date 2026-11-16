@@ -5,6 +5,8 @@
 // propiedad; validar URLs con lista permitida de esquemas; atributos siempre entre comillas y escapados) y MDN
 // (atributo sandbox del iframe, ver ui/vistaprevia.js).
 //
+import { sombraValida } from './sombra.js';
+
 // Regla de oro: lo que no pasa se DESCARTA (ese valor, no la página) y se CUENTA (quitar() → "se quitaron N valores").
 
 // ---- Contador de valores descartados (normalizePage lo lee antes y después de normalizar) ----
@@ -19,7 +21,7 @@ export const avisoQuitados = (n) => (n > 0
 
 // ---- 1) Propiedades CSS (camelCase) permitidas en styles.base / styles.mobile ----
 // Las que usan los bloques, el inspector y los tiradores, más hermanas obvias (lados de borde, gaps...).
-// NO están: transform, transition, animation, filter, cursor, content, pointerEvents… (las animaciones tienen su propio módulo).
+// NO están: transform, transition, animation, filter (el drop-shadow de la sombra en reposo NO se guarda: lo genera sombra.js desde la clave propia `sombra`), cursor, content, pointerEvents… (las animaciones tienen su propio módulo).
 export const PROPIEDADES_CSS = new Set([
   // caja y layout
   'display', 'position', 'top', 'right', 'bottom', 'left', 'inset', 'zIndex', 'overflow', 'overflowX', 'overflowY', 'boxSizing',
@@ -37,7 +39,7 @@ export const PROPIEDADES_CSS = new Set([
   'border', 'borderTop', 'borderRight', 'borderBottom', 'borderLeft', 'borderRadius', 'borderColor', 'borderWidth', 'borderStyle',
   'boxShadow', 'opacity',
   // claves propias del editor (no son CSS directo; las valida tree.js y el exportador las convierte en reglas)
-  'hijosAspectRatio', 'fondoImagen', 'fondoAjuste', 'fondoPosicion', 'fondoCapa',
+  'hijosAspectRatio', 'fondoImagen', 'fondoAjuste', 'fondoPosicion', 'fondoCapa', 'sombra',
 ]);
 export const propiedadPermitida = (k) => typeof k === 'string' && PROPIEDADES_CSS.has(k);
 
@@ -47,6 +49,11 @@ export const propiedadPermitida = (k) => typeof k === 'string' && PROPIEDADES_CS
 // caracteres de control, expression( / javascript: / vbscript: / -moz-binding / image-set(, y url(...) que no sea https: o data:image/.
 const PELIGROSO = /[<>{}\\@\u0000-\u001f\u007f]|\/\*|\*\/|expression\s*\(|javascript:|vbscript:|-moz-binding|behavior\s*:|image-set\s*\(/i;
 const URL_CSS = /^url\s*\(\s*(?:"([^"]*)"|'([^']*)'|([^)'"\s]*))\s*\)/i;
+
+/** Propiedades cuyo valor es una sombra: además de valorCss pasan por el formato estricto de sombra.js
+ *  (números con unidad + colores válidos, máx. 4 capas; sin url(), var(), comentarios ni nada raro). */
+const ES_SOMBRA = { boxShadow: { texto: false }, textShadow: { texto: true }, sombra: { texto: false } };
+export const valorSombraOk = (k, v) => !(k in ES_SOMBRA) || (typeof v === 'string' && sombraValida(v, ES_SOMBRA[k]));
 
 /** Devuelve el valor tal cual (string o número) si es seguro; null si hay que descartarlo. */
 export function valorCss(v) {
@@ -101,7 +108,7 @@ export function sanearEstilos(st) {
     if (!propiedadPermitida(k)) { quitar(); continue; }
     if (k === 'fondoImagen') { if (urlPermitida(v, { imagen: true }) && typeof v === 'string') out[k] = v; else quitar(); continue; }
     const s = valorCss(v);
-    if (s === null) { quitar(); continue; }
+    if (s === null || !valorSombraOk(k, v)) { quitar(); continue; }
     out[k] = v;
   }
   return out;

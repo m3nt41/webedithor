@@ -15,7 +15,9 @@ import scenestep from './scenestep.js';
 import variants, { estadosEntrada, usaClic, SCRIPT_CLIC } from './variants.js';
 export { motorScroll, SCRIPT_SCROLLMOTOR } from './scrollmotor.js';
 export { SCRIPT_SCROLLSUAVE, paginaUsaScrollSuave } from './scrollsuave.js';
-import { KEYFRAMES, transicion, cargaInmediata } from './base.js';
+import { KEYFRAMES, transicion, cargaInmediata, declaracionesSombra } from './base.js';
+
+const kebab = (k) => k.replace(/[A-Z]/g, (m) => '-' + m.toLowerCase());
 import { walk } from '../core/tree.js';
 
 export { splitText, esMedida, medirLineas, SCRIPT_LINEAS } from './text.js';
@@ -131,10 +133,14 @@ export function cssNodo(node, sel, { scroll = true, forzar = null, padre = null 
 
 /** CSS de toda la página para el PREVIEW (selector `.stage [data-id]`). scroll=false → solo hover.
  *  forzar = { id, estado }: muestra fijo ese estado de un nodo ("Ver este estado"). */
-export function cssPagina(page, { scroll = false, forzar = null } = {}) {
+export function cssPagina(page, { scroll = false, forzar = null, viewMode = 'desktop' } = {}) {
   const reglas = [];
   const recorre = (n, padre) => {
     // Acotado al lienzo (.stage): otras partes del editor (p. ej. las filas de Capas) también usan data-id.
+    // Sombra en reposo del lienzo: va como REGLA (no inline) para que el :hover/:focus de más abajo pueda reemplazarla, igual que en el export
+    const est = viewMode === 'mobile' ? { ...n.styles.base, ...n.styles.mobile } : n.styles.base;
+    const sh = Object.entries(declaracionesSombra(n, est)).map(([k, v]) => `${kebab(k)}:${v}`).join(';');
+    if (sh) reglas.push(`.stage [data-id="${n.id}"]{${sh}}`);
     const r = cssNodo(n, `.stage [data-id="${n.id}"]`, { scroll, forzar, padre });
     if (r) reglas.push(r);
     n.children.forEach((h) => recorre(h, n));

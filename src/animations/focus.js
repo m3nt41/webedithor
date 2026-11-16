@@ -2,7 +2,7 @@
 // Solo tiene sentido en botones (enlaces), que son lo enfocable de la página.
 // Datos en node.animation.focus = { effect, duration, ease, color }
 
-import { EASES, transicion, camposCurva, sinSpring, DEF_CURVA, modoSombra } from './base.js';
+import { EASES, transicion, camposCurva, sinSpring, DEF_CURVA, modoSombra, filtroConReposo } from './base.js';
 
 const EFECTOS = [
   ['', 'Ninguno'],
@@ -21,7 +21,7 @@ const REGLAS = {
       ? `outline:0;filter:drop-shadow(0 0 3px ${f.color || '#7c5cff'}) drop-shadow(0 0 10px ${f.color || '#7c5cff'})`
       : `outline:0;box-shadow:0 0 0 4px ${f.color || '#7c5cff'}55,0 0 28px ${f.color || '#7c5cff'}`,
   grow: () => 'transform:scale(1.06)',
-  bright: () => 'filter:brightness(1.2)',
+  bright: (f, modo, node) => filtroConReposo(node, 'brightness(1.2)'),
 };
 
 export default {
@@ -40,6 +40,6 @@ export default {
 
   css(f, sel, node) {
     const regla = REGLAS[f?.effect];
-    return regla ? `${sel}:focus-visible{${transicion(f)};${regla(f, modoSombra(node))}}` : '';
+    return regla ? `${sel}:focus-visible{${transicion(f)};${regla(f, modoSombra(node), node)}}` : '';
   },
 };

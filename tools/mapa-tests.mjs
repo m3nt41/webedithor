@@ -37,7 +37,7 @@ export const MAPA = {
   // ---- Inspector y controles visuales ----
   'src/ui/controles.js': ['controles', 'inspector'],
   'src/ui/fields.js': ['controles', 'inspector', 'inspector-niveles', 'inspector-inventario', 'inspector-acordeon', 'inspector-page-plano', 'inspector-page-espaciado'],
-  'src/ui/inspector.js': ['controles', 'inspector', 'inspector-niveles', 'inspector-inventario', 'inspector-acordeon', 'inspector-page-plano', 'inspector-page-espaciado', 'marquesina-ui', 'rebote-inspector', 'sliders-arrastre', 'copiar-efectos'],
+  'src/ui/inspector.js': ['controles', 'inspector', 'inspector-niveles', 'inspector-inventario', 'inspector-acordeon', 'inspector-page-plano', 'inspector-page-espaciado', 'marquesina-ui', 'rebote-inspector', 'sliders-arrastre', 'undo-sliders', 'copiar-efectos'],
   'src/ui/tiradores.js': ['tiradores', 'tiradores-interruptor', 'rebote-inspector'],
   'src/ui/tiradores-pref.js': ['tiradores-interruptor'],
   'src/ui/efectos.js': ['copiar-efectos'],
@@ -45,7 +45,7 @@ export const MAPA = {
   'src/ui/espaciado.js': ['tiradores'],
   'src/ui/imagen.js': ['fondo'],
   'src/ui/iconos.js': ['inspector', 'vistaprevia', 'sidebar', 'iconos'],
-  'src/ui/toolbar.js': ['vistaprevia', 'persistencia', 'editor-file', 'tiradores-interruptor'],
+  'src/ui/toolbar.js': ['vistaprevia', 'persistencia', 'editor-file', 'tiradores-interruptor', 'undo-sliders'],
   'src/ui/sidebar.js': ['sidebar', 'editor-file', 'fuga-estilos'],
   'src/ui/vistaprevia.js': ['vistaprevia', 'xss-import'],
 

@@ -90,10 +90,11 @@ export function initToolbar(host) {
   });
 
   // Atajos de teclado. Dentro de un campo de texto se deja el undo nativo del navegador.
+  // Un slider (input range) NO es un campo de texto: no tiene undo nativo, así que Ctrl+Z / Ctrl+Y llegan al editor.
   document.addEventListener('keydown', (e) => {
     if (!(e.ctrlKey || e.metaKey)) return;
     const t = e.target;
-    if (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) return;
+    if (t.isContentEditable || (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) && t.type !== 'range')) return;
     const k = e.key.toLowerCase();
     if (k === 'z' && !e.shiftKey) { e.preventDefault(); undo(); }
     else if (k === 'y' || (k === 'z' && e.shiftKey)) { e.preventDefault(); redo(); }

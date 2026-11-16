@@ -186,6 +186,7 @@ function irA(pagina) {
   if (state.selectedId && !findNode(pagina, state.selectedId)) state.selectedId = null;
   programarGuardado();
   emit('page');
+  emit('historial'); // aviso extra: el inspector se reconstruye aunque un slider tenga el foco (si no, el slider queda con el valor viejo)
 }
 
 export function undo() {

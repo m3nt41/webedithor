@@ -680,6 +680,17 @@ export function initInspector(host) {
   subscribe((state, cambio) => {
     if (cambio === 'selection' || cambio === 'view' || cambio === 'verestado' || cambio === 'efectos') return dibujar();
     if (cambio === 'text') return; // se escribe en el preview: no tocar el panel
+    if (cambio === 'historial') { // Undo/Redo: el árbol cambió "por fuera"; si un slider tiene el foco, el panel no se habría reconstruido y mostraría el valor viejo
+      const r = document.activeElement;
+      const marca = r?.type === 'range' && host.contains(r) ? (r.dataset.sh !== undefined ? `[data-sh="${r.dataset.sh}"]` : r.dataset.capa !== undefined ? '[data-capa]' : null) : null;
+      if (!marca) return; // sin slider enfocado, el 'page' anterior ya reconstruyó (o no hacía falta)
+      const top = host.querySelector('.insp-cuerpo')?.scrollTop ?? 0;
+      dibujar();
+      host.querySelector(`input[type=range]${marca}`)?.focus({ preventScroll: true }); // el foco vuelve al slider: se pueden encadenar Ctrl+Z
+      const c2 = host.querySelector('.insp-cuerpo');
+      if (c2 && Math.abs(c2.scrollTop - top) > 0.01) c2.scrollTo({ top, behavior: 'instant' });
+      return;
+    }
     // Arrastre de un tirador: NO se reconstruye el panel (saltaba el scroll y se recreaban todos los nodos);
     // solo se ponen al día los campos de texto CSS. Al soltar (pointerup) se reconstruye UNA vez.
     if (cambio === 'page' && gestoActivo() && state.selectedId === idDibujado && idDibujado) {

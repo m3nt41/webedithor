@@ -13,6 +13,7 @@
 
 import { normalizarAnimacion } from '../animations/normalizar.js';
 import { normalizarMarquesina } from './marquesina.js';
+import { sanearEstilos, urlPermitida, idSeguro, nivelValido, quitar, leerQuitados } from './seguridad.js';
 
 let contador = 0;
 
@@ -114,7 +115,7 @@ export function urlCss(src) {
  *  Devuelve {} si no hay imagen. Es la única fuente de verdad: la usan el editor y el export. */
 export function fondoDeclaraciones(est) {
   const src = typeof est.fondoImagen === 'string' ? est.fondoImagen.trim() : '';
-  if (!src) return {};
+  if (!src || !urlPermitida(src, { imagen: true })) return {}; // defensa en la salida: nunca url(javascript:…)
   const capa = capaValida(est.fondoCapa) ?? 0;
   const a = capa / 100;
   const ajuste = FONDO_AJUSTES.includes(est.fondoAjuste) ? est.fondoAjuste : 'cover';
@@ -155,13 +156,27 @@ function limpiarContenido(n) {
     const m = n.type === 'container' ? normalizarMarquesina(c.marquesina) : undefined;
     if (m) c.marquesina = m; else delete c.marquesina;
   }
+  // SEGURIDAD (ver core/seguridad.js): enlaces y fuentes solo con esquemas permitidos; el nivel del título entra en el nombre de la etiqueta
+  if ('href' in c && !(typeof c.href === 'string' && urlPermitida(c.href))) { delete c.href; quitar(); }
+  if ('src' in c && !(typeof c.src === 'string' && urlPermitida(c.src, { imagen: true }))) { delete c.src; quitar(); }
+  if ('level' in c && !nivelValido(c.level)) { delete c.level; quitar(); }
   if (n.type === 'icon' && typeof c.name !== 'string') c.name = 'star'; // un name que no exista en la biblioteca se deja: se dibuja el icono neutro
   return c;
 }
 
 /** Valida y completa un objeto leído de un .json. Lanza Error si no es una página válida.
- *  La animación de cada nodo se limpia con normalizarAnimacion (nunca lanza: lo inválido se descarta). */
-export function normalizePage(obj) {
+ *  La animación de cada nodo se limpia con normalizarAnimacion (nunca lanza: lo inválido se descarta).
+ *  SEGURIDAD: es el ÚNICO punto de entrada de una página (Abrir JSON, localStorage, pestañas, pegar página): estilos con lista
+ *  permitida de propiedades y valores sin nada peligroso, href/src con esquemas permitidos, ids seguros (core/seguridad.js).
+ *  `informe` (opcional) recibe { quitados }: cuántos valores se descartaron. */
+export function normalizePage(obj, informe = null) {
+  const antes = leerQuitados();
+  const pagina = normalizarNodos(obj);
+  if (informe) informe.quitados = leerQuitados() - antes;
+  return pagina;
+}
+
+function normalizarNodos(obj) {
   const TIPOS = ['page', 'section', 'container', 'heading', 'text', 'button', 'image', 'icon'];
   function norm(n, esRaiz, padre) {
     if (!n || typeof n !== 'object') throw new Error('Nodo inválido');
@@ -171,11 +186,12 @@ export function normalizePage(obj) {
       throw new Error(`Anidado inválido: "${n.name ?? n.type}" (${n.type}) no puede estar dentro de "${padre.name ?? padre.type}" (${padre.type})`);
     }
     if (n.children != null && !Array.isArray(n.children)) throw new Error(`"children" de "${n.name ?? n.type}" debe ser una lista`);
+    if (typeof n.id === 'string' && !idSeguro(n.id)) quitar(); // un id raro se cambia por uno nuevo (no puede colarse en selectores ni atributos)
     return {
-      id: typeof n.id === 'string' ? n.id : newId(),
+      id: idSeguro(n.id) ? n.id : newId(),
       type: n.type,
-      name: n.name ?? n.type,
-      styles: { base: limpiarProporciones(objeto(n.styles?.base)), mobile: limpiarProporciones(objeto(n.styles?.mobile)) },
+      name: typeof n.name === 'string' ? n.name : n.type,
+      styles: { base: sanearEstilos(limpiarProporciones(objeto(n.styles?.base))), mobile: sanearEstilos(limpiarProporciones(objeto(n.styles?.mobile))) },
       content: limpiarContenido(n),
       animation: normalizarAnimacion(n.animation, n.type), // validada: ver animations/normalizar.js
       children: (n.children ?? []).map((h) => norm(h, false, n)),

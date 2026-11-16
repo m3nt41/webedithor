@@ -4,6 +4,8 @@
 import { getState, subscribe, undo, redo, puedeDeshacer, puedeRehacer, setViewMode, replacePage, newPage } from '../core/store.js';
 import { exportHTML, descargar } from '../export/exporter.js';
 import { abrirVistaPrevia } from './vistaprevia.js';
+import { toast } from './plania.js';
+import { avisoQuitados } from '../core/seguridad.js';
 
 import { SVG_ESCRITORIO, SVG_MOVIL, SVG_OJO, SVG_DESHACER, SVG_REHACER } from './iconos.js'; // iconos compartidos con la Vista previa
 
@@ -51,7 +53,8 @@ export function initToolbar(host) {
     if (!archivo) return;
     try {
       const datos = JSON.parse(await archivo.text());
-      replacePage(datos.page ?? datos); // acepta el formato con envoltorio o la página sola
+      const quitados = replacePage(datos.page ?? datos); // acepta el formato con envoltorio o la página sola
+      if (quitados > 0) toast(avisoQuitados(quitados), true, 9000); // largo: es un aviso de seguridad
     } catch (err) {
       alert(`No se pudo abrir el archivo: ${err.message}`);
     }

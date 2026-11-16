@@ -15,10 +15,16 @@ const MAX_HISTORIAL = 100;
 const VENTANA_AGRUPAR_MS = 1000; // cambios seguidos al mismo campo = un solo paso de undo
 
 // ---- Estado ----
+let quitadosAlCargar = 0; // valores peligrosos descartados al cargar lo guardado en localStorage
+export const valoresQuitadosAlCargar = () => quitadosAlCargar;
 function cargarGuardado() {
   try {
     const txt = localStorage.getItem(CLAVE_LS);
-    return txt ? normalizePage(JSON.parse(txt)) : null;
+    if (!txt) return null;
+    const informe = {};
+    const pagina = normalizePage(JSON.parse(txt), informe);
+    quitadosAlCargar = informe.quitados; // main.js lo avisa al arrancar
+    return pagina;
   } catch {
     return null; // localStorage bloqueado o JSON dañado: empezamos de cero
   }
@@ -563,14 +569,16 @@ export function moveBy(id, delta) {
 
 // ---- Abrir / nueva ----
 
-/** Reemplaza toda la página (abrir .json o "Nuevo"). Se puede deshacer. */
+/** Reemplaza toda la página (abrir .json o "Nuevo"). Se puede deshacer. Devuelve cuántos valores peligrosos se descartaron. */
 export function replacePage(obj) {
-  const nueva = normalizePage(obj); // lanza Error si el JSON no sirve
+  const informe = {};
+  const nueva = normalizePage(obj, informe); // lanza Error si el JSON no sirve
   mutate((page) => {
     page.id = nueva.id; page.name = nueva.name; page.styles = nueva.styles;
     page.content = nueva.content; page.animation = nueva.animation; page.children = nueva.children;
   });
   select(null);
+  return informe.quitados; // valores peligrosos descartados (0 en un JSON normal)
 }
 
 export const newPage = () => replacePage(createPage());

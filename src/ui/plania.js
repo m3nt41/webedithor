@@ -9,7 +9,7 @@ import { SVG_AVISO } from './iconos.js';
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 
 /** Aviso breve abajo (se quita solo). */
-export function toast(texto, error = false) {
+export function toast(texto, error = false, ms = 2600) {
   let t = document.getElementById('toast-ia');
   if (!t) {
     t = document.createElement('div');
@@ -21,7 +21,7 @@ export function toast(texto, error = false) {
   t.classList.toggle('error', error);
   t.hidden = false;
   clearTimeout(t._h);
-  t._h = setTimeout(() => { t.hidden = true; }, 2600);
+  t._h = setTimeout(() => { t.hidden = true; }, ms);
 }
 
 /** Copia la guía al portapapeles. Si el navegador no deja (sin permiso), cae a un textarea temporal. */

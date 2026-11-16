@@ -41,10 +41,14 @@ try {
   assert.ok(await abierta(), 'la capa no se abrió');
   const srcdoc = await d.executeScript(`return document.querySelector('#vp-frame').getAttribute('srcdoc')`);
   // Los <script> se comparan aparte: en el editor compilado van minificados (function.toString), en Node no; el resto (HTML y CSS) debe ser idéntico.
+  // La vista previa añade un script PUENTE (Esc y anclas por postMessage, ver ui/vistaprevia.js) que el export no lleva: se comprueba y se quita.
+  const PUENTE = /<script>\naddEventListener\('keydown'[\s\S]*?<\/script>/;
+  assert.ok(PUENTE.test(srcdoc), 'falta el script puente de la vista previa');
+  const srcdocSinPuente = srcdoc.replace(PUENTE, '');
   const sinScripts = (h) => h.replace(/\r\n/g, '\n').replace(/<script>[\s\S]*<\/script>/, '<script/>');
   const esperado = exportHTML(paginaEditor);
-  assert.equal(sinScripts(srcdoc), sinScripts(esperado), 'el iframe no contiene el export actual');
-  assert.equal((srcdoc.match(/<script>/g) || []).length, (esperado.match(/<script>/g) || []).length, 'distinto número de scripts');
+  assert.equal(sinScripts(srcdocSinPuente), sinScripts(esperado), 'el iframe no contiene el export actual');
+  assert.equal((srcdocSinPuente.match(/<script>/g) || []).length, (esperado.match(/<script>/g) || []).length, 'distinto número de scripts');
   assert.equal(await enFrame(() => d.executeScript('return innerWidth')) > 1000, true, 'escritorio: el iframe debería ser ancho');
 
   // 2. Scroll normal dentro del iframe y ancla # sin salir del iframe

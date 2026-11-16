@@ -11,6 +11,7 @@
 
 import { BLOCKS, createBlock } from '../blocks/index.js';
 import { walk, normalizePage } from './tree.js';
+import { avisoQuitados } from './seguridad.js';
 
 export const TIPOS_HUECO = ['heading', 'text', 'button', 'image'];
 const MAX_TEXTO = 2000; // tope de seguridad por valor (la guía sugiere límites mucho más cortos)
@@ -154,8 +155,11 @@ export function leerEntrada(texto, existentes = []) {
   }
   if (obj.type === 'page') {
     try {
-      const pagina = normalizePage(obj);
-      return { tipo: 'pagina', secciones: pagina.children, titulo: pagina.content?.title ?? null, pagina, errores: [], avisos: avisosEnlaces([...existentes, ...pagina.children]) };
+      const informe = {};
+      const pagina = normalizePage(obj, informe);
+      const avisos = avisosEnlaces([...existentes, ...pagina.children]);
+      if (informe.quitados > 0) avisos.unshift(avisoQuitados(informe.quitados));
+      return { tipo: 'pagina', secciones: pagina.children, titulo: pagina.content?.title ?? null, pagina, errores: [], avisos };
     } catch (e) {
       return { tipo: 'pagina', secciones: [], titulo: null, errores: [`La página no es válida: ${e.message}`], avisos: [] };
     }

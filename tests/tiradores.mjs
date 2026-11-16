@@ -170,7 +170,10 @@ try {
   v(!/tir-|tirador/.test(html), 'el HTML exportado no contiene tiradores');
   await d.findElement(By.css('#btn-vista-previa')).click();
   await esperar(1200);
-  const enIframe = await d.executeScript(`const f=document.querySelector('#vp-frame'); return f && f.contentDocument ? f.contentDocument.querySelectorAll('.tir-capa,.tir-h,.tir-modo').length + ':' + f.contentDocument.querySelectorAll('section').length : 'sin-iframe'`);
+  // El iframe es sandbox sin allow-same-origin: contentDocument es null; se entra con switchTo().frame (WebDriver sí puede)
+  await d.switchTo().frame(await d.findElement(By.css('#vp-frame')));
+  const enIframe = await d.executeScript(`return document.querySelectorAll('.tir-capa,.tir-h,.tir-modo').length + ':' + document.querySelectorAll('section').length`);
+  await d.switchTo().defaultContent();
   igual(enIframe, '0:1', 'la Vista previa (iframe) carga la página y no tiene tiradores');
 
   console.log(`\n${ok} comprobaciones OK`);

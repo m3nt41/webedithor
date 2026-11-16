@@ -14,6 +14,7 @@
 import { GRUPOS_ANIM } from './index.js';
 import { DISPAROS_VARIANT, CAMPOS_PROPS, CAMPOS_TIEMPO, limpio } from './variants.js';
 import { newId } from '../core/tree.js';
+import { valorCss, quitar } from '../core/seguridad.js';
 
 const esObj = (v) => v !== null && typeof v === 'object' && !Array.isArray(v);
 
@@ -32,7 +33,12 @@ function valor(v, f) {
     const s = String(v ?? '');
     return f.options.some(([o]) => o === s) ? s : undefined;
   }
-  if (f.kind === 'color' || f.kind === 'text') return typeof v === 'string' && limpio(v) ? limpio(v) : undefined;
+  if (f.kind === 'color' || f.kind === 'text') { // va al CSS: además de limpio(), nada peligroso (core/seguridad.js)
+    const l = typeof v === 'string' ? limpio(v) : '';
+    if (!l) return undefined;
+    if (valorCss(l) === null) { quitar(); return undefined; }
+    return l;
+  }
   return numero(v, f);
 }
 

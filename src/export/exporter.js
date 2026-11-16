@@ -8,6 +8,7 @@
 import { anchorValido, walk, aspectoValido, CLAVES_PROPIAS, fondoDeclaraciones, tocaFondo } from '../core/tree.js';
 import { tagFor, TIPOS_TEXTO } from '../render/renderer.js';
 import { iconoSvg, estilosIcono } from '../core/icono.js';
+import { propiedadPermitida, valorCss, hrefSeguro, srcSeguro } from '../core/seguridad.js';
 import { usaMenuMovil, paginaUsaMenuMovil, cssMenuMovil, varsMenu, necesitaAncla, SCRIPT_MENU } from '../core/menumovil.js';
 import { usaMarquesina, cssMarquesina, htmlMarquesina, keyframesMarquesina } from '../core/marquesina.js';
 import { tieneParallaxNativoDentro } from '../animations/parallax.js';
@@ -16,9 +17,12 @@ import { usaEscena, varsEscena, esNavPegado, paginaUsaEscena, CSS_ESCENA, atribu
 export const BREAKPOINT_MOVIL = 768;
 
 const escHtml = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-const escAttr = (s) => escHtml(s).replace(/"/g, '&quot;');
+const escAttr = (s) => escHtml(s).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 const kebab = (k) => k.replace(/[A-Z]/g, (m) => '-' + m.toLowerCase());
-const declaraciones = (obj) => Object.entries(obj).filter(([k]) => !CLAVES_PROPIAS.includes(k)).map(([k, v]) => `${kebab(k)}:${v}`).join(';');
+// Estilos del USUARIO: defensa en la salida (aunque la entrada ya esté saneada): solo propiedades permitidas y valores seguros.
+const declaraciones = (obj) => Object.entries(obj).filter(([k, v]) => !CLAVES_PROPIAS.includes(k) && propiedadPermitida(k) && valorCss(v) !== null).map(([k, v]) => `${kebab(k)}:${v}`).join(';');
+// Declaraciones GENERADAS por el editor (fondo con url("…") escapada con urlCss: lleva barras invertidas legítimas): sin filtro de valor.
+const declaracionesGeneradas = (obj) => Object.entries(obj).map(([k, v]) => `${kebab(k)}:${v}`).join(';');
 
 /** Texto con animación -> HTML con <span class="w" style="--i:N"> por palabra/letra. */
 function textoPartidoHtml(texto, modo) {
@@ -45,7 +49,7 @@ export function exportHTML(page) {
     const clase = `n${contador++}`;
     // Imagen de fondo: va al final de la regla (gana a un `background` de color, que queda de respaldo debajo).
     // En móvil se re-emite entera (con los valores efectivos) si el override toca el fondo.
-    const fondo = (d) => Object.keys(d).length ? declaraciones(d) : '';
+    const fondo = (d) => Object.keys(d).length ? declaracionesGeneradas(d) : '';
     const unir = (...p) => p.filter(Boolean).join(';');
     const dBase = unir(declaraciones(node.type === 'icon' ? estilosIcono(node.styles.base) : node.styles.base), fondo(fondoDeclaraciones(node.styles.base)));
     const dMovil = unir(declaraciones(node.styles.mobile), tocaFondo(node.styles.mobile) ? fondo(fondoDeclaraciones({ ...node.styles.base, ...node.styles.mobile })) : '');
@@ -77,12 +81,12 @@ export function exportHTML(page) {
     const c = node.content;
 
     if (node.type === 'image') {
-      return `${sangria}<img class="${clase}"${idAttr}${rv} src="${escAttr(c.src)}" alt="${escAttr(c.alt)}">`;
+      return `${sangria}<img class="${clase}"${idAttr}${rv} src="${escAttr(srcSeguro(c.src))}" alt="${escAttr(c.alt)}">`;
     }
     if (node.type === 'icon') { // mismo SVG inline que el editor (iconoSvg), sin JS
       return `${sangria}<span class="${clase}"${idAttr}${rv}>${iconoSvg(c.name)}</span>`;
     }
-    const attrs = (node.type === 'button' ? ` href="${escAttr(c.href ?? '#')}"` : '') + idAttr + rv;
+    const attrs = (node.type === 'button' ? ` href="${escAttr(hrefSeguro(c.href ?? '#'))}"` : '') + idAttr + rv;
     const abre = `<${tag} class="${clase}"${attrs}>`;
     if (TIPOS_TEXTO.includes(node.type)) {
       const modo = node.animation?.text?.mode;
@@ -165,6 +169,9 @@ export function exportHTML(page) {
   const scripts = [paginaUsaMedida(page) ? SCRIPT_LINEAS : '', usaRv ? SCRIPT_SCROLL : '', paginaUsaClic(page) ? SCRIPT_CLIC : '', paginaUsaScrollLink(page) ? SCRIPT_SCROLLMOTOR : '', paginaUsaScrollSuave(page) ? SCRIPT_SCROLLSUAVE : '', paginaUsaMenuMovil(page) ? SCRIPT_MENU : ''].filter(Boolean).join('\n');
   const script = scripts ? `<script>\n${scripts}\n</script>\n` : '';
 
+  // Último filtro del CSS: un "<" jamás puede estar en el CSS de la página (no hay ninguno legítimo fuera de comillas; urlCss ya lo
+  // escribe como \3c). Escapado así no puede cerrar el <style>, venga de donde venga.
+  const aCss = (t) => t.replace(/</g, '\\3c ');
   return `<!doctype html>
 <html lang="es">
 <head>
@@ -172,10 +179,10 @@ export function exportHTML(page) {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${escHtml(page.content.title || 'Landing')}</title>
 <style>
-${reset}
+${aCss(`${reset}
 ${margenEscr}${css.join('\n')}
 ${media}
-${animaciones}
+${animaciones}`)}
 </style>
 ${noscript}</head>
 <body>

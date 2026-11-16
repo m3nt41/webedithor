@@ -7,7 +7,9 @@ import { initInspector } from './ui/inspector.js';
 import { initToolbar } from './ui/toolbar.js';
 import { SVG_AVISO } from './ui/iconos.js';
 import { accionCopiarEfectos, accionPegarEfectos } from './ui/efectos.js';
-import { getState, subscribe, recargarGuardado, seguirConEsta, removeNode, duplicateNode, moveBy } from './core/store.js';
+import { getState, subscribe, recargarGuardado, seguirConEsta, removeNode, duplicateNode, moveBy, valoresQuitadosAlCargar } from './core/store.js';
+import { toast } from './ui/plania.js';
+import { avisoQuitados } from './core/seguridad.js';
 
 // Atajos del elemento seleccionado: Supr borra, Ctrl+D duplica, Alt+↑/↓ mueve, Ctrl+Alt+C/V copia/pega efectos.
 // No actúan mientras se escribe en un campo o en un texto editable (ahí manda el navegador).
@@ -49,6 +51,8 @@ avisoGuardado.hidden = true;
 avisoGuardado.innerHTML = `${SVG_AVISO} No se pudo autoguardar: el almacenamiento del navegador está lleno (probablemente por imágenes pesadas). Usa "Guardar JSON" para no perder tu trabajo, o quita/usa una imagen más liviana (o pega su URL).`;
 document.body.append(avisoGuardado);
 subscribe((s, cambio) => { if (cambio === 'guardado') avisoGuardado.hidden = !s.errorGuardado; });
+
+if (valoresQuitadosAlCargar() > 0) toast(avisoQuitados(valoresQuitadosAlCargar()), true, 9000); // lo guardado traía valores peligrosos
 
 initToolbar(document.getElementById('toolbar'));
 initSidebar(document.getElementById('sidebar'));

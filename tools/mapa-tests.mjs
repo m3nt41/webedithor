@@ -13,6 +13,7 @@ export const NINGUNO = [];
 
 export const MAPA = {
   // ---- Compartido: casi todo depende de esto -> suite completa ----
+  'src/core/seguridad.js': TODOS,
   'src/core/tree.js': TODOS,
   'src/core/store.js': TODOS,
   'src/render/renderer.js': TODOS,
@@ -41,7 +42,7 @@ export const MAPA = {
   'src/ui/iconos.js': ['inspector', 'vistaprevia', 'sidebar', 'iconos'],
   'src/ui/toolbar.js': ['vistaprevia', 'persistencia', 'editor-file'],
   'src/ui/sidebar.js': ['sidebar', 'editor-file', 'fuga-estilos'],
-  'src/ui/vistaprevia.js': ['vistaprevia'],
+  'src/ui/vistaprevia.js': ['vistaprevia', 'xss-import'],
 
   // ---- IA: guía y plan ----
   'src/core/plan.js': ['plan-ia', 'plan-ia-ui'],

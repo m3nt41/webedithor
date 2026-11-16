@@ -7,12 +7,14 @@ import { anchorValido, aspectoValido, CLAVES_PROPIAS, fondoDeclaraciones } from 
 import { iconoSvg, estilosIcono } from '../core/icono.js';
 import { usaMenuMovil, varsMenu, necesitaAncla } from '../core/menumovil.js';
 import { usaMarquesina, estilosMarquesinaEditor } from '../core/marquesina.js';
+import { hrefSeguro, srcSeguro, nivelValido } from '../core/seguridad.js';
 
 // Qué etiqueta HTML usa cada tipo de nodo (también la usa el exportador)
 const TAGS = { page: 'div', section: 'section', container: 'div', heading: 'h2', text: 'p', button: 'a', image: 'img', icon: 'span' };
 
 export function tagFor(node) {
-  return node.type === 'heading' ? `h${node.content.level ?? 2}` : TAGS[node.type] ?? 'div';
+  // el nivel entra en el NOMBRE de la etiqueta: solo un entero 1–6 (si no, h2)
+  return node.type === 'heading' ? `h${nivelValido(node.content.level) ? node.content.level : 2}` : TAGS[node.type] ?? 'div';
 }
 
 /** Tipos cuyo texto se edita directamente. */
@@ -43,10 +45,10 @@ export function renderNode(node, viewMode = 'desktop') {
 
   if (TIPOS_TEXTO.includes(node.type)) {
     el.textContent = node.content.text ?? '';
-    if (node.type === 'button') el.setAttribute('href', node.content.href ?? '#');
+    if (node.type === 'button') el.setAttribute('href', hrefSeguro(node.content.href ?? '#'));
   }
   if (node.type === 'image') {
-    el.src = node.content.src ?? '';
+    el.src = srcSeguro(node.content.src ?? '');
     el.alt = node.content.alt ?? '';
   }
 

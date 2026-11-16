@@ -4,13 +4,30 @@
 // - ↻ Reiniciar: regenera el srcdoc (recarga el iframe desde el inicio, scroll arriba) para ver de nuevo las animaciones; conserva Escritorio/Móvil.
 // - Móvil: el iframe mide 390px de ancho (así los @media y 100svh responden de verdad).
 // - El ojo (activo) sustituye a la X: cae EXACTAMENTE sobre el ojo de la barra del editor (se mide con getBoundingClientRect) para abrir y cerrar sin mover el ratón.
-// - Esc cierra, también cuando el foco está dentro del iframe (se escucha su teclado).
+// - Esc cierra, también cuando el foco está dentro del iframe.
+// - SEGURIDAD: el iframe lleva sandbox="allow-scripts" SIN allow-same-origin. Según MDN, sin ese permiso el contenido se trata como
+//   de un origen especial que siempre falla la política de mismo origen: un script de la página (p. ej. de un .json ajeno) NO puede
+//   leer el DOM del editor ni su localStorage. Con allow-scripts + allow-same-origin el documento podría quitarse el sandbox, por eso
+//   nunca van juntos. Consecuencia: el editor ya no puede tocar el documento del iframe (contentDocument es null), así que Esc y las
+//   anclas # las atiende un script puente que SOLO se añade al srcdoc de la vista previa (no al export) y avisa con postMessage.
 
 import { getState } from '../core/store.js';
 import { exportHTML } from '../export/exporter.js';
 import { SVG_ESCRITORIO, SVG_MOVIL, SVG_REINICIAR, SVG_OJO } from './iconos.js';
 
 let capa = null;
+let alMensaje = null;
+
+// Script puente SOLO para la vista previa (el HTML exportado no lo lleva). Corre dentro del iframe sandbox (origen opaco):
+// Esc -> avisa al editor; clic en un enlace # -> desplaza al elemento (un srcdoc resuelve "#x" contra la URL del editor y
+// cargaría el editor dentro del iframe). Todo lo que hace es local al iframe; el único canal hacia fuera es postMessage.
+const PUENTE = `<script>
+addEventListener('keydown',function(e){if(e.key==='Escape')parent.postMessage({vp:'esc'},'*')});
+addEventListener('click',function(e){var a=e.target&&e.target.closest&&e.target.closest('a[href^="#"]');if(!a)return;e.preventDefault();
+var id='';try{id=decodeURIComponent(a.getAttribute('href').slice(1))}catch(x){}
+var d=id?document.getElementById(id):null;if(d)d.scrollIntoView();else if(!id)scrollTo(0,0)});
+<\/script>`;
+const conPuente = (html) => { const i = html.lastIndexOf('</body>'); return i < 0 ? html : html.slice(0, i) + PUENTE + html.slice(i); };
 
 export function vistaPreviaAbierta() { return !!capa; }
 
@@ -33,30 +50,15 @@ export function abrirVistaPrevia() {
         <button type="button" id="vp-reiniciar" class="ico-btn" title="Reiniciar" aria-label="Reiniciar">${SVG_REINICIAR}</button>
       </span>
     </div>
-    <div class="vp-escenario"><iframe id="vp-frame" title="Vista previa de la página"></iframe></div>
+    <div class="vp-escenario"><iframe id="vp-frame" title="Vista previa de la página" sandbox="allow-scripts"></iframe></div>
   `;
   document.body.appendChild(capa);
   const frame = capa.querySelector('#vp-frame');
 
-  // Si el foco está dentro del iframe, sus teclas no llegan al documento: se escucha Esc dentro.
-  frame.addEventListener('load', () => {
-    mostrar(); // ya cargó: se hace visible (tras el siguiente frame, para que haya pintado)
-    try {
-      const doc = frame.contentDocument;
-      doc.addEventListener('keydown', (e) => { if (e.key === 'Escape') cerrarVistaPrevia(); });
-      // Enlaces # (anclas del navbar): en un iframe con srcdoc el navegador los resuelve contra la URL del editor y
-      // cargaría el editor dentro del iframe. Se atienden aquí: se desplaza al elemento (respeta scroll-margin-top) y nada más.
-      // El HTML exportado no cambia: esto solo existe en la vista previa.
-      doc.addEventListener('click', (e) => {
-        const a = e.target.closest?.('a[href^="#"]');
-        if (!a) return;
-        e.preventDefault();
-        const id = decodeURIComponent(a.getAttribute('href').slice(1));
-        const destino = id ? doc.getElementById(id) : null;
-        if (destino) destino.scrollIntoView(); else if (!id) frame.contentWindow.scrollTo(0, 0);
-      });
-    } catch { /* sin acceso: nada */ }
-  });
+  frame.addEventListener('load', () => mostrar()); // ya cargó: se hace visible (tras el siguiente frame, para que haya pintado)
+  // El script puente del iframe avisa por postMessage (solo se atiende lo que viene de ESTE iframe).
+  alMensaje = (e) => { if (e.source === frame.contentWindow && e.data && e.data.vp === 'esc') cerrarVistaPrevia(); };
+  window.addEventListener('message', alMensaje);
   // Regenerar el srcdoc recarga el iframe entero (scroll en 0, animaciones de entrada y de scroll desde cero).
   // Mientras carga, el iframe queda con opacity 0 (sin fondo blanco a la vista); se muestra en 'load' o, si no llega, a los 1.5 s.
   let temporizador = 0;
@@ -68,7 +70,7 @@ export function abrirVistaPrevia() {
   const cargar = () => {
     clearTimeout(temporizador);
     frame.classList.remove('listo');
-    frame.srcdoc = exportHTML(getState().page);
+    frame.srcdoc = conPuente(exportHTML(getState().page));
     temporizador = setTimeout(() => frame.classList.add('listo'), 1500); // tope de seguridad si 'load' nunca llega
   };
   cargar();
@@ -108,6 +110,8 @@ function colocar() {
 export function cerrarVistaPrevia() {
   if (!capa) return;
   window.removeEventListener('resize', colocar);
+  if (alMensaje) window.removeEventListener('message', alMensaje);
+  alMensaje = null;
   capa.remove();
   capa = null;
   document.querySelector('#btn-vista-previa')?.focus(); // el foco vuelve al ojo del editor

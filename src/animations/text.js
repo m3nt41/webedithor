@@ -5,6 +5,10 @@
 
 import { EFECTOS, camposComunes, campoDisparo, animEntrada, cargaInmediata, curva, duracion, DEF_CURVA } from './base.js';
 
+/** Cascada total máxima (s) entre la primera y la última pieza de un texto partido. Un título de hasta ~34 letras
+ *  (33 saltos x 0,06 s) queda igual que siempre; un párrafo largo ya no tarda decenas de segundos. */
+export const TOPE_CASCADA = 2;
+
 export default {
   id: 'text',
   titulo: 'Animación de texto',
@@ -24,7 +28,11 @@ export default {
     const d = duracion(t, 0.7);
     const de = t.delay ?? 0;
     const st = t.stagger ?? 0.06;
-    const base = `${sel} .w{display:inline-block;--ad:${t.distance ?? 30}px;--ar:${t.angle ?? -90}deg;animation:${animEntrada(efecto, d, curva(t), `calc(${de}s + var(--i)*${st}s)`, t)}}
+    // Retardo de cada pieza = i x cascada, pero la cascada TOTAL (de la primera a la última pieza) nunca pasa de
+    // TOPE_CASCADA s: la cascada efectiva es min(cascada, TOPE / nº de saltos). --g (nº de saltos) lo pone el
+    // exportador en el elemento. En 'linesm' --i cuenta líneas (pocas), así que no lleva tope.
+    const paso = t.mode === 'linesm' ? `${st}s` : `min(${st}s, ${TOPE_CASCADA}s / var(--g, 1))`;
+    const base = `${sel} .w{display:inline-block;--ad:${t.distance ?? 30}px;--ar:${t.angle ?? -90}deg;animation:${animEntrada(efecto, d, curva(t), `calc(${de}s + var(--i)*${paso})`, t)}}
 ${sel} .ww{display:inline-block;white-space:nowrap}${t.mode === 'lines' ? `
 ${sel} .ln{display:block}` : ''}`;
     return cargaInmediata(t) ? base : `${base}\n${sel}.in .w{animation-play-state:running}`;
@@ -56,6 +64,16 @@ export function splitText(texto, mode) {
     });
   });
   return piezas;
+}
+
+/** Nº de saltos de la cascada (última posición `i`, mínimo 1): lo escribe el exportador como --g. */
+export function saltosCascada(texto, mode) {
+  let max = 1;
+  for (const p of splitText(texto, mode)) {
+    if (p.t === 'w') for (const u of p.units) max = Math.max(max, u.i);
+    else if (p.t === 'ln') max = Math.max(max, p.i);
+  }
+  return max;
 }
 
 export const esMedida = (mode) => mode === 'linesm';

@@ -20,7 +20,7 @@ import { KEYFRAMES, transicion, cargaInmediata, declaracionesSombra } from './ba
 const kebab = (k) => k.replace(/[A-Z]/g, (m) => '-' + m.toLowerCase());
 import { walk } from '../core/tree.js';
 
-export { splitText, esMedida, medirLineas, SCRIPT_LINEAS } from './text.js';
+export { splitText, saltosCascada, esMedida, medirLineas, SCRIPT_LINEAS } from './text.js';
 import { esMedida } from './text.js';
 
 export const TIPOS_TEXTO = ['heading', 'text', 'button'];

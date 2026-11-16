@@ -13,7 +13,7 @@ import { usaMenuMovil, paginaUsaMenuMovil, cssMenuMovil, varsMenu, necesitaAncla
 import { usaMarquesina, cssMarquesina, htmlMarquesina, keyframesMarquesina } from '../core/marquesina.js';
 import { declaracionesSombra } from '../animations/base.js';
 import { tieneParallaxNativoDentro } from '../animations/parallax.js';
-import { usaEscena, varsEscena, esNavPegado, paginaUsaEscena, CSS_ESCENA, atributosScroll, paginaUsaScrollLink, SCRIPT_SCROLLMOTOR, SCRIPT_SCROLLSUAVE, paginaUsaScrollSuave, cssNodo, usaScroll, usaCarga, usaClic, paginaUsaScroll, paginaUsaEntrada, paginaUsaMedida, paginaUsaClic, esMedida, splitText, KEYFRAMES, SCRIPT_SCROLL, SCRIPT_LINEAS, SCRIPT_CLIC } from '../animations/index.js';
+import { usaEscena, varsEscena, esNavPegado, paginaUsaEscena, CSS_ESCENA, atributosScroll, paginaUsaScrollLink, SCRIPT_SCROLLMOTOR, SCRIPT_SCROLLSUAVE, paginaUsaScrollSuave, cssNodo, usaScroll, usaCarga, usaClic, paginaUsaScroll, paginaUsaEntrada, paginaUsaMedida, paginaUsaClic, esMedida, splitText, saltosCascada, KEYFRAMES, SCRIPT_SCROLL, SCRIPT_LINEAS, SCRIPT_CLIC } from '../animations/index.js';
 
 export const BREAKPOINT_MOVIL = 768;
 
@@ -92,7 +92,9 @@ export function exportHTML(page) {
     if (TIPOS_TEXTO.includes(node.type)) {
       const modo = node.animation?.text?.mode;
       const interior = modo ? textoPartidoHtml(c.text, modo) : escHtml(c.text).replace(/\n/g, '<br>');
-      return `${sangria}${abre}${interior}</${tag}>`;
+      // --g = nº de saltos de la cascada: el CSS de texto lo usa para topar la cascada total (animations/text.js)
+      const abreTexto = modo && modo !== 'linesm' ? abre.replace(/>$/, ` style="--g:${saltosCascada(c.text, modo)}">`) : abre;
+      return `${sangria}${abreTexto}${interior}</${tag}>`;
     }
     const partes = node.children.map((h) => nodoAHtml(h, nivel + 1, node));
     if (usaMenuMovil(node)) {

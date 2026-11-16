@@ -83,6 +83,34 @@ p.nota{margin:0 0 16px;color:#4a4740;font-size:14px;line-height:1.5;max-width:90
 /* V6 — un solo elemento: se anima el h2 entero, sin partir el texto */
 .v6.n2{animation:a-up calc(.7s*var(--k)) var(--ease) 0s backwards;--ad:30px}
 
+/* ===== RONDA 2 · letras ===== */
+@keyframes a-top{from{opacity:0;top:var(--ad,30px)}}
+@keyframes a-blur{from{opacity:0;filter:blur(10px)}}
+@keyframes a-clip{from{opacity:0;clip-path:inset(0 0 100% 0)}}
+@keyframes a-sube-solo{from{translate:0 var(--ad,30px)}}
+@keyframes a-up-suave{from{opacity:0;translate:0 var(--ad,30px)}to{opacity:1;translate:0 0}}
+
+/* V7 — opacidad + subida con position:relative; top (sin transform ni translate) */
+.v7 .w{position:relative;animation-name:a-top}
+/* V8 — opacidad + blur que se aclara, sin movimiento */
+.v8 .w{animation-name:a-blur}
+/* V9 — opacidad + revelado con clip-path, sin movimiento */
+.v9 .w{animation-name:a-clip}
+/* V10 — la subida la hace UN contenedor (el h2); cada letra solo hace opacidad en cascada */
+.v10 .n2{animation:a-sube-solo calc(.7s*var(--k)) var(--ease) 0s backwards;--ad:30px}
+.v10 .w{animation-name:a-solo-opacidad}
+/* V11 — como V1 pero will-change: translate, opacity en cada letra */
+.v11 .w{will-change:translate,opacity}
+/* V12 — como V1 pero will-change solo en el contenedor del texto */
+.v12 .n2{will-change:transform}
+/* V13 — como V6 (bloque entero) con el final suavizado: capa promovida fija (sin cambio de capa al terminar)
+   y fotograma final explícito con fill-mode both. Ver la nota del PROGRESS sobre la causa del saltito. */
+.v13.n2{will-change:transform,opacity;backface-visibility:hidden;
+  animation:a-up-suave calc(.7s*var(--k)) var(--ease) 0s both;--ad:30px}
+
+/* Etiqueta "ronda 2" */
+.ronda{display:inline-block;margin-left:8px;padding:2px 6px;border-radius:4px;background:#ffd54a;color:#111;font:700 10px/1.2 system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;vertical-align:middle}
+
 /* ---------- 2) BOTÓN: botonTema(claro,tam,'secundario') + hover Agrandar ---------- */
 .fila-botones{display:flex;gap:28px;align-items:center;flex-wrap:wrap;padding:6px 4px}
 .btn{display:inline-block;border-radius:0;text-decoration:none;font-weight:500;letter-spacing:.02em;background:transparent;color:#111111;border:1px solid #111111;cursor:pointer;
@@ -113,6 +141,27 @@ p.nota{margin:0 0 16px;color:#4a4740;font-size:14px;line-height:1.5;max-width:90
 .b5{transform:translateZ(0)}
 .b5:is(:hover,.f){transform:scale(1.03) translateZ(0)}
 
+/* ===== RONDA 2 · botón (el texto NO cambia de tamaño, salvo B10 que lo compensa) ===== */
+/* B6 — escala solo un pseudo-elemento que hace de borde; el texto queda quieto */
+.b6{position:relative;isolation:isolate;border-color:transparent}
+.b6::before{content:"";position:absolute;inset:-1px;border:1px solid #111111;z-index:-1;pointer-events:none;
+  transition:transform calc(.2s*var(--k)) var(--ease)}
+.b6:is(:hover,.f)::before{transform:scale(1.06)}
+/* B7 — crece solo con padding (sin font-size ni scale) */
+.b7{transition:padding calc(.2s*var(--k)) var(--ease)}
+.b7.g:is(:hover,.f){padding:17px 34px}
+.b7.p:is(:hover,.f){padding:13px 26px}
+.b7.xl:is(:hover,.f){padding:21px 42px}
+/* B8 — elevación con translate (sin escala) y sombra */
+.b8:is(:hover,.f){transform:translateY(-3px);box-shadow:0 8px 16px rgba(0,0,0,.22)}
+/* B9 — brillo/color: sin cambio de tamaño ni movimiento */
+.b9{transition:background-color calc(.2s*var(--k)) var(--ease),color calc(.2s*var(--k)) var(--ease),box-shadow calc(.2s*var(--k)) var(--ease)}
+.b9:is(:hover,.f){background-color:#111111;color:#f7f5f0;box-shadow:0 0 14px rgba(107,79,224,.55)}
+/* B10 — el botón escala 1.03 y el texto lleva la escala inversa (1/1.03) para quedar a su tamaño */
+.b10 .t{display:inline-block;transition:transform calc(.2s*var(--k)) var(--ease)}
+.b10:is(:hover,.f){transform:scale(1.03)}
+.b10:is(:hover,.f) .t{transform:scale(.970874)}
+
 .pie{font-size:12.5px;color:#6a665d;margin-top:2px}
 </style>
 </head>
@@ -140,11 +189,11 @@ p.nota{margin:0 0 16px;color:#4a4740;font-size:14px;line-height:1.5;max-width:90
 <main>
 
   <h2 class="sec">1 · Letras al aparecer («Por letras»)</h2>
-  <p class="nota">Cada tarjeta es una técnica distinta; dentro, una palabra sola («Galería») y varias («Lo que hacemos»). La animación es la del editor: sube 30 px y aparece, 0,7 s, con cascada por letra (tope 2 s). Cada tarjeta tiene su «Repetir».</p>
+  <p class="nota">Cada tarjeta es una técnica distinta; dentro, una palabra sola («Galería») y varias («Lo que hacemos»). La animación es la del editor: sube 30 px y aparece, 0,7 s, con cascada por letra (tope 2 s). Cada tarjeta tiene su «Repetir». Las de la etiqueta amarilla «ronda 2» (V7 a V13) son las nuevas.</p>
   <div class="rejilla" id="rej-letras"></div>
 
   <h2 class="sec">2 · Botón «Ver más» con hover que se agranda</h2>
-  <p class="nota">Pasa el ratón por encima. Con velocidad 0,1x la transición dura 2 s y se ve el cambio con calma. «Mantener agrandado» deja el botón en el estado de hover para mirarlo quieto (y al soltarlo, hace la animación de vuelta). Cada fila lleva el botón «Grande» (18 px), el «Mediano» (16 px) y uno extra de 28 px.</p>
+  <p class="nota">Pasa el ratón por encima. Con velocidad 0,1x la transición dura 2 s y se ve el cambio con calma. «Mantener agrandado» deja el botón en el estado de hover para mirarlo quieto (y al soltarlo, hace la animación de vuelta). Cada fila lleva el botón «Grande» (18 px), el «Mediano» (16 px) y uno extra de 28 px. Las de «ronda 2» (V6 a V10) buscan que el texto no cambie de tamaño.</p>
   <div class="rejilla" id="rej-botones"></div>
 
 </main>
@@ -161,7 +210,14 @@ p.nota{margin:0 0 16px;color:#4a4740;font-size:14px;line-height:1.5;max-width:90
     { id: 'v3', modo: 'chars', t: 'V3 · Solo opacidad (sin transform)',     d: 'Las letras solo hacen fade; no se mueven. Misma cascada y duración.' },
     { id: 'v4', modo: 'chars', t: 'V4 · transform: translateZ(0) permanente', d: 'Igual que V0, con transform: translateZ(0) fijo en cada letra.' },
     { id: 'v5', modo: 'words', t: 'V5 · Por palabras en vez de por letras', d: 'Misma animación, pero la pieza es la palabra entera (cascada por palabra).' },
-    { id: 'v6', modo: 'block', t: 'V6 · Bloque entero (un solo elemento)',  d: 'Se anima el título completo como un solo elemento, sin partir el texto.' }
+    { id: 'v6', modo: 'block', t: 'V6 · Bloque entero (un solo elemento)',  d: 'Se anima el título completo como un solo elemento, sin partir el texto.' },
+    { id: 'v7',  r2: 1, modo: 'chars', t: 'V7 · Opacidad + subida con top',          d: 'position: relative y animación de top (30 px → 0) + opacidad. Sin transform ni translate.' },
+    { id: 'v8',  r2: 1, modo: 'chars', t: 'V8 · Opacidad + blur',                    d: 'Fade con filter: blur(10px) → 0 por letra. Sin movimiento.' },
+    { id: 'v9',  r2: 1, modo: 'chars', t: 'V9 · Opacidad + revelado clip-path',      d: 'Cada letra se revela de arriba abajo con clip-path: inset + fade. Sin movimiento.' },
+    { id: 'v10', r2: 1, modo: 'chars', t: 'V10 · Subida en UN contenedor + opacidad por letra', d: 'El h2 entero sube 30 px (una sola animación); cada letra hace solo fade en cascada.' },
+    { id: 'v11', r2: 1, modo: 'chars', t: 'V11 · will-change: translate, opacity en cada letra', d: 'Igual que V1, pero declarando translate y opacity en vez de transform.' },
+    { id: 'v12', r2: 1, modo: 'chars', t: 'V12 · will-change solo en el contenedor', d: 'Igual que V1, pero el will-change: transform va en el h2, no en las letras.' },
+    { id: 'v13', r2: 1, modo: 'block', t: 'V13 · Bloque entero, final suavizado',    d: 'Como V6, con capa promovida fija (will-change + backface-visibility) y fill both: la capa no cambia al terminar.' }
   ];
   var MUESTRAS = ['Galería', 'Lo que hacemos'];
 
@@ -171,13 +227,18 @@ p.nota{margin:0 0 16px;color:#4a4740;font-size:14px;line-height:1.5;max-width:90
     { id: 'b2', t: 'V2 · scale + will-change permanente',       d: 'will-change: transform siempre puesto en el botón.' },
     { id: 'b3', t: 'V3 · scale + backface-visibility: hidden',  d: 'backface-visibility: hidden en el botón; mismo scale.' },
     { id: 'b4', t: 'V4 · font-size + padding (+3 %)',           d: 'Sin transform: crece la letra y el relleno (el layout cambia: el vecino se mueve).' },
-    { id: 'b5', t: 'V5 · scale + translateZ(0)',                d: 'transform: translateZ(0) en reposo y scale(1.03) translateZ(0) en hover.' }
+    { id: 'b5', t: 'V5 · scale + translateZ(0)',                d: 'transform: translateZ(0) en reposo y scale(1.03) translateZ(0) en hover.' },
+    { id: 'b6',  r2: 1, t: 'V6 · Crece solo un pseudo-elemento',        d: 'El borde es un ::before que escala (1.06); el botón y su texto no se mueven ni cambian de tamaño.' },
+    { id: 'b7',  r2: 1, t: 'V7 · Crece solo con padding',               d: 'Sin font-size ni scale: solo sube el padding (+1 px arriba/abajo, +2 px a los lados). El vecino se mueve un poco.' },
+    { id: 'b8',  r2: 1, t: 'V8 · Elevación con translate + sombra',     d: 'translateY(-3px) y box-shadow. Sin escala: el tamaño no cambia.' },
+    { id: 'b9',  r2: 1, t: 'V9 · Brillo / color',                       d: 'Fondo tinta, texto papel y resplandor violeta. Sin cambio de tamaño ni movimiento.' },
+    { id: 'b10', r2: 1, t: 'V10 · scale en el botón, escala inversa en el texto', d: 'El botón hace scale(1.03); el texto interno scale(1/1.03) para quedar a su tamaño original.' }
   ];
 
   // ---------- Markup de las muestras de texto (réplica del exportador) ----------
   function crear(modo, texto, variante) {
     var h = document.createElement('h2');
-    h.className = 'n2' + (variante === 'v6' ? ' v6' : '');
+    h.className = 'n2' + (variante === 'v6' || variante === 'v13' ? ' ' + variante : '');
     if (modo === 'block') { h.textContent = texto; return h; }
     var i = 0, html = [], palabras = texto.split(/\s+/).filter(Boolean);
     palabras.forEach(function (pal, k) {
@@ -226,6 +287,7 @@ p.nota{margin:0 0 16px;color:#4a4740;font-size:14px;line-height:1.5;max-width:90
     t.innerHTML = '<div class="cab"><div><strong></strong><span class="desc"></span></div>' +
       '<button class="ui" type="button"></button></div>' + cuerpoHTML;
     t.querySelector('strong').textContent = v.t;
+    if (v.r2) { var etq = document.createElement('span'); etq.className = 'ronda'; etq.textContent = 'ronda 2'; t.querySelector('strong').appendChild(etq); }
     t.querySelector('.desc').textContent = v.d;
     t.querySelector('.cab button').textContent = botonTxt;
     return t;
@@ -246,10 +308,11 @@ p.nota{margin:0 0 16px;color:#4a4740;font-size:14px;line-height:1.5;max-width:90
   var rejB = document.getElementById('rej-botones');
   var botonesMantener = [];
   BOTONES.forEach(function (v) {
+    var txt = v.id === 'b10' ? '<span class="t">Ver más</span>' : 'Ver más';
     var cuerpo = '<div class="lienzo"><div class="fila-botones">' +
-      '<a class="btn g ' + v.id + '" href="#" data-bt>Ver más</a>' +
-      '<a class="btn p ' + v.id + '" href="#" data-bt>Ver más</a>' +
-      '<a class="btn xl ' + v.id + '" href="#" data-bt>Ver más</a>' +
+      '<a class="btn g ' + v.id + '" href="#" data-bt>' + txt + '</a>' +
+      '<a class="btn p ' + v.id + '" href="#" data-bt>' + txt + '</a>' +
+      '<a class="btn xl ' + v.id + '" href="#" data-bt>' + txt + '</a>' +
       '</div><p class="pie">Grande 18 px · Mediano 16 px · Extra 28 px. Pasa el ratón por encima.</p></div>';
     var t = tarjeta(v, cuerpo, 'Mantener agrandado');
     var btnM = t.querySelector('.cab button');

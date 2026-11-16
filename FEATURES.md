@@ -23,6 +23,7 @@ Motion vs CSS puro: m3nt41 ya decidió la opción (a), CSS puro donde se pueda y
 - [x] Hover con transición: elevar, agrandar, encoger, inclinar, resplandor, aclarar (Etapa 4)
 - [x] Hover para texto y botones sin caja, sin mover las letras: subrayado (dirección elegible: desde la izquierda por defecto, derecha, centro o de lado a lado; grosor 1–4 px y separación 0–8 px), color y fondo suave (CSS puro; mini-etapa 2026-11-15)
 - [x] Hover "Relleno" para botones y texto con caja: modo Fundido (background-color) o Barrido (desde izquierda, derecha, arriba o abajo, recortado por el border-radius), con color de relleno y color de texto al pasar opcional (CSS puro; mini-etapa 2026-11-15)
+- [x] Hover "Fondo que crece" para botones y texto (con o sin caja): un fondo de color crece detrás del texto (de escala .85 a 1.06 y de transparente a opaco) mientras el texto y la caja no cambian de tamaño; color de relleno y color del texto al pasar opcionales (CSS puro; técnica V6 del banco de comparación, mini-etapa 2026-11-16). "Agrandar" se queda como está, con un aviso en el inspector (en Firefox el texto puede verse raro al agrandarse)
 - [x] Press (al mantener clic/tocar) con transición (Etapa 6)
 - [x] Focus (`:focus-visible`) con transición, solo en botones/enlaces (Etapa 6)
 
@@ -36,6 +37,7 @@ Motion vs CSS puro: m3nt41 ya decidió la opción (a), CSS puro donde se pueda y
 - [ ] Inercia → Etapa 8 (va con Drag)
 - [x] Delay (Etapa 4)
 - [x] Stagger entre letras/palabras del mismo texto (Etapa 4)
+- [x] Texto por letras o palabras sin redibujado al terminar (mini-etapa 2026-11-16, técnicas V10/V11 del banco de comparación): Subir y Bajar los hace UN contenedor y cada pieza solo se funde en cascada; Izquierda, Derecha, Zoom, Voltear y Rotar declaran `will-change` solo con lo que animan, y pasadas 200 piezas se sustituyen por un fundido simple
 - [x] Stagger entre hijos (grupo "Cascada de hijos" en secciones/contenedores; CSS puro con `:nth-child`; los hijos con su propia animación de entrada quedan fuera) (Etapa 6)
 
 ## Texto

@@ -12,7 +12,7 @@ import { GRUPOS_ANIM } from './index.js';
 import { normalizarAnimacion } from './normalizar.js';
 import { sinCaja, esTexto } from './base.js';
 
-const EFECTOS_CON_PSEUDO = ['underline', 'soft', 'fill'];
+const EFECTOS_CON_PSEUDO = ['underline', 'soft', 'fill', 'bgrow'];
 
 /** Copia profunda de la animación del nodo, o null si no tiene ninguna. */
 export function copiarAnimacion(nodo) {

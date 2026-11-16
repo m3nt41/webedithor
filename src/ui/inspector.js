@@ -403,6 +403,7 @@ export function initInspector(host) {
       for (const f of g.campos) {
         if (f.key !== g.principal && !datos) continue; // apagado: solo se ve el selector principal
         if (f.cuando && !f.cuando(datos, datos?.effect, nodo)) continue;
+        if (f.kind === 'nota') { h += `<p class="modo">${SVG_AVISO} ${esc(f.texto)}</p>`; continue; } // aviso corto del efecto elegido
         const v = datos?.[f.key] ?? g.defaults[f.key] ?? '';
         const a = `data-a="${g.id}.${f.key}"`;
         if (f.kind === 'select') {

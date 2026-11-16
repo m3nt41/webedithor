@@ -10,6 +10,8 @@ const NUEVOS = [
   ['soft', 'Fondo suave'],
 ];
 const RELLENO = ['fill', 'Relleno'];
+// Fondo que crece (técnica V6 del banco): un ::before de color que crece detrás del texto; el texto NO cambia de tamaño ni se mueve.
+const CRECE = ['bgrow', 'Fondo que crece'];
 // Relleno: modos y direcciones del barrido. [transform-origin FIJO (reposo y :hover), eje]
 const MODOS = [['fundido', 'Fundido'], ['barrido', 'Barrido']];
 const BARRIDO = {
@@ -33,15 +35,15 @@ const DIRECCIONES = [
   ['centro', 'Desde el centro'],
   ['pasa', 'Pasa de lado a lado (puede verse brusca con pasadas rápidas)'],
 ];
-const EFECTOS = [['', 'Ninguno'], ...CLASICOS, ...NUEVOS, RELLENO];
+const EFECTOS = [['', 'Ninguno'], ...CLASICOS, ...NUEVOS, RELLENO, CRECE];
 
 // Texto, título o botón SIN caja: los 3 efectos que no mueven las letras van primero y el primero se sugiere.
 // Con caja o imagen: el orden de siempre y los nuevos al final. Solo cambia el orden de la lista, no lo guardado.
 // Botón o texto CON caja: "Relleno" va primero y es el sugerido (el relleno de color solo existía como estilo permanente).
 const opcionesNodo = (node) => {
   if (!esTexto(node)) return EFECTOS;
-  if (sinCaja(node)) return [['', 'Ninguno'], ['underline', 'Subrayado (sugerido)'], ...NUEVOS.slice(1), ...CLASICOS, RELLENO];
-  return [['', 'Ninguno'], ['fill', 'Relleno (sugerido)'], ...CLASICOS, ...NUEVOS];
+  if (sinCaja(node)) return [['', 'Ninguno'], ['underline', 'Subrayado (sugerido)'], ...NUEVOS.slice(1), ...CLASICOS, RELLENO, CRECE];
+  return [['', 'Ninguno'], ['fill', 'Relleno (sugerido)'], ...CLASICOS, ...NUEVOS, CRECE];
 };
 
 // Qué cambia al hacer hover en cada efecto
@@ -100,12 +102,14 @@ export default {
     { key: 'lineaColor', label: 'Color de la línea', kind: 'select', options: [['texto', 'El del texto'], ['otro', 'Otro color']], cuando: (g, efecto) => efecto === 'underline' },
     { key: 'modo', label: 'Modo', kind: 'select', options: MODOS, cuando: (g, efecto) => efecto === 'fill' },
     { key: 'dirRelleno', label: 'Dirección del barrido', kind: 'select', options: DIR_BARRIDO, cuando: (g, efecto) => efecto === 'fill' && g?.modo === 'barrido' },
-    { key: 'textoCambia', label: 'Color del texto al pasar', kind: 'select', options: [['no', 'Sin cambio'], ['si', 'Cambiar']], cuando: (g, efecto) => efecto === 'fill' },
-    { key: 'textoColor', label: 'Color del texto', kind: 'color', cuando: (g, efecto) => efecto === 'fill' && g?.textoCambia === 'si' },
+    { key: 'textoCambia', label: 'Color del texto al pasar', kind: 'select', options: [['no', 'Sin cambio'], ['si', 'Cambiar']], cuando: (g, efecto) => efecto === 'fill' || efecto === 'bgrow' },
+    { key: 'textoColor', label: 'Color del texto', kind: 'color', cuando: (g, efecto) => (efecto === 'fill' || efecto === 'bgrow') && g?.textoCambia === 'si' },
+    // Aviso corto (se pinta con el triángulo de aviso): Agrandar usa scale y en Firefox el texto escalado puede verse raro
+    { kind: 'nota', cuando: (g, efecto) => efecto === 'grow', texto: 'En Firefox el texto puede verse raro al agrandarse. «Fondo que crece» deja el texto quieto.' },
     { key: 'duration', label: 'Duración (s)', kind: 'num', step: 0.05, min: 0.05, cuando: sinSpring },
     { key: 'ease', label: 'Curva', kind: 'select', options: EASES },
     ...camposCurva,
-    { key: 'color', label: 'Color de relleno', kind: 'color', cuando: (g, efecto) => efecto === 'fill' },
+    { key: 'color', label: 'Color de relleno', kind: 'color', cuando: (g, efecto) => efecto === 'fill' || efecto === 'bgrow' },
     { key: 'color', label: 'Color', kind: 'color', cuando: (g, efecto) => ['glow', 'color', 'soft'].includes(efecto) || (efecto === 'underline' && g?.lineaColor === 'otro') },
   ],
 
@@ -151,6 +155,21 @@ export default {
       return [`${sel}{${pos}isolation:isolate${sinOverflow(node) ? ';overflow:clip' : ''}}`,
         `${sel}::before{content:'';position:absolute;inset:0;background:${c};transform:scale${eje}(0);transform-origin:${origen};transition:transform ${t};z-index:-1;pointer-events:none}`,
         `${sel}:hover::before{transform:scale${eje}(1)}`,
+        txt && `${sel}:hover{${transicion(h)}${txt}}`].filter(Boolean).join('\n');
+    }
+    // Fondo que crece (técnica V6 del banco de comparación): un ::before de color con z-index:-1 (isolation:isolate en el nodo: queda por
+    //  encima del fondo del nodo y por debajo del texto) que pasa de scale(.85) y transparente a scale(1.06) y opaco. SOLO el pseudo-elemento
+    //  se escala: el texto no lleva transform, ni scale, ni will-change, ni filter, así que no cambia de tamaño ni se mueve (en Firefox, un scale
+    //  sobre el texto puede verse raro: es justo lo que evita). Sin overflow:clip (tiene que sobresalir). Las imágenes no admiten ::before y se saltan.
+    if (h?.effect === 'bgrow') {
+      if (node?.type === 'image') return '';
+      const t = `${duracion(h, 0.25)}s ${curva(h)}`;
+      const c = h.color || '#7c5cff';
+      const pos = sinPosicion(node) ? 'position:relative;' : '';
+      const txt = h.textoCambia === 'si' ? `;color:${h.textoColor || '#ffffff'}!important` : '';
+      return [`${sel}{${pos}isolation:isolate}`,
+        `${sel}::before{content:'';position:absolute;inset:0;border-radius:inherit;background:${c};opacity:0;transform:scale(.85);z-index:-1;pointer-events:none;transition:transform ${t},opacity ${t}}`,
+        `${sel}:hover::before{opacity:1;transform:scale(1.06)}`,
         txt && `${sel}:hover{${transicion(h)}${txt}}`].filter(Boolean).join('\n');
     }
     // Color: cambia el color del texto con transition (la de color se añade en base.js). !important porque en el

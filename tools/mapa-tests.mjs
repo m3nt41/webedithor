@@ -41,7 +41,7 @@ export const MAPA = {
   'src/ui/tiradores.js': ['tiradores', 'tiradores-interruptor', 'rebote-inspector'],
   'src/ui/tiradores-pref.js': ['tiradores-interruptor'],
   'src/ui/efectos.js': ['copiar-efectos'],
-  'src/animations/text.js': ['cascada-tope', 'selenium', 'ronda7', 'vistaprevia'],
+  'src/animations/text.js': ['cascada-tope', 'texto-final-letras', 'selenium', 'ronda7', 'vistaprevia'],
   'src/animations/copiar.js': ['copiar-efectos'],
   'src/ui/espaciado.js': ['tiradores'],
   'src/ui/imagen.js': ['fondo'],

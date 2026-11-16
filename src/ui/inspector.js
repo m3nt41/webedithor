@@ -231,10 +231,12 @@ export function initInspector(host) {
         <p class="modo" data-aviso-ancla>${avisoAncla(page, nodo, c.anchor ?? '')}</p>`;
     }
     if (cont) N.esencial += `<h3>Contenido</h3>${cont}`;
+    let iaPage = '';
     if (nodo.type === 'page') {
-      N.esencial += `<h3>Landing con IA</h3>
+      iaPage = `<h3>Landing con IA</h3>
         <p class="modo">Pídele a cualquier IA de chat una landing: pégale la guía y carga aquí lo que devuelva.</p>
         <div class="ia-botones"><button type="button" data-ia="copiar">${SVG_COPIAR} Copiar guía para IA</button><button type="button" data-ia="pegar">${SVG_PEGAR} Pegar plan o JSON</button></div>`;
+      N.esencial += iaPage;
     }
     // Menú hamburguesa en móvil: solo en el Navbar (sección con "nav" en el nombre o que ya lo tiene activado)
     if (nodo.type === 'section' && (c.menuMovil === true || /nav/i.test(nodo.name))) {
@@ -243,6 +245,10 @@ export function initInspector(host) {
     }
 
     N.avanzado += contAv; // ancla, menú móvil y scroll suave van primero en Avanzado
+    // El nodo page NO usa niveles plegables: vista plana con todo visible (Contenido, Página, IA y luego los grupos de estilo en orden)
+    const planoPage = nodo.type === 'page';
+    let planoCab = '', planoEstilos = '';
+    if (planoPage) { planoCab = N.esencial.replace(iaPage, '') + N.avanzado + iaPage; N.esencial = ''; N.avanzado = ''; }
 
     const mq = usaMarquesina(nodo);
     if (mq) N.esencial += htmlMarq(mq, abiertos.has('Marquesina'));
@@ -331,7 +337,7 @@ export function initInspector(host) {
           G[niv] += `<details class="avanzado" data-g="${esc(g.titulo)}"${abrir ? ' open' : ''}><summary>Valor CSS exacto</summary>` +
             conControl[niv].map((c) => crudosDe(c).map((r) => htmlTexto(r.key, r.v, r.placeholder, r.label, r.ov)).join('')).join('') + '</details>';
         }
-        if (G[niv]) N[niv] += `<h3>${g.titulo}</h3>` + G[niv];
+        if (G[niv]) { if (planoPage) planoEstilos += `<h3>${g.titulo}</h3>` + G[niv]; else N[niv] += `<h3>${g.titulo}</h3>` + G[niv]; }
       }
     }
 
@@ -377,7 +383,8 @@ export function initInspector(host) {
     // ---- Montaje: cada nivel es un <details> plegable; se recuerda cuáles dejó abiertos el usuario ----
     const niveles = leerNiveles();
     let cuerpo = '';
-    for (const [k, titulo] of NIVELES) {
+    if (planoPage) cuerpo = `<div class="nivel-plano" data-plano>${planoCab}${planoEstilos}${N.esencial}${N.estilo}${N.avanzado}</div>`;
+    else for (const [k, titulo] of NIVELES) {
       if (!N[k]) continue;
       cuerpo += `<details class="nivel nivel-${k}" data-nivel="${k}"${niveles[k] ? ' open' : ''}><summary>${titulo}</summary><div class="nivel-cuerpo">${N[k]}</div></details>`;
     }

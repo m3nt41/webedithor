@@ -1,0 +1,294 @@
+<!doctype html>
+<!--
+  BANCO DE VARIANTES (comparación a ojo) — tools/banco-texto.html
+  Autocontenido, sin dependencias. Doble clic para abrirlo en Firefox o Chrome.
+  TEMPORAL: se borra antes de publicar el repo (anotado en PROGRESS.md).
+
+  Qué copia del editor (para que lo que ves sea lo que se exporta):
+    - Letras: <h2 class="n2"> con .ww > .w (inline-block), --i por letra, --g = nº de saltos, animación a-up 0.7 s
+      cubic-bezier(.22,1,.36,1) con retardo i x min(0.06s, 2s / g), "backwards", distancia 30 px.
+      (src/animations/text.js, base.js). Tipografía = H2 de blocks/tema.js (serif, 44 px, 500, -0.015em).
+    - Botón: botonTema(claro, 'l'|'m', 'secundario') (contorno 1 px, tinta sobre papel) + hover Agrandar
+      scale(1.03) con transition 0.2 s cubic-bezier(.22,1,.36,1) (src/animations/hover.js). Fuente de la página: system-ui.
+  Velocidad: una variable --k (1, 2, 4, 10) multiplica TODAS las duraciones y retardos.
+-->
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Banco de variantes de texto y botón</title>
+<style>
+:root{
+  --k:1;                              /* escala de tiempo: 1 = normal, 2 = 0,5x, 4 = 0,25x, 10 = 0,1x */
+  --papel:#f7f5f0; --papel2:#efece4; --tinta:#111111; --gris:#5f5c55; --linea:#d9d6cf;
+  --acento-ui:#6b4fe0;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,sans-serif;color:var(--tinta);background:#e9e6df}
+
+/* ---------- Interfaz del banco (no forma parte de lo que se compara) ---------- */
+.barra{position:sticky;top:0;z-index:5;background:#1b1b1f;color:#f2efe8;padding:12px 20px;display:flex;flex-wrap:wrap;gap:14px 24px;align-items:center;font-size:14px}
+.barra h1{font-size:15px;margin:0;font-weight:600}
+.barra .grupo{display:flex;align-items:center;gap:8px}
+.barra label.vel{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border:1px solid #55555c;border-radius:6px;cursor:pointer}
+.barra label.vel:has(input:checked){background:#f2efe8;color:#111;border-color:#f2efe8;font-weight:600}
+.barra input[type=radio]{position:absolute;opacity:0;pointer-events:none}
+.barra label.vel:has(input:focus-visible){outline:2px solid #b9a8ff;outline-offset:2px}
+button.ui{font:inherit;font-size:13px;padding:6px 12px;border-radius:6px;border:1px solid #55555c;background:#2a2a30;color:#f2efe8;cursor:pointer}
+button.ui:hover{background:#3a3a42}
+button.ui:focus-visible{outline:2px solid #b9a8ff;outline-offset:2px}
+button.ui.fuerte{background:var(--acento-ui);border-color:var(--acento-ui)}
+.aviso{flex-basis:100%;font-size:12.5px;color:#c9c5bb;line-height:1.5}
+.aviso b{color:#fff}
+main{max-width:1240px;margin:0 auto;padding:24px 20px 80px}
+h2.sec{font-size:20px;margin:36px 0 4px}
+p.nota{margin:0 0 16px;color:#4a4740;font-size:14px;line-height:1.5;max-width:900px}
+.rejilla{display:grid;grid-template-columns:repeat(auto-fill,minmax(540px,1fr));gap:16px}
+.tarjeta{background:#fff;border:1px solid #cfcbc0;border-radius:8px;overflow:hidden;display:flex;flex-direction:column}
+.cab{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:10px 14px;background:#1b1b1f;color:#f2efe8}
+.cab strong{font-size:14px}
+.cab span.desc{display:block;font-size:12.5px;color:#c9c5bb;margin-top:2px;line-height:1.4}
+.cab button.ui{white-space:nowrap;flex:none}
+.lienzo{background:var(--papel);padding:28px 32px;display:flex;flex-direction:column;gap:22px}
+.muestra-et{font:600 11px/1 system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#8a867c;margin:0 0 6px}
+
+/* ---------- 1) LETRAS: markup y CSS idénticos al export (.ww > .w) ---------- */
+@keyframes a-up{from{opacity:0;translate:0 var(--ad,40px)}}
+@keyframes a-solo-opacidad{from{opacity:0}}
+
+/* Tipografía = H2 del tema */
+.n2{margin:0;font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;font-weight:500;font-size:44px;line-height:1.15;letter-spacing:-0.015em;color:var(--tinta);min-height:1.15em}
+
+/* V0 — la técnica actual del editor */
+.n2 .w{display:inline-block;--ad:30px;--ar:-90deg;
+  animation:a-up calc(.7s*var(--k)) var(--ease) calc(var(--i)*min(.06s,2s/var(--g,1))*var(--k)) backwards}
+.n2 .ww{display:inline-block;white-space:nowrap}
+
+/* V1 — will-change: transform permanente en las letras */
+.v1 .w{will-change:transform}
+
+/* V2 — will-change solo durante la animación (la clase .ac la pone el script al empezar y la quita en animationend) */
+.v2 .w.ac{will-change:transform}
+
+/* V3 — solo opacidad, sin transform/translate */
+.v3 .w{animation-name:a-solo-opacidad}
+
+/* V4 — transform: translateZ(0) permanente */
+.v4 .w{transform:translateZ(0)}
+
+/* V5 — por palabras: la pieza animada es la palabra entera (.w envuelve la palabra) */
+/* (mismo CSS que V0; cambia el markup: ver crear() en el script) */
+
+/* V6 — un solo elemento: se anima el h2 entero, sin partir el texto */
+.v6.n2{animation:a-up calc(.7s*var(--k)) var(--ease) 0s backwards;--ad:30px}
+
+/* ---------- 2) BOTÓN: botonTema(claro,tam,'secundario') + hover Agrandar ---------- */
+.fila-botones{display:flex;gap:28px;align-items:center;flex-wrap:wrap;padding:6px 4px}
+.btn{display:inline-block;border-radius:0;text-decoration:none;font-weight:500;letter-spacing:.02em;background:transparent;color:#111111;border:1px solid #111111;cursor:pointer;
+  font-family:system-ui,sans-serif;
+  /* Misma lista de transición que el export (src/animations/base.js, transicion()) */
+  transition:transform calc(.2s*var(--k)) var(--ease),box-shadow calc(.2s*var(--k)) var(--ease),text-shadow calc(.2s*var(--k)) var(--ease),filter calc(.2s*var(--k)) var(--ease),outline-color calc(.2s*var(--k)) var(--ease),outline-offset calc(.2s*var(--k)) var(--ease)}
+.btn.g{padding:16px 32px;font-size:18px}          /* TAM.l — "Grande" */
+.btn.p{padding:12px 24px;font-size:16px}          /* TAM.m — "Mediano" (el más chico del editor) */
+.btn.xl{padding:20px 40px;font-size:28px}         /* referencia extra, para ver el efecto con letra muy grande */
+/* "Mantener" (.f) pone el mismo estado que :hover para comparar quieto */
+
+/* B0 — scale actual */
+.b0:is(:hover,.f){transform:scale(1.03)}
+/* B1 — scale + will-change SOLO en hover */
+.b1:is(:hover,.f){transform:scale(1.03);will-change:transform}
+/* B2 — scale + will-change permanente */
+.b2{will-change:transform}
+.b2:is(:hover,.f){transform:scale(1.03)}
+/* B3 — scale + backface-visibility:hidden */
+.b3{backface-visibility:hidden}
+.b3:is(:hover,.f){transform:scale(1.03)}
+/* B4 — font-size + padding (+3 %). Cambia el layout (empuja lo de al lado): es a propósito */
+.b4{transition:font-size calc(.2s*var(--k)) var(--ease),padding calc(.2s*var(--k)) var(--ease)}
+.b4.g:is(:hover,.f){font-size:18.54px;padding:16.48px 32.96px}
+.b4.p:is(:hover,.f){font-size:16.48px;padding:12.36px 24.72px}
+.b4.xl:is(:hover,.f){font-size:28.84px;padding:20.6px 41.2px}
+/* B5 — scale + translateZ(0) (en reposo y en hover, así interpola limpio) */
+.b5{transform:translateZ(0)}
+.b5:is(:hover,.f){transform:scale(1.03) translateZ(0)}
+
+.pie{font-size:12.5px;color:#6a665d;margin-top:2px}
+</style>
+</head>
+<body>
+
+<header class="barra">
+  <h1>Banco de variantes · texto y botón</h1>
+  <div class="grupo" role="radiogroup" aria-label="Velocidad de la animación">
+    <span>Velocidad:</span>
+    <label class="vel"><input type="radio" name="vel" value="1" checked>1x</label>
+    <label class="vel"><input type="radio" name="vel" value="2">0,5x</label>
+    <label class="vel"><input type="radio" name="vel" value="4">0,25x</label>
+    <label class="vel"><input type="radio" name="vel" value="10">0,1x</label>
+  </div>
+  <div class="grupo">
+    <button class="ui fuerte" id="repetir-todo" type="button">↻ Repetir todas las letras</button>
+    <button class="ui" id="alternar-todo" type="button">Mantener / soltar todos los botones</button>
+  </div>
+  <div class="aviso" id="zoom">
+    <b>Tu zoom:</b> compara a <b>100 %</b> (Ctrl+0) y a <b>125 %</b> (Ctrl y + hasta marcar 125 %). Cambiar el zoom no repite
+    las animaciones: pulsa «Repetir». <span id="dpr"></span>
+  </div>
+</header>
+
+<main>
+
+  <h2 class="sec">1 · Letras al aparecer («Por letras»)</h2>
+  <p class="nota">Cada tarjeta es una técnica distinta; dentro, una palabra sola («Galería») y varias («Lo que hacemos»). La animación es la del editor: sube 30 px y aparece, 0,7 s, con cascada por letra (tope 2 s). Cada tarjeta tiene su «Repetir».</p>
+  <div class="rejilla" id="rej-letras"></div>
+
+  <h2 class="sec">2 · Botón «Ver más» con hover que se agranda</h2>
+  <p class="nota">Pasa el ratón por encima. Con velocidad 0,1x la transición dura 2 s y se ve el cambio con calma. «Mantener agrandado» deja el botón en el estado de hover para mirarlo quieto (y al soltarlo, hace la animación de vuelta). Cada fila lleva el botón «Grande» (18 px), el «Mediano» (16 px) y uno extra de 28 px.</p>
+  <div class="rejilla" id="rej-botones"></div>
+
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  // ---------- Definición de variantes ----------
+  var LETRAS = [
+    { id: 'v0', modo: 'chars', t: 'V0 · Actual del editor',               d: 'Una caja inline-block por letra, animación translate + opacity. Sin will-change.' },
+    { id: 'v1', modo: 'chars', t: 'V1 · will-change: transform permanente', d: 'Igual que V0, con will-change: transform fijo en cada letra.' },
+    { id: 'v2', modo: 'chars', t: 'V2 · will-change solo durante la animación', d: 'will-change: transform se pone al empezar y se quita en animationend de cada letra.' },
+    { id: 'v3', modo: 'chars', t: 'V3 · Solo opacidad (sin transform)',     d: 'Las letras solo hacen fade; no se mueven. Misma cascada y duración.' },
+    { id: 'v4', modo: 'chars', t: 'V4 · transform: translateZ(0) permanente', d: 'Igual que V0, con transform: translateZ(0) fijo en cada letra.' },
+    { id: 'v5', modo: 'words', t: 'V5 · Por palabras en vez de por letras', d: 'Misma animación, pero la pieza es la palabra entera (cascada por palabra).' },
+    { id: 'v6', modo: 'block', t: 'V6 · Bloque entero (un solo elemento)',  d: 'Se anima el título completo como un solo elemento, sin partir el texto.' }
+  ];
+  var MUESTRAS = ['Galería', 'Lo que hacemos'];
+
+  var BOTONES = [
+    { id: 'b0', t: 'V0 · transform: scale (actual)',            d: 'Como el export: transition de transform 0,2 s y :hover { transform: scale(1.03) }.' },
+    { id: 'b1', t: 'V1 · scale + will-change solo en hover',    d: 'will-change: transform únicamente dentro de :hover.' },
+    { id: 'b2', t: 'V2 · scale + will-change permanente',       d: 'will-change: transform siempre puesto en el botón.' },
+    { id: 'b3', t: 'V3 · scale + backface-visibility: hidden',  d: 'backface-visibility: hidden en el botón; mismo scale.' },
+    { id: 'b4', t: 'V4 · font-size + padding (+3 %)',           d: 'Sin transform: crece la letra y el relleno (el layout cambia: el vecino se mueve).' },
+    { id: 'b5', t: 'V5 · scale + translateZ(0)',                d: 'transform: translateZ(0) en reposo y scale(1.03) translateZ(0) en hover.' }
+  ];
+
+  // ---------- Markup de las muestras de texto (réplica del exportador) ----------
+  function crear(modo, texto, variante) {
+    var h = document.createElement('h2');
+    h.className = 'n2' + (variante === 'v6' ? ' v6' : '');
+    if (modo === 'block') { h.textContent = texto; return h; }
+    var i = 0, html = [], palabras = texto.split(/\s+/).filter(Boolean);
+    palabras.forEach(function (pal, k) {
+      if (k > 0) html.push(' ');
+      var piezas;
+      if (modo === 'chars') {
+        piezas = Array.from(pal).map(function (c) { return '<span class="w" style="--i:' + (i++) + '">' + c + '</span>'; }).join('');
+      } else {
+        piezas = '<span class="w" style="--i:' + (i++) + '">' + pal + '</span>';
+      }
+      html.push('<span class="ww">' + piezas + '</span>');
+    });
+    var g = Math.max(1, i - 1);   // nº de saltos de la cascada (--g), como saltosCascada()
+    h.setAttribute('style', '--g:' + g);
+    h.innerHTML = html.join('');
+    return h;
+  }
+
+  function pintarMuestras(tarjeta, v) {
+    var cont = tarjeta.querySelector('.lienzo');
+    cont.innerHTML = '';
+    MUESTRAS.forEach(function (txt) {
+      var bloque = document.createElement('div');
+      bloque.className = v.id;
+      var et = document.createElement('p');
+      et.className = 'muestra-et';
+      et.textContent = txt === 'Galería' ? 'Palabra suelta' : 'Varias palabras';
+      bloque.appendChild(et);
+      var h = crear(v.modo, txt, v.id);
+      bloque.appendChild(h);
+      cont.appendChild(bloque);
+      if (v.id === 'v2') {
+        // will-change solo mientras anima: se pone ahora y se quita justo al terminar cada letra
+        h.querySelectorAll('.w').forEach(function (w) {
+          w.classList.add('ac');
+          w.addEventListener('animationend', function () { w.classList.remove('ac'); }, { once: true });
+        });
+      }
+    });
+  }
+
+  function tarjeta(v, cuerpoHTML, botonTxt) {
+    var t = document.createElement('article');
+    t.className = 'tarjeta';
+    t.id = v.id;
+    t.innerHTML = '<div class="cab"><div><strong></strong><span class="desc"></span></div>' +
+      '<button class="ui" type="button"></button></div>' + cuerpoHTML;
+    t.querySelector('strong').textContent = v.t;
+    t.querySelector('.desc').textContent = v.d;
+    t.querySelector('.cab button').textContent = botonTxt;
+    return t;
+  }
+
+  // ---------- Montaje: letras ----------
+  var rejL = document.getElementById('rej-letras');
+  var tarjetasL = LETRAS.map(function (v) {
+    var t = tarjeta(v, '<div class="lienzo"></div>', '↻ Repetir');
+    t.querySelector('.cab button').addEventListener('click', function () { pintarMuestras(t, v); });
+    rejL.appendChild(t);
+    pintarMuestras(t, v);
+    return { t: t, v: v };
+  });
+  function repetirTodas() { tarjetasL.forEach(function (x) { pintarMuestras(x.t, x.v); }); }
+
+  // ---------- Montaje: botones ----------
+  var rejB = document.getElementById('rej-botones');
+  var botonesMantener = [];
+  BOTONES.forEach(function (v) {
+    var cuerpo = '<div class="lienzo"><div class="fila-botones">' +
+      '<a class="btn g ' + v.id + '" href="#" data-bt>Ver más</a>' +
+      '<a class="btn p ' + v.id + '" href="#" data-bt>Ver más</a>' +
+      '<a class="btn xl ' + v.id + '" href="#" data-bt>Ver más</a>' +
+      '</div><p class="pie">Grande 18 px · Mediano 16 px · Extra 28 px. Pasa el ratón por encima.</p></div>';
+    var t = tarjeta(v, cuerpo, 'Mantener agrandado');
+    var btnM = t.querySelector('.cab button');
+    btnM.setAttribute('aria-pressed', 'false');
+    btnM.addEventListener('click', function () { alternar(t, btnM); });
+    // los enlaces son de mentira: no saltar al inicio de la página
+    t.querySelectorAll('[data-bt]').forEach(function (a) { a.addEventListener('click', function (e) { e.preventDefault(); }); });
+    rejB.appendChild(t);
+    botonesMantener.push({ t: t, b: btnM });
+  });
+  function alternar(t, btnM, forzar) {
+    var on = typeof forzar === 'boolean' ? forzar : btnM.getAttribute('aria-pressed') !== 'true';
+    t.querySelectorAll('.btn').forEach(function (a) { a.classList.toggle('f', on); });
+    btnM.setAttribute('aria-pressed', String(on));
+    btnM.textContent = on ? 'Soltar' : 'Mantener agrandado';
+  }
+
+  // ---------- Controles globales ----------
+  document.getElementById('repetir-todo').addEventListener('click', repetirTodas);
+  document.getElementById('alternar-todo').addEventListener('click', function () {
+    var hayAlgunoSoltado = botonesMantener.some(function (x) { return x.b.getAttribute('aria-pressed') !== 'true'; });
+    botonesMantener.forEach(function (x) { alternar(x.t, x.b, hayAlgunoSoltado); });
+  });
+  document.querySelectorAll('input[name=vel]').forEach(function (r) {
+    r.addEventListener('change', function () {
+      document.documentElement.style.setProperty('--k', r.value);
+      repetirTodas();   // para ver la nueva velocidad enseguida
+    });
+  });
+
+  // ---------- Recordatorio de zoom ----------
+  function dpr() {
+    var d = window.devicePixelRatio || 1;
+    document.getElementById('dpr').textContent = 'Ahora mismo devicePixelRatio = ' + (Math.round(d * 100) / 100) +
+      ' (suma el escalado de Windows y el zoom del navegador).';
+  }
+  dpr();
+  window.addEventListener('resize', dpr);
+})();
+</script>
+</body>
+</html>

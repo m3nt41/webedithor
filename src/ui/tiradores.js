@@ -5,14 +5,20 @@
 // Arrastrar escribe el atajo `padding`/`margin` con setEstilosGesto (base en escritorio, mobile en móvil), todo el arrastre = 1 undo.
 // Shift = mismo valor en el lado opuesto · Alt = los 4 lados · Ctrl = imán a múltiplos de 8 · mínimo 0.
 // Pointer Events + setPointerCapture (MDN): el arrastre sigue aunque el mouse salga del tirador.
+// Interruptor (tiradores-pref.js, botón en la barra superior): apagado = la capa queda VACÍA, no hay ningún tirador en el DOM.
+// Elementos chicos (menos de MIN_W x MIN_H px): los tiradores salen hacia afuera del borde con una separación (GAP) para no
+// taparse entre sí ni tapar el contenido, y el botón "Margen/Padding" va a un lado en vez de encima.
 // Como esta capa no está en el árbol, no entra al export ni a la Vista previa (iframe) ni recibe los efectos hover/parallax.
 
 import { getState, subscribe, setEstilosGesto } from '../core/store.js';
 import { effectiveStyles } from '../render/renderer.js';
 import { findNode } from '../core/tree.js';
+import { tiradoresEncendidos, alCambiarTiradores } from './tiradores-pref.js';
 import { LADOS, tokensEfectivos, componer, largas, ladosAfectados, ajustarValor, aplicarValor, nombreLado } from './espaciado.js';
 
 const CONTENEDORES = ['section', 'container'];
+const MIN_W = 90, MIN_H = 36; // por debajo de esto el elemento es "chico"
+const GAP = 6;                // separación extra hacia afuera en elementos chicos
 const modoPorDefecto = (tipo) => (CONTENEDORES.includes(tipo) ? 'padding' : 'margin');
 
 export function initTiradores(host, stage) {
@@ -25,7 +31,7 @@ export function initTiradores(host, stage) {
   const manijas = [0, 1, 2, 3].map((i) => crear('div', 'tir-h', { 'data-lado': nombreLado(i), title: 'Arrastra · Shift = lado opuesto · Alt = 4 lados · Ctrl = múltiplos de 8' }));
   const etiquetas = [0, 1, 2, 3].map((i) => crear('div', 'tir-et', { 'data-lado': nombreLado(i) }));
   const boton = crear('button', 'tir-modo', { type: 'button' });
-  capa.append(...sombras, ...manijas, ...etiquetas, boton);
+  const partes = [...sombras, ...manijas, ...etiquetas, boton];
   sombras.forEach((s) => (s.hidden = true));
   etiquetas.forEach((e) => (e.hidden = true));
 
@@ -65,6 +71,8 @@ export function initTiradores(host, stage) {
   /** Coloca sombras y tiradores. `valores` (opcional) = valores en vivo del arrastre; si no, los medidos. */
   function colocar() {
     pendiente = 0;
+    if (!tiradoresEncendidos()) { if (capa.childNodes.length) capa.replaceChildren(); capa.hidden = true; return; }
+    if (!capa.childNodes.length) capa.append(...partes);
     const n = nodoActual();
     const el = n && elDe(n.id);
     if (!n || !el || editandoTexto()) { capa.hidden = true; return; }
@@ -100,12 +108,16 @@ export function initTiradores(host, stage) {
     // Tirador: en el borde interior de la banda (padding) o en el borde exterior (margin), centrado en el lado.
     const cx = X + W / 2, cy = Y + H / 2;
     const largo = (len) => Math.max(14, Math.min(40, len * 0.5));
+    // Elemento chico: el tirador sale fuera del borde (más allá del margen/padding) con un pequeño desplazamiento.
+    const chico = W < MIN_W || H < MIN_H;
+    const sep = chico ? GAP + 4 : 0; // 4 = mitad del grosor del tirador
     const pos = [
-      { x: cx, y: dentro ? Y + bt + t : Y - t, h: true, len: largo(W) },
-      { x: dentro ? X + W - br - r : X + W + r, y: cy, h: false, len: largo(H) },
-      { x: cx, y: dentro ? Y + H - bb - b : Y + H + b, h: true, len: largo(W) },
-      { x: dentro ? X + bl + l : X - l, y: cy, h: false, len: largo(H) },
+      { x: cx, y: (dentro && !chico ? Y + bt + t : Y - (dentro ? 0 : t) - sep), h: true, len: largo(W) },
+      { x: (dentro && !chico ? X + W - br - r : X + W + (dentro ? 0 : r) + sep), y: cy, h: false, len: largo(H) },
+      { x: cx, y: (dentro && !chico ? Y + H - bb - b : Y + H + (dentro ? 0 : b) + sep), h: true, len: largo(W) },
+      { x: (dentro && !chico ? X + bl + l : X - (dentro ? 0 : l) - sep), y: cy, h: false, len: largo(H) },
     ];
+    capa.classList.toggle('chico', chico);
     pos.forEach((p, i) => {
       const mz = manijas[i];
       mz.classList.toggle('horiz', p.h);
@@ -114,15 +126,25 @@ export function initTiradores(host, stage) {
       mz.style.cssText = `left:${p.x - ancho / 2}px;top:${p.y - alto / 2}px;width:${ancho}px;height:${alto}px`;
       const et = etiquetas[i];
       // la etiqueta va hacia afuera del tirador (arriba/abajo/izquierda/derecha según el lado)
-      const dx = i === 1 ? 10 : i === 3 ? -10 : 0, dy = i === 0 ? -10 : i === 2 ? 10 : 0;
+      const dx = i === 1 ? 10 : i === 3 ? -10 : 0, dy = i === 0 ? -10 : i === 2 ? 10 : 0; // (centrada en el punto)
       et.style.left = `${p.x + dx}px`; et.style.top = `${p.y + dy}px`;
     });
 
     // Botón de modo, arriba a la izquierda del nodo (por encima de su margen superior)
     boton.textContent = prop === 'padding' ? 'Padding' : 'Margen';
     boton.title = 'Cambiar entre padding y margen · vista ' + (getState().viewMode === 'mobile' ? 'móvil' : 'escritorio');
-    boton.style.left = `${Math.max(0, X)}px`;
-    boton.style.top = `${Math.max(0, Y - (dentro ? 0 : t) - 24)}px`;
+    if (!chico) {
+      boton.style.left = `${Math.max(0, X)}px`;
+      boton.style.top = `${Math.max(0, Y - (dentro ? 0 : t) - 24)}px`;
+    } else {
+      // Elemento chico: el botón va a un lado (derecha; a la izquierda si no cabe), a la altura del elemento, fuera de los tiradores.
+      const ancho = boton.offsetWidth || 60;
+      const xDer = X + W + (dentro ? 0 : r) + sep + 4 + GAP;
+      const cabe = xDer + ancho <= host.scrollWidth;
+      const x = cabe ? xDer : X - (dentro ? 0 : l) - sep - 4 - GAP - ancho;
+      boton.style.left = `${Math.max(0, x)}px`;
+      boton.style.top = `${Math.max(0, cy - (boton.offsetHeight || 20) / 2)}px`;
+    }
   }
 
   function programar() { if (!pendiente) pendiente = requestAnimationFrame(colocar); }
@@ -220,6 +242,7 @@ export function initTiradores(host, stage) {
     if (cambio === 'text') return;
     if (cambio === 'page' || cambio === 'selection' || cambio === 'view' || cambio === 'verestado') { colocar(); mostrarVivo(); }
   });
+  alCambiarTiradores(() => { arrastre = null; colocar(); }); // el interruptor de la barra superior
   host.addEventListener('focusin', programar);   // editar texto directo oculta los tiradores
   host.addEventListener('focusout', () => setTimeout(programar, 0));
   new ResizeObserver(programar).observe(host);

@@ -7,7 +7,8 @@ import { abrirVistaPrevia } from './vistaprevia.js';
 import { toast } from './plania.js';
 import { avisoQuitados } from '../core/seguridad.js';
 
-import { SVG_ESCRITORIO, SVG_MOVIL, SVG_OJO, SVG_DESHACER, SVG_REHACER } from './iconos.js'; // iconos compartidos con la Vista previa
+import { tiradoresEncendidos, alternarTiradores, alCambiarTiradores } from './tiradores-pref.js';
+import { SVG_TIRADORES, SVG_ESCRITORIO, SVG_MOVIL, SVG_OJO, SVG_DESHACER, SVG_REHACER } from './iconos.js'; // iconos compartidos con la Vista previa
 
 export function initToolbar(host) {
   host.innerHTML = `
@@ -20,6 +21,7 @@ export function initToolbar(host) {
     </span>
     <span class="divisor" aria-hidden="true"></span>
     <button id="btn-vista-previa" class="ico-btn" title="Vista previa (Esc para cerrar)" aria-label="Vista previa">${SVG_OJO}</button>
+    <button id="btn-tiradores" class="ico-btn" aria-pressed="true">${SVG_TIRADORES}</button>
     <span class="espacio"></span>
     <button id="btn-nuevo">Nuevo</button>
     <button id="btn-abrir">Abrir JSON</button>
@@ -31,6 +33,7 @@ export function initToolbar(host) {
 
   $('#btn-undo').addEventListener('click', undo);
   $('#btn-redo').addEventListener('click', redo);
+  $('#btn-tiradores').addEventListener('click', alternarTiradores);
   $('#btn-vista-previa').addEventListener('click', abrirVistaPrevia);
   $('#vista-desktop').addEventListener('click', () => setViewMode('desktop'));
   $('#vista-mobile').addEventListener('click', () => setViewMode('mobile'));
@@ -62,6 +65,28 @@ export function initToolbar(host) {
 
   $('#btn-exportar').addEventListener('click', () => {
     descargar('landing.html', exportHTML(getState().page));
+  });
+
+  // Estado visible del interruptor de tiradores (botón morado = encendido; apagado = botón normal con la rayita)
+  function pintarTiradores() {
+    const on = tiradoresEncendidos();
+    const b = $('#btn-tiradores');
+    b.classList.toggle('activo', on);
+    b.setAttribute('aria-pressed', String(on));
+    const t = 'Tiradores de espaciado: ' + (on ? 'encendidos' : 'apagados') + ' (T)';
+    b.title = t; b.setAttribute('aria-label', t);
+  }
+  alCambiarTiradores(pintarTiradores);
+  pintarTiradores();
+
+  // Atajo T (sin modificadores) = encender/apagar tiradores. Libre: no choca con Supr, Ctrl+Z/Y/D, Alt+flechas ni Ctrl+Alt+C/V,
+  // y sin Ctrl/Alt/Meta no es atajo del navegador (Ctrl+T sería "pestaña nueva"; la T sola no hace nada en Firefox ni Chrome).
+  document.addEventListener('keydown', (e) => {
+    if (e.key.toLowerCase() !== 't' || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey || e.repeat) return;
+    const t = e.target;
+    if (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) return;
+    e.preventDefault();
+    alternarTiradores();
   });
 
   // Atajos de teclado. Dentro de un campo de texto se deja el undo nativo del navegador.

@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Propuesta A: por tarea</title><link rel="stylesheet" href="comun.css"></head><body>
+<nav class="ver"><a href="a-por-tarea.html">A · por tarea</a><a href="b-por-control.html">B · por tipo de control</a><a href="c-por-estado.html">C · por estado</a></nav>
+<h1>A · Una pestaña por tarea: Contenido / Estilo / Movimiento</h1>
+<p class="nota">Mockup estático (nada se guarda). Ejemplo: un Botón seleccionado. Pestañas reales: solo una visible a la vez, siempre a la vista. Aquí se muestran las tres pestañas lado a lado para compararlas; en el editor sería una sola.</p>
+<div class="lado">
+
+<div class="panel"><header class="cab"><span class="ico">⬭</span><div style="flex:1"><input value="Botón"><small>Botón · <b>Escritorio</b></small></div><div class="acc"><button>↑</button><button>↓</button><button>⧉</button><button>✕</button></div></header>
+<div class="tabs"><button class="on">Contenido</button><button>Estilo</button><button>Movimiento</button></div>
+<div class="cuerpo">
+<h3>Qué dice</h3>
+<div class="campo"><label>Texto</label><input value="Reservar ahora"></div>
+<div class="campo"><label>Enlace</label><input placeholder="https://wa.me/506..."></div>
+<h3>Dónde se ve</h3>
+<div class="campo"><label>Visible en</label><span class="botones"><button class="on">Escritorio</button><button class="on">Móvil</button></span></div>
+<p class="pista">Nuevo: hoy no existe "ocultar en móvil".</p>
+<h3>Avanzado</h3>
+<div class="campo"><label>Ancla (id)</label><input placeholder="contacto"></div>
+</div></div>
+
+<div class="panel"><header class="cab"><span class="ico">⬭</span><div style="flex:1"><input value="Botón"><small>Botón · <b>Escritorio</b></small></div><div class="acc"><button>↑</button><button>↓</button><button>⧉</button><button>✕</button></div></header>
+<div class="tabs"><button>Contenido</button><button class="on">Estilo</button><button>Movimiento</button></div>
+<div class="cuerpo">
+<h3>Aspecto</h3>
+<div class="campo"><label>Estilo</label><span class="botones"><button class="on">Relleno</button><button>Contorno</button><button>Suave</button></span></div>
+<div class="campo"><label>Fondo</label><span class="color"><i style="background:#7c5cff"></i><input value="#7c5cff"></span></div>
+<div class="campo"><label>Esquinas</label><span class="botones"><button>Recto</button><button>Suave</button><button class="on">Redondo</button><button>Pastilla</button></span></div>
+<div class="campo"><label>Sombra</label><span class="botones"><button class="on">Ninguna</button><button>Suave</button><button>Fuerte</button></span></div>
+<h3>Texto</h3>
+<div class="fila"><div class="campo"><label>Tamaño</label><select><option>16 px</option></select></div><div class="campo"><label>Color</label><span class="color"><i style="background:#fff"></i><input value="#ffffff"></span></div></div>
+<div class="campo"><label>Fuente</label><select><option>Sistema</option></select></div>
+<div class="campo"><label>Alinear texto</label><span class="botones"><button>⟸</button><button class="on">≡</button><button>⟹</button></span></div>
+<h3>Espacio</h3>
+<div class="campo"><label>Relleno</label><span class="botones"><button>S</button><button class="on">M</button><button>L</button></span></div>
+<div class="campo"><label>Margen</label><input value="0 auto"></div>
+<h3>Móvil</h3>
+<p class="pista">● = valor propio solo en móvil (igual que hoy).</p>
+</div></div>
+
+<div class="panel"><header class="cab"><span class="ico">⬭</span><div style="flex:1"><input value="Botón"><small>Botón · <b>Escritorio</b></small></div><div class="acc"><button>↑</button><button>↓</button><button>⧉</button><button>✕</button></div></header>
+<div class="tabs"><button>Contenido</button><button>Estilo</button><button class="on">Movimiento</button></div>
+<div class="cuerpo">
+<h3>Al aparecer</h3>
+<div class="campo"><label>Efecto</label><select><option>Subir y aparecer</option></select></div>
+<h3>Al pasar el mouse</h3>
+<div class="campo"><label>Efecto</label><select><option>Elevar</option></select></div>
+<h3>Al presionar</h3>
+<div class="campo"><label>Efecto</label><select><option>Ninguno</option></select></div>
+<h3>Al enfocar (teclado)</h3>
+<div class="campo"><label>Efecto</label><select><option>Ninguno</option></select></div>
+<h3>Scroll</h3>
+<div class="campo"><label>Parallax</label><select><option>Ninguno</option></select></div>
+<div class="campo"><label>Ligado</label><select><option>Ninguno</option></select></div>
+<h3>Estados personalizados</h3>
+<button>+ Añadir estado</button>
+<h3>Copiar y pegar efectos</h3>
+<div class="botones"><button>Copiar</button><button>Pegar</button><button>Pegar en hermanos</button></div>
+</div></div>
+
+</div>
+<div class="resumen"><b>Clics (botón seleccionado, partiendo de la pestaña Contenido; si ya estás en la pestaña, resta 1):</b> texto 1 · color de texto 2 · fondo 2 · tamaño y fuente 2 · espaciado 2 · alinear 2 · esquinas 2 · sombra 2 · hover 2 · entrada 2 · ocultar en móvil 1 · enlace 1.</div>
+</body></html>

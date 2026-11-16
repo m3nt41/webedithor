@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Propuesta C: por estado</title><link rel="stylesheet" href="comun.css">
+<style>.busca{padding:10px 16px 0}.busca input{width:100%}.seg{display:flex;margin:10px 16px 0;border:1px solid #3a3a45;border-radius:8px;overflow:hidden}.seg button{flex:1;border:0;border-radius:0;background:#1a1a1f;color:#9a9aa8;font-size:12px;padding:6px 2px}.seg button.on{background:#5b47c9;color:#fff}.fijo{padding:12px 16px 0}</style></head><body>
+<nav class="ver"><a href="a-por-tarea.html">A · por tarea</a><a href="b-por-control.html">B · por tipo de control</a><a href="c-por-estado.html">C · por estado</a></nav>
+<h1>C · Contenido fijo + selector de estado (Reposo / Hover / Entrada) + buscador</h1>
+<p class="nota">Mockup estático. Tercera idea: el texto, el enlace y "visible en móvil" quedan siempre arriba. Debajo, un selector de estado: lo que ves en Reposo es el aspecto normal; en Hover o Entrada aparece lo que cambia en ese momento. Un buscador salta al campo ("sombra", "esquinas"). Sin acordeones: secciones siempre abiertas con títulos cortos.</p>
+<div class="lado">
+
+<div class="panel"><header class="cab"><span class="ico">⬭</span><div style="flex:1"><input value="Botón"><small>Botón · <b>Escritorio</b></small></div><div class="acc"><button>↑</button><button>↓</button><button>⧉</button><button>✕</button></div></header>
+<div class="fijo"><div class="campo"><label>Texto</label><input value="Reservar ahora"></div><div class="campo"><label>Enlace</label><input placeholder="https://..."></div><div class="campo"><label>Visible en móvil</label><span class="sw on"><i></i>Sí</span></div></div>
+<div class="busca"><input placeholder="🔍 Buscar: sombra, esquinas, fuente…"></div>
+<div class="seg"><button class="on">Reposo</button><button>Hover</button><button>Presionar</button><button>Entrada</button></div>
+<div class="cuerpo">
+<h3>Texto</h3>
+<div class="fila"><div class="campo"><label>Tamaño</label><input value="16px"></div><div class="campo"><label>Color</label><span class="color"><i style="background:#fff"></i><input value="#fff"></span></div></div>
+<div class="campo"><label>Fuente</label><select><option>Sistema</option></select></div>
+<div class="campo"><label>Alinear texto</label><span class="botones"><button>⟸</button><button class="on">≡</button><button>⟹</button></span></div>
+<h3>Caja</h3>
+<div class="campo"><label>Estilo</label><span class="botones"><button class="on">Relleno</button><button>Contorno</button><button>Suave</button></span></div>
+<div class="campo"><label>Fondo</label><span class="color"><i style="background:#7c5cff"></i><input value="#7c5cff"></span></div>
+<div class="campo"><label>Esquinas</label><span class="botones"><button>Recto</button><button>Suave</button><button class="on">Redondo</button><button>Pastilla</button></span></div>
+<div class="campo"><label>Sombra</label><span class="botones"><button class="on">Ninguna</button><button>Suave</button><button>Fuerte</button></span></div>
+<h3>Espacio</h3>
+<div class="campo"><label>Relleno</label><span class="botones"><button>S</button><button class="on">M</button><button>L</button></span></div>
+<div class="campo"><label>Margen</label><input value="0 auto"></div>
+<p class="pista">En "Hover", "Presionar" y "Entrada" aparece un efecto prediseñado + los campos que ese estado puede cambiar.</p>
+</div></div>
+
+<div class="panel"><header class="cab"><span class="ico">⬭</span><div style="flex:1"><input value="Botón"><small>Botón · <b>Escritorio</b></small></div><div class="acc"><button>↑</button><button>↓</button><button>⧉</button><button>✕</button></div></header>
+<div class="fijo"><div class="campo"><label>Texto</label><input value="Reservar ahora"></div><div class="campo"><label>Enlace</label><input placeholder="https://..."></div><div class="campo"><label>Visible en móvil</label><span class="sw on"><i></i>Sí</span></div></div>
+<div class="busca"><input placeholder="🔍 Buscar…"></div>
+<div class="seg"><button>Reposo</button><button class="on">Hover</button><button>Presionar</button><button>Entrada</button></div>
+<div class="cuerpo">
+<h3>Al pasar el mouse</h3>
+<div class="campo"><label>Efecto</label><select><option>Elevar</option></select></div>
+<div class="campo"><label>Duración</label><input value="0.2 s"></div>
+<h3>Además cambia (opcional)</h3>
+<div class="campo"><label>Fondo</label><span class="color"><i></i><input placeholder="sin cambio"></span></div>
+<div class="campo"><label>Color texto</label><span class="color"><i></i><input placeholder="sin cambio"></span></div>
+<div class="campo"><label>Escala</label><input placeholder="sin cambio"></div>
+<div class="campo"><label>Sombra</label><input placeholder="sin cambio"></div>
+<p class="pista">Reutiliza el sistema de "Estados" actual: aquí el estado Hover y su efecto prediseñado se ven juntos.</p>
+</div></div>
+
+<div class="panel"><header class="cab"><span class="ico">⬭</span><div style="flex:1"><input value="Botón"><small>Botón · <b>Escritorio</b></small></div><div class="acc"><button>↑</button><button>↓</button><button>⧉</button><button>✕</button></div></header>
+<div class="fijo"><div class="campo"><label>Texto</label><input value="Reservar ahora"></div><div class="campo"><label>Enlace</label><input placeholder="https://..."></div><div class="campo"><label>Visible en móvil</label><span class="sw on"><i></i>Sí</span></div></div>
+<div class="busca"><input placeholder="🔍 Buscar…"></div>
+<div class="seg"><button>Reposo</button><button>Hover</button><button>Presionar</button><button class="on">Entrada</button></div>
+<div class="cuerpo">
+<h3>Al aparecer en pantalla</h3>
+<div class="campo"><label>Efecto</label><select><option>Subir y aparecer</option></select></div>
+<div class="campo"><label>Duración</label><input value="0.8 s"></div>
+<div class="campo"><label>Retraso</label><input value="0 s"></div>
+<h3>Scroll</h3>
+<div class="campo"><label>Parallax</label><select><option>Ninguno</option></select></div>
+<div class="campo"><label>Ligado</label><select><option>Ninguno</option></select></div>
+<div class="botones" style="margin-top:12px"><button>Copiar efectos</button><button>Pegar</button></div>
+</div></div>
+
+</div>
+<div class="resumen"><b>Clics (botón seleccionado; la vista Reposo es la de arranque):</b> texto 1 · color de texto 1 · fondo 1 · tamaño y fuente 1 (ambos visibles) · espaciado 1 (con algo de scroll) · alinear 1 · esquinas 1 · sombra 1 · hover 2 (pestaña Hover + select) · entrada 2 · ocultar en móvil 1 · enlace 1. Buscador: 1 clic + escribir para cualquier campo.</div>
+</body></html>

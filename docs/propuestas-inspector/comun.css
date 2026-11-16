@@ -1,0 +1,40 @@
+/* Estilos compartidos por los 3 mockups del inspector (estáticos, sin JS de editor). Mismo look oscuro del editor. */
+:root { color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #17171c; color: #e8e8ee; font: 13px/1.35 system-ui, sans-serif; padding: 24px; }
+h1 { font-size: 15px; margin: 0 0 4px; }
+.nota { color: #9a9aa8; font-size: 12px; max-width: 60ch; margin: 0 0 16px; }
+.panel { width: 300px; background: #24242b; border: 1px solid #333; border-radius: 6px; overflow: hidden; }
+.cab { display: flex; gap: 8px; align-items: center; padding: 12px 14px; border-bottom: 1px solid #2f2f38; }
+.ico { width: 30px; height: 30px; border-radius: 8px; background: #3b3170; display: grid; place-items: center; }
+.cab input { width: 100%; }
+.cab small { color: #9a9aa8; display: block; margin-top: 2px; }
+.cab small b { color: #b9a6ff; }
+.acc { display: flex; gap: 4px; }
+.acc button { width: 24px; height: 24px; padding: 0; }
+button, input, select, textarea { background: #1a1a1f; color: #e8e8ee; border: 1px solid #3a3a45; border-radius: 6px; padding: 5px 8px; font: inherit; }
+button { cursor: pointer; }
+button.on { background: #5b47c9; border-color: #7c5cff; color: #fff; }
+.tabs { display: flex; border-bottom: 1px solid #2f2f38; }
+.tabs button { flex: 1; border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: none; padding: 10px 4px; color: #9a9aa8; font-weight: 600; font-size: 12px; }
+.tabs button.on { color: #fff; border-bottom-color: #7c5cff; background: #2a2a33; }
+.cuerpo { padding: 4px 16px 16px; }
+h3 { font-size: 12px; font-weight: 600; color: #9a9aa8; margin: 20px 0 8px; padding-top: 12px; border-top: 1px solid #2f2f38; }
+h3:first-child { border-top: 0; margin-top: 12px; padding-top: 0; }
+.campo { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 8px; align-items: center; margin-bottom: 8px; }
+.campo > label { color: #9a9aa8; font-size: 12px; }
+.fila { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+.fila .campo { grid-template-columns: 1fr; gap: 3px; margin: 0; }
+.botones { display: flex; flex-wrap: wrap; gap: 4px; }
+.botones button { padding: 3px 8px; font-size: 12px; }
+.color { display: flex; gap: 6px; } .color i { width: 26px; height: 26px; border-radius: 6px; border: 1px solid #555; flex: none; }
+.color input { min-width: 0; flex: 1; }
+.pista { color: #9a9aa8; font-size: 11px; margin: 0 0 8px; }
+.sw { display: inline-flex; align-items: center; gap: 8px; }
+.sw i { width: 30px; height: 16px; border-radius: 9px; background: #44444f; position: relative; }
+.sw i::after { content: ''; position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%; background: #ddd; }
+.sw.on i { background: #7c5cff; } .sw.on i::after { left: 16px; }
+nav.ver { margin-bottom: 20px; font-size: 12px; } nav.ver a { color: #b9a6ff; margin-right: 12px; }
+.resumen { max-width: 62ch; margin-top: 18px; font-size: 12px; color: #c9c9d6; }
+.resumen b { color: #fff; }
+.lado { display: flex; gap: 24px; align-items: flex-start; flex-wrap: wrap; }

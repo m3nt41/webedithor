@@ -46,6 +46,7 @@ export const SUITE = [ // [nombre, comando, timeout en segundos]
   ['hover-borde', 'node tests/hover-borde.mjs', 120],
   ['hover-nuevos', 'node tests/hover-nuevos.mjs', 420],
   ['hover-crece', 'node tests/hover-crece.mjs', 240],
+  ['hover-texto-fijo', 'node tests/hover-texto-fijo.mjs', 300],
   ['export-igual-vista', 'node tests/export-igual-vista.mjs', 180],
   ['fuga-estilos', 'node tests/fuga-estilos.mjs', 120],
   ['controles', 'node tests/controles.mjs', 60],

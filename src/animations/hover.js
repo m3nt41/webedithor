@@ -2,6 +2,14 @@
 // Datos en node.animation.hover = { effect, duration, ease, color }
 
 import { EASES, transicion, camposCurva, sinSpring, DEF_CURVA, modoSombra, sinCaja, esTexto, duracion, curva, filtroConReposo } from './base.js';
+import { cssTextoFijo, sinFondoNiBorde } from './textofijo.js';
+import { textoFijoValido } from '../core/seguridad.js';
+
+// "Texto fijo" existe solo en los 3 hovers que escalan o inclinan el nodo entero (ver textofijo.js). Las imágenes no admiten ::before.
+const FIJABLES = ['grow', 'shrink', 'tilt'];
+const TRANSFORM_FIJO = { grow: 'scale(1.03)', shrink: 'scale(.97)', tilt: 'rotate(-1deg)' }; // los mismos valores que REGLAS
+const fijoActivo = (h, node) => FIJABLES.includes(h?.effect) && textoFijoValido(h.textoFijo) && h.textoFijo === 'si' && node?.type !== 'image';
+const cuandoFijable = (g, efecto, nodo) => FIJABLES.includes(efecto) && nodo?.type !== 'image';
 
 // Lista completa (la usa la validación del .json). El orden mostrado depende del nodo: ver opcionesNodo.
 const NUEVOS = [
@@ -93,7 +101,7 @@ export default {
   estado: true, // se ve siempre en el preview
   titulo: 'Al pasar el mouse',
   principal: 'effect',
-  defaults: { effect: 'lift', duration: 0.2, ease: 'suave', ...DEF_CURVA, color: '#7c5cff', lineaColor: 'texto', direccion: 'izq', grosor: 2, separacion: 0, modo: 'fundido', dirRelleno: 'izq', textoCambia: 'no', textoColor: '#ffffff' },
+  defaults: { effect: 'lift', duration: 0.2, ease: 'suave', ...DEF_CURVA, textoFijo: 'no', color: '#7c5cff', lineaColor: 'texto', direccion: 'izq', grosor: 2, separacion: 0, modo: 'fundido', dirRelleno: 'izq', textoCambia: 'no', textoColor: '#ffffff' },
   campos: [
     { key: 'effect', label: 'Efecto', kind: 'select', options: EFECTOS, opcionesNodo },
     { key: 'direccion', label: 'Dirección', kind: 'select', options: DIRECCIONES, cuando: (g, efecto) => efecto === 'underline' },
@@ -104,8 +112,12 @@ export default {
     { key: 'dirRelleno', label: 'Dirección del barrido', kind: 'select', options: DIR_BARRIDO, cuando: (g, efecto) => efecto === 'fill' && g?.modo === 'barrido' },
     { key: 'textoCambia', label: 'Color del texto al pasar', kind: 'select', options: [['no', 'Sin cambio'], ['si', 'Cambiar']], cuando: (g, efecto) => efecto === 'fill' || efecto === 'bgrow' },
     { key: 'textoColor', label: 'Color del texto', kind: 'color', cuando: (g, efecto) => (efecto === 'fill' || efecto === 'bgrow') && g?.textoCambia === 'si' },
-    // Aviso corto (se pinta con el triángulo de aviso): Agrandar usa scale y en Firefox el texto escalado puede verse raro
-    { kind: 'nota', cuando: (g, efecto) => efecto === 'grow', texto: 'En Firefox el texto puede verse raro al agrandarse. «Fondo que crece» deja el texto quieto.' },
+    // Texto fijo (Agrandar, Encoger, Inclinar): el fondo y el borde se mueven en un ::before y el texto no se transforma. Por defecto No.
+    { key: 'textoFijo', label: 'Texto fijo', kind: 'select', options: [['no', 'No'], ['si', 'Sí']], cuando: cuandoFijable },
+    // Aviso corto (se pinta con el triángulo de aviso): Agrandar usa scale y en Firefox el texto escalado puede verse raro (se oculta con Texto fijo)
+    { kind: 'nota', cuando: (g, efecto, nodo) => efecto === 'grow' && !fijoActivo(g, nodo), texto: 'En Firefox el texto puede verse raro al agrandarse. Activa «Texto fijo» (el texto no cambia) o usa «Fondo que crece».' },
+    // Texto fijo sin nada que mover: el efecto no se ve (no se escala el texto ni se inventa un fondo)
+    { kind: 'nota', cuando: (g, efecto, nodo) => fijoActivo(g, nodo) && sinFondoNiBorde(nodo), texto: 'Necesita fondo o borde: sin ellos no hay nada que mover y el efecto no se ve. Ponle un fondo o un borde, o desactiva «Texto fijo».' },
     { key: 'duration', label: 'Duración (s)', kind: 'num', step: 0.05, min: 0.05, cuando: sinSpring },
     { key: 'ease', label: 'Curva', kind: 'select', options: EASES },
     ...camposCurva,
@@ -113,7 +125,11 @@ export default {
     { key: 'color', label: 'Color', kind: 'color', cuando: (g, efecto) => ['glow', 'color', 'soft'].includes(efecto) || (efecto === 'underline' && g?.lineaColor === 'otro') },
   ],
 
-  css(h, sel, node) {
+  css(h, sel, node, ctx) {
+    // Texto fijo: el nodo no se transforma; su fondo y borde se mueven en un ::before (sin fondo ni borde no hace nada: '').
+    if (fijoActivo(h, node)) {
+      return cssTextoFijo(node, sel, TRANSFORM_FIJO[h.effect], `${duracion(h, 0.2)}s ${curva(h)}`, ctx?.viewMode, sinPosicion(node));
+    }
     // Subrayado y Fondo suave: un ::before (el ::after queda libre para la zona anti-parpadeo). No mueven ni escalan el texto:
     // el transform / opacity va solo en el pseudo-elemento. Técnica: transform-origin que cambia en :hover
     // (30secondsofcode.org/css/s/hover-underline-animation). Las imágenes (<img>) no admiten pseudo-elementos.

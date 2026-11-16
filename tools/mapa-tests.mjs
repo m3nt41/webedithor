@@ -42,7 +42,8 @@ export const MAPA = {
   'src/ui/tiradores-pref.js': ['tiradores-interruptor'],
   'src/ui/efectos.js': ['copiar-efectos'],
   'src/animations/text.js': ['cascada-tope', 'texto-final-letras', 'texto-capas', 'export-igual-vista', 'selenium', 'ronda7', 'vistaprevia'],
-  'src/animations/copiar.js': ['copiar-efectos', 'hover-crece'],
+  'src/animations/copiar.js': ['copiar-efectos', 'hover-crece', 'hover-texto-fijo'],
+  'src/animations/textofijo.js': ['hover-texto-fijo', 'hover-crece', 'hover', 'xss-import', 'export-igual-vista'],
   'src/ui/espaciado.js': ['tiradores'],
   'src/ui/imagen.js': ['fondo'],
   'src/ui/iconos.js': ['inspector', 'vistaprevia', 'sidebar', 'iconos'],
@@ -67,12 +68,12 @@ export const MAPA = {
   'src/blocks/': ['tema', 'plan-ia', 'plan-ia-ui', 'ronda7'], // cualquier otro bloque (hero, services, gallery, index.js, util.js...)
 
   // ---- Animaciones (CSS exportado, validación y su panel) ----
-  'src/animations/hover.js': ['hover-crece', 'export-igual-vista', 'sombra-reposo', 'hover', 'hover-texto', 'hover-borde', 'hover-nuevos', 'selenium', 'ronda7'],
+  'src/animations/hover.js': ['hover-texto-fijo', 'hover-crece', 'export-igual-vista', 'sombra-reposo', 'hover', 'hover-texto', 'hover-borde', 'hover-nuevos', 'selenium', 'ronda7'],
   'src/animations/focus.js': ['sombra-reposo', 'hover', 'hover-texto', 'hover-borde', 'hover-nuevos', 'selenium', 'ronda7'],
   'src/animations/parallax.js': ['parallax-nativo', 'parallax-recorte', 'selenium', 'ronda7'],
   'src/animations/scrollmotor.js': ['parallax-nativo', 'selenium', 'ronda7'],
-  'src/animations/index.js': ['parallax-nativo', 'hover', 'selenium', 'ronda7', 'fuga-estilos'],
-  'src/animations/base.js': ['hover-crece', 'texto-capas', 'sombra-reposo', 'hover', 'hover-texto', 'hover-borde', 'hover-nuevos', 'selenium', 'ronda7', 'inspector', 'vistaprevia'],
+  'src/animations/index.js': ['hover-texto-fijo', 'parallax-nativo', 'hover', 'selenium', 'ronda7', 'fuga-estilos'],
+  'src/animations/base.js': ['hover-texto-fijo', 'hover-crece', 'texto-capas', 'sombra-reposo', 'hover', 'hover-texto', 'hover-borde', 'hover-nuevos', 'selenium', 'ronda7', 'inspector', 'vistaprevia'],
   'src/animations/': ['selenium', 'ronda7', 'inspector', 'vistaprevia'],
 
   // ---- Tests (cada archivo de tests/ corre su propio test; ver también `testDeArchivo` en test-cambios.mjs) ----

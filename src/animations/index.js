@@ -124,10 +124,10 @@ function transicionBase(anim, sel) {
 }
 
 /** CSS de las animaciones de un nodo. */
-export function cssNodo(node, sel, { scroll = true, forzar = null, padre = null } = {}) {
+export function cssNodo(node, sel, { scroll = true, forzar = null, padre = null, viewMode = null } = {}) {
   if (!node.animation) return '';
   return [transicionBase(node.animation, sel),
-    ...GRUPOS_ANIM.filter((g) => scroll || g.estado).map((g) => g.css(node.animation[g.id], sel, node, { scroll, forzar, padre })),
+    ...GRUPOS_ANIM.filter((g) => scroll || g.estado).map((g) => g.css(node.animation[g.id], sel, node, { scroll, forzar, padre, viewMode })),
   ].filter(Boolean).join('\n');
 }
 
@@ -141,7 +141,7 @@ export function cssPagina(page, { scroll = false, forzar = null, viewMode = 'des
     const est = viewMode === 'mobile' ? { ...n.styles.base, ...n.styles.mobile } : n.styles.base;
     const sh = Object.entries(declaracionesSombra(n, est)).map(([k, v]) => `${kebab(k)}:${v}`).join(';');
     if (sh) reglas.push(`.stage [data-id="${n.id}"]{${sh}}`);
-    const r = cssNodo(n, `.stage [data-id="${n.id}"]`, { scroll, forzar, padre });
+    const r = cssNodo(n, `.stage [data-id="${n.id}"]`, { scroll, forzar, padre, viewMode });
     if (r) reglas.push(r);
     n.children.forEach((h) => recorre(h, n));
   };

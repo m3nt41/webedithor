@@ -129,7 +129,7 @@ export const transicion = (g) => {
 };
 
 // ¿Un valor CSS "no pinta nada"? (vacío, none, transparent, 0, alfa 0)
-const vacio = (v) => {
+export const vacio = (v) => {
   const s = String(v ?? '').trim().toLowerCase();
   return !s || s === 'none' || s === 'transparent' || s === 'hidden' || /^0(px|em|rem)?$/.test(s)
     || /^rgba?\([^)]*[,/]\s*0(\.0+)?\s*\)$/.test(s) || /^#([0-9a-f]{3}0|[0-9a-f]{6}00)$/.test(s);

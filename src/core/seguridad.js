@@ -55,6 +55,11 @@ const URL_CSS = /^url\s*\(\s*(?:"([^"]*)"|'([^']*)'|([^)'"\s]*))\s*\)/i;
 const ES_SOMBRA = { boxShadow: { texto: false }, textShadow: { texto: true }, sombra: { texto: false } };
 export const valorSombraOk = (k, v) => !(k in ES_SOMBRA) || (typeof v === 'string' && sombraValida(v, ES_SOMBRA[k]));
 
+/** Interruptor "Texto fijo" del hover (Agrandar/Encoger/Inclinar): solo 'si' o 'no'. Cualquier otro valor (texto raro, número,
+ *  objeto) se descarta y el hover se queda con su comportamiento de siempre (la lista de opciones de normalizar.js ya lo filtra
+ *  al importar; esto es la defensa en la salida, la usa hover.js). */
+export const textoFijoValido = (v) => v === 'si' || v === 'no';
+
 /** Devuelve el valor tal cual (string o número) si es seguro; null si hay que descartarlo. */
 export function valorCss(v) {
   if (typeof v === 'number') return Number.isFinite(v) ? v : null;

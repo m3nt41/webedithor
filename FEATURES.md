@@ -24,6 +24,7 @@ Motion vs CSS puro: m3nt41 ya decidió la opción (a), CSS puro donde se pueda y
 - [x] Hover para texto y botones sin caja, sin mover las letras: subrayado (dirección elegible: desde la izquierda por defecto, derecha, centro o de lado a lado; grosor 1–4 px y separación 0–8 px), color y fondo suave (CSS puro; mini-etapa 2026-11-15)
 - [x] Hover "Relleno" para botones y texto con caja: modo Fundido (background-color) o Barrido (desde izquierda, derecha, arriba o abajo, recortado por el border-radius), con color de relleno y color de texto al pasar opcional (CSS puro; mini-etapa 2026-11-15)
 - [x] Hover "Fondo que crece" para botones y texto (con o sin caja): un fondo de color crece detrás del texto (de escala .85 a 1.06 y de transparente a opaco) mientras el texto y la caja no cambian de tamaño; color de relleno y color del texto al pasar opcionales (CSS puro; técnica V6 del banco de comparación, mini-etapa 2026-11-16). "Agrandar" se queda como está, con un aviso en el inspector (en Firefox el texto puede verse raro al agrandarse)
+- [x] Opción "Texto fijo" en los hovers Agrandar, Encoger e Inclinar: el fondo y el borde del botón se mueven en un ::before y el texto no cambia de tamaño ni se transforma (CSS puro; técnica (b) del banco, mini-etapa 2026-11-16). Por defecto desactivada (lo ya guardado no cambia); sin fondo ni borde el inspector avisa "Necesita fondo o borde"
 - [x] Press (al mantener clic/tocar) con transición (Etapa 6)
 - [x] Focus (`:focus-visible`) con transición, solo en botones/enlaces (Etapa 6)
 

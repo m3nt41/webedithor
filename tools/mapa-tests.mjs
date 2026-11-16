@@ -32,8 +32,8 @@ export const MAPA = {
 
   // ---- Inspector y controles visuales ----
   'src/ui/controles.js': ['controles', 'inspector'],
-  'src/ui/fields.js': ['controles', 'inspector', 'inspector-niveles', 'inspector-page-plano', 'inspector-page-espaciado'],
-  'src/ui/inspector.js': ['controles', 'inspector', 'inspector-niveles', 'inspector-page-plano', 'inspector-page-espaciado', 'marquesina-ui', 'rebote-inspector', 'copiar-efectos'],
+  'src/ui/fields.js': ['controles', 'inspector', 'inspector-niveles', 'inspector-inventario', 'inspector-acordeon', 'inspector-page-plano', 'inspector-page-espaciado'],
+  'src/ui/inspector.js': ['controles', 'inspector', 'inspector-niveles', 'inspector-inventario', 'inspector-acordeon', 'inspector-page-plano', 'inspector-page-espaciado', 'marquesina-ui', 'rebote-inspector', 'copiar-efectos'],
   'src/ui/tiradores.js': ['tiradores', 'rebote-inspector'],
   'src/ui/efectos.js': ['copiar-efectos'],
   'src/animations/copiar.js': ['copiar-efectos'],
@@ -80,6 +80,8 @@ export const MAPA = {
   'tools/test-todo.mjs': TODOS,
   'tools/test-firefox.mjs': ['firefox'],
   'tools/gen-guia-ia.mjs': ['plan-ia'],
+  'tools/inventario-inspector.mjs': ['inspector-inventario'],
+  'tools/capturas-inspector.mjs': NINGUNO,
   'tools/gen-demo-parallax.mjs': NINGUNO,
   'tools/gen-demo-estilo.mjs': ['tema'],
   'tools/gen-lenis.mjs': ['selenium'],

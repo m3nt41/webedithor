@@ -1,5 +1,5 @@
-// Inspector en 3 niveles (Esencial / Estilo / Avanzado), Firefox real sobre dist/editor.html.
-// Comprueba: Esencial abierto y los otros plegados de fábrica, que se recuerda lo que el usuario abre, que cada tipo
+// Inspector en 3 acordeones por tarea (Contenido / Estilo / Movimiento), Firefox real sobre dist/editor.html.
+// Comprueba: Contenido y Estilo abiertos y Movimiento plegado de fábrica, que se recuerda lo que el usuario abre, que cada tipo
 // muestra solo lo suyo (una sección no tiene opciones de botón) y que editar un campo de cada tipo sigue escribiendo.
 // Ejecutar: npm run build && node tests/inspector-niveles.mjs
 import assert from 'node:assert/strict';
@@ -44,9 +44,9 @@ try {
   const titulos = () => d.executeScript(`return [...document.querySelectorAll('#inspector h3')].map(h=>h.textContent)`);
   const teclear = async (css, txt) => { const el = await d.findElement(By.css(css)); await el.click(); await el.sendKeys(Key.chord(Key.CONTROL, 'a'), Key.BACK_SPACE); await el.sendKeys(txt); };
 
-  // 1. De fábrica: Esencial abierto, Estilo y Avanzado plegados; la cabecera dice nombre y tipo
+  // 1. De fábrica: Contenido y Estilo abiertos, Movimiento plegado; la cabecera dice nombre y tipo
   await seleccionar('Sec');
-  assert.equal(await estado(), 'esencial:1 estilo:0 avanzado:0', 'estado de fábrica');
+  assert.equal(await estado(), 'contenido:1 estilo:1 movimiento:0', 'estado de fábrica');
   assert.match(await d.executeScript(`return document.querySelector('#inspector .insp-cab').textContent`), /Sección/, 'cabecera con el tipo');
   assert.equal(await d.executeScript(`return document.querySelector('#inspector .insp-cab [data-name]').value`), 'Sec');
 
@@ -56,12 +56,12 @@ try {
   assert.ok((await titulos()).includes('Botón'), 'el botón muestra su grupo');
 
   // 3. Se recuerda lo que el usuario abre (y sobrevive a recargar)
-  await d.findElement(By.css('#inspector details.nivel-estilo > summary')).click(); await esperar(200);
-  assert.equal(await estado(), 'esencial:1 estilo:1 avanzado:0');
-  assert.equal(await d.executeScript(`return localStorage.getItem('${LSN}')`), '{"esencial":true,"estilo":true,"avanzado":false}');
+  await d.findElement(By.css('#inspector details.nivel-movimiento > summary')).click(); await esperar(200);
+  assert.equal(await estado(), 'estilo:1 movimiento:1', 'el botón no tiene acordeón Contenido');
+  assert.equal(await d.executeScript(`return localStorage.getItem('${LSN}')`), '{"contenido":true,"estilo":true,"movimiento":true}');
   await d.get(url); await esperar(700); await seleccionar('Tit');
-  assert.equal(await estado(), 'esencial:1 estilo:1 avanzado:0', 'tras recargar');
-  await d.executeScript(`localStorage.setItem('${LSN}','{"esencial":true,"estilo":true,"avanzado":true}')`);
+  assert.equal(await estado(), 'estilo:1 movimiento:1', 'tras recargar (un título no tiene nada en Contenido: su texto va arriba)');
+  await d.executeScript(`localStorage.setItem('${LSN}','{"contenido":true,"estilo":true,"movimiento":true}')`);
   await d.get(url); await esperar(700);
 
   // 4. Editar un campo de cada tipo sigue escribiendo (y leer no escribe: Undo sigue apagado al abrir)
@@ -85,5 +85,5 @@ try {
   await teclear('#inspector [data-c="title"]', 'Otro título');
   assert.equal((await guardada()).content.title, 'Otro título', 'page título');
 
-  console.log('OK inspector en niveles: Esencial abierto de fábrica, se recuerda lo abierto, cada tipo muestra lo suyo y editar un campo de cada tipo escribe');
+  console.log('OK inspector en acordeones: Contenido y Estilo abiertos de fábrica, se recuerda lo abierto, cada tipo muestra lo suyo y editar un campo de cada tipo escribe');
 } finally { await d.quit(); }

@@ -46,6 +46,8 @@ export const SUITE = [ // [nombre, comando, timeout en segundos]
   ['inspector', 'node tests/inspector.mjs', 180],
   ['vistaprevia', 'node tests/vista-previa.mjs', 180],
   ['inspector-niveles', 'node tests/inspector-niveles.mjs', 180],
+  ['inspector-inventario', 'node tests/inspector-inventario.mjs', 300],
+  ['inspector-acordeon', 'node tests/inspector-acordeon.mjs', 180],
   ['inspector-page-plano', 'node tests/inspector-page-plano.mjs', 180],
   ['inspector-page-espaciado', 'node tests/inspector-page-espaciado.mjs', 180],
   ['tiradores', 'node tests/tiradores.mjs', 240],

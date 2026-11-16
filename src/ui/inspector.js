@@ -21,12 +21,21 @@ import { accionCopiarEfectos, accionPegarEfectos, accionPegarEnHermanos } from '
 import { ancestrosConScroll } from '../animations/parallax.js';
 import { DISPAROS_VARIANT, CAMPOS_PROPS, CAMPOS_TIEMPO, DEF_TIEMPO } from '../animations/variants.js';
 
-// Los 3 niveles del panel: Esencial abierto de fábrica; Estilo y Avanzado plegados. Lo que el usuario deja abierto se guarda.
-const NIVELES = [['esencial', 'Esencial'], ['estilo', 'Estilo'], ['avanzado', 'Avanzado']];
+// Los 3 acordeones del panel, por TAREA: Contenido (qué dice/muestra), Estilo (cómo se ve) y Movimiento (cómo se mueve).
+// Contenido y Estilo abiertos de fábrica; Movimiento plegado. Lo que el usuario deja abierto se guarda.
+// (El texto y el enlace del elemento van fijos arriba, fuera de los acordeones.)
+const ACORDEONES = [['contenido', 'Contenido'], ['estilo', 'Estilo'], ['movimiento', 'Movimiento']];
 const LS_NIVELES = 'editor-landings:niveles';
-const NIVELES_DEF = { esencial: true, estilo: false, avanzado: false };
+const NIVELES_DEF = { contenido: true, estilo: true, movimiento: false };
 function leerNiveles() {
-  try { const o = JSON.parse(localStorage.getItem(LS_NIVELES)); return { ...NIVELES_DEF, ...(o && typeof o === 'object' ? o : {}) }; } catch { return { ...NIVELES_DEF }; }
+  try {
+    const o = JSON.parse(localStorage.getItem(LS_NIVELES));
+    const g = o && typeof o === 'object' ? { ...o } : {};
+    // Lo guardado con los nombres viejos (Esencial / Avanzado) pasa a los nuevos (Contenido / Movimiento)
+    if ('esencial' in g && !('contenido' in g)) g.contenido = g.esencial;
+    if ('avanzado' in g && !('movimiento' in g)) g.movimiento = g.avanzado;
+    return { ...NIVELES_DEF, contenido: g.contenido ?? NIVELES_DEF.contenido, estilo: g.estilo ?? NIVELES_DEF.estilo, movimiento: g.movimiento ?? NIVELES_DEF.movimiento };
+  } catch { return { ...NIVELES_DEF }; }
 }
 function guardarNiveles(o) { try { localStorage.setItem(LS_NIVELES, JSON.stringify(o)); } catch { /* sin localStorage: no pasa nada */ } }
 // Cabecera del panel: nombre del tipo y su icono (los mismos glifos del árbol de capas)
@@ -105,7 +114,7 @@ function htmlMarq(mq, abierto) {
       fila('Dirección', b('dir', 'izq', '← Izquierda', mq.dir === 'izq') + b('dir', 'der', 'Derecha →', mq.dir === 'der')) +
       fila('Pausa al pasar el ratón', b('pausa', 1, 'Sí', mq.pausa) + b('pausa', 0, 'No', !mq.pausa)) : '') +
     fila('Separación', MQ_GAPS.map((g) => b('gap', g, `${g}`, mq.gap === g)).join(''), '<span class="mini">px</span>') +
-    (mq.mov ? `<details class="avanzado" data-g="Marquesina"${abierto ? ' open' : ''}><summary>Avanzado</summary>` +
+    (mq.mov ? `<details class="avanzado" data-g="Marquesina"${abierto ? ' open' : ''}><summary>Más opciones</summary>` +
       fila('Repetición (copias de la tira)', reps) +
       '<p class="modo">Cuántas veces se repite la tira para que no queden huecos en pantallas anchas. Con pocos items o items cortos, sube el número. Solo cuenta en el HTML exportado y en la Vista previa. Los botones o enlaces de las copias repetidas no se pueden pulsar (solo los de la primera tira).</p></details>' : '') +
     '<p class="modo">En el editor la marquesina se ve quieta, con todos los items a la vista para editarlos; la animación se ve en 👁 Vista previa y en el export. Cada item es un elemento normal (selecciónalo en Capas o en el preview).</p>';
@@ -201,8 +210,9 @@ export function initInspector(host) {
       <div class="insp-nom"><input data-name value="${esc(nodo.name)}" aria-label="Nombre del elemento" title="Nombre del elemento">
       <span class="insp-tipo">${TIPO_ES[nodo.type] ?? nodo.type} · <b>${viewMode === 'mobile' ? 'Móvil' : 'Escritorio'}</b></span></div>${acciones}</header>`;
 
-    // ---- Los 3 niveles: cada pieza se añade al nivel que le toca ----
-    const N = { esencial: '', estilo: '', avanzado: '' };
+    // ---- Los 3 acordeones (Contenido / Estilo / Movimiento): cada pieza se añade al que le toca ----
+    const N = { contenido: '', estilo: '', movimiento: '' };
+    let cima = ''; // texto y enlace del elemento: SIEMPRE arriba, fuera de los acordeones
 
     // Contenido (texto, enlace, imagen, icono)
     const c = nodo.content;
@@ -216,11 +226,11 @@ export function initInspector(host) {
       const botones = Object.entries(ICONOS).map(([k, ic]) => `<button type="button" data-icono="${k}" title="${esc(ic.t)}" aria-label="${esc(ic.t)}" aria-pressed="${c.name === k}" class="${c.name === k ? 'on' : ''}">${iconoSvg(k, 18)}</button>`).join('');
       cont += `<div class="campo"><label>Icono</label></div><div class="icono-grid" role="group" aria-label="Elegir icono">${botones}</div>`;
     }
-    if (TIPOS_TEXTO.includes(nodo.type)) cont += `<div class="campo v"><label>Texto</label><textarea data-c="text" rows="3">${esc(c.text)}</textarea></div>`;
+    if (TIPOS_TEXTO.includes(nodo.type)) cima += `<div class="campo v"><label>Texto</label><textarea data-c="text" rows="3">${esc(c.text)}</textarea></div>`;
     if (nodo.type === 'heading') {
-      cont += `<div class="campo"><label>Nivel</label><select data-c="level" data-num>${[1, 2, 3, 4].map((n) => `<option value="${n}" ${+c.level === n ? 'selected' : ''}>H${n}</option>`).join('')}</select></div>`;
+      cima += `<div class="campo"><label>Nivel</label><select data-c="level" data-num>${[1, 2, 3, 4].map((n) => `<option value="${n}" ${+c.level === n ? 'selected' : ''}>H${n}</option>`).join('')}</select></div>`;
     }
-    if (nodo.type === 'button') cont += `<div class="campo"><label>Enlace</label><input data-c="href" value="${esc(c.href)}" placeholder="https://wa.me/506..."></div>`;
+    if (nodo.type === 'button') cima += `<div class="campo"><label>Enlace</label><input data-c="href" value="${esc(c.href)}" placeholder="https://wa.me/506..."></div>`;
     if (nodo.type === 'image') {
       cont += `<div class="campo"><label>URL</label><input data-c="src" value="${esc(c.src?.startsWith('data:') ? '' : c.src)}" placeholder="https://..."></div>
         <div class="campo v"><label>Archivo</label><input type="file" accept="image/*" data-file></div>
@@ -230,13 +240,12 @@ export function initInspector(host) {
       contAv += `<h3>Ancla</h3><div class="campo"><label>Ancla (id)</label><input data-anchor value="${esc(c.anchor)}" placeholder="contacto"></div>
         <p class="modo" data-aviso-ancla>${avisoAncla(page, nodo, c.anchor ?? '')}</p>`;
     }
-    if (cont) N.esencial += `<h3>Contenido</h3>${cont}`;
+    if (cont && nodo.type !== 'page') N.contenido += cont;
     let iaPage = '';
     if (nodo.type === 'page') {
       iaPage = `<h3>Landing con IA</h3>
         <p class="modo">Pídele a cualquier IA de chat una landing: pégale la guía y carga aquí lo que devuelva.</p>
         <div class="ia-botones"><button type="button" data-ia="copiar">${SVG_COPIAR} Copiar guía para IA</button><button type="button" data-ia="pegar">${SVG_PEGAR} Pegar plan o JSON</button></div>`;
-      N.esencial += iaPage;
     }
     // Menú hamburguesa en móvil: solo en el Navbar (sección con "nav" en el nombre o que ya lo tiene activado)
     if (nodo.type === 'section' && (c.menuMovil === true || /nav/i.test(nodo.name))) {
@@ -244,31 +253,32 @@ export function initInspector(host) {
         <p class="modo">En móvil el primer elemento (el logo) queda visible y todo lo demás va al panel de la hamburguesa. El panel se superpone al contenido. En la vista móvil del editor empieza cerrado: ábrelo con la hamburguesa o seleccionando un enlace desde Capas.</p>`;
     }
 
-    N.avanzado += contAv; // ancla, menú móvil y scroll suave van primero en Avanzado
-    // El nodo page NO usa niveles plegables: vista plana con todo visible (Contenido, Página, IA y luego los grupos de estilo en orden)
+    // El nodo page NO usa acordeones: vista plana con todo visible (Contenido, Página, IA y luego los grupos de estilo en orden)
     const planoPage = nodo.type === 'page';
     let planoCab = '', planoEstilos = '';
-    if (planoPage) { planoCab = N.esencial.replace(iaPage, '') + N.avanzado + iaPage; N.esencial = ''; N.avanzado = ''; }
+    if (planoPage) planoCab = (cont ? `<h3>Contenido</h3>${cont}` : '') + contAv + iaPage;
+    else N.contenido += contAv; // ancla y menú móvil (solo secciones/contenedores) van en el acordeón Contenido
 
     const mq = usaMarquesina(nodo);
-    if (mq) N.esencial += htmlMarq(mq, abiertos.has('Marquesina'));
+    if (mq) N.movimiento += htmlMarq(mq, abiertos.has('Marquesina')); // la marquesina ES movimiento
 
-    // ---- Estilos: cada campo va al nivel de su grupo (o al suyo propio) ----
+    // ---- Estilos: cada grupo va ENTERO al acordeón que dice su `acordeon` en fields.js ----
+    let gruposMov = ''; // grupos de fields.js que viven en Movimiento (hoy: Pegado al hacer scroll)
     for (const g of GRUPOS) {
       if (!g.tipos.includes(nodo.type)) continue;
       const visibles = g.campos.filter((f) => (!f.tipos || f.tipos.includes(nodo.type)) && (!f.cuando || f.cuando(estilos)));
-      const G = { esencial: '', estilo: '', avanzado: '' }; // piezas de este grupo por nivel
-      const fila = {}; // fila de columnas pendiente por nivel: { id, items }
-      const cerrarFila = (niv) => { const r = fila[niv]; if (!r) return; G[niv] += `<div class="fila" style="--n:${r.items.length}">${r.items.join('')}</div>`; fila[niv] = null; };
-      const poner = (niv, h, filaId) => {
+      const acordeon = g.acordeon ?? 'estilo'; // el grupo entero vive en UN acordeón
+      let G = ''; // HTML de este grupo
+      let filaAbierta = null; // fila de columnas pendiente: { id, items }
+      const cerrarFila = () => { const r = filaAbierta; if (!r) return; G += `<div class="fila" style="--n:${r.items.length}">${r.items.join('')}</div>`; filaAbierta = null; };
+      const poner = (h, filaId) => {
         if (filaId) {
-          if (fila[niv]?.id !== filaId) { cerrarFila(niv); fila[niv] = { id: filaId, items: [] }; }
-          fila[niv].items.push(h);
-        } else { cerrarFila(niv); G[niv] += h; }
+          if (filaAbierta?.id !== filaId) { cerrarFila(); filaAbierta = { id: filaId, items: [] }; }
+          filaAbierta.items.push(h);
+        } else { cerrarFila(); G += h; }
       };
-      const conControl = { esencial: [], estilo: [], avanzado: [] }; // campos con control visual: su valor CSS crudo va en "Valor CSS exacto" al final del grupo
+      const conControl = []; // campos con control visual: su valor CSS crudo va en "Escribir el valor a mano" al final del grupo
       for (const f of visibles) {
-        const niv = f.nivel ?? g.nivel ?? 'avanzado';
         const v = estilos[f.key] ?? '';
         const ov = viewMode === 'mobile' && f.key in nodo.styles.mobile; // en móvil: ¿tiene valor propio?
         let h = '';
@@ -305,7 +315,7 @@ export function initInspector(host) {
           const ovC = viewMode === 'mobile' && tieneValor;
           const vC = f.kind === 'tamanoBoton' ? { padding: estilos.padding, fontSize: estilos.fontSize } : v;
           h = htmlControl(f, vC, viewMode, ovC, tieneValor);
-          conControl[niv].push({ f, v, ov: ovC, personalizado: modeloControl(f, vC, viewMode).personalizado, estilos });
+          conControl.push({ f, v, ov: ovC, personalizado: modeloControl(f, vC, viewMode).personalizado, estilos });
         } else if (f.kind === 'nota') {
           h = `<p class="modo">${f.texto}</p>`;
         } else if (f.kind === 'select') {
@@ -325,34 +335,29 @@ export function initInspector(host) {
           h = htmlTexto(f.key, v, f.placeholder, f.label, ov, !!f.fila);
         }
         // En una fila de columnas, campo + aviso van juntos en una celda
-        poner(niv, f.fila ? `<div class="celda">${h}</div>` : h, f.fila);
+        poner(f.fila ? `<div class="celda">${h}</div>` : h, f.fila);
       }
-      for (const niv of Object.keys(G)) {
-        cerrarFila(niv);
-        if (conControl[niv].length) {
-          // campos de texto crudos de cada control (tamanoBoton tiene dos: padding y fontSize)
-          const crudosDe = (c) => (c.f.crudos ?? [{ key: c.f.key, label: c.f.crudo ?? c.f.label, placeholder: c.f.placeholder }])
-            .map((r) => ({ ...r, v: c.estilos[r.key] ?? '', ov: viewMode === 'mobile' && r.key in nodo.styles.mobile }));
-          const abrir = abiertos.has(g.titulo) || conControl[niv].some((c) => c.personalizado || crudosDe(c).some((r) => avisoCss(r.key, r.v)));
-          G[niv] += `<details class="avanzado" data-g="${esc(g.titulo)}"${abrir ? ' open' : ''}><summary>Valor CSS exacto</summary>` +
-            conControl[niv].map((c) => crudosDe(c).map((r) => htmlTexto(r.key, r.v, r.placeholder, r.label, r.ov)).join('')).join('') + '</details>';
-        }
-        if (G[niv] && !planoPage) N[niv] += `<h3>${g.titulo}</h3>` + G[niv];
+      cerrarFila();
+      if (conControl.length) {
+        // campos de texto crudos de cada control (tamanoBoton tiene dos: padding y fontSize)
+        const crudosDe = (c) => (c.f.crudos ?? [{ key: c.f.key, label: c.f.crudo ?? c.f.label, placeholder: c.f.placeholder }])
+          .map((r) => ({ ...r, v: c.estilos[r.key] ?? '', ov: viewMode === 'mobile' && r.key in nodo.styles.mobile }));
+        const abrir = abiertos.has(g.titulo) || conControl.some((c) => c.personalizado || crudosDe(c).some((r) => avisoCss(r.key, r.v)));
+        G += `<details class="avanzado" data-g="${esc(g.titulo)}"${abrir ? ' open' : ''}><summary>Escribir el valor a mano</summary>` +
+          conControl.map((c) => crudosDe(c).map((r) => htmlTexto(r.key, r.v, r.placeholder, r.label, r.ov)).join('')).join('') + '</details>';
       }
-      // Vista plana (page): los 3 niveles del grupo se juntan bajo UN solo título
-      if (planoPage) { const todo = G.esencial + G.estilo + G.avanzado; if (todo) planoEstilos += `<h3>${g.titulo}</h3>` + todo; }
+      if (!G) continue;
+      if (planoPage) planoEstilos += `<h3>${g.titulo}</h3>` + G; // vista plana: todos los grupos seguidos
+      else if (acordeon === 'movimiento') gruposMov += `<h3>${g.titulo}</h3>` + G; // se añade después de las animaciones
+      else N[acordeon] += `<h3>${g.titulo}</h3>` + G;
     }
 
     // ---- Animaciones (los grupos viven en src/animations/) ----
-    if (nodo.type !== 'page') N.avanzado += '<h3>Copiar y pegar efectos</h3><div class="efectos-acciones">'
-      + '<button type="button" data-efectos="copiar" title="Ctrl+Alt+C">Copiar efectos</button>'
-      + '<button type="button" data-efectos="pegar" title="Ctrl+Alt+V">Pegar efectos</button>'
-      + '<button type="button" data-efectos="hermanos" title="Pega en este y en sus hermanos del mismo tipo">Pegar en hermanos del mismo tipo</button></div>';
     for (const g of GRUPOS_ANIM) {
       if (!g.tipos.includes(nodo.type)) continue;
       // "Paso de escena" solo se ofrece a hijos directos de una escena (o si ya lo tienen puesto)
       if (g.soloEnEscena && !nodo.animation?.[g.id] && !findParent(page, nodo.id)?.animation?.scene?.steps) continue;
-      if (g.propio) { N.avanzado += htmlEstados(nodo, getState().verEstado); continue; } // los estados tienen su propia sección
+      if (g.propio) { N.movimiento += htmlEstados(nodo, getState().verEstado); continue; } // los estados tienen su propia sección
       const datos = nodo.animation?.[g.id]; // undefined = grupo apagado
       let h = `<h3>${g.titulo}</h3>`;
       if (g.id === 'scene' && datos) h += '<p class="modo">La sección se queda fija y sus hijos se apilan en el mismo lugar: se respetan Alineación y Justificar (y su fondo, borde y padding); Dirección, Separación y Columnas no se usan. Una vez creada, cada hijo directo tiene su "Paso de escena". Solo se ve en Vista previa y en el exportado. "Transición (% del tramo)" = cuánto dura el cambio entre pasos dentro de cada tramo (el resto del tramo el paso queda quieto). Un navbar pegado arriba se mide solo (o escribe "Espacio arriba").</p>';
@@ -375,20 +380,29 @@ export function initInspector(host) {
           h += `<div class="campo"><label>${f.label}</label><input type="number" ${a} data-num step="${f.step ?? 1}" min="${f.min ?? 0}"${f.max != null ? ` max="${f.max}"` : ''} value="${v}"></div>`;
         }
       }
-      N.avanzado += h;
+      N.movimiento += h;
     }
+    N.movimiento += gruposMov; // Pegado al hacer scroll
+    if (nodo.type !== 'page') N.movimiento += '<h3>Copiar y pegar efectos</h3><div class="efectos-acciones">'
+      + '<button type="button" data-efectos="copiar" title="Ctrl+Alt+C">Copiar efectos</button>'
+      + '<button type="button" data-efectos="pegar" title="Ctrl+Alt+V">Pegar efectos</button>'
+      + '<button type="button" data-efectos="hermanos" title="Pega en este y en sus hermanos del mismo tipo">Pegar en hermanos del mismo tipo</button></div>';
 
-    // JSON del nodo, plegado (útil para depurar)
+    // JSON del nodo, plegado (útil para depurar); fuera de los acordeones, al final
     const { children, ...resto } = nodo;
-    N.avanzado += `<details class="json"><summary>JSON del nodo</summary><pre>${esc(JSON.stringify(resto, null, 2))}</pre></details>`;
+    const jsonNodo = `<details class="json"><summary>JSON del nodo</summary><pre>${esc(JSON.stringify(resto, null, 2))}</pre></details>`;
 
-    // ---- Montaje: cada nivel es un <details> plegable; se recuerda cuáles dejó abiertos el usuario ----
+    // ---- Montaje: texto/enlace fijos arriba, luego un <details> por acordeón (se recuerda cuáles dejó abiertos el usuario) ----
     const niveles = leerNiveles();
     let cuerpo = '';
-    if (planoPage) cuerpo = `<div class="nivel-plano" data-plano>${planoCab}${planoEstilos}${N.esencial}${N.estilo}${N.avanzado}</div>`;
-    else for (const [k, titulo] of NIVELES) {
-      if (!N[k]) continue;
-      cuerpo += `<details class="nivel nivel-${k}" data-nivel="${k}"${niveles[k] ? ' open' : ''}><summary>${titulo}</summary><div class="nivel-cuerpo">${N[k]}</div></details>`;
+    if (planoPage) cuerpo = `<div class="nivel-plano" data-plano>${planoCab}${planoEstilos}${jsonNodo}</div>`;
+    else {
+      if (cima) cuerpo += `<div class="insp-cima">${cima}</div>`;
+      for (const [k, titulo] of ACORDEONES) {
+        if (!N[k]) continue;
+        cuerpo += `<details class="nivel nivel-${k}" data-nivel="${k}"${niveles[k] ? ' open' : ''}><summary>${titulo}</summary><div class="nivel-cuerpo">${N[k]}</div></details>`;
+      }
+      cuerpo += `<div class="insp-pie">${jsonNodo}</div>`;
     }
     host.innerHTML = cabecera + `<div class="insp-cuerpo">${cuerpo}</div>`;
     if (scrollPrevio) host.querySelector('.insp-cuerpo').scrollTo({ top: scrollPrevio, behavior: 'instant' }); // 'instant': el scroll-behavior:smooth del CSS lo animaba desde 0 (rebote)
@@ -477,7 +491,7 @@ export function initInspector(host) {
       // (Estilo de botón no tiene Avanzado: lleva el cursor al campo Fondo de más abajo)
       const campo = host.querySelector(`details.avanzado [data-s="${otro.dataset.ctlOtro}"]`)
         ?? (otro.dataset.ctlOtro === 'background' ? host.querySelector('[data-s="background"]') : null);
-      if (campo) { const det = campo.closest('details'); if (det) det.open = true; campo.focus(); }
+      if (campo) { for (let det = campo.closest('details'); det; det = det.parentElement?.closest('details')) det.open = true; campo.focus(); }
       return;
     }
     const mqb = e.target.closest('[data-mq]'); // Marquesina: botones visuales
@@ -516,7 +530,7 @@ export function initInspector(host) {
     setStyle(idDibujado, b.dataset.ctl, b.dataset.val);
   });
 
-  // Recuerda qué niveles (Esencial / Estilo / Avanzado) dejó abiertos el usuario
+  // Recuerda qué acordeones (Contenido / Estilo / Movimiento) dejó abiertos el usuario
   host.addEventListener('toggle', (e) => {
     const det = e.target;
     if (!det.matches?.('details.nivel')) return;

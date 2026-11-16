@@ -154,7 +154,7 @@ try {
 
   // ---- 8. Forma (borderRadius) y Tamaño de botón ----
   await seleccionar('BtnTest');
-  assert.equal(await d.executeScript(`return [...document.querySelectorAll('#inspector h3')][1].textContent`), 'Botón', 'el grupo Botón es el primero de estilos (tras Contenido)');
+  assert.equal(await d.executeScript(`return [...document.querySelectorAll('#inspector h3')][0].textContent`), 'Botón', 'el grupo Botón es el primero de estilos (el texto y el enlace van arriba, fuera de los acordeones)');
   assert.deepEqual(await activo('borderRadius'), ['Pastilla'], '999px = Pastilla');
   assert.deepEqual(await activo('padding'), ['Otro'], 'padding 14px 28px no es ningún tamaño: Otro');
   assert.equal(await d.executeScript(`return document.querySelectorAll('#inspector button[data-ctl="borderRadius"] svg').length`), 4, 'cada forma lleva su dibujo SVG');

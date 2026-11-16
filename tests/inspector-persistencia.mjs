@@ -111,9 +111,9 @@ try {
 
   // ===== 8. Un select ANTES de escribir en un campo de texto (bandera "forzar") =====
   await seleccionar('Grid');
-  await elegirOpcion('display', 'Flex');
+  await elegirOpcion('display', 'Fila o columna');
   await esperar(200);
-  await elegirOpcion('display', 'Grid');
+  await elegirOpcion('display', 'Cuadrícula');
   await esperar(200);
   await abrirAvanzado('margin');
   const c = await campo('margin');
@@ -129,13 +129,13 @@ try {
   // ===== 9. Navbar: Posición → Normal, luego tocar cosas =====
   await seleccionar('Navbar');
   ver(await estilo('Navbar', 'base', 'position') === undefined, '9a. (partida) el navbar nace normal (sin sticky)', String(await estilo('Navbar', 'base', 'position')));
-  await elegirOpcion('position', 'Pegado (sticky)'); await esperar(400);
+  await elegirOpcion('position', 'Se queda fijo'); await esperar(400);
   ver(await estilo('Navbar', 'base', 'position') === 'sticky', '9a2. Posición → Pegado lo pega', String(await estilo('Navbar', 'base', 'position')));
   await elegirOpcion('position', 'Normal'); await esperar(400);
   ver(await estilo('Navbar', 'base', 'position') === undefined, '9b. Posición → Normal borra position de styles.base', String(await estilo('Navbar', 'base', 'position')));
   ver(await estilo('Navbar', 'base', 'top') === undefined && await estilo('Navbar', 'base', 'zIndex') === undefined, '9b2. Normal también borra el top/zIndex automáticos', `${await estilo('Navbar', 'base', 'top')} / ${await estilo('Navbar', 'base', 'zIndex')}`);
   // Pegado escribe top:0 y zIndex:50 (escritorio)
-  await elegirOpcion('position', 'Pegado (sticky)'); await esperar(400);
+  await elegirOpcion('position', 'Se queda fijo'); await esperar(400);
   ver(await estilo('Navbar', 'base', 'top') === '0' && await estilo('Navbar', 'base', 'zIndex') === '50', '9e. Pegado (escritorio) escribe top:0 y zIndex:50', `${await estilo('Navbar', 'base', 'top')} / ${await estilo('Navbar', 'base', 'zIndex')}`);
   // Undo deshace todo de una vez
   await d.findElement(By.css('#btn-undo')).click(); await esperar(450);
@@ -153,13 +153,13 @@ try {
   await escribir('top', '12px'); await esperar(400);
   await elegirOpcion('position', 'Normal'); await esperar(400);
   ver(await estilo('Navbar', 'base', 'top') === '12px', '9j. Normal no borra el top escrito a mano', String(await estilo('Navbar', 'base', 'top')));
-  await elegirOpcion('position', 'Pegado (sticky)'); await esperar(400);
+  await elegirOpcion('position', 'Se queda fijo'); await esperar(400);
   ver(await estilo('Navbar', 'base', 'top') === '12px', '9i. Pegado no pisa un top que ya existía', String(await estilo('Navbar', 'base', 'top')));
   await escribir('top', ''); await esperar(300);
   await elegirOpcion('position', 'Normal'); await esperar(400);
   // Móvil
   await modo('mobile');
-  await elegirOpcion('position', 'Pegado (sticky)'); await esperar(400);
+  await elegirOpcion('position', 'Se queda fijo'); await esperar(400);
   ver(await estilo('Navbar', 'mobile', 'position') === 'sticky' && await estilo('Navbar', 'mobile', 'top') === '0' && await estilo('Navbar', 'mobile', 'zIndex') === '50', '9k. Pegado (móvil) escribe top:0 y zIndex:50 en mobile', JSON.stringify((buscar(await guardada(), 'Navbar')).styles.mobile));
   await elegirOpcion('position', 'Igual que escritorio'); await esperar(400);
   ver(Object.keys(buscar(await guardada(), 'Navbar').styles.mobile).filter((k) => ['position', 'top', 'zIndex'].includes(k)).length === 0, '9l. "Igual que escritorio" borra position, top y zIndex de mobile');
@@ -178,7 +178,7 @@ try {
   await d.get(url); await esperar(700);                    // pestaña B: carga el estado actual (navbar SIN sticky)
   await d.switchTo().window(pestA);
   await seleccionar('Navbar');
-  await elegirOpcion('position', 'Pegado (sticky)'); await esperar(500);   // A: vuelve a poner sticky y se guarda
+  await elegirOpcion('position', 'Se queda fijo'); await esperar(500);   // A: vuelve a poner sticky y se guarda
   const pestB = (await d.getAllWindowHandles()).find((h) => h !== pestA);
   await d.switchTo().window(pestB);
   await seleccionar('Grid');

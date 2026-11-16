@@ -28,11 +28,11 @@ try {
     assert.ok(await vis(`#inspector ${css}`), `page: ${css} visible sin abrir nada`);
   }
   const t = await d.executeScript(`return [...document.querySelectorAll('#inspector h3')].map(h=>h.textContent)`);
-  for (const h of ['Contenido', 'Landing con IA', 'Tipografía', 'Fondo y borde', 'Layout (hijos)']) assert.ok(t.includes(h), `page: falta el grupo ${h}`);
+  for (const h of ['Contenido', 'Landing con IA', 'Texto', 'Fondo, borde y esquinas', 'Disposición']) assert.ok(t.includes(h), `page: falta el grupo ${h}`);
 
-  // nodo normal: sigue con 3 niveles plegables (Esencial abierto, Estilo y Avanzado cerrados)
+  // nodo normal: sigue con acordeones plegables (Contenido y Estilo abiertos, Movimiento cerrado)
   const id = await d.executeScript(`return JSON.parse(localStorage.getItem('${LS}')).children[0].id`);
   await d.executeScript(`document.querySelector('#preview [data-id="${id}"]').dispatchEvent(new MouseEvent('click',{bubbles:true}))`); await esperar(250);
-  assert.equal(await d.executeScript(`return [...document.querySelectorAll('#inspector details.nivel')].map(x=>x.dataset.nivel+':'+(x.open?1:0)).join(' ')`), 'esencial:1 estilo:0 avanzado:0', 'nodo normal con niveles plegables');
+  assert.equal(await d.executeScript(`return [...document.querySelectorAll('#inspector details.nivel')].map(x=>x.dataset.nivel+':'+(x.open?1:0)).join(' ')`), 'contenido:1 estilo:1 movimiento:0', 'nodo normal con acordeones plegables');
   console.log('OK inspector-page-plano');
 } finally { await d.quit(); }

@@ -37,7 +37,7 @@ export const MAPA = {
   // ---- Inspector y controles visuales ----
   'src/ui/controles.js': ['controles', 'inspector'],
   'src/ui/fields.js': ['controles', 'inspector', 'inspector-niveles', 'inspector-inventario', 'inspector-acordeon', 'inspector-page-plano', 'inspector-page-espaciado'],
-  'src/ui/inspector.js': ['controles', 'inspector', 'inspector-niveles', 'inspector-inventario', 'inspector-acordeon', 'inspector-page-plano', 'inspector-page-espaciado', 'marquesina-ui', 'rebote-inspector', 'copiar-efectos'],
+  'src/ui/inspector.js': ['controles', 'inspector', 'inspector-niveles', 'inspector-inventario', 'inspector-acordeon', 'inspector-page-plano', 'inspector-page-espaciado', 'marquesina-ui', 'rebote-inspector', 'sliders-arrastre', 'copiar-efectos'],
   'src/ui/tiradores.js': ['tiradores', 'tiradores-interruptor', 'rebote-inspector'],
   'src/ui/tiradores-pref.js': ['tiradores-interruptor'],
   'src/ui/efectos.js': ['copiar-efectos'],

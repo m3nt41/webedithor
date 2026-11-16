@@ -39,7 +39,7 @@ try {
   };
   const estiloPreview = (id, prop) => d.executeScript(`return getComputedStyle(document.querySelector('#preview [data-id="${id}"]')).${prop}`);
   const boton = (clave, val) => d.findElement(By.css(`#inspector [data-ctl="${clave}"][data-val="${val}"]`));
-  const rango = (v) => d.executeScript(`const r=document.querySelector('#inspector [data-capa]'); r.value='${v}'; r.dispatchEvent(new Event('input',{bubbles:true}));`);
+  const rango = (v) => d.executeScript(`const r=document.querySelector('#inspector [data-capa]'); r.value='${v}'; r.dispatchEvent(new Event('input',{bubbles:true})); r.dispatchEvent(new Event('change',{bubbles:true}));`);
 
   // ---- 1. Subir una imagen grande (3000x1500): se reduce a <=1920 px y JPEG ----
   const b64 = await d.executeScript(`const c=document.createElement('canvas');c.width=3000;c.height=1500;const x=c.getContext('2d');

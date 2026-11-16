@@ -5,7 +5,7 @@
 //   página mientras el foco está dentro (salvo que cambie la selección o un
 //   select altere qué campos se muestran: ahí se fuerza).
 
-import { getState, subscribe, gestoActivo, setStyle, setStyles, setPosicion, setContent, setName, setAnimation, moveBy, duplicateNode, removeNode, addVariant, removeVariant, moveVariant, setVariant, setVariantProp, verEstado, setIconSize, setMarquesina } from '../core/store.js';
+import { getState, subscribe, gestoActivo, setStyle, setStyles, setPosicion, setContent, setName, setAnimation, moveBy, duplicateNode, removeNode, addVariant, removeVariant, moveVariant, setVariant, setVariantProp, verEstado, setIconSize, setMarquesina, setEstilosGesto } from '../core/store.js';
 import { findNode, findParent, anchorValido, contarAncla, aspectoValido, capaValida } from '../core/tree.js';
 import { reducirImagen } from './imagen.js';
 import { PRESETS_SOMBRA, SOMBRA_PERSONALIZADA, leerSombraUi, colorSombra, armarSombra } from '../core/sombra.js';
@@ -210,6 +210,8 @@ export function initInspector(host) {
   let idDibujado = null; // id del nodo para el que está construido el panel
   let huboGesto = false; // un arrastre de tirador actualizó el panel sin reconstruirlo
   let forzar = false; // un select pidió reconstruir el panel
+  let claveSlider = null; // gesto de un slider (input range) en curso: de la primera `input` hasta `change` (soltar); todo el arrastre = 1 paso de Undo
+  let contSliders = 0;
   const abiertos = new Set(); // grupos cuyo "Avanzado" el usuario abrió (se conservan al reconstruir el panel)
 
   function dibujar() {
@@ -441,6 +443,9 @@ export function initInspector(host) {
     if (scrollPrevio) host.querySelector('.insp-cuerpo').scrollTo({ top: scrollPrevio, behavior: 'instant' }); // 'instant': el scroll-behavior:smooth del CSS lo animaba desde 0 (rebote)
   }
 
+  // Clave de gesto del slider: la misma de la primera `input` hasta `change`. Empieza por "gesto:" -> sin tope de tiempo y sin reconstruir el panel.
+  const claveDeSlider = (id) => (claveSlider ??= `gesto:rng:${id}:${++contSliders}`);
+
   // ---- Eventos (delegados: un solo listener para todo el panel) ----
   host.addEventListener('input', (e) => {
     const t = e.target;
@@ -464,7 +469,9 @@ export function initInspector(host) {
       const ed = t.closest('[data-sombra-ed]');
       const g = (k) => ed.querySelector(`[data-sh="${k}"]`)?.value;
       if (t.dataset.sh === 'alfa') ed.querySelector('[data-sh-out]').textContent = `${t.value}%`;
-      setStyle(id, 'sombra', armarSombra({ x: g('x'), y: g('y'), blur: g('blur'), spread: g('spread') ?? 0, hex: g('hex'), alfa: (+g('alfa')) / 100 }));
+      const valorSombra = armarSombra({ x: g('x'), y: g('y'), blur: g('blur'), spread: g('spread') ?? 0, hex: g('hex'), alfa: (+g('alfa')) / 100 });
+      if (t.type === 'range') setEstilosGesto(id, { sombra: valorSombra }, [], claveDeSlider(id)); // slider: gesto (no reconstruye el panel hasta soltar)
+      else setStyle(id, 'sombra', valorSombra);
       return;
     }
     // Un select puede mostrar/ocultar campos: pedimos reconstruir el panel (antes del cambio)
@@ -495,7 +502,7 @@ export function initInspector(host) {
     if (t.dataset.fondoUrl !== undefined) { setStyle(id, 'fondoImagen', t.value.trim()); return; }
     if (t.dataset.capa !== undefined) { // deslizador de la capa oscura: muestra el valor y guarda
       host.querySelector('[data-capa-out]').textContent = `${t.value}%`;
-      setStyle(id, 'fondoCapa', t.value);
+      setEstilosGesto(id, { fondoCapa: t.value }, [], claveDeSlider(id)); // slider: gesto (no reconstruye el panel hasta soltar)
       return;
     }
     if (t.dataset.name !== undefined) setName(id, t.value);
@@ -639,6 +646,20 @@ export function initInspector(host) {
 
   host.addEventListener('change', (e) => {
     const t = e.target;
+    if (t.type === 'range') { // soltar el slider (o una flecha): fin del gesto; UNA reconstrucción para dejar botones y '✕ quitar' al día, devolviendo foco y scroll (cada flecha = un paso de Undo)
+      claveSlider = null;
+      if (!huboGesto) return;
+      huboGesto = false;
+      const marca = t.dataset.sh !== undefined ? `[data-sh="${t.dataset.sh}"]` : t.dataset.capa !== undefined ? '[data-capa]' : null;
+      const cuerpo = host.querySelector('.insp-cuerpo');
+      const top = cuerpo ? cuerpo.scrollTop : 0;
+      dibujar();
+      const nuevo = marca && host.querySelector(`input[type=range]${marca}`);
+      if (nuevo) nuevo.focus({ preventScroll: true });
+      const c2 = host.querySelector('.insp-cuerpo');
+      if (c2 && Math.abs(c2.scrollTop - top) > 0.01) c2.scrollTo({ top, behavior: 'instant' });
+      return;
+    }
     if (t.tagName === 'SELECT' && t.dataset.c) return; // ya manejado en 'input'
     if (t.tagName === 'SELECT' && t.dataset.s) forzar = true; // puede mostrar/ocultar campos
     if (t.dataset.fondoFile !== undefined && t.files[0]) {
@@ -680,7 +701,7 @@ export function initInspector(host) {
   });
 
   // Al soltar el tirador: una sola reconstrucción para que los controles visuales queden al día
-  window.addEventListener('pointerup', () => { if (huboGesto) { huboGesto = false; dibujar(); } });
+  window.addEventListener('pointerup', () => { if (huboGesto && !claveSlider) { huboGesto = false; dibujar(); } });
 
   // Cuando se escribe en el preview, refresca la caja de "Texto" del panel
   subscribe((state, cambio) => {

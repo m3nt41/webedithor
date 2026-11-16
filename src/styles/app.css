@@ -17,7 +17,8 @@ body { font: 14px system-ui, sans-serif; background: #1a1a1f; color: #e8e8ee; }
 #inspector .botones label.subir:hover { background: #6c58da; }
 #inspector .campo.rango { align-items: center; }
 #inspector .rango-fila { display: flex; align-items: center; gap: 8px; flex: 1; }
-#inspector .rango-fila input[type=range] { flex: 1; min-width: 0; }
+#inspector .rango-fila input[type=range] { flex: 1; min-width: 0; min-height: 22px; margin: 0; cursor: pointer; touch-action: none; } /* alto cómodo: el puntero agarra el control completo */
+#inspector .rango-fila input[type=range]:focus-visible { outline: 2px solid #7c5cff; outline-offset: 2px; border-radius: 4px; } /* foco claro (ratón y teclado) */
 #inspector .rango-fila output { min-width: 3.2em; text-align: right; font-size: 12px; color: #c9c9d6; }
 #inspector .fondo-msg { color: #ffb4b4; font-size: 12px; margin: 2px 0 6px; }
 #aviso-pestanas button { background: #2f2f38; color: #fff; border: 1px solid #44444f; border-radius: 6px; padding: 6px 11px; cursor: pointer; font: inherit; }

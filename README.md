@@ -1,10 +1,8 @@
 <div align="center">
 
-# ⚡ WebEdiThor
+# ⚡ WebEdiThor <sub>by [m3nt41](https://github.com/m3nt41)</sub>
 
 **A visual editor for animated landing pages. Build it in the browser, export clean HTML, keep everything.**
-
-*WebEdiThor by [m3nt41](https://github.com/m3nt41)*
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-f5c518.svg)](LICENSE)
 ![No backend](https://img.shields.io/badge/backend-none-111111)

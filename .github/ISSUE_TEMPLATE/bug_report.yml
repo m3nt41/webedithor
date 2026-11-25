@@ -1,0 +1,64 @@
+name: Bug report
+description: Something doesn't work or looks wrong
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! Firefox and Chrome behave differently in this project, so the browser details matter a lot.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Add a Hero block
+        2. Select the title
+        3. ...
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where do you see it?
+      multiple: true
+      options:
+        - Editor canvas
+        - Preview (eye button)
+        - Exported HTML
+        - Inspector
+        - Mobile view
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and version
+      placeholder: Firefox 160 / Chrome 140 / Safari 18
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: Operating system and zoom
+      placeholder: Windows 11, 125 % zoom
+  - type: dropdown
+    id: how
+    attributes:
+      label: How are you running the editor?
+      options:
+        - npm run dev
+        - dist/editor.html (double-click / file://)
+        - Other
+  - type: textarea
+    id: json
+    attributes:
+      label: Page JSON or screenshot (optional)
+      description: Use "Guardar JSON" and attach the file, or paste a minimal example. Please remove anything private.

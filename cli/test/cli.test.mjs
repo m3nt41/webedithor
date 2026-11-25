@@ -110,6 +110,28 @@ test('audit: detecta los problemas conocidos de una página mala', () => {
   } finally { limpiar(d); }
 });
 
+test('audit: la meta description, el Open Graph y el idioma del editor se reconocen', () => {
+  const d = carpeta();
+  try {
+    const reglas = (pagina) => {
+      const f = join(d, 'p.json');
+      writeFileSync(f, JSON.stringify(pagina));
+      return new Set(JSON.parse(run(['audit', f, '--json']).stdout).findings.map((x) => x.rule));
+    };
+    const base = (content) => ({ app: 'editor-landings', version: 1, page: nodo('page', { content: { title: 'Una página de prueba', ...content }, children: [nodo('section', { children: [nodo('heading', { content: { text: 'Hola', level: 1 } })] })] }) });
+    // sin nada: avisa de la descripción, nota de Open Graph y nota de idioma
+    const sin = reglas(base({}));
+    assert.ok(sin.has('meta-description') && sin.has('open-graph') && sin.has('html-lang'));
+    // con descripción (de largo ideal), imagen e idioma: no queda ningún aviso de SEO de esos tres
+    const completa = reglas(base({ description: 'Estudio de diseño web en San José: landings rápidas, animadas y fáciles de editar.', ogImage: 'https://ejemplo.com/portada.jpg', lang: 'es' }));
+    for (const r of ['meta-description', 'description-short', 'description-long', 'open-graph', 'og-image', 'html-lang']) assert.ok(!completa.has(r), `no debería salir ${r}`);
+    // descripción corta y larga; descripción sin imagen
+    assert.ok(reglas(base({ description: 'Corta' })).has('description-short'));
+    assert.ok(reglas(base({ description: 'x'.repeat(200) })).has('description-long'));
+    assert.ok(reglas(base({ description: 'Estudio de diseño web en San José: landings rápidas, animadas y fáciles.' })).has('og-image'));
+  } finally { limpiar(d); }
+});
+
 test('audit --strict: las advertencias también fallan', () => {
   const d = carpeta();
   try {

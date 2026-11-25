@@ -24,6 +24,7 @@ export const MAPA = {
 
   // ---- Sombra en reposo ----
   'src/core/sombra.js': ['sombra-reposo', 'xss-import', 'hover'],
+  'src/core/seo.js': ['seo-pagina', 'xss-import', 'export-igual-vista'],
   'tools/png.mjs': ['sombra-reposo'],
 
   // ---- Menú hamburguesa del navbar ----
@@ -37,7 +38,7 @@ export const MAPA = {
   // ---- Inspector y controles visuales ----
   'src/ui/controles.js': ['controles', 'inspector'],
   'src/ui/fields.js': ['controles', 'inspector', 'inspector-niveles', 'inspector-inventario', 'inspector-acordeon', 'inspector-page-plano', 'inspector-page-espaciado'],
-  'src/ui/inspector.js': ['controles', 'inspector', 'inspector-niveles', 'inspector-inventario', 'inspector-acordeon', 'inspector-page-plano', 'inspector-page-espaciado', 'marquesina-ui', 'rebote-inspector', 'sliders-arrastre', 'undo-sliders', 'copiar-efectos'],
+  'src/ui/inspector.js': ['seo-pagina', 'controles', 'inspector', 'inspector-niveles', 'inspector-inventario', 'inspector-acordeon', 'inspector-page-plano', 'inspector-page-espaciado', 'marquesina-ui', 'rebote-inspector', 'sliders-arrastre', 'undo-sliders', 'copiar-efectos'],
   'src/ui/tiradores.js': ['tiradores', 'tiradores-interruptor', 'rebote-inspector'],
   'src/ui/tiradores-pref.js': ['tiradores-interruptor'],
   'src/ui/efectos.js': ['copiar-efectos'],

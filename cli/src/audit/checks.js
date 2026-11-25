@@ -11,6 +11,8 @@ export const LIMITES = {
   htmlErrorBytes: 3 * 1024 * KB,
   tituloMin: 10,
   tituloMax: 60,
+  descripcionMin: 50,
+  descripcionMax: 160,
 };
 
 const kbTxt = (b) => `${Math.round(b / KB)} KB`;
@@ -150,7 +152,7 @@ export function checkRecursos(page, html) {
 }
 
 // ---------- SEO básico ----------
-export function checkSeo(html) {
+export function checkSeo(html, page) {
   const out = [];
   const add = (level, rule, message) => out.push({ level, area: 'seo', rule, message });
 
@@ -159,10 +161,20 @@ export function checkSeo(html) {
   else if (titulo.length < LIMITES.tituloMin) add('warn', 'title-short', `The title "${titulo}" is very short (${titulo.length} characters)`);
   else if (titulo.length > LIMITES.tituloMax) add('warn', 'title-long', `The title is ${titulo.length} characters; search engines usually cut it around ${LIMITES.tituloMax}`);
 
-  if (!/<meta[^>]+name=["']description["']/i.test(html)) add('info', 'meta-description', 'No meta description. The editor does not export one yet: add it to the HTML after exporting');
-  if (!/<meta[^>]+property=["']og:/i.test(html)) add('info', 'open-graph', 'No Open Graph tags (link previews on social networks). Not supported by the editor yet');
+  // Meta description: el texto que muestran los buscadores. Se mide ya sin escapes HTML (&quot; etc. cuentan como 1 carácter).
+  const desc = /<meta[^>]+name=["']description["'][^>]*content=["']([^"']*)["']/i.exec(html)?.[1];
+  if (desc === undefined) add('warn', 'meta-description', 'No meta description. Add one in the editor: page settings (select the page) -> "Buscadores y redes" -> Descripción');
+  else {
+    const largo = desc.replace(/&(quot|amp|lt|gt|#39);/g, '_').length;
+    if (largo < LIMITES.descripcionMin) add('warn', 'description-short', `The meta description is only ${largo} characters; around ${LIMITES.descripcionMin}-${LIMITES.descripcionMax} works best`);
+    else if (largo > LIMITES.descripcionMax) add('warn', 'description-long', `The meta description is ${largo} characters; search engines usually cut it around ${LIMITES.descripcionMax}`);
+  }
+  // Open Graph (cómo se ve el enlace al compartirlo en redes). Sin imagen no hay vista previa grande: es solo una nota.
+  if (!/<meta[^>]+property=["']og:/i.test(html)) add('info', 'open-graph', 'No Open Graph tags (link previews on social networks). Set a description and a share image in the page settings');
+  else if (!/<meta[^>]+property=["']og:image["']/i.test(html)) add('info', 'og-image', 'No share image (og:image): links shared on social networks will show no picture. Add one in the page settings');
+  // Idioma: sin el campo, el editor escribe lang="es" por defecto.
   const lang = /<html[^>]*\slang=["']([^"']+)["']/i.exec(html)?.[1];
   if (!lang) add('warn', 'html-lang', 'The <html> element has no lang attribute');
-  else if (lang === 'es') add('info', 'html-lang', 'The exported <html lang> is always "es" (fixed by the editor). Change it by hand if your content is in another language');
+  else if (!page?.content?.lang) add('info', 'html-lang', `No language set in the page settings, so the page declares lang="${lang}". If your content is in another language, set it (page settings -> Idioma)`);
   return out;
 }

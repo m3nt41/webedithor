@@ -53,6 +53,7 @@ Most visual builders host your site, own your data and hand you markup you can't
 | **Animate** | Appear (fade, slide, zoom, blur, rotate), per-letter / word / line text reveals, stagger, hover / press / focus, named states with transitions, spring and cubic-bezier curves. |
 | **Scroll** | Native-CSS parallax, scroll-linked effects, sticky, multi-step scroll scenes, optional smooth scroll ([Lenis](https://github.com/darkroomengineering/lenis)). |
 | **Preview exactly** | The 👁 preview is an iframe with the *real exported HTML*, so what you see is what you ship. |
+| **SEO and sharing** | Page language (`<html lang>`), meta description, and Open Graph / Twitter card with a share image, all set in the page settings. Nothing is added to the export unless you fill them in. |
 | **Respect users** | `prefers-reduced-motion` is honoured; the export is quiet and fully visible without JavaScript. |
 | **Draft with AI, optionally** | Copy a generated guide into any chat assistant, paste its JSON "plan" back, and the editor builds the page. No API key, no server. |
 
@@ -148,7 +149,7 @@ Things you should know before you try it:
 - 🖼️ Uploaded images are embedded as data URLs, which can make the `.html` and the JSON heavy. Prefer image URLs for big assets.
 - 🔤 Only system fonts are used, so exports never depend on the internet.
 - 🧪 Requires a modern browser (2023+): individual `translate` / `scale` and `linear()` easing. Developed and tested mostly in **Firefox**; Chrome works too.
-- 🧪 `audit` contrast checks are approximate, and the exported `<html lang>` is always `es` with no meta description yet (the audit tells you).
+- 🧪 `audit` contrast checks are approximate (plain colors only).
 - 📚 Internal notes (`PROGRESS.md`, `docs/historial.md`, audits) are written in Spanish.
 
 The full list of known limitations is in [`PROGRESS.md`](PROGRESS.md).

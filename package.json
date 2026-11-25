@@ -18,6 +18,7 @@
     "test:sidebar": "npm run build && node tests/sidebar-pestanas.mjs",
     "test:iconos": "npm run build && node tests/iconos.mjs",
     "test:tema": "node tests/tema.mjs",
+    "test:seo": "npm run build && node tests/seo-pagina.mjs",
     "test:plan-ia": "node tests/plan-ia.mjs && npm run build && node tests/plan-ia-ui.mjs",
     "gen:guia-ia": "node tools/gen-guia-ia.mjs",
     "test:menu": "npm run build && node tests/menu-movil.mjs && node tests/menu-scroll.mjs",

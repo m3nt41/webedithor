@@ -15,7 +15,7 @@ export async function auditPage(page, { checkExternal = false } = {}) {
   const html = exportHTML(page);
   const enlaces = checkEnlaces(page);
   const recursos = checkRecursos(page, html);
-  const findings = [...checkAccesibilidad(page), ...enlaces.hallazgos, ...recursos.hallazgos, ...checkSeo(html)];
+  const findings = [...checkAccesibilidad(page), ...enlaces.hallazgos, ...recursos.hallazgos, ...checkSeo(html, page)];
   let externas = 0;
   if (checkExternal) {
     const r = await checkExternos(enlaces.externos, recursos.imagenesExternas);

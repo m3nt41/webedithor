@@ -12,6 +12,7 @@ The animation scope itself is tracked in [`FEATURES.md`](FEATURES.md), and known
 - Elements and 10 blocks (41 variants), icons, marquee, mobile hamburger menu
 - Scroll: native parallax, scroll-linked, sticky, scroll scenes, optional smooth scroll
 - Exact preview (iframe with the real export)
+- SEO basics in the page settings: language, meta description, Open Graph / Twitter share image
 - Optional AI workflow without a server: copy the guide, paste the plan
 
 ## 🔜 Next: advanced motion
@@ -40,7 +41,6 @@ What is still open:
 - **Save into the project folder.** The editor keeps your page in the browser (`localStorage` + JSON files) and cannot write to disk, so today `dev` + `create` rely on **Abrir JSON / Guardar JSON**. Fixing it means either a small local save endpoint or the File System Access API (Chromium only). Opinions welcome.
 - **Real templates** (SaaS, portfolio...). Today `create` offers `minimal` and `landing`, built from the editor's blocks with example text.
 - **More audit rules** and **more `publish` targets** (Vercel, Netlify, Cloudflare Pages), as explicit opt-ins. `publish` only prepares a folder today and never uploads.
-- Editor gaps the audit already points at: meta description and Open Graph tags, and a configurable `<html lang>`.
 
 ## 🌍 Polish and reach
 

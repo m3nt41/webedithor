@@ -46,7 +46,7 @@ Every command supports `--help`.
 | **a11y** | Images without alt text · buttons without text · missing or multiple `h1` · skipped heading levels · low text contrast (approximate: plain hex / `rgb()` colors only) |
 | **links** | Placeholder links (`#`) · `#anchors` that no element has · duplicated anchors · external links that return errors (only with `--check-external`) |
 | **assets** | Embedded images over 150 KB (warning) or 500 KB (error) · total HTML over 1 MB / 3 MB · external images over 500 KB (with `--check-external`) |
-| **seo** | Missing or default title, too short or too long · `<html lang>` · notes about meta description and Open Graph, which the editor can't export yet |
+| **seo** | Missing, default, too short or too long title · missing, short (< 50) or long (> 160) meta description · Open Graph tags and share image · `<html lang>` (a note when the page doesn't set a language). The editor writes all of these from the page settings. |
 
 It audits the page JSON (the source of truth) plus the HTML the editor would export, so it needs no HTML parser. `--check-external` is the only thing in the CLI that touches the network, and it only requests the URLs already in your page.
 

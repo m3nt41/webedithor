@@ -14,6 +14,7 @@
 import { normalizarAnimacion } from '../animations/normalizar.js';
 import { normalizarMarquesina } from './marquesina.js';
 import { sanearEstilos, urlPermitida, idSeguro, nivelValido, quitar, leerQuitados } from './seguridad.js';
+import { langValido, limpiarDescripcion, ogImagenValida } from './seo.js';
 
 let contador = 0;
 
@@ -151,6 +152,7 @@ const objeto = (v) => (v !== null && typeof v === 'object' && !Array.isArray(v) 
 function limpiarContenido(n) {
   const c = { ...objeto(n.content) };
   if (n.type === 'page' && c.smoothScroll !== true) delete c.smoothScroll;
+  if (n.type === 'page') limpiarSeoPagina(c); // idioma, meta description e imagen para compartir (core/seo.js)
   if (c.menuMovil !== true || n.type !== 'section') delete c.menuMovil; // menú hamburguesa del Navbar: solo vale exactamente true y en secciones
   if ('marquesina' in c) { // marquesina: solo en contenedores y con sus campos validados (ver core/marquesina.js)
     const m = n.type === 'container' ? normalizarMarquesina(c.marquesina) : undefined;
@@ -162,6 +164,21 @@ function limpiarContenido(n) {
   if ('level' in c && !nivelValido(c.level)) { delete c.level; quitar(); }
   if (n.type === 'icon' && typeof c.name !== 'string') c.name = 'star'; // un name que no exista en la biblioteca se deja: se dibuja el icono neutro
   return c;
+}
+
+/** Campos de SEO de la página: lo vacío se quita sin avisar (es "no hay"); lo que no es válido se descarta y se cuenta. */
+function limpiarSeoPagina(c) {
+  if ('description' in c) {
+    const d = typeof c.description === 'string' ? limpiarDescripcion(c.description) : null;
+    if (d === null) quitar();
+    if (d) c.description = d; else delete c.description;
+  }
+  for (const [clave, valido] of [['ogImage', ogImagenValida], ['lang', langValido]]) {
+    if (!(clave in c)) continue;
+    if (c[clave] === '') delete c[clave];
+    else if (valido(c[clave])) c[clave] = c[clave].trim();
+    else { delete c[clave]; quitar(); }
+  }
 }
 
 /** Valida y completa un objeto leído de un .json. Lanza Error si no es una página válida.

@@ -253,7 +253,14 @@ export function initInspector(host) {
     if (nodo.type === 'page') {
       cont += `<div class="campo"><label>Título</label><input data-c="title" value="${esc(c.title)}"></div>`;
       contAv += `<h3>Página</h3><div class="campo"><label>Scroll suave</label><select data-c="smoothScroll" data-bool><option value="no" ${c.smoothScroll ? '' : 'selected'}>No</option><option value="si" ${c.smoothScroll ? 'selected' : ''}>Sí</option></select></div>
-        <p class="modo">Solo la rueda del mouse en escritorio (táctil, teclado, barra y anclas quedan nativos). Se ve en el HTML exportado, no en este preview.</p>`;
+        <p class="modo">Solo la rueda del mouse en escritorio (táctil, teclado, barra y anclas quedan nativos). Se ve en el HTML exportado, no en este preview.</p>
+        <h3>Buscadores y redes</h3>
+        <div class="campo v"><label>Descripción</label><textarea data-c="description" rows="3" maxlength="500" placeholder="Qué ofrece esta página, en una o dos frases">${esc(c.description)}</textarea></div>
+        <p class="modo">Es el texto que Google suele mostrar bajo el título y lo que se ve al compartir el enlace. Entre 50 y 160 caracteres es lo ideal.</p>
+        <div class="campo"><label>Imagen para compartir</label><input data-c="ogImage" value="${esc(c.ogImage)}" placeholder="https://..."></div>
+        <p class="modo">Dirección completa (https://…) de la imagen que se ve al compartir el enlace en redes. Sin ella no se añade imagen. Se ve en el HTML exportado, no en este preview.</p>
+        <div class="campo"><label>Idioma</label><input data-c="lang" list="idiomas-pagina" maxlength="12" value="${esc(c.lang)}" placeholder="es"><datalist id="idiomas-pagina"><option value="es"><option value="en"><option value="pt"><option value="fr"><option value="de"><option value="it"><option value="ca"></datalist></div>
+        <p class="modo">Código del idioma del texto de la página (es, en, pt-BR…). Ayuda a los lectores de pantalla y a los buscadores. Vacío = es.</p>`;
     }
     if (nodo.type === 'icon') {
       const botones = Object.entries(ICONOS).map(([k, ic]) => `<button type="button" data-icono="${k}" title="${esc(ic.t)}" aria-label="${esc(ic.t)}" aria-pressed="${c.name === k}" class="${c.name === k ? 'on' : ''}">${iconoSvg(k, 18)}</button>`).join('');

@@ -11,6 +11,7 @@ import { iconoSvg, estilosIcono } from '../core/icono.js';
 import { propiedadPermitida, valorCss, valorSombraOk, hrefSeguro, srcSeguro } from '../core/seguridad.js';
 import { usaMenuMovil, paginaUsaMenuMovil, cssMenuMovil, varsMenu, necesitaAncla, SCRIPT_MENU } from '../core/menumovil.js';
 import { usaMarquesina, cssMarquesina, htmlMarquesina, keyframesMarquesina } from '../core/marquesina.js';
+import { langDePagina, metaSeoHtml } from '../core/seo.js';
 import { declaracionesSombra } from '../animations/base.js';
 import { tieneParallaxNativoDentro } from '../animations/parallax.js';
 import { usaEscena, varsEscena, esNavPegado, paginaUsaEscena, CSS_ESCENA, atributosScroll, paginaUsaScrollLink, SCRIPT_SCROLLMOTOR, SCRIPT_SCROLLSUAVE, paginaUsaScrollSuave, cssNodo, usaScroll, usaCarga, usaClic, paginaUsaScroll, paginaUsaEntrada, paginaUsaMedida, paginaUsaClic, esMedida, splitText, saltosCascada, usaContenedor, KEYFRAMES, SCRIPT_SCROLL, SCRIPT_LINEAS, SCRIPT_CLIC } from '../animations/index.js';
@@ -178,12 +179,12 @@ export function exportHTML(page) {
   // escribe como \3c). Escapado así no puede cerrar el <style>, venga de donde venga.
   const aCss = (t) => t.replace(/</g, '\\3c ');
   return `<!doctype html>
-<html lang="es">
+<html lang="${langDePagina(page.content)}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${escHtml(page.content.title || 'Landing')}</title>
-<style>
+${metaSeoHtml(page.content, page.content.title || 'Landing', escAttr)}<style>
 ${aCss(`${reset}
 ${margenEscr}${css.join('\n')}
 ${media}

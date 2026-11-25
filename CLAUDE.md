@@ -39,6 +39,7 @@ src/
   animations/          un módulo por animación (appear, hover, press, focus, text, stagger, variants, parallax, scrolllink, scene, scenestep),
                        base (efectos/curvas), index (registro GRUPOS_ANIM), normalizar (valida node.animation), scrollmotor, scrollsuave (+ lenis-min.js GENERADO)
   export/exporter.js   árbol -> .html (una clase por nodo, @media para móvil)
+cli/                   CLI de WebEdiThor (paquete propio, sin dependencias; importa el exportador del editor). Pruebas: `cd cli && npm test`
 tools/                 test-todo, test-cambios, mapa-tests, lib-tests, test-firefox, gen-guia-ia, gen-demo-estilo, gen-lenis, renombrar-build
 tests/                 un .mjs por área (Selenium/Node), firefox.spec.js (Playwright), golden/
 docs/                  historial.md, guia-ia.md y plan-ejemplo.json (GENERADOS), demo-estilo.json (generado)

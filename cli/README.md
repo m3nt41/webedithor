@@ -1,0 +1,82 @@
+# webedithor CLI
+
+A small companion for the [WebEdiThor](../README.md) visual editor. It **complements** the editor, it does not replace it: you design in the editor and use the CLI to check, export and prepare the result.
+
+> **Status: early (v0.0.1).** It runs from a clone of this repository. It is **not published to npm yet**, so `npx webedithor ...` does not work today (see [Pending](#pending)).
+
+No runtime dependencies: just Node.js 20.19+ and the editor's own code. It reuses the editor's exporter, validator and blocks, so what the CLI exports is identical to the editor's **Exportar HTML** button.
+
+## Try it
+
+From the repository root:
+
+```bash
+npm install
+npm run build                 # compiles the editor (needed only for "dev")
+
+node cli/bin/webedithor.js create my-site --template landing
+cd my-site
+node ../cli/bin/webedithor.js audit page.json
+node ../cli/bin/webedithor.js export page.json -o dist/index.html
+node ../cli/bin/webedithor.js publish page.json --to static
+```
+
+Tip: `cd cli && npm link` puts a `webedithor` command on your PATH, so you can drop the `node .../webedithor.js` part.
+
+## Commands
+
+| Command | What it does |
+|---|---|
+| `create <folder> [--template minimal\|landing]` | Creates a project folder with a `page.json` built from the editor's own blocks, a short README and a `.gitignore`. Refuses to touch a folder that already has files. `--list` shows the templates. |
+| `dev [--port 5180] [--open]` | Serves the compiled editor (`dist/editor.html`) at `http://127.0.0.1:<port>`. Serves that one file and nothing else. |
+| `audit <page.json> [--json] [--strict] [--check-external]` | Accessibility, links, heavy assets and basic SEO. Exit code 1 on errors (or on warnings with `--strict`), so it works in CI. |
+| `export <page.json> [-o out.html]` | Writes the single static `.html`. Same bytes as the editor's export button. |
+| `publish <page.json> [--to static\|github-pages] [--out site]` | Prepares a folder ready to upload. **It does not upload anything**: no network, no tokens. `--list` shows the targets. |
+
+Every command supports `--help`.
+
+### What `audit` checks
+
+| Area | Checks |
+|---|---|
+| **a11y** | Images without alt text · buttons without text · missing or multiple `h1` · skipped heading levels · low text contrast (approximate: plain hex / `rgb()` colors only) |
+| **links** | Placeholder links (`#`) · `#anchors` that no element has · duplicated anchors · external links that return errors (only with `--check-external`) |
+| **assets** | Embedded images over 150 KB (warning) or 500 KB (error) · total HTML over 1 MB / 3 MB · external images over 500 KB (with `--check-external`) |
+| **seo** | Missing or default title, too short or too long · `<html lang>` · notes about meta description and Open Graph, which the editor can't export yet |
+
+It audits the page JSON (the source of truth) plus the HTML the editor would export, so it needs no HTML parser. `--check-external` is the only thing in the CLI that touches the network, and it only requests the URLs already in your page.
+
+## The honest part: how projects work today
+
+The editor keeps your page in the browser (`localStorage`) and cannot write to your project folder. So the workflow is:
+
+1. `webedithor dev` → open the editor.
+2. **Abrir JSON** → pick `page.json`, edit visually.
+3. **Guardar JSON** → save it back over `page.json`.
+4. `audit`, `export`, `publish` work on that file.
+
+Making `dev` save straight into the folder needs a design decision (a tiny local save endpoint, or the File System Access API, which is Chromium-only). It is listed in the [roadmap](../ROADMAP.md).
+
+## Templates
+
+`minimal` and `landing` are combinations of the editor's blocks with the editor's example text. Links in the navbar or footer that point to sections a template doesn't include are left as `#`, and `audit` flags them as pending. Templates with real content (SaaS, portfolio...) are planned, not done.
+
+## Adding a publish target
+
+Targets are adapters in [`src/adapters/index.js`](src/adapters/index.js): an object with a `summary` and a `prepare({ html, outDir })` that writes files and returns what to do next. Adding Vercel or Netlify config files is a few lines. Anything that talks to a network or needs a token should be an explicit opt-in and discussed first.
+
+## Tests
+
+```bash
+cd cli
+npm test
+```
+
+They run the real CLI in temporary folders (9 tests, no dependencies, no browser needed).
+
+## Pending
+
+- **Publish to npm.** The CLI imports the editor's source by relative path (`cli/src/lib/editor.js`), which only works inside the repository. Publishing needs a bundling step that inlines those modules, and the name `webedithor` is free on npm but not reserved.
+- Saving from the editor straight into the project folder.
+- Real templates, and more audit rules (focus order, tap-target size, image dimensions).
+- Hosting adapters beyond "prepare a folder" (Vercel, Netlify, Cloudflare Pages), as opt-in.

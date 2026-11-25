@@ -1,0 +1,17 @@
+{
+  "name": "webedithor",
+  "version": "0.0.1",
+  "description": "Companion CLI for the WebEdiThor visual landing editor: create, audit, export, serve and prepare pages for publishing.",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "webedithor": "./bin/webedithor.js"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "license": "MIT"
+}

@@ -63,6 +63,8 @@ If you add a test, register it in `SUITE` (`tools/lib-tests.mjs`) and in the rel
 
 `npm run test:firefox` (Playwright) may report **skipped** on some Windows machines when Firefox can't be launched. That is an environment issue, not a failure.
 
+The CLI in [`cli/`](cli/README.md) has its own tests (no browser needed): `cd cli && npm test`. It imports the editor's exporter, so run them too if you change `exporter.js`, `tree.js` or the blocks.
+
 There is no linter or TypeScript setup; please match the style of the surrounding code and don't reformat files you aren't changing.
 
 ## Pull requests

@@ -31,25 +31,22 @@ These are the cases where plain CSS isn't enough, so a small script (own code or
 - **Editor tutorial** built into the app.
 - **Hover parity:** make a few hovers look identical in the editor and in the export.
 
-## 🛠️ Companion CLI (designed, not built)
+## 🛠️ Companion CLI (early version exists)
 
-A small command-line tool that **complements** the visual editor instead of replacing it. The idea, in order of how likely it is to come first:
+A small command-line tool that **complements** the visual editor instead of replacing it. A first version lives in [`cli/`](cli/README.md): `create`, `dev`, `audit`, `export` and `publish`, with no dependencies, running from a clone.
 
-| Command | Purpose |
-|---|---|
-| `audit` | Check an exported page: basic accessibility, broken links, heavy assets, basic SEO. |
-| `export` | Produce the static HTML from a saved page JSON, without opening the editor. |
-| `create` | Start a project from a template. Needs real project templates first. |
-| `dev` | Serve the editor locally. Saving to a project folder needs a design decision (see below). |
-| `publish` | A pluggable deploy interface (static hosts). No provider is implemented by default. |
+What is still open:
 
-Open design question: the editor currently keeps your page in the browser (`localStorage` + JSON files) and cannot write to a project folder. Making `create` / `dev` feel natural means either a small local save endpoint or the File System Access API (Chromium only). Opinions welcome.
+- **Release to npm.** The CLI imports the editor's source by relative path, so it needs a bundling step before `npx webedithor` can work.
+- **Save into the project folder.** The editor keeps your page in the browser (`localStorage` + JSON files) and cannot write to disk, so today `dev` + `create` rely on **Abrir JSON / Guardar JSON**. Fixing it means either a small local save endpoint or the File System Access API (Chromium only). Opinions welcome.
+- **Real templates** (SaaS, portfolio...). Today `create` offers `minimal` and `landing`, built from the editor's blocks with example text.
+- **More audit rules** and **more `publish` targets** (Vercel, Netlify, Cloudflare Pages), as explicit opt-ins. `publish` only prepares a folder today and never uploads.
+- Editor gaps the audit already points at: meta description and Open Graph tags, and a configurable `<html lang>`.
 
 ## 🌍 Polish and reach
 
 - Translate the editor interface (it is Spanish-only today) and add English.
 - Public demo / playground.
-- Real project templates (landing, SaaS, portfolio...).
 - Logo, README GIFs and screenshots.
 - Optional AI inside the editor: bring your own API key.
 

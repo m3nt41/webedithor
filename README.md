@@ -73,6 +73,19 @@ Then open `dist/editor.html` (on Windows, `abrir-editor.bat` does it for you).
 
 **Exporting:** use the export button in the toolbar to download your page as a single `.html`.
 
+## 🧰 The CLI (early)
+
+A small companion that **complements** the editor: scaffold a project, audit the result, export, and prepare it for publishing. It has no dependencies and reuses the editor's own exporter, so its output is identical to the **Exportar HTML** button.
+
+```bash
+node cli/bin/webedithor.js create my-site --template landing
+node cli/bin/webedithor.js audit my-site/page.json     # a11y, links, heavy assets, basic SEO
+node cli/bin/webedithor.js export my-site/page.json -o my-site/dist/index.html
+node cli/bin/webedithor.js publish my-site/page.json --to static   # prepares a folder; uploads nothing
+```
+
+It is **not on npm yet**, so `npx webedithor` doesn't work today. See [`cli/README.md`](cli/README.md) for every command, what `audit` checks, and how the editor and the project folder talk to each other (via JSON files, for now).
+
 ## 🔧 How it works
 
 ```text
@@ -98,6 +111,7 @@ src/
   render/      tree -> editor DOM
   export/      tree -> standalone .html
   ui/          sidebar, canvas, inspector, toolbar, preview
+cli/           companion command-line tool (own package, reuses the exporter)
 tests/         browser tests (Selenium / Firefox) and unit-style checks
 docs/          sample landings, AI guide, audits, history
 ```
@@ -113,7 +127,7 @@ WebEdiThor started as a personal tool for building heavily animated landing page
 | Scroll: parallax, scroll-linked, sticky, scenes, smooth scroll | ✅ Done |
 | Advanced motion (drag, inertia, layout animations, 3D) | 🔜 Planned |
 | Custom cursor, page transitions | 🔜 Planned |
-| CLI (`audit`, `export`, project templates) | 💡 Designed, not built yet |
+| Companion CLI (`create`, `audit`, `export`, `dev`, `publish`) | 🧪 Early: runs from a clone, not on npm yet ([details](cli/README.md)) |
 
 Things you should know before you try it:
 
@@ -121,13 +135,14 @@ Things you should know before you try it:
 - 🖼️ Uploaded images are embedded as data URLs, which can make the `.html` and the JSON heavy. Prefer image URLs for big assets.
 - 🔤 Only system fonts are used, so exports never depend on the internet.
 - 🧪 Requires a modern browser (2023+): individual `translate` / `scale` and `linear()` easing. Developed and tested mostly in **Firefox**; Chrome works too.
+- 🧪 `audit` contrast checks are approximate, and the exported `<html lang>` is always `es` with no meta description yet (the audit tells you).
 - 📚 Internal notes (`PROGRESS.md`, `docs/historial.md`, audits) are written in Spanish.
 
 The full list of known limitations is in [`PROGRESS.md`](PROGRESS.md).
 
 ## 🧭 Roadmap
 
-Short version: advanced motion → extras → a small companion CLI → polish (tutorial, translations, public demo). Details, ideas and what is *not* planned are in [ROADMAP.md](ROADMAP.md).
+Short version: advanced motion → extras → grow the companion CLI (npm release, saving into a project folder) → polish (tutorial, translations, public demo). Details, ideas and what is *not* planned are in [ROADMAP.md](ROADMAP.md).
 
 ## 🤝 Contributing
 

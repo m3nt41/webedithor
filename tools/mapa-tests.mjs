@@ -96,6 +96,12 @@ export const MAPA = {
   'tools/test-cambios.mjs': NINGUNO,  // este runner y su mapa no tienen test propio: se prueban a mano con --archivos
   'tools/mapa-tests.mjs': NINGUNO,
 
+  // ---- Fuera del editor: no afectan a sus tests ----
+  'cli/': NINGUNO,           // la CLI tiene sus propias pruebas: cd cli && npm test (el editor no importa nada de cli/)
+  '.github/': NINGUNO,       // plantillas de issues y PR
+  '.gitignore': NINGUNO,
+  'LICENSE': NINGUNO,
+
   // ---- Datos generados que algún test lee ----
   'docs/guia-ia.md': ['plan-ia', 'plan-ia-ui'],
   'docs/plan-ejemplo.json': ['plan-ia', 'plan-ia-ui'],

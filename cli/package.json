@@ -1,6 +1,6 @@
 {
   "name": "webedithor",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Companion CLI for the WebEdiThor visual landing editor: create projects, audit, export, serve the editor and prepare pages for publishing.",
   "keywords": [
     "landing-page",

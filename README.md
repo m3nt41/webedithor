@@ -88,13 +88,15 @@ Then open `dist/editor.html` (on Windows, `abrir-editor.bat` does it for you).
 A small companion that **complements** the editor: scaffold a project, audit the result, export, and prepare it for publishing. It has no dependencies and reuses the editor's own exporter, so its output is identical to the **Exportar HTML** button.
 
 ```bash
-node cli/bin/webedithor.js create my-site --template landing
-node cli/bin/webedithor.js audit my-site/page.json     # a11y, links, heavy assets, basic SEO
-node cli/bin/webedithor.js export my-site/page.json -o my-site/dist/index.html
-node cli/bin/webedithor.js publish my-site/page.json --to static   # prepares a folder; uploads nothing
+npx webedithor create my-site --template landing
+cd my-site
+npx webedithor dev                                  # opens the visual editor
+npx webedithor audit page.json                      # a11y, links, heavy assets, basic SEO
+npx webedithor export page.json -o dist/index.html
+npx webedithor publish page.json --to static        # prepares a folder; uploads nothing
 ```
 
-It is **not on npm yet**, so `npx webedithor` doesn't work today. See [`cli/README.md`](cli/README.md) for every command, what `audit` checks, and how the editor and the project folder talk to each other (via JSON files, for now).
+It is on npm as [`webedithor`](https://www.npmjs.com/package/webedithor) (v0.1.0, early). See [`cli/README.md`](cli/README.md) for every command, what `audit` checks, and how the editor and the project folder talk to each other (via JSON files, for now).
 
 ## 🔧 How it works
 
@@ -137,7 +139,7 @@ WebEdiThor started as a personal tool for building heavily animated landing page
 | Scroll: parallax, scroll-linked, sticky, scenes, smooth scroll | ✅ Done |
 | Advanced motion (drag, inertia, layout animations, 3D) | 🔜 Planned |
 | Custom cursor, page transitions | 🔜 Planned |
-| Companion CLI (`create`, `audit`, `export`, `dev`, `publish`) | 🧪 Early: runs from a clone, not on npm yet ([details](cli/README.md)) |
+| Companion CLI (`create`, `audit`, `export`, `dev`, `publish`) | 🧪 Early (v0.1.0), on npm: `npx webedithor` ([details](cli/README.md)) |
 
 Things you should know before you try it:
 
@@ -153,7 +155,7 @@ The full list of known limitations is in [`PROGRESS.md`](PROGRESS.md).
 
 ## 🧭 Roadmap
 
-Short version: advanced motion → extras → grow the companion CLI (npm release, saving into a project folder) → polish (tutorial, translations, public demo). Details, ideas and what is *not* planned are in [ROADMAP.md](ROADMAP.md).
+Short version: advanced motion → extras → grow the companion CLI (saving into a project folder, real templates) → polish (tutorial, translations, public demo). Details, ideas and what is *not* planned are in [ROADMAP.md](ROADMAP.md).
 
 ## 🤝 Contributing
 

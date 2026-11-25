@@ -33,11 +33,10 @@ These are the cases where plain CSS isn't enough, so a small script (own code or
 
 ## 🛠️ Companion CLI (early version exists)
 
-A small command-line tool that **complements** the visual editor instead of replacing it. A first version lives in [`cli/`](cli/README.md): `create`, `dev`, `audit`, `export` and `publish`, with no dependencies, running from a clone.
+A small command-line tool that **complements** the visual editor instead of replacing it. A first version (v0.1.0) lives in [`cli/`](cli/README.md) and is on npm: `npx webedithor`. It has `create`, `dev`, `audit`, `export` and `publish`, with no dependencies.
 
 What is still open:
 
-- **Release to npm.** The CLI imports the editor's source by relative path, so it needs a bundling step before `npx webedithor` can work.
 - **Save into the project folder.** The editor keeps your page in the browser (`localStorage` + JSON files) and cannot write to disk, so today `dev` + `create` rely on **Abrir JSON / Guardar JSON**. Fixing it means either a small local save endpoint or the File System Access API (Chromium only). Opinions welcome.
 - **Real templates** (SaaS, portfolio...). Today `create` offers `minimal` and `landing`, built from the editor's blocks with example text.
 - **More audit rules** and **more `publish` targets** (Vercel, Netlify, Cloudflare Pages), as explicit opt-ins. `publish` only prepares a folder today and never uploads.

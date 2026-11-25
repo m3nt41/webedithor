@@ -11,7 +11,10 @@ import exportCmd from './commands/export.js';
 import publish from './commands/publish.js';
 
 const COMMANDS = [create, dev, audit, exportCmd, publish];
-const version = () => JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8')).version;
+// package.json queda un nivel por encima tanto de src/cli.js como de dist/cli.js (el bundle publicado). La ruta va en una
+// variable a propósito: así el empaquetador no la trata como un recurso que hay que copiar.
+const RUTA_PACKAGE = '../package.json';
+const version = () => JSON.parse(readFileSync(new URL(RUTA_PACKAGE, import.meta.url), 'utf8')).version;
 
 function helpGeneral() {
   const filas = COMMANDS.map((c) => `  ${c.name.padEnd(9)}${c.summary}`).join('\n');

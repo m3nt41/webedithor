@@ -1,17 +1,47 @@
 {
   "name": "webedithor",
-  "version": "0.0.1",
-  "description": "Companion CLI for the WebEdiThor visual landing editor: create, audit, export, serve and prepare pages for publishing.",
-  "private": true,
+  "version": "0.1.0",
+  "description": "Companion CLI for the WebEdiThor visual landing editor: create projects, audit, export, serve the editor and prepare pages for publishing.",
+  "keywords": [
+    "landing-page",
+    "visual-editor",
+    "no-code",
+    "html-export",
+    "audit",
+    "accessibility",
+    "seo",
+    "cli"
+  ],
+  "homepage": "https://github.com/m3nt41/webedithor#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/m3nt41/webedithor.git",
+    "directory": "cli"
+  },
+  "bugs": {
+    "url": "https://github.com/m3nt41/webedithor/issues"
+  },
+  "author": "m3nt41",
   "type": "module",
   "bin": {
-    "webedithor": "./bin/webedithor.js"
+    "webedithor": "bin/webedithor.js"
   },
+  "files": [
+    "bin",
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
   "scripts": {
+    "build": "node scripts/build.mjs",
+    "prepack": "npm run build",
     "test": "node --test test/*.test.mjs"
   },
   "engines": {
     "node": ">=20.19.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  }
 }

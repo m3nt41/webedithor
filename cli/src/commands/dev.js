@@ -8,8 +8,21 @@ import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
 import { CliError } from '../lib/errors.js';
 
-const RAIZ = fileURLToPath(new URL('../../../', import.meta.url)); // raíz del repo
-const editorPath = () => resolve(process.env.WEBEDITHOR_EDITOR ?? resolve(RAIZ, 'dist', 'editor.html'));
+// Dónde buscar el editor compilado, por orden:
+//  1. WEBEDITHOR_EDITOR (para pruebas o para usar otro build)
+//  2. editor.html junto al bundle: así viaja en el paquete de npm (dist/cli.js + dist/editor.html)
+//  3. dist/editor.html en la raíz del repo, al correr desde un clon (cli/src/commands -> raíz)
+// Las rutas van en variables para que el empaquetador no las trate como recursos.
+const JUNTO_AL_BUNDLE = './editor.html';
+const RAIZ_DEL_REPO = '../../../';
+function editorPath() {
+  if (process.env.WEBEDITHOR_EDITOR) return resolve(process.env.WEBEDITHOR_EDITOR);
+  const candidatos = [
+    fileURLToPath(new URL(JUNTO_AL_BUNDLE, import.meta.url)),
+    resolve(fileURLToPath(new URL(RAIZ_DEL_REPO, import.meta.url)), 'dist', 'editor.html'),
+  ];
+  return candidatos.find((c) => existsSync(c)) ?? candidatos[1];
+}
 
 function abrirNavegador(url) {
   const [cmd, args] = process.platform === 'win32' ? ['cmd', ['/c', 'start', '', url]] : process.platform === 'darwin' ? ['open', [url]] : ['xdg-open', [url]];

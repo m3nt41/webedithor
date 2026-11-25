@@ -12,7 +12,7 @@ import { SVG_TIRADORES, SVG_ESCRITORIO, SVG_MOVIL, SVG_OJO, SVG_DESHACER, SVG_RE
 
 export function initToolbar(host) {
   host.innerHTML = `
-    <strong class="marca">Editor de landings</strong>
+    <strong class="marca">WebEdiThor</strong>
     <button id="btn-undo" class="ico-btn" title="Deshacer (Ctrl+Z)" aria-label="Deshacer">${SVG_DESHACER}</button>
     <button id="btn-redo" class="ico-btn" title="Rehacer (Ctrl+Y)" aria-label="Rehacer">${SVG_REHACER}</button>
     <span class="grupo" role="group" aria-label="Modo de edición">

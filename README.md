@@ -144,7 +144,6 @@ WebEdiThor started as a personal tool for building heavily animated landing page
 
 Things you should know before you try it:
 
-- 🏷️ The editor still calls itself "Editor de landings" in its toolbar; the WebEdiThor name hasn't reached the interface yet.
 - 🌐 **The editor interface is currently in Spanish** (`Guardar JSON`, `Vista previa`...). Translating it is on the [roadmap](ROADMAP.md); the exported pages contain whatever language *you* write.
 - 🖼️ Uploaded images are embedded as data URLs, which can make the `.html` and the JSON heavy. Prefer image URLs for big assets.
 - 🔤 Only system fonts are used, so exports never depend on the internet.

@@ -104,6 +104,7 @@ export const MAPA = {
   '.github/': NINGUNO,       // plantillas de issues y PR
   '.gitignore': NINGUNO,
   'LICENSE': NINGUNO,
+  'vercel.json': NINGUNO,    // solo configura el despliegue de la demo (webedithor.m3nt41.com); no cambia el editor
 
   // ---- Datos generados que algún test lee ----
   'docs/guia-ia.md': ['plan-ia', 'plan-ia-ui'],

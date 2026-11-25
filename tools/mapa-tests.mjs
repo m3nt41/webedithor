@@ -89,6 +89,8 @@ export const MAPA = {
   'tools/gen-guia-ia.mjs': ['plan-ia'],
   'tools/inventario-inspector.mjs': ['inspector-inventario'],
   'tools/capturas-inspector.mjs': NINGUNO,
+  'tools/capturas-readme.mjs': NINGUNO,   // genera docs/assets/*.png para el README (necesita npm run build)
+  'tools/banco-texto.html': NINGUNO,      // banco de comparación a ojo, no lo usa el editor ni ningún test
   'tools/gen-demo-parallax.mjs': NINGUNO,
   'tools/gen-demo-estilo.mjs': ['tema'],
   'tools/gen-lenis.mjs': ['selenium'],

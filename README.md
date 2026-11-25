@@ -15,12 +15,24 @@
 
 </div>
 
-<!--
-  TODO (polish phase): put the logo here and replace the box below with a real GIF.
-  Suggested file: docs/assets/demo.gif  ->  ![WebEdiThor demo](docs/assets/demo.gif)
--->
+<!-- TODO (polish phase): logo above the title and an animated GIF (docs/assets/demo.gif) next to these screenshots. -->
 
-> 🎬 **Demo GIF coming soon.** Until then, open [`docs/demo-estilo.json`](docs/demo-estilo.json) from inside the editor (**Abrir JSON**) to load a complete sample landing.
+<p align="center">
+  <img src="docs/assets/editor.png" alt="The WebEdiThor editor: layers on the left, the page in the middle, the inspector on the right" width="100%">
+</p>
+
+<table>
+  <tr>
+    <td width="62%"><img src="docs/assets/vista-previa.png" alt="Preview: the real exported HTML running in an iframe"></td>
+    <td width="38%"><img src="docs/assets/movil.png" alt="Mobile view of the editor"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub><b>👁 Preview</b>: the real exported HTML, not a simulation</sub></td>
+    <td align="center"><sub><b>Mobile view</b>: only what changes is stored</sub></td>
+  </tr>
+</table>
+
+> Try it with a complete sample landing: open the editor, press **Abrir JSON** and pick [`docs/demo-estilo.json`](docs/demo-estilo.json).
 
 ---
 
@@ -131,6 +143,7 @@ WebEdiThor started as a personal tool for building heavily animated landing page
 
 Things you should know before you try it:
 
+- 🏷️ The editor still calls itself "Editor de landings" in its toolbar; the WebEdiThor name hasn't reached the interface yet.
 - 🌐 **The editor interface is currently in Spanish** (`Guardar JSON`, `Vista previa`...). Translating it is on the [roadmap](ROADMAP.md); the exported pages contain whatever language *you* write.
 - 🖼️ Uploaded images are embedded as data URLs, which can make the `.html` and the JSON heavy. Prefer image URLs for big assets.
 - 🔤 Only system fonts are used, so exports never depend on the internet.

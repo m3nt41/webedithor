@@ -2,7 +2,7 @@
 <!--
   BANCO DE VARIANTES (comparación a ojo) — tools/banco-texto.html
   Autocontenido, sin dependencias. Doble clic para abrirlo en Firefox o Chrome.
-  TEMPORAL: se borra antes de publicar el repo (anotado en PROGRESS.md).
+  Se queda en el repo público (decisión de m3nt41, 2026-11-25) para que cualquiera pueda repetir la comparación.
 
   Qué copia del editor (para que lo que ves sea lo que se exporta):
     - Letras: <h2 class="n2"> con .ww > .w (inline-block), --i por letra, --g = nº de saltos, animación a-up 0.7 s
@@ -44,6 +44,8 @@ button.ui.fuerte{background:var(--acento-ui);border-color:var(--acento-ui)}
 .aviso{flex-basis:100%;font-size:12.5px;color:#c9c5bb;line-height:1.5}
 .aviso b{color:#fff}
 main{max-width:1240px;margin:0 auto;padding:24px 20px 80px}
+.que-es{background:#fff;border:1px solid #cfcbc0;border-left:4px solid var(--acento-ui);border-radius:8px;padding:14px 18px;margin:0 0 8px;font-size:14px;line-height:1.55;max-width:900px}
+.que-es p{margin:8px 0 0;color:#4a4740}
 h2.sec{font-size:20px;margin:36px 0 4px}
 p.nota{margin:0 0 16px;color:#4a4740;font-size:14px;line-height:1.5;max-width:900px}
 .rejilla{display:grid;grid-template-columns:repeat(auto-fill,minmax(540px,1fr));gap:16px}
@@ -245,6 +247,13 @@ h3.sub{font-size:16px;margin:26px 0 8px;color:#2b2823}
 </header>
 
 <main>
+
+  <aside class="que-es" aria-label="What this page is">
+    <strong>What is this page? / ¿Qué es esta página?</strong>
+    <p>A <b>side-by-side comparison bench</b> for WebEdiThor's text animations and button hovers. It is <b>not part of the editor</b> and nothing in the build uses it. Some animation problems (blurry text, a small jump when an animation ends) only show up on a real screen with GPU compositing, and automated headless tests cannot see them, so each technique is shown here to judge by eye.</p>
+    <p><b>How to use it:</b> open this file in your browser (double-click, no server needed). Try <b>100 %</b> and <b>125 %</b> zoom and slow the animations down with the speed buttons. Use each card's «Repetir» / «Mantener» button. Compare in Firefox <i>and</i> Chrome: they behave differently. The techniques that won are already in the editor; this page is kept so you can run the same comparison on your own screen.</p>
+    <p lang="es">Banco de comparación a ojo para las animaciones de texto y los hovers de botón. No forma parte del editor. Ábrelo con doble clic, prueba a 100 % y a 125 % de zoom, baja la velocidad y compara en Firefox y en Chrome.</p>
+  </aside>
 
   <h2 class="sec">1 · Letras al aparecer («Por letras»)</h2>
   <p class="nota">Cada tarjeta es una técnica distinta; dentro, una palabra sola («Galería») y varias («Lo que hacemos»). La animación es la del editor: sube 30 px y aparece, 0,7 s, con cascada por letra (tope 2 s). Cada tarjeta tiene su «Repetir». Las de la etiqueta amarilla «ronda 2» (V7 a V13) son las nuevas.</p>

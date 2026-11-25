@@ -9,7 +9,7 @@
 ![Output](https://img.shields.io/badge/output-one%20static%20.html-111111)
 ![Stack](https://img.shields.io/badge/stack-Vite%20%2B%20vanilla%20JS-111111)
 
-[Quick start](#-quick-start) · [What you can do](#-what-you-can-do) · [How it works](#-how-it-works) · [Status](#-status-and-honest-limits) · [Roadmap](ROADMAP.md) · [Contributing](CONTRIBUTING.md)
+[**Live demo**](https://webedithor.m3nt41.com) · [Quick start](#-quick-start) · [What you can do](#-what-you-can-do) · [How it works](#-how-it-works) · [Status](#-status-and-honest-limits) · [Roadmap](ROADMAP.md) · [Contributing](CONTRIBUTING.md)
 
 </div>
 
@@ -30,7 +30,7 @@
   </tr>
 </table>
 
-> Try it with a complete sample landing: open the editor, press **Abrir JSON** and pick [`docs/demo-estilo.json`](docs/demo-estilo.json).
+> 🚀 **Try it now, nothing to install: [webedithor.m3nt41.com](https://webedithor.m3nt41.com).** Your work stays in your browser, so use **Guardar JSON** to keep a copy. For a complete sample landing, press **Abrir JSON** and pick [`docs/demo-estilo.json`](docs/demo-estilo.json).
 
 ---
 

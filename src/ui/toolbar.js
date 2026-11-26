@@ -6,6 +6,7 @@ import { exportHTML, descargar } from '../export/exporter.js';
 import { abrirVistaPrevia } from './vistaprevia.js';
 import { toast } from './plania.js';
 import { avisoQuitados } from '../core/seguridad.js';
+import { PAGINA_DEMO } from '../core/demo.js';
 
 import { tiradoresEncendidos, alternarTiradores, alCambiarTiradores } from './tiradores-pref.js';
 import { SVG_TIRADORES, SVG_ESCRITORIO, SVG_MOVIL, SVG_OJO, SVG_DESHACER, SVG_REHACER } from './iconos.js'; // iconos compartidos con la Vista previa
@@ -23,6 +24,7 @@ export function initToolbar(host) {
     <button id="btn-vista-previa" class="ico-btn" title="Vista previa (Esc para cerrar)" aria-label="Vista previa">${SVG_OJO}</button>
     <button id="btn-tiradores" class="ico-btn" aria-pressed="true">${SVG_TIRADORES}</button>
     <span class="espacio"></span>
+    ${PAGINA_DEMO ? '<button id="btn-demo">Ver demo</button>' : ''}
     <button id="btn-nuevo">Nuevo</button>
     <button id="btn-abrir">Abrir JSON</button>
     <button id="btn-guardar">Guardar JSON</button>
@@ -40,6 +42,11 @@ export function initToolbar(host) {
 
   $('#btn-nuevo').addEventListener('click', () => {
     if (confirm('¿Empezar una página nueva? (Puedes deshacerlo con Ctrl+Z)')) newPage();
+  });
+
+  // Solo en la demo web: recupera la landing de muestra (reemplaza la página, se deshace con Ctrl+Z)
+  $('#btn-demo')?.addEventListener('click', () => {
+    if (confirm('¿Cargar la landing de muestra? Reemplaza tu página actual (puedes deshacerlo con Ctrl+Z mientras no recargues).')) replacePage(structuredClone(PAGINA_DEMO));
   });
 
   $('#btn-guardar').addEventListener('click', () => {

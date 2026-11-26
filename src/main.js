@@ -7,7 +7,9 @@ import { initInspector } from './ui/inspector.js';
 import { initToolbar } from './ui/toolbar.js';
 import { SVG_AVISO } from './ui/iconos.js';
 import { accionCopiarEfectos, accionPegarEfectos } from './ui/efectos.js';
-import { getState, subscribe, recargarGuardado, seguirConEsta, removeNode, duplicateNode, moveBy, valoresQuitadosAlCargar } from './core/store.js';
+import { getState, subscribe, recargarGuardado, seguirConEsta, removeNode, duplicateNode, moveBy, valoresQuitadosAlCargar, nadaGuardado, guardadoDanado, iniciarCon } from './core/store.js';
+import { PAGINA_DEMO } from './core/demo.js';
+import { descargar } from './export/exporter.js';
 import { toast } from './ui/plania.js';
 import { avisoQuitados } from './core/seguridad.js';
 
@@ -53,6 +55,25 @@ document.body.append(avisoGuardado);
 subscribe((s, cambio) => { if (cambio === 'guardado') avisoGuardado.hidden = !s.errorGuardado; });
 
 if (valoresQuitadosAlCargar() > 0) toast(avisoQuitados(valoresQuitadosAlCargar()), true, 9000); // lo guardado traía valores peligrosos
+
+// Si lo guardado no se pudo leer: se dice y se puede bajar la copia (la demo NO se carga encima).
+const danado = guardadoDanado();
+if (danado) {
+  const av = document.createElement('div');
+  av.id = 'aviso-danado';
+  av.setAttribute('role', 'alert');
+  av.innerHTML = `<span>No se pudo leer la página guardada en este navegador.${danado.copiado ? ' Se apartó una copia.' : ''} Descárgala antes de seguir si te importa.</span>`
+    + '<button type="button" id="danado-bajar">Descargar copia</button><button type="button" id="danado-cerrar">Cerrar</button>';
+  document.body.append(av);
+  av.querySelector('#danado-bajar').addEventListener('click', () => descargar('pagina-danada.json', danado.texto, 'application/json'));
+  av.querySelector('#danado-cerrar').addEventListener('click', () => av.remove());
+}
+
+// Demo web: quien entra sin NADA guardado ve la landing de muestra (una página vacía guardada se respeta).
+if (PAGINA_DEMO && nadaGuardado()) {
+  iniciarCon(PAGINA_DEMO);
+  toast('Esto es una demo: haz clic en cualquier cosa para editarla. Las animaciones se ven con el botón del ojo (Vista previa).', false, 12000);
+}
 
 initToolbar(document.getElementById('toolbar'));
 initSidebar(document.getElementById('sidebar'));

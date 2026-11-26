@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && node tools/renombrar-build.mjs",
+    "build:demo": "vite build --mode demo && node tools/renombrar-build.mjs",
     "preview": "vite preview",
     "gen:lenis": "node tools/gen-lenis.mjs",
     "test:firefox": "node tools/test-firefox.mjs",

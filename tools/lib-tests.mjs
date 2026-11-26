@@ -65,6 +65,7 @@ export const SUITE = [ // [nombre, comando, timeout en segundos]
   ['copiar-efectos', 'node tests/copiar-efectos.mjs', 180],
   ['xss-import', 'node tests/xss-import.mjs', 240],
   ['seo-pagina', 'node tests/seo-pagina.mjs', 180],
+  ['demo-inicial', 'node tests/demo-inicial.mjs', 240],
   ['persistencia','node tests/inspector-persistencia.mjs', 180],
   ['fondo', 'node tests/fondo.mjs', 180],
   ['sidebar', 'node tests/sidebar-pestanas.mjs', 180],

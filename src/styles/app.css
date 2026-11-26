@@ -13,6 +13,8 @@ body { font: 14px system-ui, sans-serif; background: #1a1a1f; color: #e8e8ee; }
 #aviso-pestanas[hidden] { display: none; }
 #aviso-guardado { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); z-index: 1000; max-width: 640px; padding: 10px 14px; background: #4a1717; border: 1px solid #d14b4b; border-radius: 8px; color: #ffd6d6; box-shadow: 0 6px 24px rgba(0,0,0,.5); font-size: 13px; }
 #aviso-guardado[hidden] { display: none; }
+#aviso-danado { position: fixed; bottom: 70px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; align-items: center; gap: 10px; max-width: 720px; padding: 10px 14px; background: #4a1717; border: 1px solid #d14b4b; border-radius: 8px; color: #ffd6d6; box-shadow: 0 6px 24px rgba(0,0,0,.5); font-size: 13px; }
+#aviso-danado button { background: #2f2f38; color: #fff; border: 1px solid #44444f; border-radius: 6px; padding: 6px 11px; cursor: pointer; font: inherit; white-space: nowrap; }
 #inspector .botones label.subir { padding: 3px 8px; background: #5b47c9; border: 1px solid #7c5cff; border-radius: 6px; cursor: pointer; font-size: 12px; color: #fff; }
 #inspector .botones label.subir:hover { background: #6c58da; }
 #inspector .campo.rango { align-items: center; }

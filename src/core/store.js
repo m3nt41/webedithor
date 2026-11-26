@@ -11,22 +11,32 @@ import { copiarAnimacion, efectosParaNodo } from '../animations/copiar.js';
 import { normalizarMarquesina } from './marquesina.js';
 
 const CLAVE_LS = 'editor-landings:pagina';
+const CLAVE_DANADA = 'editor-landings:pagina-danada'; // copia de un guardado que no se pudo leer
 const MAX_HISTORIAL = 100;
 const VENTANA_AGRUPAR_MS = 1000; // cambios seguidos al mismo campo = un solo paso de undo
 
 // ---- Estado ----
 let quitadosAlCargar = 0; // valores peligrosos descartados al cargar lo guardado en localStorage
 export const valoresQuitadosAlCargar = () => quitadosAlCargar;
+let habiaGuardado = false; // había ALGO guardado (aunque fuera una página vacía o ilegible)
+let danado = null; // null, o { texto, copiado } si lo guardado no se pudo leer
+export const nadaGuardado = () => !habiaGuardado;
+export const guardadoDanado = () => danado;
 function cargarGuardado() {
+  let txt = null;
+  try { txt = localStorage.getItem(CLAVE_LS); } catch { return null; } // localStorage bloqueado: empezamos de cero
+  if (txt === null) return null;
+  habiaGuardado = true;
   try {
-    const txt = localStorage.getItem(CLAVE_LS);
-    if (!txt) return null;
     const informe = {};
     const pagina = normalizePage(JSON.parse(txt), informe);
     quitadosAlCargar = informe.quitados; // main.js lo avisa al arrancar
     return pagina;
   } catch {
-    return null; // localStorage bloqueado o JSON dañado: empezamos de cero
+    // Dañado: se aparta una copia ANTES de que el próximo autoguardado lo pise (main.js lo avisa)
+    danado = { texto: txt, copiado: false };
+    try { localStorage.setItem(CLAVE_DANADA, txt); danado.copiado = true; } catch { /* sin espacio: queda en memoria para descargarlo */ }
+    return null;
   }
 }
 
@@ -583,6 +593,12 @@ export function replacePage(obj) {
 }
 
 export const newPage = () => replacePage(createPage());
+
+/** Página con la que ARRANCA el editor (la landing de la demo web). Va antes de montar la interfaz: no entra en
+ *  el undo y NO se guarda hasta que se cambie algo (así "nada guardado" sigue siendo cierto si solo miran). */
+export function iniciarCon(obj) {
+  state.page = normalizePage(structuredClone(obj));
+}
 
 /** Aplica lo que devolvió leerEntrada() (core/plan.js) en UN solo paso de Undo.
  *  modo 'reemplazar': plan → cambia las secciones (y el título si lo trae) y conserva los ajustes de la página;

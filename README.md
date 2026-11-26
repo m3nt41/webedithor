@@ -30,7 +30,7 @@
   </tr>
 </table>
 
-> 🚀 **Try it now, nothing to install: [webedithor.m3nt41.com](https://webedithor.m3nt41.com).** Your work stays in your browser, so use **Guardar JSON** to keep a copy. For a complete sample landing, press **Abrir JSON** and pick [`docs/demo-estilo.json`](docs/demo-estilo.json).
+> 🚀 **Try it now, nothing to install: [webedithor.m3nt41.com](https://webedithor.m3nt41.com).** Your work stays in your browser, so use **Guardar JSON** to keep a copy. On your first visit it opens with a sample animated landing: click anything to edit it, and press the eye button (preview) to see the scroll animations. **Ver demo** brings it back at any time.
 
 ---
 

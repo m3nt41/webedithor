@@ -58,6 +58,7 @@ Estado al día. El detalle de las etapas 1 a 7 y de las mini-etapas del 13 y 14 
 - Marcar o no `[x]` "Marquee / ticker" en `FEATURES.md` (esperando tu OK).
 
 **Pendientes (a hacer)**
+- **La demo debe abrir con una landing espectacular ya cargada** (anotado 2026-11-26). Hoy el README pide pulsar "Abrir JSON" y elegir `docs/demo-estilo.json`: nadie va a bajarlo de GitHub para subirlo a la demo. Objetivo: al entrar a la demo, la landing animada sale cargada para hacer clic, mover cosas y probar las animaciones de scroll desde el primer segundo. Al hacerlo: (1) cargarla solo si no hay nada guardado en localStorage, para no pisar el trabajo de nadie; (2) revisar si `demo-estilo.json` (`tools/gen-demo-estilo.mjs`) luce lo suficiente, sobre todo en scroll, o si hace falta una landing mejor; (3) por decidir: si aplica solo a la demo web (webedithor.m3nt41.com) o también a `dist/editor.html` y a la CLI; (4) quitar del README la instrucción de "Abrir JSON".
 - **Mejorar las escenas** para que sean más expresivas: texto que se revela, zoom de imagen, fondo que cambia y contador de pasos. Fijar mejores valores por defecto y que el plan de la IA pueda ajustar duración y transición.
 - **Botones Añadir paso / Quitar paso** en las escenas.
 - **Hover para todos los hijos** (aplicar un hover a todos los hijos de un contenedor de una vez).

@@ -94,6 +94,7 @@ export const MAPA = {
   'tools/banco-texto.html': NINGUNO,      // banco de comparación a ojo, no lo usa el editor ni ningún test
   'tools/gen-demo-parallax.mjs': NINGUNO,
   'tools/gen-demo-estilo.mjs': ['tema'],
+  'tools/gen-demo-estrella.mjs': NINGUNO,   // genera docs/demo-estrella.json (landing estrella); ningún test lo usa todavía
   'tools/gen-lenis.mjs': ['selenium'],
   'tools/renombrar-build.mjs': ['editor-file'],
   'tools/test-cambios.mjs': NINGUNO,  // este runner y su mapa no tienen test propio: se prueban a mano con --archivos

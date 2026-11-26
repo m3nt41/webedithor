@@ -1,0 +1,3349 @@
+{
+  "app": "editor-landings",
+  "version": 1,
+  "page": {
+    "id": "98f138283y",
+    "type": "page",
+    "name": "Página",
+    "styles": {
+      "base": {
+        "fontFamily": "system-ui, sans-serif",
+        "color": "#111",
+        "background": "#0c0c0e"
+      },
+      "mobile": {}
+    },
+    "content": {
+      "title": "Órbita — landing de muestra",
+      "lang": "es"
+    },
+    "animation": null,
+    "children": [
+      {
+        "id": "ba67b6ff6",
+        "type": "section",
+        "name": "Navbar",
+        "styles": {
+          "base": {
+            "display": "flex",
+            "alignItems": "center",
+            "justifyContent": "space-between",
+            "flexWrap": "wrap",
+            "gap": "16px",
+            "padding": "18px max(32px, calc((100% - 1120px) / 2))",
+            "position": "sticky",
+            "top": "0",
+            "zIndex": "20",
+            "background": "#0c0c0e",
+            "color": "#f2efe8",
+            "borderBottom": "1px solid #2c2c30"
+          },
+          "mobile": {
+            "padding": "10px 20px",
+            "gap": "10px 16px"
+          }
+        },
+        "content": {
+          "menuMovil": true
+        },
+        "animation": null,
+        "children": [
+          {
+            "id": "011223fb0",
+            "type": "text",
+            "name": "Logo",
+            "styles": {
+              "base": {
+                "margin": "0",
+                "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                "fontWeight": "500",
+                "fontSize": "24px"
+              },
+              "mobile": {}
+            },
+            "content": {
+              "text": "Órbita"
+            },
+            "animation": null,
+            "children": []
+          },
+          {
+            "id": "be27a8274",
+            "type": "container",
+            "name": "Enlaces",
+            "styles": {
+              "base": {
+                "display": "flex",
+                "gap": "32px",
+                "flexWrap": "wrap",
+                "alignItems": "center"
+              },
+              "mobile": {
+                "order": "3",
+                "width": "100%",
+                "justifyContent": "center"
+              }
+            },
+            "content": {},
+            "animation": null,
+            "children": [
+              {
+                "id": "5fde222b1",
+                "type": "button",
+                "name": "Enlace",
+                "styles": {
+                  "base": {
+                    "color": "inherit",
+                    "textDecoration": "none",
+                    "display": "inline-block",
+                    "fontSize": "15px",
+                    "letterSpacing": "0.02em"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "text": "Proceso",
+                  "href": "#proceso"
+                },
+                "animation": {
+                  "hover": {
+                    "effect": "underline",
+                    "duration": 0.3,
+                    "ease": "suave",
+                    "direccion": "izq",
+                    "grosor": 1,
+                    "separacion": 4
+                  }
+                },
+                "children": []
+              },
+              {
+                "id": "33afe4862",
+                "type": "button",
+                "name": "Enlace",
+                "styles": {
+                  "base": {
+                    "color": "inherit",
+                    "textDecoration": "none",
+                    "display": "inline-block",
+                    "fontSize": "15px",
+                    "letterSpacing": "0.02em"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "text": "Trabajo",
+                  "href": "#trabajo"
+                },
+                "animation": {
+                  "hover": {
+                    "effect": "underline",
+                    "duration": 0.3,
+                    "ease": "suave",
+                    "direccion": "izq",
+                    "grosor": 1,
+                    "separacion": 4
+                  }
+                },
+                "children": []
+              },
+              {
+                "id": "489593dd3",
+                "type": "button",
+                "name": "Enlace",
+                "styles": {
+                  "base": {
+                    "color": "inherit",
+                    "textDecoration": "none",
+                    "display": "inline-block",
+                    "fontSize": "15px",
+                    "letterSpacing": "0.02em"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "text": "Planes",
+                  "href": "#precios"
+                },
+                "animation": {
+                  "hover": {
+                    "effect": "underline",
+                    "duration": 0.3,
+                    "ease": "suave",
+                    "direccion": "izq",
+                    "grosor": 1,
+                    "separacion": 4
+                  }
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "id": "cf9b870e5",
+            "type": "button",
+            "name": "Botón de acción",
+            "styles": {
+              "base": {
+                "display": "inline-block",
+                "padding": "12px 24px",
+                "fontSize": "16px",
+                "borderRadius": "0",
+                "textDecoration": "none",
+                "fontWeight": "500",
+                "letterSpacing": "0.02em",
+                "background": "#a68a56",
+                "color": "#0c0c0e",
+                "border": "1px solid #a68a56"
+              },
+              "mobile": {}
+            },
+            "content": {
+              "text": "Hablemos",
+              "href": "#contacto"
+            },
+            "animation": {
+              "hover": {
+                "effect": "bgrow",
+                "duration": 0.3,
+                "ease": "suave",
+                "color": "#c4a76f"
+              }
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": "d0f6d271d",
+        "type": "section",
+        "name": "Portada",
+        "styles": {
+          "base": {
+            "display": "flex",
+            "flexDirection": "column",
+            "padding": "112px max(32px, calc((100% - 1120px) / 2))",
+            "alignItems": "flex-start",
+            "justifyContent": "center",
+            "gap": "28px",
+            "minHeight": "92vh",
+            "background": "#0c0c0e",
+            "color": "#f2efe8",
+            "fondoImagen": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%221600%22%20height%3D%221000%22%20viewBox%3D%220%200%201600%201000%22%3E%3Cdefs%3E%3CradialGradient%20id%3D%22a%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23a68a56%22%20stop-opacity%3D%220.55%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23a68a56%22%20stop-opacity%3D%220%22%2F%3E%3C%2FradialGradient%3E%3CradialGradient%20id%3D%22b%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%236d5a8f%22%20stop-opacity%3D%220.3%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%236d5a8f%22%20stop-opacity%3D%220%22%2F%3E%3C%2FradialGradient%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22p%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220.6%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23e6d2a6%22%2F%3E%3Cstop%20offset%3D%220.45%22%20stop-color%3D%22%238a7044%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c0e%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%0A%20%20%20%20%3Crect%20width%3D%221600%22%20height%3D%221000%22%20fill%3D%22%230c0c0e%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%221250%22%20cy%3D%22760%22%20r%3D%22620%22%20fill%3D%22url(%23a)%22%2F%3E%3Ccircle%20cx%3D%22260%22%20cy%3D%22180%22%20r%3D%22520%22%20fill%3D%22url(%23b)%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%220%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%22397%22%20cy%3D%22233%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%22794%22%20cy%3D%22466%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%221191%22%20cy%3D%22699%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%221588%22%20cy%3D%22932%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%22385%22%20cy%3D%22165%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%22782%22%20cy%3D%22398%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%221179%22%20cy%3D%22631%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%221576%22%20cy%3D%22864%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%22373%22%20cy%3D%2297%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%22770%22%20cy%3D%22330%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%221167%22%20cy%3D%22563%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%221564%22%20cy%3D%22796%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22361%22%20cy%3D%2229%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%22758%22%20cy%3D%22262%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%221155%22%20cy%3D%22495%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%221552%22%20cy%3D%22728%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%22349%22%20cy%3D%22961%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22746%22%20cy%3D%22194%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%221143%22%20cy%3D%22427%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%221540%22%20cy%3D%22660%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%22337%22%20cy%3D%22893%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%22734%22%20cy%3D%22126%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%221131%22%20cy%3D%22359%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%221528%22%20cy%3D%22592%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%22325%22%20cy%3D%22825%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%22722%22%20cy%3D%2258%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%221119%22%20cy%3D%22291%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%221516%22%20cy%3D%22524%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%22313%22%20cy%3D%22757%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%22710%22%20cy%3D%22990%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%221107%22%20cy%3D%22223%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%221504%22%20cy%3D%22456%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22301%22%20cy%3D%22689%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%22698%22%20cy%3D%22922%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%221095%22%20cy%3D%22155%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%221492%22%20cy%3D%22388%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%22289%22%20cy%3D%22621%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22686%22%20cy%3D%22854%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%221083%22%20cy%3D%2287%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%221480%22%20cy%3D%22320%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%22277%22%20cy%3D%22553%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%22674%22%20cy%3D%22786%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%221071%22%20cy%3D%2219%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%221468%22%20cy%3D%22252%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%22265%22%20cy%3D%22485%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%22662%22%20cy%3D%22718%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%221059%22%20cy%3D%22951%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%221456%22%20cy%3D%22184%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%22253%22%20cy%3D%22417%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%22650%22%20cy%3D%22650%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%221047%22%20cy%3D%22883%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%221444%22%20cy%3D%22116%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22241%22%20cy%3D%22349%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%22638%22%20cy%3D%22582%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%221035%22%20cy%3D%22815%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%221432%22%20cy%3D%2248%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%22229%22%20cy%3D%22281%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22626%22%20cy%3D%22514%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%221023%22%20cy%3D%22747%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%221420%22%20cy%3D%22980%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%22217%22%20cy%3D%22213%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%22614%22%20cy%3D%22446%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%221011%22%20cy%3D%22679%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%221408%22%20cy%3D%22912%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%22205%22%20cy%3D%22145%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%22602%22%20cy%3D%22378%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%22999%22%20cy%3D%22611%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%221396%22%20cy%3D%22844%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%22193%22%20cy%3D%2277%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%22590%22%20cy%3D%22310%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%22987%22%20cy%3D%22543%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%221384%22%20cy%3D%22776%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22181%22%20cy%3D%229%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%22578%22%20cy%3D%22242%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%22975%22%20cy%3D%22475%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%221372%22%20cy%3D%22708%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%22169%22%20cy%3D%22941%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22566%22%20cy%3D%22174%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%22963%22%20cy%3D%22407%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%221360%22%20cy%3D%22640%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%22157%22%20cy%3D%22873%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%22554%22%20cy%3D%22106%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22951%22%20cy%3D%22339%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%221348%22%20cy%3D%22572%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%22145%22%20cy%3D%22805%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%22542%22%20cy%3D%2238%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%22939%22%20cy%3D%22271%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%221336%22%20cy%3D%22504%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%22133%22%20cy%3D%22737%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%0A%20%20%20%20%3Cg%20transform%3D%22rotate(-18%201250%20820)%22%3E%3Cellipse%20cx%3D%221250%22%20cy%3D%22820%22%20rx%3D%22430%22%20ry%3D%22154.79999999999998%22%20fill%3D%22none%22%20stroke%3D%22%23a68a56%22%20stroke-opacity%3D%220.55%22%20stroke-width%3D%221.5%22%2F%3E%3Cellipse%20cx%3D%221250%22%20cy%3D%22820%22%20rx%3D%22580%22%20ry%3D%22208.79999999999998%22%20fill%3D%22none%22%20stroke%3D%22%23a68a56%22%20stroke-opacity%3D%220.44000000000000006%22%20stroke-width%3D%221.5%22%2F%3E%3Cellipse%20cx%3D%221250%22%20cy%3D%22820%22%20rx%3D%22740%22%20ry%3D%22266.4%22%20fill%3D%22none%22%20stroke%3D%22%23a68a56%22%20stroke-opacity%3D%220.33000000000000007%22%20stroke-width%3D%221.5%22%2F%3E%3Cellipse%20cx%3D%221250%22%20cy%3D%22820%22%20rx%3D%22920%22%20ry%3D%22331.2%22%20fill%3D%22none%22%20stroke%3D%22%23a68a56%22%20stroke-opacity%3D%220.22000000000000003%22%20stroke-width%3D%221.5%22%2F%3E%3C%2Fg%3E%0A%20%20%20%20%3Ccircle%20cx%3D%221250%22%20cy%3D%22820%22%20r%3D%22270%22%20fill%3D%22url(%23p)%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22852%22%20cy%3D%22700%22%20r%3D%2211%22%20fill%3D%22%23e6d2a6%22%2F%3E%3Ccircle%20cx%3D%221490%22%20cy%3D%22500%22%20r%3D%226%22%20fill%3D%22%23f2efe8%22%2F%3E%3C%2Fsvg%3E",
+            "fondoAjuste": "cover",
+            "fondoPosicion": "center",
+            "fondoCapa": 18
+          },
+          "mobile": {
+            "padding": "64px 20px",
+            "minHeight": "80vh"
+          }
+        },
+        "content": {
+          "anchor": "inicio"
+        },
+        "animation": null,
+        "children": [
+          {
+            "id": "51a90ffa7",
+            "type": "text",
+            "name": "Etiqueta",
+            "styles": {
+              "base": {
+                "margin": "0",
+                "fontSize": "12px",
+                "lineHeight": "1.4",
+                "letterSpacing": "0.18em",
+                "textTransform": "uppercase",
+                "fontWeight": "500",
+                "color": "#a68a56"
+              },
+              "mobile": {}
+            },
+            "content": {
+              "text": "Estudio de diseño web · desde 2019"
+            },
+            "animation": {
+              "appear": {
+                "effect": "fade",
+                "trigger": "load",
+                "duration": 0.9,
+                "delay": 0.1,
+                "distance": 50,
+                "ease": "suave"
+              }
+            },
+            "children": []
+          },
+          {
+            "id": "1d34e2258",
+            "type": "heading",
+            "name": "Título",
+            "styles": {
+              "base": {
+                "margin": "0",
+                "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                "fontWeight": "500",
+                "fontSize": "104px",
+                "lineHeight": "1.02",
+                "letterSpacing": "-0.02em",
+                "maxWidth": "11ch"
+              },
+              "mobile": {
+                "fontSize": "52px"
+              }
+            },
+            "content": {
+              "text": "Páginas que se mueven contigo",
+              "level": 1
+            },
+            "animation": {
+              "text": {
+                "mode": "words",
+                "effect": "up",
+                "trigger": "load",
+                "duration": 1,
+                "delay": 0.25,
+                "stagger": 0.1,
+                "distance": 60,
+                "ease": "suave"
+              }
+            },
+            "children": []
+          },
+          {
+            "id": "e765776c9",
+            "type": "text",
+            "name": "Subtítulo",
+            "styles": {
+              "base": {
+                "margin": "0",
+                "fontSize": "20px",
+                "lineHeight": "1.6",
+                "color": "#d6d2c9",
+                "maxWidth": "42ch"
+              },
+              "mobile": {
+                "fontSize": "17px"
+              }
+            },
+            "content": {
+              "text": "Diseñamos landings con movimiento que cuenta algo. Baja y míralo en acción."
+            },
+            "animation": {
+              "appear": {
+                "effect": "up",
+                "trigger": "load",
+                "duration": 0.9,
+                "delay": 0.9,
+                "distance": 50,
+                "ease": "suave"
+              }
+            },
+            "children": []
+          },
+          {
+            "id": "fbca1435c",
+            "type": "container",
+            "name": "Botones",
+            "styles": {
+              "base": {
+                "display": "flex",
+                "gap": "14px",
+                "flexWrap": "wrap",
+                "marginTop": "8px"
+              },
+              "mobile": {}
+            },
+            "content": {},
+            "animation": {
+              "stagger": {
+                "effect": "up",
+                "trigger": "load",
+                "duration": 0.8,
+                "delay": 1.15,
+                "step": 0.14,
+                "distance": 30,
+                "ease": "suave"
+              }
+            },
+            "children": [
+              {
+                "id": "7c9496c5a",
+                "type": "button",
+                "name": "Botón",
+                "styles": {
+                  "base": {
+                    "display": "inline-block",
+                    "padding": "16px 32px",
+                    "fontSize": "18px",
+                    "borderRadius": "0",
+                    "textDecoration": "none",
+                    "fontWeight": "500",
+                    "letterSpacing": "0.02em",
+                    "background": "#a68a56",
+                    "color": "#0c0c0e",
+                    "border": "1px solid #a68a56"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "text": "Empezar un proyecto",
+                  "href": "#contacto"
+                },
+                "animation": {
+                  "hover": {
+                    "effect": "bgrow",
+                    "duration": 0.3,
+                    "ease": "suave",
+                    "color": "#c4a76f"
+                  }
+                },
+                "children": []
+              },
+              {
+                "id": "6949b6d4b",
+                "type": "button",
+                "name": "Botón",
+                "styles": {
+                  "base": {
+                    "display": "inline-block",
+                    "padding": "16px 32px",
+                    "fontSize": "18px",
+                    "borderRadius": "0",
+                    "textDecoration": "none",
+                    "fontWeight": "500",
+                    "letterSpacing": "0.02em",
+                    "background": "transparent",
+                    "color": "#f2efe8",
+                    "border": "1px solid #f2efe8"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "text": "Ver el proceso",
+                  "href": "#proceso"
+                },
+                "animation": {
+                  "hover": {
+                    "effect": "fill",
+                    "duration": 0.3,
+                    "ease": "suave",
+                    "modo": "barrido",
+                    "dirRelleno": "izq",
+                    "color": "#f2efe8",
+                    "textoCambia": "si",
+                    "textoColor": "#0c0c0e"
+                  }
+                },
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "7feef1c3p",
+        "type": "section",
+        "name": "Cinta",
+        "styles": {
+          "base": {
+            "padding": "0px 0",
+            "background": "#17171a",
+            "color": "#f2efe8"
+          },
+          "mobile": {}
+        },
+        "content": {},
+        "animation": null,
+        "children": [
+          {
+            "id": "a37365f4o",
+            "type": "container",
+            "name": "Marquesina cinta",
+            "styles": {
+              "base": {
+                "color": "#f2efe8",
+                "padding": "20px 0",
+                "borderTop": "1px solid #2c2c30",
+                "borderBottom": "1px solid #2c2c30"
+              },
+              "mobile": {}
+            },
+            "content": {
+              "marquesina": {
+                "mov": true,
+                "vel": 30,
+                "dir": "izq",
+                "pausa": true,
+                "gap": 40,
+                "copias": 4
+              }
+            },
+            "animation": null,
+            "children": [
+              {
+                "id": "a0e5c167e",
+                "type": "text",
+                "name": "Texto",
+                "styles": {
+                  "base": {
+                    "margin": "0",
+                    "fontSize": "14px",
+                    "lineHeight": "1.4",
+                    "letterSpacing": "0.18em",
+                    "textTransform": "uppercase",
+                    "fontWeight": "500",
+                    "whiteSpace": "nowrap"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "text": "Diseño a medida"
+                },
+                "animation": null,
+                "children": []
+              },
+              {
+                "id": "58f859def",
+                "type": "text",
+                "name": "Separador",
+                "styles": {
+                  "base": {
+                    "margin": "0",
+                    "fontFamily": "system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+                    "fontSize": "16px",
+                    "lineHeight": "1",
+                    "letterSpacing": "0",
+                    "color": "#a68a56",
+                    "whiteSpace": "nowrap"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "text": "✦"
+                },
+                "animation": null,
+                "children": []
+              },
+              {
+                "id": "f2b3c863g",
+                "type": "text",
+                "name": "Texto",
+                "styles": {
+                  "base": {
+                    "margin": "0",
+                    "fontSize": "14px",
+                    "lineHeight": "1.4",
+                    "letterSpacing": "0.18em",
+                    "textTransform": "uppercase",
+                    "fontWeight": "500",
+                    "whiteSpace": "nowrap"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "text": "Entrega rápida"
+                },
+                "animation": null,
+                "children": []
+              },
+              {
+                "id": "ba9b2cd8h",
+                "type": "text",
+                "name": "Separador",
+                "styles": {
+                  "base": {
+                    "margin": "0",
+                    "fontFamily": "system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+                    "fontSize": "16px",
+                    "lineHeight": "1",
+                    "letterSpacing": "0",
+                    "color": "#a68a56",
+                    "whiteSpace": "nowrap"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "text": "✦"
+                },
+                "animation": null,
+                "children": []
+              },
+              {
+                "id": "641b8bc9i",
+                "type": "text",
+                "name": "Texto",
+                "styles": {
+                  "base": {
+                    "margin": "0",
+                    "fontSize": "14px",
+                    "lineHeight": "1.4",
+                    "letterSpacing": "0.18em",
+                    "textTransform": "uppercase",
+                    "fontWeight": "500",
+                    "whiteSpace": "nowrap"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "text": "Soporte cercano"
+                },
+                "animation": null,
+                "children": []
+              },
+              {
+                "id": "b8179822j",
+                "type": "text",
+                "name": "Separador",
+                "styles": {
+                  "base": {
+                    "margin": "0",
+                    "fontFamily": "system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+                    "fontSize": "16px",
+                    "lineHeight": "1",
+                    "letterSpacing": "0",
+                    "color": "#a68a56",
+                    "whiteSpace": "nowrap"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "text": "✦"
+                },
+                "animation": null,
+                "children": []
+              },
+              {
+                "id": "28501809k",
+                "type": "text",
+                "name": "Texto",
+                "styles": {
+                  "base": {
+                    "margin": "0",
+                    "fontSize": "14px",
+                    "lineHeight": "1.4",
+                    "letterSpacing": "0.18em",
+                    "textTransform": "uppercase",
+                    "fontWeight": "500",
+                    "whiteSpace": "nowrap"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "text": "Resultados reales"
+                },
+                "animation": null,
+                "children": []
+              },
+              {
+                "id": "abe4fea6l",
+                "type": "text",
+                "name": "Separador",
+                "styles": {
+                  "base": {
+                    "margin": "0",
+                    "fontFamily": "system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+                    "fontSize": "16px",
+                    "lineHeight": "1",
+                    "letterSpacing": "0",
+                    "color": "#a68a56",
+                    "whiteSpace": "nowrap"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "text": "✦"
+                },
+                "animation": null,
+                "children": []
+              },
+              {
+                "id": "faa365dfm",
+                "type": "text",
+                "name": "Texto",
+                "styles": {
+                  "base": {
+                    "margin": "0",
+                    "fontSize": "14px",
+                    "lineHeight": "1.4",
+                    "letterSpacing": "0.18em",
+                    "textTransform": "uppercase",
+                    "fontWeight": "500",
+                    "whiteSpace": "nowrap"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "text": "Sin letra chica"
+                },
+                "animation": null,
+                "children": []
+              },
+              {
+                "id": "b4b689f6n",
+                "type": "text",
+                "name": "Separador",
+                "styles": {
+                  "base": {
+                    "margin": "0",
+                    "fontFamily": "system-ui, -apple-system, \"Segoe UI\", Roboto, sans-serif",
+                    "fontSize": "16px",
+                    "lineHeight": "1",
+                    "letterSpacing": "0",
+                    "color": "#a68a56",
+                    "whiteSpace": "nowrap"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "text": "✦"
+                },
+                "animation": null,
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "7c314742t",
+        "type": "section",
+        "name": "Manifiesto",
+        "styles": {
+          "base": {
+            "display": "flex",
+            "flexDirection": "column",
+            "padding": "168px max(32px, calc((100% - 900px) / 2))",
+            "gap": "32px",
+            "alignItems": "center",
+            "textAlign": "center",
+            "background": "#f7f5f0",
+            "color": "#111111"
+          },
+          "mobile": {
+            "padding": "88px 24px"
+          }
+        },
+        "content": {},
+        "animation": null,
+        "children": [
+          {
+            "id": "e1c5f00dq",
+            "type": "text",
+            "name": "Etiqueta",
+            "styles": {
+              "base": {
+                "margin": "0",
+                "fontSize": "12px",
+                "lineHeight": "1.4",
+                "letterSpacing": "0.18em",
+                "textTransform": "uppercase",
+                "fontWeight": "500",
+                "color": "#5f5c55"
+              },
+              "mobile": {}
+            },
+            "content": {
+              "text": "Lo que creemos"
+            },
+            "animation": {
+              "appear": {
+                "effect": "fade",
+                "trigger": "scroll",
+                "duration": 0.9,
+                "delay": 0,
+                "distance": 50,
+                "ease": "suave"
+              }
+            },
+            "children": []
+          },
+          {
+            "id": "8be405d4r",
+            "type": "heading",
+            "name": "Título",
+            "styles": {
+              "base": {
+                "margin": "0",
+                "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                "fontWeight": "500",
+                "fontSize": "58px",
+                "lineHeight": "1.18",
+                "letterSpacing": "-0.015em"
+              },
+              "mobile": {
+                "fontSize": "32px"
+              }
+            },
+            "content": {
+              "text": "Una buena página no se lee de golpe: se va descubriendo mientras bajas.",
+              "level": 2
+            },
+            "animation": {
+              "text": {
+                "mode": "words",
+                "effect": "blur",
+                "trigger": "scroll",
+                "duration": 0.9,
+                "delay": 0,
+                "stagger": 0.09,
+                "distance": 40,
+                "ease": "suave"
+              }
+            },
+            "children": []
+          },
+          {
+            "id": "e8654defs",
+            "type": "container",
+            "name": "Línea",
+            "styles": {
+              "base": {
+                "width": "160px",
+                "height": "2px",
+                "background": "#a68a56"
+              },
+              "mobile": {}
+            },
+            "content": {},
+            "animation": {
+              "scrolllink": {
+                "effect": "zoom-in",
+                "amount": 90,
+                "start": 20,
+                "end": 55
+              }
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": "d8f3284219",
+        "type": "section",
+        "name": "Proceso",
+        "styles": {
+          "base": {
+            "display": "flex",
+            "flexDirection": "column",
+            "alignItems": "center",
+            "justifyContent": "center",
+            "textAlign": "center",
+            "padding": "32px",
+            "background": "#0c0c0e",
+            "color": "#f2efe8"
+          },
+          "mobile": {
+            "padding": "24px 20px"
+          }
+        },
+        "content": {
+          "anchor": "proceso"
+        },
+        "animation": {
+          "scene": {
+            "steps": "3",
+            "length": 4,
+            "transition": 22
+          }
+        },
+        "children": [
+          {
+            "id": "14b03afcy",
+            "type": "container",
+            "name": "Paso 1",
+            "styles": {
+              "base": {
+                "display": "flex",
+                "flexDirection": "column",
+                "alignItems": "center",
+                "gap": "18px",
+                "maxWidth": "760px",
+                "width": "100%"
+              },
+              "mobile": {}
+            },
+            "content": {},
+            "animation": {
+              "scenestep": {
+                "effect": "out",
+                "step": 2,
+                "move": "up",
+                "distance": 70
+              }
+            },
+            "children": [
+              {
+                "id": "4bec5598u",
+                "type": "text",
+                "name": "Etiqueta",
+                "styles": {
+                  "base": {
+                    "margin": "0",
+                    "fontSize": "12px",
+                    "lineHeight": "1.4",
+                    "letterSpacing": "0.18em",
+                    "textTransform": "uppercase",
+                    "fontWeight": "500",
+                    "color": "#a68a56"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "text": "Paso 1 de 3"
+                },
+                "animation": null,
+                "children": []
+              },
+              {
+                "id": "74befe81v",
+                "type": "heading",
+                "name": "Título",
+                "styles": {
+                  "base": {
+                    "margin": "0",
+                    "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                    "fontWeight": "500",
+                    "fontSize": "52px",
+                    "lineHeight": "1.15",
+                    "letterSpacing": "-0.015em"
+                  },
+                  "mobile": {
+                    "fontSize": "32px"
+                  }
+                },
+                "content": {
+                  "text": "Primero, el boceto",
+                  "level": 2
+                },
+                "animation": null,
+                "children": []
+              },
+              {
+                "id": "2ed059e4w",
+                "type": "text",
+                "name": "Subtítulo",
+                "styles": {
+                  "base": {
+                    "margin": "0",
+                    "fontSize": "20px",
+                    "lineHeight": "1.6",
+                    "color": "#a3a09a",
+                    "maxWidth": "44ch"
+                  },
+                  "mobile": {
+                    "fontSize": "17px"
+                  }
+                },
+                "content": {
+                  "text": "Ordenamos la historia antes de pintar nada."
+                },
+                "animation": null,
+                "children": []
+              },
+              {
+                "id": "805edffbx",
+                "type": "image",
+                "name": "Lámina",
+                "styles": {
+                  "base": {
+                    "width": "100%",
+                    "borderRadius": "0",
+                    "maxWidth": "640px",
+                    "marginTop": "8px"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "src": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22960%22%20height%3D%22540%22%20viewBox%3D%220%200%20960%20540%22%3E%3Crect%20width%3D%22960%22%20height%3D%22540%22%20fill%3D%22%2317171a%22%2F%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23c9b88f%22%20stroke-width%3D%222.5%22%20stroke-dasharray%3D%229%209%22%3E%0A%20%20%3Crect%20x%3D%2280%22%20y%3D%2260%22%20width%3D%22800%22%20height%3D%22420%22%2F%3E%3Crect%20x%3D%22130%22%20y%3D%22130%22%20width%3D%22340%22%20height%3D%2252%22%2F%3E%3Crect%20x%3D%22130%22%20y%3D%22205%22%20width%3D%22270%22%20height%3D%2222%22%2F%3E%0A%20%20%3Crect%20x%3D%22130%22%20y%3D%22290%22%20width%3D%22150%22%20height%3D%2248%22%2F%3E%3Ccircle%20cx%3D%22660%22%20cy%3D%22270%22%20r%3D%22130%22%2F%3E%3Cline%20x1%3D%22660%22%20y1%3D%2290%22%20x2%3D%22660%22%20y2%3D%22450%22%2F%3E%3Cline%20x1%3D%22490%22%20y1%3D%22270%22%20x2%3D%22830%22%20y2%3D%22270%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E",
+                  "alt": "Primero, el boceto"
+                },
+                "animation": null,
+                "children": []
+              }
+            ]
+          },
+          {
+            "id": "cfd21e9813",
+            "type": "container",
+            "name": "Paso 2",
+            "styles": {
+              "base": {
+                "display": "flex",
+                "flexDirection": "column",
+                "alignItems": "center",
+                "gap": "18px",
+                "maxWidth": "760px",
+                "width": "100%"
+              },
+              "mobile": {}
+            },
+            "content": {},
+            "animation": {
+              "scenestep": {
+                "effect": "inout",
+                "step": 2,
+                "move": "up",
+                "distance": 70
+              }
+            },
+            "children": [
+              {
+                "id": "8be5f397z",
+                "type": "text",
+                "name": "Etiqueta",
+                "styles": {
+                  "base": {
+                    "margin": "0",
+                    "fontSize": "12px",
+                    "lineHeight": "1.4",
+                    "letterSpacing": "0.18em",
+                    "textTransform": "uppercase",
+                    "fontWeight": "500",
+                    "color": "#a68a56"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "text": "Paso 2 de 3"
+                },
+                "animation": null,
+                "children": []
+              },
+              {
+                "id": "acd614e510",
+                "type": "heading",
+                "name": "Título",
+                "styles": {
+                  "base": {
+                    "margin": "0",
+                    "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                    "fontWeight": "500",
+                    "fontSize": "52px",
+                    "lineHeight": "1.15",
+                    "letterSpacing": "-0.015em"
+                  },
+                  "mobile": {
+                    "fontSize": "32px"
+                  }
+                },
+                "content": {
+                  "text": "Luego, la forma",
+                  "level": 2
+                },
+                "animation": null,
+                "children": []
+              },
+              {
+                "id": "45452c0d11",
+                "type": "text",
+                "name": "Subtítulo",
+                "styles": {
+                  "base": {
+                    "margin": "0",
+                    "fontSize": "20px",
+                    "lineHeight": "1.6",
+                    "color": "#a3a09a",
+                    "maxWidth": "44ch"
+                  },
+                  "mobile": {
+                    "fontSize": "17px"
+                  }
+                },
+                "content": {
+                  "text": "Tipografía, color y aire hasta que se sienta tuya."
+                },
+                "animation": null,
+                "children": []
+              },
+              {
+                "id": "993f55ff12",
+                "type": "image",
+                "name": "Lámina",
+                "styles": {
+                  "base": {
+                    "width": "100%",
+                    "borderRadius": "0",
+                    "maxWidth": "640px",
+                    "marginTop": "8px"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "src": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22960%22%20height%3D%22540%22%20viewBox%3D%220%200%20960%20540%22%3E%3Crect%20width%3D%22960%22%20height%3D%22540%22%20fill%3D%22%2317171a%22%2F%3E%3Crect%20x%3D%2280%22%20y%3D%2260%22%20width%3D%22800%22%20height%3D%22420%22%20fill%3D%22%23f7f5f0%22%2F%3E%0A%20%20%3Crect%20x%3D%22130%22%20y%3D%22130%22%20width%3D%22340%22%20height%3D%2252%22%20fill%3D%22%23111111%22%2F%3E%3Crect%20x%3D%22130%22%20y%3D%22205%22%20width%3D%22270%22%20height%3D%2222%22%20fill%3D%22%23d9d6cf%22%2F%3E%0A%20%20%3Crect%20x%3D%22130%22%20y%3D%22290%22%20width%3D%22150%22%20height%3D%2248%22%20fill%3D%22%23111111%22%2F%3E%3Ccircle%20cx%3D%22660%22%20cy%3D%22270%22%20r%3D%22130%22%20fill%3D%22%23a68a56%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%22710%22%20cy%3D%22220%22%20r%3D%2246%22%20fill%3D%22%23f7f5f0%22%2F%3E%3C%2Fsvg%3E",
+                  "alt": "Luego, la forma"
+                },
+                "animation": null,
+                "children": []
+              }
+            ]
+          },
+          {
+            "id": "9e8d2e0218",
+            "type": "container",
+            "name": "Paso 3",
+            "styles": {
+              "base": {
+                "display": "flex",
+                "flexDirection": "column",
+                "alignItems": "center",
+                "gap": "18px",
+                "maxWidth": "760px",
+                "width": "100%"
+              },
+              "mobile": {}
+            },
+            "content": {},
+            "animation": {
+              "scenestep": {
+                "effect": "in",
+                "step": 3,
+                "move": "up",
+                "distance": 70
+              }
+            },
+            "children": [
+              {
+                "id": "d331ff7b14",
+                "type": "text",
+                "name": "Etiqueta",
+                "styles": {
+                  "base": {
+                    "margin": "0",
+                    "fontSize": "12px",
+                    "lineHeight": "1.4",
+                    "letterSpacing": "0.18em",
+                    "textTransform": "uppercase",
+                    "fontWeight": "500",
+                    "color": "#a68a56"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "text": "Paso 3 de 3"
+                },
+                "animation": null,
+                "children": []
+              },
+              {
+                "id": "8c4c249b15",
+                "type": "heading",
+                "name": "Título",
+                "styles": {
+                  "base": {
+                    "margin": "0",
+                    "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                    "fontWeight": "500",
+                    "fontSize": "52px",
+                    "lineHeight": "1.15",
+                    "letterSpacing": "-0.015em"
+                  },
+                  "mobile": {
+                    "fontSize": "32px"
+                  }
+                },
+                "content": {
+                  "text": "Y cobra vida",
+                  "level": 2
+                },
+                "animation": null,
+                "children": []
+              },
+              {
+                "id": "2844c09316",
+                "type": "text",
+                "name": "Subtítulo",
+                "styles": {
+                  "base": {
+                    "margin": "0",
+                    "fontSize": "20px",
+                    "lineHeight": "1.6",
+                    "color": "#a3a09a",
+                    "maxWidth": "44ch"
+                  },
+                  "mobile": {
+                    "fontSize": "17px"
+                  }
+                },
+                "content": {
+                  "text": "Movimiento con intención, en un solo archivo."
+                },
+                "animation": null,
+                "children": []
+              },
+              {
+                "id": "1cd387c417",
+                "type": "image",
+                "name": "Lámina",
+                "styles": {
+                  "base": {
+                    "width": "100%",
+                    "borderRadius": "0",
+                    "maxWidth": "640px",
+                    "marginTop": "8px"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "src": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22960%22%20height%3D%22540%22%20viewBox%3D%220%200%20960%20540%22%3E%3Cdefs%3E%3CradialGradient%20id%3D%22v%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23a68a56%22%20stop-opacity%3D%220.7%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23a68a56%22%20stop-opacity%3D%220%22%2F%3E%3C%2FradialGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22960%22%20height%3D%22540%22%20fill%3D%22%2317171a%22%2F%3E%3Crect%20x%3D%2280%22%20y%3D%2260%22%20width%3D%22800%22%20height%3D%22420%22%20fill%3D%22%230c0c0e%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%22660%22%20cy%3D%22270%22%20r%3D%22210%22%20fill%3D%22url(%23v)%22%2F%3E%3Crect%20x%3D%22130%22%20y%3D%22130%22%20width%3D%22340%22%20height%3D%2252%22%20fill%3D%22%23f2efe8%22%2F%3E%3Crect%20x%3D%22130%22%20y%3D%22205%22%20width%3D%22270%22%20height%3D%2222%22%20fill%3D%22%235f5c55%22%2F%3E%0A%20%20%3Crect%20x%3D%22130%22%20y%3D%22290%22%20width%3D%22150%22%20height%3D%2248%22%20fill%3D%22%23a68a56%22%2F%3E%3Ccircle%20cx%3D%22660%22%20cy%3D%22270%22%20r%3D%2296%22%20fill%3D%22%23e6d2a6%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%22660%22%20cy%3D%22270%22%20r%3D%22132%22%20fill%3D%22none%22%20stroke%3D%22%23e6d2a6%22%20stroke-opacity%3D%220.7%22%2F%3E%3Ccircle%20cx%3D%22660%22%20cy%3D%22270%22%20r%3D%22164%22%20fill%3D%22none%22%20stroke%3D%22%23e6d2a6%22%20stroke-opacity%3D%220.6599999999999999%22%2F%3E%3Ccircle%20cx%3D%22660%22%20cy%3D%22270%22%20r%3D%22196%22%20fill%3D%22none%22%20stroke%3D%22%23e6d2a6%22%20stroke-opacity%3D%220.62%22%2F%3E%3Ccircle%20cx%3D%22792%22%20cy%3D%22270%22%20r%3D%2211%22%20fill%3D%22%23f2efe8%22%2F%3E%3C%2Fsvg%3E",
+                  "alt": "Y cobra vida"
+                },
+                "animation": null,
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "dc724a6f1k",
+        "type": "section",
+        "name": "Trabajo",
+        "styles": {
+          "base": {
+            "display": "flex",
+            "flexDirection": "column",
+            "padding": "112px max(32px, calc((100% - 1120px) / 2))",
+            "gap": "72px",
+            "background": "#f7f5f0",
+            "color": "#111111"
+          },
+          "mobile": {
+            "padding": "64px 20px",
+            "gap": "40px"
+          }
+        },
+        "content": {
+          "anchor": "trabajo"
+        },
+        "animation": null,
+        "children": [
+          {
+            "id": "014b17e21c",
+            "type": "container",
+            "name": "Cabecera",
+            "styles": {
+              "base": {
+                "display": "flex",
+                "flexDirection": "column",
+                "gap": "14px"
+              },
+              "mobile": {}
+            },
+            "content": {},
+            "animation": null,
+            "children": [
+              {
+                "id": "d59736781a",
+                "type": "text",
+                "name": "Etiqueta",
+                "styles": {
+                  "base": {
+                    "margin": "0",
+                    "fontSize": "12px",
+                    "lineHeight": "1.4",
+                    "letterSpacing": "0.18em",
+                    "textTransform": "uppercase",
+                    "fontWeight": "500",
+                    "color": "#5f5c55"
+                  },
+                  "mobile": {}
+                },
+                "content": {
+                  "text": "Trabajo reciente"
+                },
+                "animation": {
+                  "appear": {
+                    "effect": "fade",
+                    "trigger": "scroll",
+                    "duration": 0.9,
+                    "delay": 0,
+                    "distance": 50,
+                    "ease": "suave"
+                  }
+                },
+                "children": []
+              },
+              {
+                "id": "da1ca6131b",
+                "type": "heading",
+                "name": "Título",
+                "styles": {
+                  "base": {
+                    "margin": "0",
+                    "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                    "fontWeight": "500",
+                    "fontSize": "56px",
+                    "lineHeight": "1.15",
+                    "letterSpacing": "-0.015em",
+                    "maxWidth": "14ch"
+                  },
+                  "mobile": {
+                    "fontSize": "34px"
+                  }
+                },
+                "content": {
+                  "text": "Cada marca con su propio ritmo",
+                  "level": 2
+                },
+                "animation": {
+                  "text": {
+                    "mode": "words",
+                    "effect": "up",
+                    "trigger": "scroll",
+                    "duration": 0.8,
+                    "delay": 0,
+                    "stagger": 0.07,
+                    "distance": 40,
+                    "ease": "suave"
+                  }
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "id": "efee94b61j",
+            "type": "container",
+            "name": "Mosaico",
+            "styles": {
+              "base": {
+                "display": "grid",
+                "gridTemplateColumns": "1fr 1fr",
+                "gap": "40px",
+                "alignItems": "start"
+              },
+              "mobile": {
+                "gridTemplateColumns": "1fr",
+                "gap": "20px"
+              }
+            },
+            "content": {},
+            "animation": null,
+            "children": [
+              {
+                "id": "025164731f",
+                "type": "container",
+                "name": "Columna izquierda",
+                "styles": {
+                  "base": {
+                    "display": "flex",
+                    "flexDirection": "column",
+                    "gap": "40px"
+                  },
+                  "mobile": {
+                    "gap": "20px"
+                  }
+                },
+                "content": {},
+                "animation": {
+                  "parallax": {
+                    "effect": "y",
+                    "amount": 40
+                  }
+                },
+                "children": [
+                  {
+                    "id": "f3bb80fa1d",
+                    "type": "image",
+                    "name": "Eclipse",
+                    "styles": {
+                      "base": {
+                        "width": "100%",
+                        "borderRadius": "0"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {
+                      "src": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22900%22%20height%3D%221100%22%20viewBox%3D%220%200%20900%201100%22%3E%3Cdefs%3E%3CradialGradient%20id%3D%22g%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23e6d2a6%22%20stop-opacity%3D%220.9%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23e6d2a6%22%20stop-opacity%3D%220%22%2F%3E%3C%2FradialGradient%3E%3C%2Fdefs%3E%3Crect%20width%3D%22900%22%20height%3D%221100%22%20fill%3D%22%2317171a%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%22450%22%20cy%3D%22462%22%20r%3D%22414%22%20fill%3D%22url(%23g)%22%2F%3E%3Ccircle%20cx%3D%22495%22%20cy%3D%22440%22%20r%3D%22216%22%20fill%3D%22%230c0c0e%22%2F%3E%0A%20%20%3Ccircle%20cx%3D%22450%22%20cy%3D%22462%22%20r%3D%22297%22%20fill%3D%22none%22%20stroke%3D%22%23e6d2a6%22%20stroke-opacity%3D%220.4%22%2F%3E%3Ccircle%20cx%3D%22450%22%20cy%3D%22462%22%20r%3D%22351%22%20fill%3D%22none%22%20stroke%3D%22%23e6d2a6%22%20stroke-opacity%3D%220.36000000000000004%22%2F%3E%3Ccircle%20cx%3D%22450%22%20cy%3D%22462%22%20r%3D%22414%22%20fill%3D%22none%22%20stroke%3D%22%23e6d2a6%22%20stroke-opacity%3D%220.32%22%2F%3E%3Ccircle%20cx%3D%22450%22%20cy%3D%22462%22%20r%3D%22486.00000000000006%22%20fill%3D%22none%22%20stroke%3D%22%23e6d2a6%22%20stroke-opacity%3D%220.28%22%2F%3E%0A%20%20%3Cline%20x1%3D%2280%22%20y1%3D%22880%22%20x2%3D%22820%22%20y2%3D%22880%22%20stroke%3D%22%23a68a56%22%20stroke-opacity%3D%220.6%22%2F%3E%0A%20%20%3Ctext%20x%3D%2280%22%20y%3D%22957%22%20fill%3D%22%23f2efe8%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2264%22%3EEclipse%3C%2Ftext%3E%0A%20%20%3Ctext%20x%3D%2280%22%20y%3D%221006.5%22%20fill%3D%22%23a3a09a%22%20font-family%3D%22sans-serif%22%20font-size%3D%2224%22%20letter-spacing%3D%226%22%3EIDENTIDAD%3C%2Ftext%3E%3C%2Fsvg%3E",
+                      "alt": "Eclipse"
+                    },
+                    "animation": {
+                      "hover": {
+                        "effect": "lift",
+                        "duration": 0.35,
+                        "ease": "suave"
+                      }
+                    },
+                    "children": []
+                  },
+                  {
+                    "id": "6722c28c1e",
+                    "type": "image",
+                    "name": "Retícula",
+                    "styles": {
+                      "base": {
+                        "width": "100%",
+                        "borderRadius": "0"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {
+                      "src": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22900%22%20height%3D%22700%22%20viewBox%3D%220%200%20900%20700%22%3E%3Crect%20width%3D%22900%22%20height%3D%22700%22%20fill%3D%22%230c0c0e%22%2F%3E%3Ccircle%20cx%3D%2290%22%20cy%3D%2290%22%20r%3D%228.0%22%20fill%3D%22%23a68a56%22%2F%3E%3Ccircle%20cx%3D%22193%22%20cy%3D%2290%22%20r%3D%2223.7%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22296%22%20cy%3D%2290%22%20r%3D%2234.7%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22399%22%20cy%3D%2290%22%20r%3D%2237.9%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22502%22%20cy%3D%2290%22%20r%3D%2232.3%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22605%22%20cy%3D%2290%22%20r%3D%2219.4%22%20fill%3D%22%23a68a56%22%2F%3E%3Ccircle%20cx%3D%22708%22%20cy%3D%2290%22%20r%3D%2212.7%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22811%22%20cy%3D%2290%22%20r%3D%2227.5%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%2290%22%20cy%3D%22180%22%20r%3D%2228.9%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22193%22%20cy%3D%22180%22%20r%3D%2237.1%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22296%22%20cy%3D%22180%22%20r%3D%2236.7%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22399%22%20cy%3D%22180%22%20r%3D%2227.8%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22502%22%20cy%3D%22180%22%20r%3D%2213.1%22%20fill%3D%22%23a68a56%22%2F%3E%3Ccircle%20cx%3D%22605%22%20cy%3D%22180%22%20r%3D%2219.1%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22708%22%20cy%3D%22180%22%20r%3D%2232.0%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22811%22%20cy%3D%22180%22%20r%3D%2237.9%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%2290%22%20cy%3D%22270%22%20r%3D%2238.0%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22193%22%20cy%3D%22270%22%20r%3D%2234.0%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22296%22%20cy%3D%22270%22%20r%3D%2222.4%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22399%22%20cy%3D%22270%22%20r%3D%229.5%22%20fill%3D%22%23a68a56%22%2F%3E%3Ccircle%20cx%3D%22502%22%20cy%3D%22270%22%20r%3D%2224.9%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22605%22%20cy%3D%22270%22%20r%3D%2235.4%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22708%22%20cy%3D%22270%22%20r%3D%2237.8%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22811%22%20cy%3D%22270%22%20r%3D%2231.4%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%2290%22%20cy%3D%22360%22%20r%3D%2230.2%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22193%22%20cy%3D%22360%22%20r%3D%2216.3%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22296%22%20cy%3D%22360%22%20r%3D%2216.0%22%20fill%3D%22%23a68a56%22%2F%3E%3Ccircle%20cx%3D%22399%22%20cy%3D%22360%22%20r%3D%2229.9%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22502%22%20cy%3D%22360%22%20r%3D%2237.4%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22605%22%20cy%3D%22360%22%20r%3D%2236.2%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22708%22%20cy%3D%22360%22%20r%3D%2226.7%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22811%22%20cy%3D%22360%22%20r%3D%2211.7%22%20fill%3D%22%23a68a56%22%2F%3E%3Ccircle%20cx%3D%2290%22%20cy%3D%22450%22%20r%3D%229.8%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22193%22%20cy%3D%22450%22%20r%3D%2222.1%22%20fill%3D%22%23a68a56%22%2F%3E%3Ccircle%20cx%3D%22296%22%20cy%3D%22450%22%20r%3D%2233.8%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22399%22%20cy%3D%22450%22%20r%3D%2238.0%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22502%22%20cy%3D%22450%22%20r%3D%2233.3%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22605%22%20cy%3D%22450%22%20r%3D%2221.1%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22708%22%20cy%3D%22450%22%20r%3D%2210.9%22%20fill%3D%22%23a68a56%22%2F%3E%3Ccircle%20cx%3D%22811%22%20cy%3D%22450%22%20r%3D%2226.1%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%2290%22%20cy%3D%22540%22%20r%3D%2227.5%22%20fill%3D%22%23a68a56%22%2F%3E%3Ccircle%20cx%3D%22193%22%20cy%3D%22540%22%20r%3D%2236.5%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22296%22%20cy%3D%22540%22%20r%3D%2237.2%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22399%22%20cy%3D%22540%22%20r%3D%2229.2%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22502%22%20cy%3D%22540%22%20r%3D%2214.9%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22605%22%20cy%3D%22540%22%20r%3D%2217.3%22%20fill%3D%22%23a68a56%22%2F%3E%3Ccircle%20cx%3D%22708%22%20cy%3D%22540%22%20r%3D%2230.9%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ccircle%20cx%3D%22811%22%20cy%3D%22540%22%20r%3D%2237.6%22%20fill%3D%22none%22%20stroke%3D%22%23f2efe8%22%20stroke-opacity%3D%220.45%22%2F%3E%3Ctext%20x%3D%2260%22%20y%3D%22658%22%20fill%3D%22%23f2efe8%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2252%22%3ERet%C3%ADcula%3C%2Ftext%3E%3C%2Fsvg%3E",
+                      "alt": "Retícula"
+                    },
+                    "animation": {
+                      "hover": {
+                        "effect": "lift",
+                        "duration": 0.35,
+                        "ease": "suave"
+                      }
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "e677ec611i",
+                "type": "container",
+                "name": "Columna derecha",
+                "styles": {
+                  "base": {
+                    "display": "flex",
+                    "flexDirection": "column",
+                    "gap": "40px",
+                    "paddingTop": "140px"
+                  },
+                  "mobile": {
+                    "gap": "20px",
+                    "paddingTop": "0"
+                  }
+                },
+                "content": {},
+                "animation": {
+                  "parallax": {
+                    "effect": "y",
+                    "amount": -70
+                  }
+                },
+                "children": [
+                  {
+                    "id": "7d3ae25d1g",
+                    "type": "image",
+                    "name": "Dunas",
+                    "styles": {
+                      "base": {
+                        "width": "100%",
+                        "borderRadius": "0"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {
+                      "src": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22900%22%20height%3D%22700%22%20viewBox%3D%220%200%20900%20700%22%3E%3Crect%20width%3D%22900%22%20height%3D%22700%22%20fill%3D%22%23efece4%22%2F%3E%3Ccircle%20cx%3D%22648%22%20cy%3D%22168%22%20r%3D%2278%22%20fill%3D%22%23111111%22%2F%3E%3Cpath%20d%3D%22M0%20280%20C%20225%20190%2C%20450%20360%2C%20675%20270%20S%20900%20240%2C%20900%20260%20L%20900%20700%20L%200%20700%20Z%22%20fill%3D%22%23d8c7a0%22%2F%3E%3Cpath%20d%3D%22M0%20346.5%20C%20225%20270.5%2C%20450%20416.5%2C%20675%20336.5%20S%20900%20306.5%2C%20900%20326.5%20L%20900%20700%20L%200%20700%20Z%22%20fill%3D%22%23bfa675%22%2F%3E%3Cpath%20d%3D%22M0%20413%20C%20225%20351%2C%20450%20473%2C%20675%20403%20S%20900%20373%2C%20900%20393%20L%20900%20700%20L%200%20700%20Z%22%20fill%3D%22%23a68a56%22%2F%3E%3Cpath%20d%3D%22M0%20479.5%20C%20225%20431.5%2C%20450%20529.5%2C%20675%20469.5%20S%20900%20439.5%2C%20900%20459.5%20L%20900%20700%20L%200%20700%20Z%22%20fill%3D%22%237d6840%22%2F%3E%3Cpath%20d%3D%22M0%20546%20C%20225%20512%2C%20450%20586%2C%20675%20536%20S%20900%20506%2C%20900%20526%20L%20900%20700%20L%200%20700%20Z%22%20fill%3D%22%234f432b%22%2F%3E%3Cpath%20d%3D%22M0%20612.5%20C%20225%20592.5%2C%20450%20642.5%2C%20675%20602.5%20S%20900%20572.5%2C%20900%20592.5%20L%20900%20700%20L%200%20700%20Z%22%20fill%3D%22%2326211a%22%2F%3E%3Ctext%20x%3D%2248%22%20y%3D%2286%22%20fill%3D%22%23111111%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2252%22%3EDunas%3C%2Ftext%3E%3C%2Fsvg%3E",
+                      "alt": "Dunas"
+                    },
+                    "animation": {
+                      "hover": {
+                        "effect": "lift",
+                        "duration": 0.35,
+                        "ease": "suave"
+                      }
+                    },
+                    "children": []
+                  },
+                  {
+                    "id": "db4e17621h",
+                    "type": "image",
+                    "name": "Arcos",
+                    "styles": {
+                      "base": {
+                        "width": "100%",
+                        "borderRadius": "0"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {
+                      "src": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22900%22%20height%3D%221100%22%20viewBox%3D%220%200%20900%201100%22%3E%3Crect%20width%3D%22900%22%20height%3D%221100%22%20fill%3D%22%23e4e0d8%22%2F%3E%3Cpath%20d%3D%22M%2090%20880%20L%2090%20520%20A%20360%20360%200%200%201%20810%20520%20L%20810%20880%20Z%22%20fill%3D%22%23111111%22%2F%3E%3Cpath%20d%3D%22M%20160%20880%20L%20160%20520%20A%20290%20290%200%200%201%20740%20520%20L%20740%20880%20Z%22%20fill%3D%22%23a68a56%22%2F%3E%3Cpath%20d%3D%22M%20230%20880%20L%20230%20520%20A%20220%20220%200%200%201%20670%20520%20L%20670%20880%20Z%22%20fill%3D%22%23f7f5f0%22%2F%3E%3Cpath%20d%3D%22M%20300%20880%20L%20300%20520%20A%20150%20150%200%200%201%20600%20520%20L%20600%20880%20Z%22%20fill%3D%22%235f5c55%22%2F%3E%3Cpath%20d%3D%22M%20370%20880%20L%20370%20520%20A%2080%2080%200%200%201%20530%20520%20L%20530%20880%20Z%22%20fill%3D%22%23e6d2a6%22%2F%3E%3Ctext%20x%3D%2280%22%20y%3D%22990%22%20fill%3D%22%23111111%22%20font-family%3D%22Georgia%2Cserif%22%20font-size%3D%2264%22%3EArcos%3C%2Ftext%3E%0A%20%20%3Ctext%20x%3D%2280%22%20y%3D%221040%22%20fill%3D%22%235f5c55%22%20font-family%3D%22sans-serif%22%20font-size%3D%2224%22%20letter-spacing%3D%226%22%3ESITIO%20WEB%3C%2Ftext%3E%3C%2Fsvg%3E",
+                      "alt": "Arcos"
+                    },
+                    "animation": {
+                      "hover": {
+                        "effect": "lift",
+                        "duration": 0.35,
+                        "ease": "suave"
+                      }
+                    },
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "07f00a0a1r",
+        "type": "section",
+        "name": "Palabras gigantes",
+        "styles": {
+          "base": {
+            "padding": "56px 0",
+            "background": "#0c0c0e",
+            "color": "#f2efe8"
+          },
+          "mobile": {}
+        },
+        "content": {},
+        "animation": null,
+        "children": [
+          {
+            "id": "b3126ce01q",
+            "type": "container",
+            "name": "Marquesina contorno",
+            "styles": {
+              "base": {
+                "color": "#f2efe8"
+              },
+              "mobile": {}
+            },
+            "content": {
+              "marquesina": {
+                "mov": true,
+                "vel": 40,
+                "dir": "der",
+                "pausa": true,
+                "gap": 64,
+                "copias": 4
+              }
+            },
+            "animation": null,
+            "children": [
+              {
+                "id": "54da64d71l",
+                "type": "text",
+                "name": "Palabra",
+                "styles": {
+                  "base": {
+                    "margin": "0",
+                    "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                    "fontWeight": "500",
+                    "fontSize": "96px",
+                    "lineHeight": "1.35",
+                    "letterSpacing": "-0.02em",
+                    "whiteSpace": "nowrap",
+                    "WebkitTextFillColor": "transparent",
+                    "WebkitTextStroke": "1px #f2efe8"
+                  },
+                  "mobile": {
+                    "fontSize": "56px"
+                  }
+                },
+                "content": {
+                  "text": "Diseño"
+                },
+                "animation": null,
+                "children": []
+              },
+              {
+                "id": "b1784d8e1m",
+                "type": "text",
+                "name": "Palabra",
+                "styles": {
+                  "base": {
+                    "margin": "0",
+                    "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                    "fontWeight": "500",
+                    "fontSize": "96px",
+                    "lineHeight": "1.35",
+                    "letterSpacing": "-0.02em",
+                    "whiteSpace": "nowrap",
+                    "WebkitTextFillColor": "transparent",
+                    "WebkitTextStroke": "1px #f2efe8"
+                  },
+                  "mobile": {
+                    "fontSize": "56px"
+                  }
+                },
+                "content": {
+                  "text": "Estrategia"
+                },
+                "animation": null,
+                "children": []
+              },
+              {
+                "id": "db87a3791n",
+                "type": "text",
+                "name": "Palabra",
+                "styles": {
+                  "base": {
+                    "margin": "0",
+                    "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                    "fontWeight": "500",
+                    "fontSize": "96px",
+                    "lineHeight": "1.35",
+                    "letterSpacing": "-0.02em",
+                    "whiteSpace": "nowrap",
+                    "WebkitTextFillColor": "transparent",
+                    "WebkitTextStroke": "1px #f2efe8"
+                  },
+                  "mobile": {
+                    "fontSize": "56px"
+                  }
+                },
+                "content": {
+                  "text": "Marca"
+                },
+                "animation": null,
+                "children": []
+              },
+              {
+                "id": "a8dd5fb61o",
+                "type": "text",
+                "name": "Palabra",
+                "styles": {
+                  "base": {
+                    "margin": "0",
+                    "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                    "fontWeight": "500",
+                    "fontSize": "96px",
+                    "lineHeight": "1.35",
+                    "letterSpacing": "-0.02em",
+                    "whiteSpace": "nowrap",
+                    "WebkitTextFillColor": "transparent",
+                    "WebkitTextStroke": "1px #f2efe8"
+                  },
+                  "mobile": {
+                    "fontSize": "56px"
+                  }
+                },
+                "content": {
+                  "text": "Contenido"
+                },
+                "animation": null,
+                "children": []
+              },
+              {
+                "id": "9c5323051p",
+                "type": "text",
+                "name": "Palabra",
+                "styles": {
+                  "base": {
+                    "margin": "0",
+                    "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                    "fontWeight": "500",
+                    "fontSize": "96px",
+                    "lineHeight": "1.35",
+                    "letterSpacing": "-0.02em",
+                    "whiteSpace": "nowrap",
+                    "WebkitTextFillColor": "transparent",
+                    "WebkitTextStroke": "1px #f2efe8"
+                  },
+                  "mobile": {
+                    "fontSize": "56px"
+                  }
+                },
+                "content": {
+                  "text": "Web"
+                },
+                "animation": null,
+                "children": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "8e55501826",
+        "type": "section",
+        "name": "Servicios",
+        "styles": {
+          "base": {
+            "display": "flex",
+            "flexDirection": "column",
+            "padding": "112px max(32px, calc((100% - 1120px) / 2))",
+            "gap": "56px",
+            "background": "#0c0c0e",
+            "color": "#f2efe8"
+          },
+          "mobile": {
+            "padding": "64px 20px"
+          }
+        },
+        "content": {
+          "anchor": "servicios"
+        },
+        "animation": null,
+        "children": [
+          {
+            "id": "54921e541s",
+            "type": "heading",
+            "name": "Título",
+            "styles": {
+              "base": {
+                "margin": "0",
+                "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                "fontWeight": "500",
+                "fontSize": "44px",
+                "lineHeight": "1.15",
+                "letterSpacing": "-0.015em",
+                "textAlign": "center"
+              },
+              "mobile": {
+                "fontSize": "32px"
+              }
+            },
+            "content": {
+              "text": "Lo que hacemos",
+              "level": 2
+            },
+            "animation": {
+              "text": {
+                "mode": "words",
+                "effect": "up",
+                "trigger": "scroll",
+                "duration": 0.8,
+                "delay": 0,
+                "stagger": 0.07,
+                "distance": 40,
+                "ease": "suave"
+              }
+            },
+            "children": []
+          },
+          {
+            "id": "b482b29225",
+            "type": "container",
+            "name": "Grid",
+            "styles": {
+              "base": {
+                "display": "grid",
+                "gridTemplateColumns": "repeat(auto-fit, minmax(240px, 1fr))",
+                "gap": "24px"
+              },
+              "mobile": {}
+            },
+            "content": {},
+            "animation": {
+              "stagger": {
+                "effect": "up",
+                "trigger": "scroll",
+                "duration": 0.8,
+                "delay": 0,
+                "step": 0.14,
+                "distance": 56,
+                "ease": "suave"
+              }
+            },
+            "children": [
+              {
+                "id": "3c444c091w",
+                "type": "container",
+                "name": "Tarjeta",
+                "styles": {
+                  "base": {
+                    "display": "flex",
+                    "flexDirection": "column",
+                    "padding": "40px 32px",
+                    "borderRadius": "0",
+                    "background": "#0c0c0e",
+                    "border": "1px solid #2c2c30",
+                    "gap": "16px",
+                    "color": "#f2efe8"
+                  },
+                  "mobile": {}
+                },
+                "content": {},
+                "animation": null,
+                "children": [
+                  {
+                    "id": "6163992c1t",
+                    "type": "icon",
+                    "name": "Icono",
+                    "styles": {
+                      "base": {
+                        "width": "36px",
+                        "height": "36px",
+                        "color": "#a68a56"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {
+                      "name": "palette"
+                    },
+                    "animation": null,
+                    "children": []
+                  },
+                  {
+                    "id": "4d14e5e31u",
+                    "type": "heading",
+                    "name": "Título",
+                    "styles": {
+                      "base": {
+                        "margin": "0",
+                        "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                        "fontWeight": "500",
+                        "fontSize": "24px",
+                        "lineHeight": "1.25",
+                        "letterSpacing": "-0.005em"
+                      },
+                      "mobile": {
+                        "fontSize": "21px"
+                      }
+                    },
+                    "content": {
+                      "text": "Identidad",
+                      "level": 3
+                    },
+                    "animation": null,
+                    "children": []
+                  },
+                  {
+                    "id": "7c0499a51v",
+                    "type": "text",
+                    "name": "Texto",
+                    "styles": {
+                      "base": {
+                        "margin": "0",
+                        "fontSize": "16px",
+                        "lineHeight": "1.65",
+                        "color": "#a3a09a"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {
+                      "text": "Un sistema visual que se reconoce en medio segundo."
+                    },
+                    "animation": null,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "4e1cf8e020",
+                "type": "container",
+                "name": "Tarjeta",
+                "styles": {
+                  "base": {
+                    "display": "flex",
+                    "flexDirection": "column",
+                    "padding": "40px 32px",
+                    "borderRadius": "0",
+                    "background": "#0c0c0e",
+                    "border": "1px solid #2c2c30",
+                    "gap": "16px",
+                    "color": "#f2efe8"
+                  },
+                  "mobile": {}
+                },
+                "content": {},
+                "animation": null,
+                "children": [
+                  {
+                    "id": "5f38be4b1x",
+                    "type": "icon",
+                    "name": "Icono",
+                    "styles": {
+                      "base": {
+                        "width": "36px",
+                        "height": "36px",
+                        "color": "#a68a56"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {
+                      "name": "zap"
+                    },
+                    "animation": null,
+                    "children": []
+                  },
+                  {
+                    "id": "045563bf1y",
+                    "type": "heading",
+                    "name": "Título",
+                    "styles": {
+                      "base": {
+                        "margin": "0",
+                        "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                        "fontWeight": "500",
+                        "fontSize": "24px",
+                        "lineHeight": "1.25",
+                        "letterSpacing": "-0.005em"
+                      },
+                      "mobile": {
+                        "fontSize": "21px"
+                      }
+                    },
+                    "content": {
+                      "text": "Movimiento",
+                      "level": 3
+                    },
+                    "animation": null,
+                    "children": []
+                  },
+                  {
+                    "id": "2c5536811z",
+                    "type": "text",
+                    "name": "Texto",
+                    "styles": {
+                      "base": {
+                        "margin": "0",
+                        "fontSize": "16px",
+                        "lineHeight": "1.65",
+                        "color": "#a3a09a"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {
+                      "text": "Animaciones que guían la vista sin estorbar."
+                    },
+                    "animation": null,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "5b41b95724",
+                "type": "container",
+                "name": "Tarjeta",
+                "styles": {
+                  "base": {
+                    "display": "flex",
+                    "flexDirection": "column",
+                    "padding": "40px 32px",
+                    "borderRadius": "0",
+                    "background": "#0c0c0e",
+                    "border": "1px solid #2c2c30",
+                    "gap": "16px",
+                    "color": "#f2efe8"
+                  },
+                  "mobile": {}
+                },
+                "content": {},
+                "animation": null,
+                "children": [
+                  {
+                    "id": "ffab687921",
+                    "type": "icon",
+                    "name": "Icono",
+                    "styles": {
+                      "base": {
+                        "width": "36px",
+                        "height": "36px",
+                        "color": "#a68a56"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {
+                      "name": "smartphone"
+                    },
+                    "animation": null,
+                    "children": []
+                  },
+                  {
+                    "id": "8d58c72522",
+                    "type": "heading",
+                    "name": "Título",
+                    "styles": {
+                      "base": {
+                        "margin": "0",
+                        "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                        "fontWeight": "500",
+                        "fontSize": "24px",
+                        "lineHeight": "1.25",
+                        "letterSpacing": "-0.005em"
+                      },
+                      "mobile": {
+                        "fontSize": "21px"
+                      }
+                    },
+                    "content": {
+                      "text": "En cualquier pantalla",
+                      "level": 3
+                    },
+                    "animation": null,
+                    "children": []
+                  },
+                  {
+                    "id": "db7a0f2823",
+                    "type": "text",
+                    "name": "Texto",
+                    "styles": {
+                      "base": {
+                        "margin": "0",
+                        "fontSize": "16px",
+                        "lineHeight": "1.65",
+                        "color": "#a3a09a"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {
+                      "text": "Pensado para el teléfono tanto como para el escritorio."
+                    },
+                    "animation": null,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "900b93942h",
+        "type": "section",
+        "name": "Cifras",
+        "styles": {
+          "base": {
+            "display": "flex",
+            "flexDirection": "column",
+            "padding": "112px max(32px, calc((100% - 1120px) / 2))",
+            "background": "#f7f5f0",
+            "color": "#111111"
+          },
+          "mobile": {
+            "padding": "64px 20px"
+          }
+        },
+        "content": {},
+        "animation": null,
+        "children": [
+          {
+            "id": "535c93602g",
+            "type": "container",
+            "name": "Grid",
+            "styles": {
+              "base": {
+                "display": "grid",
+                "gridTemplateColumns": "repeat(3, 1fr)",
+                "gap": "32px"
+              },
+              "mobile": {
+                "gridTemplateColumns": "1fr",
+                "gap": "40px"
+              }
+            },
+            "content": {},
+            "animation": {
+              "stagger": {
+                "effect": "zoom",
+                "trigger": "scroll",
+                "duration": 0.8,
+                "delay": 0,
+                "step": 0.18,
+                "distance": 56,
+                "ease": "suave"
+              }
+            },
+            "children": [
+              {
+                "id": "6ce7804b29",
+                "type": "container",
+                "name": "Cifra",
+                "styles": {
+                  "base": {
+                    "display": "flex",
+                    "flexDirection": "column",
+                    "alignItems": "center",
+                    "gap": "8px",
+                    "textAlign": "center"
+                  },
+                  "mobile": {}
+                },
+                "content": {},
+                "animation": null,
+                "children": [
+                  {
+                    "id": "1d9f965427",
+                    "type": "text",
+                    "name": "Número",
+                    "styles": {
+                      "base": {
+                        "margin": "0",
+                        "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                        "fontSize": "96px",
+                        "lineHeight": "1",
+                        "fontWeight": "500"
+                      },
+                      "mobile": {
+                        "fontSize": "64px"
+                      }
+                    },
+                    "content": {
+                      "text": "48"
+                    },
+                    "animation": null,
+                    "children": []
+                  },
+                  {
+                    "id": "3529b52628",
+                    "type": "text",
+                    "name": "Etiqueta",
+                    "styles": {
+                      "base": {
+                        "margin": "0",
+                        "fontSize": "12px",
+                        "lineHeight": "1.4",
+                        "letterSpacing": "0.18em",
+                        "textTransform": "uppercase",
+                        "fontWeight": "500",
+                        "color": "#5f5c55"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {
+                      "text": "Proyectos publicados"
+                    },
+                    "animation": null,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "4cc5a0d72c",
+                "type": "container",
+                "name": "Cifra",
+                "styles": {
+                  "base": {
+                    "display": "flex",
+                    "flexDirection": "column",
+                    "alignItems": "center",
+                    "gap": "8px",
+                    "textAlign": "center"
+                  },
+                  "mobile": {}
+                },
+                "content": {},
+                "animation": null,
+                "children": [
+                  {
+                    "id": "182018e62a",
+                    "type": "text",
+                    "name": "Número",
+                    "styles": {
+                      "base": {
+                        "margin": "0",
+                        "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                        "fontSize": "96px",
+                        "lineHeight": "1",
+                        "fontWeight": "500"
+                      },
+                      "mobile": {
+                        "fontSize": "64px"
+                      }
+                    },
+                    "content": {
+                      "text": "7"
+                    },
+                    "animation": null,
+                    "children": []
+                  },
+                  {
+                    "id": "474969052b",
+                    "type": "text",
+                    "name": "Etiqueta",
+                    "styles": {
+                      "base": {
+                        "margin": "0",
+                        "fontSize": "12px",
+                        "lineHeight": "1.4",
+                        "letterSpacing": "0.18em",
+                        "textTransform": "uppercase",
+                        "fontWeight": "500",
+                        "color": "#5f5c55"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {
+                      "text": "Días de entrega media"
+                    },
+                    "animation": null,
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "9d9cbe202f",
+                "type": "container",
+                "name": "Cifra",
+                "styles": {
+                  "base": {
+                    "display": "flex",
+                    "flexDirection": "column",
+                    "alignItems": "center",
+                    "gap": "8px",
+                    "textAlign": "center"
+                  },
+                  "mobile": {}
+                },
+                "content": {},
+                "animation": null,
+                "children": [
+                  {
+                    "id": "634694ca2d",
+                    "type": "text",
+                    "name": "Número",
+                    "styles": {
+                      "base": {
+                        "margin": "0",
+                        "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                        "fontSize": "96px",
+                        "lineHeight": "1",
+                        "fontWeight": "500"
+                      },
+                      "mobile": {
+                        "fontSize": "64px"
+                      }
+                    },
+                    "content": {
+                      "text": "1"
+                    },
+                    "animation": null,
+                    "children": []
+                  },
+                  {
+                    "id": "1e0dca352e",
+                    "type": "text",
+                    "name": "Etiqueta",
+                    "styles": {
+                      "base": {
+                        "margin": "0",
+                        "fontSize": "12px",
+                        "lineHeight": "1.4",
+                        "letterSpacing": "0.18em",
+                        "textTransform": "uppercase",
+                        "fontWeight": "500",
+                        "color": "#5f5c55"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {
+                      "text": "Solo archivo HTML"
+                    },
+                    "animation": null,
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "d6e452cc3q",
+        "type": "section",
+        "name": "Precios",
+        "styles": {
+          "base": {
+            "display": "flex",
+            "flexDirection": "column",
+            "padding": "112px max(32px, calc((100% - 1120px) / 2))",
+            "gap": "56px",
+            "background": "#efece4",
+            "color": "#111111"
+          },
+          "mobile": {
+            "padding": "64px 20px"
+          }
+        },
+        "content": {
+          "anchor": "precios"
+        },
+        "animation": null,
+        "children": [
+          {
+            "id": "8f2414a82i",
+            "type": "heading",
+            "name": "Título",
+            "styles": {
+              "base": {
+                "margin": "0",
+                "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                "fontWeight": "500",
+                "fontSize": "44px",
+                "lineHeight": "1.15",
+                "letterSpacing": "-0.015em",
+                "textAlign": "center"
+              },
+              "mobile": {
+                "fontSize": "32px"
+              }
+            },
+            "content": {
+              "text": "Planes sin letra pequeña",
+              "level": 2
+            },
+            "animation": {
+              "text": {
+                "mode": "words",
+                "effect": "up",
+                "trigger": "scroll",
+                "duration": 0.8,
+                "delay": 0,
+                "stagger": 0.07,
+                "distance": 40,
+                "ease": "suave"
+              }
+            },
+            "children": []
+          },
+          {
+            "id": "316e553d3p",
+            "type": "container",
+            "name": "Grid",
+            "styles": {
+              "base": {
+                "display": "grid",
+                "gridTemplateColumns": "repeat(auto-fit, minmax(240px, 1fr))",
+                "gap": "24px"
+              },
+              "mobile": {}
+            },
+            "content": {},
+            "animation": {
+              "stagger": {
+                "effect": "up",
+                "trigger": "scroll",
+                "duration": 0.8,
+                "delay": 0,
+                "step": 0.14,
+                "distance": 56,
+                "ease": "suave"
+              }
+            },
+            "children": [
+              {
+                "id": "20015b862w",
+                "type": "container",
+                "name": "Plan",
+                "styles": {
+                  "base": {
+                    "display": "flex",
+                    "flexDirection": "column",
+                    "padding": "40px 32px",
+                    "borderRadius": "0",
+                    "background": "#efece4",
+                    "border": "1px solid #d9d6cf",
+                    "gap": "18px",
+                    "color": "#111111"
+                  },
+                  "mobile": {}
+                },
+                "content": {},
+                "animation": null,
+                "children": [
+                  {
+                    "id": "743546722j",
+                    "type": "text",
+                    "name": "Etiqueta",
+                    "styles": {
+                      "base": {
+                        "margin": "0",
+                        "fontSize": "12px",
+                        "lineHeight": "1.4",
+                        "letterSpacing": "0.18em",
+                        "textTransform": "uppercase",
+                        "fontWeight": "500",
+                        "color": "#5f5c55"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {
+                      "text": "Esencial"
+                    },
+                    "animation": null,
+                    "children": []
+                  },
+                  {
+                    "id": "2daf7d942k",
+                    "type": "text",
+                    "name": "Precio",
+                    "styles": {
+                      "base": {
+                        "margin": "0",
+                        "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                        "fontSize": "52px",
+                        "lineHeight": "1.1",
+                        "fontWeight": "500"
+                      },
+                      "mobile": {
+                        "fontSize": "42px"
+                      }
+                    },
+                    "content": {
+                      "text": "$190"
+                    },
+                    "animation": null,
+                    "children": []
+                  },
+                  {
+                    "id": "ac93b5c02u",
+                    "type": "container",
+                    "name": "Ventajas",
+                    "styles": {
+                      "base": {
+                        "display": "flex",
+                        "flexDirection": "column",
+                        "gap": "10px",
+                        "flex": "1"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {},
+                    "animation": null,
+                    "children": [
+                      {
+                        "id": "d3a81c1a2n",
+                        "type": "container",
+                        "name": "Ventaja",
+                        "styles": {
+                          "base": {
+                            "display": "flex",
+                            "gap": "10px",
+                            "flexWrap": "nowrap",
+                            "alignItems": "center"
+                          },
+                          "mobile": {}
+                        },
+                        "content": {},
+                        "animation": null,
+                        "children": [
+                          {
+                            "id": "8ea46c2c2l",
+                            "type": "icon",
+                            "name": "Icono",
+                            "styles": {
+                              "base": {
+                                "width": "18px",
+                                "height": "18px",
+                                "color": "#a68a56"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "name": "check"
+                            },
+                            "animation": null,
+                            "children": []
+                          },
+                          {
+                            "id": "5837be9f2m",
+                            "type": "text",
+                            "name": "Texto",
+                            "styles": {
+                              "base": {
+                                "margin": "0",
+                                "fontSize": "15px",
+                                "color": "#5f5c55"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "text": "Una página"
+                            },
+                            "animation": null,
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "id": "cc1e57632q",
+                        "type": "container",
+                        "name": "Ventaja",
+                        "styles": {
+                          "base": {
+                            "display": "flex",
+                            "gap": "10px",
+                            "flexWrap": "nowrap",
+                            "alignItems": "center"
+                          },
+                          "mobile": {}
+                        },
+                        "content": {},
+                        "animation": null,
+                        "children": [
+                          {
+                            "id": "fa771ce82o",
+                            "type": "icon",
+                            "name": "Icono",
+                            "styles": {
+                              "base": {
+                                "width": "18px",
+                                "height": "18px",
+                                "color": "#a68a56"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "name": "check"
+                            },
+                            "animation": null,
+                            "children": []
+                          },
+                          {
+                            "id": "50631ed82p",
+                            "type": "text",
+                            "name": "Texto",
+                            "styles": {
+                              "base": {
+                                "margin": "0",
+                                "fontSize": "15px",
+                                "color": "#5f5c55"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "text": "Diseño a medida"
+                            },
+                            "animation": null,
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "id": "f859f8742t",
+                        "type": "container",
+                        "name": "Ventaja",
+                        "styles": {
+                          "base": {
+                            "display": "flex",
+                            "gap": "10px",
+                            "flexWrap": "nowrap",
+                            "alignItems": "center"
+                          },
+                          "mobile": {}
+                        },
+                        "content": {},
+                        "animation": null,
+                        "children": [
+                          {
+                            "id": "cc3d5b562r",
+                            "type": "icon",
+                            "name": "Icono",
+                            "styles": {
+                              "base": {
+                                "width": "18px",
+                                "height": "18px",
+                                "color": "#a68a56"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "name": "check"
+                            },
+                            "animation": null,
+                            "children": []
+                          },
+                          {
+                            "id": "03f926312s",
+                            "type": "text",
+                            "name": "Texto",
+                            "styles": {
+                              "base": {
+                                "margin": "0",
+                                "fontSize": "15px",
+                                "color": "#5f5c55"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "text": "Lista en 5 días"
+                            },
+                            "animation": null,
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "4c92a4de2v",
+                    "type": "button",
+                    "name": "Botón",
+                    "styles": {
+                      "base": {
+                        "display": "inline-block",
+                        "padding": "12px 24px",
+                        "fontSize": "16px",
+                        "borderRadius": "0",
+                        "textDecoration": "none",
+                        "fontWeight": "500",
+                        "letterSpacing": "0.02em",
+                        "background": "transparent",
+                        "color": "#111111",
+                        "border": "1px solid #111111",
+                        "textAlign": "center"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {
+                      "text": "Elegir",
+                      "href": "#contacto"
+                    },
+                    "animation": {
+                      "hover": {
+                        "effect": "bright",
+                        "duration": 0.3,
+                        "ease": "suave"
+                      }
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "eb8726e23a",
+                "type": "container",
+                "name": "Plan",
+                "styles": {
+                  "base": {
+                    "display": "flex",
+                    "flexDirection": "column",
+                    "padding": "40px 32px",
+                    "borderRadius": "0",
+                    "background": "#17171a",
+                    "border": "1px solid #2c2c30",
+                    "gap": "18px",
+                    "color": "#f2efe8"
+                  },
+                  "mobile": {}
+                },
+                "content": {},
+                "animation": null,
+                "children": [
+                  {
+                    "id": "d5b0a7cf2x",
+                    "type": "text",
+                    "name": "Etiqueta",
+                    "styles": {
+                      "base": {
+                        "margin": "0",
+                        "fontSize": "12px",
+                        "lineHeight": "1.4",
+                        "letterSpacing": "0.18em",
+                        "textTransform": "uppercase",
+                        "fontWeight": "500",
+                        "color": "#a68a56"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {
+                      "text": "Estrella"
+                    },
+                    "animation": null,
+                    "children": []
+                  },
+                  {
+                    "id": "2d7b71a22y",
+                    "type": "text",
+                    "name": "Precio",
+                    "styles": {
+                      "base": {
+                        "margin": "0",
+                        "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                        "fontSize": "52px",
+                        "lineHeight": "1.1",
+                        "fontWeight": "500"
+                      },
+                      "mobile": {
+                        "fontSize": "42px"
+                      }
+                    },
+                    "content": {
+                      "text": "$390"
+                    },
+                    "animation": null,
+                    "children": []
+                  },
+                  {
+                    "id": "e3c7398338",
+                    "type": "container",
+                    "name": "Ventajas",
+                    "styles": {
+                      "base": {
+                        "display": "flex",
+                        "flexDirection": "column",
+                        "gap": "10px",
+                        "flex": "1"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {},
+                    "animation": null,
+                    "children": [
+                      {
+                        "id": "f9c67e7a31",
+                        "type": "container",
+                        "name": "Ventaja",
+                        "styles": {
+                          "base": {
+                            "display": "flex",
+                            "gap": "10px",
+                            "flexWrap": "nowrap",
+                            "alignItems": "center"
+                          },
+                          "mobile": {}
+                        },
+                        "content": {},
+                        "animation": null,
+                        "children": [
+                          {
+                            "id": "987f40df2z",
+                            "type": "icon",
+                            "name": "Icono",
+                            "styles": {
+                              "base": {
+                                "width": "18px",
+                                "height": "18px",
+                                "color": "#a68a56"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "name": "check"
+                            },
+                            "animation": null,
+                            "children": []
+                          },
+                          {
+                            "id": "95725fd530",
+                            "type": "text",
+                            "name": "Texto",
+                            "styles": {
+                              "base": {
+                                "margin": "0",
+                                "fontSize": "15px",
+                                "color": "#a3a09a"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "text": "Escenas por scroll"
+                            },
+                            "animation": null,
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "id": "d76de62134",
+                        "type": "container",
+                        "name": "Ventaja",
+                        "styles": {
+                          "base": {
+                            "display": "flex",
+                            "gap": "10px",
+                            "flexWrap": "nowrap",
+                            "alignItems": "center"
+                          },
+                          "mobile": {}
+                        },
+                        "content": {},
+                        "animation": null,
+                        "children": [
+                          {
+                            "id": "73d788b932",
+                            "type": "icon",
+                            "name": "Icono",
+                            "styles": {
+                              "base": {
+                                "width": "18px",
+                                "height": "18px",
+                                "color": "#a68a56"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "name": "check"
+                            },
+                            "animation": null,
+                            "children": []
+                          },
+                          {
+                            "id": "edad66c333",
+                            "type": "text",
+                            "name": "Texto",
+                            "styles": {
+                              "base": {
+                                "margin": "0",
+                                "fontSize": "15px",
+                                "color": "#a3a09a"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "text": "Animaciones completas"
+                            },
+                            "animation": null,
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "id": "e5e480dd37",
+                        "type": "container",
+                        "name": "Ventaja",
+                        "styles": {
+                          "base": {
+                            "display": "flex",
+                            "gap": "10px",
+                            "flexWrap": "nowrap",
+                            "alignItems": "center"
+                          },
+                          "mobile": {}
+                        },
+                        "content": {},
+                        "animation": null,
+                        "children": [
+                          {
+                            "id": "d46a5b5a35",
+                            "type": "icon",
+                            "name": "Icono",
+                            "styles": {
+                              "base": {
+                                "width": "18px",
+                                "height": "18px",
+                                "color": "#a68a56"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "name": "check"
+                            },
+                            "animation": null,
+                            "children": []
+                          },
+                          {
+                            "id": "3fa6dc1336",
+                            "type": "text",
+                            "name": "Texto",
+                            "styles": {
+                              "base": {
+                                "margin": "0",
+                                "fontSize": "15px",
+                                "color": "#a3a09a"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "text": "Lista en 7 días"
+                            },
+                            "animation": null,
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "cef1880439",
+                    "type": "button",
+                    "name": "Botón",
+                    "styles": {
+                      "base": {
+                        "display": "inline-block",
+                        "padding": "12px 24px",
+                        "fontSize": "16px",
+                        "borderRadius": "0",
+                        "textDecoration": "none",
+                        "fontWeight": "500",
+                        "letterSpacing": "0.02em",
+                        "background": "#a68a56",
+                        "color": "#0c0c0e",
+                        "border": "1px solid #a68a56",
+                        "textAlign": "center"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {
+                      "text": "Elegir",
+                      "href": "#contacto"
+                    },
+                    "animation": {
+                      "hover": {
+                        "effect": "bright",
+                        "duration": 0.3,
+                        "ease": "suave"
+                      }
+                    },
+                    "children": []
+                  }
+                ]
+              },
+              {
+                "id": "22bb74a33o",
+                "type": "container",
+                "name": "Plan",
+                "styles": {
+                  "base": {
+                    "display": "flex",
+                    "flexDirection": "column",
+                    "padding": "40px 32px",
+                    "borderRadius": "0",
+                    "background": "#efece4",
+                    "border": "1px solid #d9d6cf",
+                    "gap": "18px",
+                    "color": "#111111"
+                  },
+                  "mobile": {}
+                },
+                "content": {},
+                "animation": null,
+                "children": [
+                  {
+                    "id": "9abf41613b",
+                    "type": "text",
+                    "name": "Etiqueta",
+                    "styles": {
+                      "base": {
+                        "margin": "0",
+                        "fontSize": "12px",
+                        "lineHeight": "1.4",
+                        "letterSpacing": "0.18em",
+                        "textTransform": "uppercase",
+                        "fontWeight": "500",
+                        "color": "#5f5c55"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {
+                      "text": "A medida"
+                    },
+                    "animation": null,
+                    "children": []
+                  },
+                  {
+                    "id": "a4e8a2753c",
+                    "type": "text",
+                    "name": "Precio",
+                    "styles": {
+                      "base": {
+                        "margin": "0",
+                        "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                        "fontSize": "52px",
+                        "lineHeight": "1.1",
+                        "fontWeight": "500"
+                      },
+                      "mobile": {
+                        "fontSize": "42px"
+                      }
+                    },
+                    "content": {
+                      "text": "$690"
+                    },
+                    "animation": null,
+                    "children": []
+                  },
+                  {
+                    "id": "78f0d6a63m",
+                    "type": "container",
+                    "name": "Ventajas",
+                    "styles": {
+                      "base": {
+                        "display": "flex",
+                        "flexDirection": "column",
+                        "gap": "10px",
+                        "flex": "1"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {},
+                    "animation": null,
+                    "children": [
+                      {
+                        "id": "9d2599c23f",
+                        "type": "container",
+                        "name": "Ventaja",
+                        "styles": {
+                          "base": {
+                            "display": "flex",
+                            "gap": "10px",
+                            "flexWrap": "nowrap",
+                            "alignItems": "center"
+                          },
+                          "mobile": {}
+                        },
+                        "content": {},
+                        "animation": null,
+                        "children": [
+                          {
+                            "id": "8e331f0c3d",
+                            "type": "icon",
+                            "name": "Icono",
+                            "styles": {
+                              "base": {
+                                "width": "18px",
+                                "height": "18px",
+                                "color": "#a68a56"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "name": "check"
+                            },
+                            "animation": null,
+                            "children": []
+                          },
+                          {
+                            "id": "472c7f793e",
+                            "type": "text",
+                            "name": "Texto",
+                            "styles": {
+                              "base": {
+                                "margin": "0",
+                                "fontSize": "15px",
+                                "color": "#5f5c55"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "text": "Varias páginas"
+                            },
+                            "animation": null,
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "id": "df7b8f293i",
+                        "type": "container",
+                        "name": "Ventaja",
+                        "styles": {
+                          "base": {
+                            "display": "flex",
+                            "gap": "10px",
+                            "flexWrap": "nowrap",
+                            "alignItems": "center"
+                          },
+                          "mobile": {}
+                        },
+                        "content": {},
+                        "animation": null,
+                        "children": [
+                          {
+                            "id": "057866f13g",
+                            "type": "icon",
+                            "name": "Icono",
+                            "styles": {
+                              "base": {
+                                "width": "18px",
+                                "height": "18px",
+                                "color": "#a68a56"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "name": "check"
+                            },
+                            "animation": null,
+                            "children": []
+                          },
+                          {
+                            "id": "a9265ec73h",
+                            "type": "text",
+                            "name": "Texto",
+                            "styles": {
+                              "base": {
+                                "margin": "0",
+                                "fontSize": "15px",
+                                "color": "#5f5c55"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "text": "Identidad incluida"
+                            },
+                            "animation": null,
+                            "children": []
+                          }
+                        ]
+                      },
+                      {
+                        "id": "787e9e5b3l",
+                        "type": "container",
+                        "name": "Ventaja",
+                        "styles": {
+                          "base": {
+                            "display": "flex",
+                            "gap": "10px",
+                            "flexWrap": "nowrap",
+                            "alignItems": "center"
+                          },
+                          "mobile": {}
+                        },
+                        "content": {},
+                        "animation": null,
+                        "children": [
+                          {
+                            "id": "27f042e43j",
+                            "type": "icon",
+                            "name": "Icono",
+                            "styles": {
+                              "base": {
+                                "width": "18px",
+                                "height": "18px",
+                                "color": "#a68a56"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "name": "check"
+                            },
+                            "animation": null,
+                            "children": []
+                          },
+                          {
+                            "id": "2ec49db03k",
+                            "type": "text",
+                            "name": "Texto",
+                            "styles": {
+                              "base": {
+                                "margin": "0",
+                                "fontSize": "15px",
+                                "color": "#5f5c55"
+                              },
+                              "mobile": {}
+                            },
+                            "content": {
+                              "text": "Soporte 30 días"
+                            },
+                            "animation": null,
+                            "children": []
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "id": "9e0d88493n",
+                    "type": "button",
+                    "name": "Botón",
+                    "styles": {
+                      "base": {
+                        "display": "inline-block",
+                        "padding": "12px 24px",
+                        "fontSize": "16px",
+                        "borderRadius": "0",
+                        "textDecoration": "none",
+                        "fontWeight": "500",
+                        "letterSpacing": "0.02em",
+                        "background": "transparent",
+                        "color": "#111111",
+                        "border": "1px solid #111111",
+                        "textAlign": "center"
+                      },
+                      "mobile": {}
+                    },
+                    "content": {
+                      "text": "Elegir",
+                      "href": "#contacto"
+                    },
+                    "animation": {
+                      "hover": {
+                        "effect": "bright",
+                        "duration": 0.3,
+                        "ease": "suave"
+                      }
+                    },
+                    "children": []
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "id": "1f9c3c6b3u",
+        "type": "section",
+        "name": "Contacto",
+        "styles": {
+          "base": {
+            "display": "flex",
+            "flexDirection": "column",
+            "padding": "176px 24px",
+            "gap": "32px",
+            "alignItems": "center",
+            "textAlign": "center",
+            "background": "#0c0c0e",
+            "color": "#f2efe8",
+            "fondoImagen": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%221600%22%20height%3D%221000%22%20viewBox%3D%220%200%201600%201000%22%3E%3Cdefs%3E%3CradialGradient%20id%3D%22a%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23a68a56%22%20stop-opacity%3D%220.55%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23a68a56%22%20stop-opacity%3D%220%22%2F%3E%3C%2FradialGradient%3E%3CradialGradient%20id%3D%22b%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%236d5a8f%22%20stop-opacity%3D%220.3%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%236d5a8f%22%20stop-opacity%3D%220%22%2F%3E%3C%2FradialGradient%3E%0A%20%20%20%20%3ClinearGradient%20id%3D%22p%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220.6%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23e6d2a6%22%2F%3E%3Cstop%20offset%3D%220.45%22%20stop-color%3D%22%238a7044%22%2F%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%230c0c0e%22%2F%3E%3C%2FlinearGradient%3E%3C%2Fdefs%3E%0A%20%20%20%20%3Crect%20width%3D%221600%22%20height%3D%221000%22%20fill%3D%22%230c0c0e%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%221250%22%20cy%3D%22760%22%20r%3D%22620%22%20fill%3D%22url(%23a)%22%2F%3E%3Ccircle%20cx%3D%22260%22%20cy%3D%22180%22%20r%3D%22520%22%20fill%3D%22url(%23b)%22%2F%3E%3Ccircle%20cx%3D%220%22%20cy%3D%220%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%22397%22%20cy%3D%22233%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%22794%22%20cy%3D%22466%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%221191%22%20cy%3D%22699%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%221588%22%20cy%3D%22932%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%22385%22%20cy%3D%22165%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%22782%22%20cy%3D%22398%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%221179%22%20cy%3D%22631%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%221576%22%20cy%3D%22864%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%22373%22%20cy%3D%2297%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%22770%22%20cy%3D%22330%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%221167%22%20cy%3D%22563%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%221564%22%20cy%3D%22796%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22361%22%20cy%3D%2229%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%22758%22%20cy%3D%22262%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%221155%22%20cy%3D%22495%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%221552%22%20cy%3D%22728%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%22349%22%20cy%3D%22961%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22746%22%20cy%3D%22194%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%221143%22%20cy%3D%22427%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%221540%22%20cy%3D%22660%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%22337%22%20cy%3D%22893%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%22734%22%20cy%3D%22126%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%221131%22%20cy%3D%22359%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%221528%22%20cy%3D%22592%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%22325%22%20cy%3D%22825%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%22722%22%20cy%3D%2258%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%221119%22%20cy%3D%22291%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%221516%22%20cy%3D%22524%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%22313%22%20cy%3D%22757%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%22710%22%20cy%3D%22990%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%221107%22%20cy%3D%22223%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%221504%22%20cy%3D%22456%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22301%22%20cy%3D%22689%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%22698%22%20cy%3D%22922%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%221095%22%20cy%3D%22155%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%221492%22%20cy%3D%22388%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%22289%22%20cy%3D%22621%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22686%22%20cy%3D%22854%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%221083%22%20cy%3D%2287%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%221480%22%20cy%3D%22320%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%22277%22%20cy%3D%22553%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%22674%22%20cy%3D%22786%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%221071%22%20cy%3D%2219%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%221468%22%20cy%3D%22252%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%22265%22%20cy%3D%22485%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%22662%22%20cy%3D%22718%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%221059%22%20cy%3D%22951%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%221456%22%20cy%3D%22184%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%22253%22%20cy%3D%22417%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%22650%22%20cy%3D%22650%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%221047%22%20cy%3D%22883%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%221444%22%20cy%3D%22116%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22241%22%20cy%3D%22349%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%22638%22%20cy%3D%22582%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%221035%22%20cy%3D%22815%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%221432%22%20cy%3D%2248%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%22229%22%20cy%3D%22281%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22626%22%20cy%3D%22514%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%221023%22%20cy%3D%22747%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%221420%22%20cy%3D%22980%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%22217%22%20cy%3D%22213%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%22614%22%20cy%3D%22446%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%221011%22%20cy%3D%22679%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%221408%22%20cy%3D%22912%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%22205%22%20cy%3D%22145%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%22602%22%20cy%3D%22378%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%22999%22%20cy%3D%22611%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%221396%22%20cy%3D%22844%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%22193%22%20cy%3D%2277%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%22590%22%20cy%3D%22310%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%22987%22%20cy%3D%22543%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%221384%22%20cy%3D%22776%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22181%22%20cy%3D%229%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%22578%22%20cy%3D%22242%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%22975%22%20cy%3D%22475%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%221372%22%20cy%3D%22708%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%22169%22%20cy%3D%22941%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22566%22%20cy%3D%22174%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%22963%22%20cy%3D%22407%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%221360%22%20cy%3D%22640%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%22157%22%20cy%3D%22873%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%22554%22%20cy%3D%22106%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%22951%22%20cy%3D%22339%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%221348%22%20cy%3D%22572%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%3Ccircle%20cx%3D%22145%22%20cy%3D%22805%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.15%22%2F%3E%3Ccircle%20cx%3D%22542%22%20cy%3D%2238%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.22999999999999998%22%2F%3E%3Ccircle%20cx%3D%22939%22%20cy%3D%22271%22%20r%3D%220.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.31%22%2F%3E%3Ccircle%20cx%3D%221336%22%20cy%3D%22504%22%20r%3D%221.3%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.39%22%2F%3E%3Ccircle%20cx%3D%22133%22%20cy%3D%22737%22%20r%3D%221.8%22%20fill%3D%22%23f2efe8%22%20fill-opacity%3D%220.47%22%2F%3E%0A%20%20%20%20%3Cg%20transform%3D%22rotate(-18%201250%20820)%22%3E%3Cellipse%20cx%3D%221250%22%20cy%3D%22820%22%20rx%3D%22430%22%20ry%3D%22154.79999999999998%22%20fill%3D%22none%22%20stroke%3D%22%23a68a56%22%20stroke-opacity%3D%220.55%22%20stroke-width%3D%221.5%22%2F%3E%3Cellipse%20cx%3D%221250%22%20cy%3D%22820%22%20rx%3D%22580%22%20ry%3D%22208.79999999999998%22%20fill%3D%22none%22%20stroke%3D%22%23a68a56%22%20stroke-opacity%3D%220.44000000000000006%22%20stroke-width%3D%221.5%22%2F%3E%3Cellipse%20cx%3D%221250%22%20cy%3D%22820%22%20rx%3D%22740%22%20ry%3D%22266.4%22%20fill%3D%22none%22%20stroke%3D%22%23a68a56%22%20stroke-opacity%3D%220.33000000000000007%22%20stroke-width%3D%221.5%22%2F%3E%3Cellipse%20cx%3D%221250%22%20cy%3D%22820%22%20rx%3D%22920%22%20ry%3D%22331.2%22%20fill%3D%22none%22%20stroke%3D%22%23a68a56%22%20stroke-opacity%3D%220.22000000000000003%22%20stroke-width%3D%221.5%22%2F%3E%3C%2Fg%3E%0A%20%20%20%20%3Ccircle%20cx%3D%221250%22%20cy%3D%22820%22%20r%3D%22270%22%20fill%3D%22url(%23p)%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22852%22%20cy%3D%22700%22%20r%3D%2211%22%20fill%3D%22%23e6d2a6%22%2F%3E%3Ccircle%20cx%3D%221490%22%20cy%3D%22500%22%20r%3D%226%22%20fill%3D%22%23f2efe8%22%2F%3E%3C%2Fsvg%3E",
+            "fondoAjuste": "cover",
+            "fondoPosicion": "bottom",
+            "fondoCapa": 55
+          },
+          "mobile": {
+            "padding": "96px 20px"
+          }
+        },
+        "content": {
+          "anchor": "contacto"
+        },
+        "animation": null,
+        "children": [
+          {
+            "id": "71ae058e3r",
+            "type": "heading",
+            "name": "Título",
+            "styles": {
+              "base": {
+                "margin": "0",
+                "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                "fontWeight": "500",
+                "fontSize": "88px",
+                "lineHeight": "1.05",
+                "letterSpacing": "-0.015em"
+              },
+              "mobile": {
+                "fontSize": "44px"
+              }
+            },
+            "content": {
+              "text": "¿La hacemos girar?",
+              "level": 2
+            },
+            "animation": {
+              "text": {
+                "mode": "chars",
+                "effect": "up",
+                "trigger": "scroll",
+                "duration": 0.8,
+                "delay": 0,
+                "stagger": 0.04,
+                "distance": 40,
+                "ease": "suave"
+              }
+            },
+            "children": []
+          },
+          {
+            "id": "f7ed66283s",
+            "type": "text",
+            "name": "Subtítulo",
+            "styles": {
+              "base": {
+                "margin": "0",
+                "fontSize": "20px",
+                "lineHeight": "1.6",
+                "color": "#d6d2c9",
+                "maxWidth": "40ch"
+              },
+              "mobile": {
+                "fontSize": "17px"
+              }
+            },
+            "content": {
+              "text": "Cuéntanos tu idea y te respondemos hoy mismo."
+            },
+            "animation": {
+              "appear": {
+                "effect": "up",
+                "trigger": "scroll",
+                "duration": 0.9,
+                "delay": 0.2,
+                "distance": 50,
+                "ease": "suave"
+              }
+            },
+            "children": []
+          },
+          {
+            "id": "01c99a833t",
+            "type": "button",
+            "name": "Botón",
+            "styles": {
+              "base": {
+                "display": "inline-block",
+                "padding": "16px 32px",
+                "fontSize": "18px",
+                "borderRadius": "0",
+                "textDecoration": "none",
+                "fontWeight": "500",
+                "letterSpacing": "0.02em",
+                "background": "#a68a56",
+                "color": "#0c0c0e",
+                "border": "1px solid #a68a56"
+              },
+              "mobile": {}
+            },
+            "content": {
+              "text": "Escríbenos por WhatsApp",
+              "href": "https://wa.me/50600000000"
+            },
+            "animation": {
+              "hover": {
+                "effect": "bgrow",
+                "duration": 0.3,
+                "ease": "suave",
+                "color": "#c4a76f"
+              },
+              "appear": {
+                "effect": "zoom",
+                "trigger": "scroll",
+                "duration": 0.9,
+                "delay": 0.35,
+                "distance": 50,
+                "ease": "suave"
+              }
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": "fc9c23413x",
+        "type": "section",
+        "name": "Footer",
+        "styles": {
+          "base": {
+            "display": "flex",
+            "justifyContent": "space-between",
+            "alignItems": "center",
+            "flexWrap": "wrap",
+            "gap": "16px",
+            "padding": "40px max(32px, calc((100% - 1120px) / 2))",
+            "background": "#17171a",
+            "color": "#f2efe8"
+          },
+          "mobile": {
+            "flexDirection": "column",
+            "textAlign": "center",
+            "padding": "32px 20px"
+          }
+        },
+        "content": {},
+        "animation": null,
+        "children": [
+          {
+            "id": "343ddc543v",
+            "type": "text",
+            "name": "Marca",
+            "styles": {
+              "base": {
+                "margin": "0",
+                "fontFamily": "\"Iowan Old Style\", \"Palatino Linotype\", Palatino, Georgia, serif",
+                "fontWeight": "500",
+                "fontSize": "22px"
+              },
+              "mobile": {}
+            },
+            "content": {
+              "text": "Órbita"
+            },
+            "animation": null,
+            "children": []
+          },
+          {
+            "id": "ddb324bb3w",
+            "type": "text",
+            "name": "Copyright",
+            "styles": {
+              "base": {
+                "margin": "0",
+                "fontSize": "14px",
+                "lineHeight": "1.5",
+                "color": "#a3a09a"
+              },
+              "mobile": {}
+            },
+            "content": {
+              "text": "Estudio ficticio de muestra · hecho con WebEdiThor"
+            },
+            "animation": null,
+            "children": []
+          }
+        ]
+      }
+    ]
+  }
+}

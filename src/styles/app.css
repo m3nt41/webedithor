@@ -309,3 +309,12 @@ details.bloque .variantes button:hover { background: #3b3470; }
 #inspector .sombra-ed .fila { display: grid; grid-template-columns: repeat(var(--n, 3), 1fr); gap: 6px; margin-bottom: 6px; }
 #inspector .sombra-ed .sh-n { display: flex; flex-direction: column; gap: 2px; font-size: 11px; color: #c9c9d6; }
 #inspector .sombra-ed .sh-n input { width: 100%; min-width: 0; box-sizing: border-box; }
+
+/* Aviso "solo en computadora": CSS puro. Exige pantalla TÁCTIL (pointer: coarse) además de angosta,
+   así una ventana angosta en la PC no se bloquea. */
+#solo-pc { display: none; }
+@media (pointer: coarse) and (max-width: 1024px) {
+  #solo-pc { position: fixed; inset: 0; z-index: 3000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 24px; background: #14141a; color: #e8e8ee; text-align: center; font-size: 17px; line-height: 1.5; }
+  #solo-pc strong { font-size: 24px; }
+  #solo-pc p[lang="en"] { font-size: 14px; color: #a3a3b0; }
+}

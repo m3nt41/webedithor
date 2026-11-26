@@ -13,6 +13,12 @@
     <link rel="icon" type="image/png" sizes="16x16" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAADd0lEQVR4nDXHTSi7DwDA8e8eT36sISNtI6/F0mKhFPOSUmo1ygUHFwccyEFLlCtpB4rDysXlV7SEmBbCv6ZxUBxW5OXZrMU2mkJj8zy/0/9z+wAUC4JwurCw8BuPx+VEIqFsbm4qHR0dyubmpjI6Oqr4fD7FZrMpdrtdqaiokE0m029lZeWp2WwuFoG/dru9uaenR87JyVEBuN1uLBYLt7e36PV64vE4Op2OaDSKRqNRiaKoZGZmtqalpf0V8/Pzm3U6nXx2diY8Pz8TiUSQJImCggLC4TAWiwWHw8HPzw/l5eWkpaUBCCqVSk6lUs2iyWRSent7hff3d9RqNeFwmMbGRoxGI9FolIuLC4xGIz6fD7PZjCzLPDw8kEgkBEEQFEGtVquWlpYIBAK43W5GRkZIJpNotVpWV1cxGAwUFxeTnZ1NRkYGkUiEjIwM/vz5gyiKKuHt7Q2Hw8H9/T2zs7PE43FisRgzMzMA+P1+Li8vMRgMzM/PMzg4iCzLAPz8/CAmEgksFgtjY2MEg0Hq6urw+XzYbDbMZjPV1dX09vbS0NDA8vIywWAQtVoNQDKZRBweHqa1tRUAjUZDf38/JpOJYDCI0WhEkiSi0ShfX19YrVba2tpoaWkhFAoRDocRU6kUT09PeDweFhcXiUQirKysMDAwgNFoJCsri/HxcY6OjigqKqKsrIzHx0eKiorwer0I/0cQBCRJYmVlhbm5Oba3t3G5XNTW1iLLMnq9HqfTiUajoba2ls/PT6amphBubm44OTlhbW0Ng8FAfX097e3t7O3tUVJSQnd3N7FYDL/fz8fHB4lEAo/Hw/LyMkNDQ4iBQIBwOMzLyws6nY68vDyampqIx+NotVq8Xi8HBwekp6ezv7+PoihIksTc3BwPDw8IarVaqaysZHV1lfv7ewoLC3E6nZyennJ+fs76+jp9fX1kZWVxd3fH4+Mj09PTdHV1IUmSogKUs7MzOTc3VygsLKSmpgaHw8Hu7i7Z2dlcXV2RTCZ5fX2loqKCzMxMJiYmCAQCcn5+viC2t7d7d3Z2mquqqmRJkoRUKoXBYEAURQ4PD9FqtTQ1NSGKIqWlpWxtbeF0OhWr1SpsbGycCMfHxwMfHx//fX9/c3FxoSiKwvb2Nj6fj1gsxuTkJKFQiLe3N35/f3G5XHIoFPq9vr4+6uzsHPwHcpWgnraBhQkAAAAASUVORK5CYII=" />
   </head>
   <body>
+    <!-- Solo se ve en celulares y tablets chicas (lo decide app.css): tapa el editor entero -->
+    <div id="solo-pc" role="alert">
+      <strong>WebEdiThor</strong>
+      <p>El editor solo funciona en computadora. 💻<br />Ábrelo desde tu PC para probarlo.</p>
+      <p lang="en">The editor only works on desktop. Open it on your computer to try it.</p>
+    </div>
     <!-- Layout del editor: 3 columnas. Cada una la llena un módulo de src/ui/ -->
     <div id="app">
       <header id="toolbar"></header>

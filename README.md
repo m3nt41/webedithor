@@ -13,7 +13,13 @@
 
 </div>
 
-<!-- TODO (polish phase): logo above the title and an animated GIF (docs/assets/demo.gif) next to these screenshots. -->
+<!-- TODO (polish phase): logo above the title. The GIF is generated with: node tools/gen-gif-readme.mjs -->
+
+<p align="center">
+  <img src="docs/assets/demo.gif" alt="An animated landing page scrolling: hero text appearing, a marquee, a multi-step scroll scene, a gallery and giant moving words" width="100%">
+  <br>
+  <sub><b>The sample landing, built with WebEdiThor and exported as a single <code>.html</code></b> (its sample text is in Spanish)</sub>
+</p>
 
 <p align="center">
   <img src="docs/assets/editor.png" alt="The WebEdiThor editor: layers on the left, the page in the middle, the inspector on the right" width="100%">

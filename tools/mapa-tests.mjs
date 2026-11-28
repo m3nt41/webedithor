@@ -94,6 +94,7 @@ export const MAPA = {
   'tools/inventario-inspector.mjs': ['inspector-inventario'],
   'tools/capturas-inspector.mjs': NINGUNO,
   'tools/capturas-readme.mjs': NINGUNO,   // genera docs/assets/*.png para el README (necesita npm run build)
+  'tools/gen-gif-readme.mjs': NINGUNO,   // genera docs/assets/demo.gif (el GIF del README; necesita ffmpeg)
   'tools/banco-texto.html': NINGUNO,      // banco de comparación a ojo, no lo usa el editor ni ningún test
   'tools/gen-demo-parallax.mjs': NINGUNO,
   'tools/gen-demo-estilo.mjs': ['tema'],

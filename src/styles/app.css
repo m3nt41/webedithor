@@ -31,6 +31,12 @@ body { font: 14px system-ui, sans-serif; background: var(--fondo); color: #e8e8e
 #app { display: grid; grid-template-columns: 232px 1fr 312px; grid-template-rows: 54px 1fr; height: 100vh; }
 #toolbar { grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; padding: 0 12px; background: var(--panel); border-bottom: 1px solid var(--linea); }
 #toolbar .espacio { flex: 1; }
+/* Nombre con la T en forma de rayo. La T es más ancha que la letra (2px de aire a cada lado);
+   el margin-right negativo compensa esos 4px para que los botones no se muevan. */
+#toolbar .marca { margin-right: -4px; }
+#toolbar .marca .rayo-t { position: relative; margin: 0 2px; color: transparent; }
+#toolbar .marca .rayo-t svg { position: absolute; left: calc(50% + .5px); top: 3.5px; width: 10.96px; height: 15.23px; transform: translateX(-50%); overflow: visible; pointer-events: none; fill: #f8d148; }
+#toolbar .marca .rayo-t path { fill: none; stroke: #fdf0b4; stroke-width: 3.5; }
 #toolbar select { height: 34px; background: var(--boton); color: inherit; border: 1px solid var(--borde); border-radius: 8px; padding: 5px 6px; cursor: pointer; font: inherit; font-size: 13px; }
 #toolbar select:focus-visible { outline: 2px solid var(--acento); outline-offset: 2px; }
 /* Aviso de varias pestañas: flotante bajo la barra, no mueve el layout */

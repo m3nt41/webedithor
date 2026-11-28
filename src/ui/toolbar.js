@@ -12,9 +12,13 @@ import { PAGINA_DEMO } from '../core/demo.js';
 import { tiradoresEncendidos, alternarTiradores, alCambiarTiradores } from './tiradores-pref.js';
 import { SVG_TIRADORES, SVG_OJO, SVG_DESHACER, SVG_REHACER } from './iconos.js'; // iconos compartidos con la Vista previa
 
+// La T del nombre en forma de rayo: se dibuja ENCIMA de la letra "T", que queda transparente (el texto sigue diciendo WebEdiThor).
+// Polígono = la silueta; path = el borde claro de la barra de arriba. Tamaño y posición: .rayo-t en app.css.
+const SVG_RAYO_T = '<svg viewBox="0 0 126.4 175.6" aria-hidden="true"><polygon points="16,0 126.4,0 111,28 83.6,28 62.8,71.6 93,71.6 24.6,175.6 44.6,99.2 15.2,99.2 49,28 0,28"/><path d="M0 28 16 0H126.4L111 28"/></svg>';
+
 export function initToolbar(host) {
   host.innerHTML = `
-    <strong class="marca">WebEdiThor</strong>
+    <strong class="marca">WebEdi<span class="rayo-t">T${SVG_RAYO_T}</span>hor</strong>
     <button id="btn-undo" class="ico-btn" title="${tr('barra.deshacerTitulo')}" aria-label="${tr('barra.deshacer')}">${SVG_DESHACER}</button>
     <button id="btn-redo" class="ico-btn" title="${tr('barra.rehacerTitulo')}" aria-label="${tr('barra.rehacer')}">${SVG_REHACER}</button>
     <span class="grupo" role="group" aria-label="${tr('barra.modoEdicion')}">

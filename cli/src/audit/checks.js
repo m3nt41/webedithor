@@ -175,6 +175,6 @@ export function checkSeo(html, page) {
   // Idioma: sin el campo, el editor escribe lang="es" por defecto.
   const lang = /<html[^>]*\slang=["']([^"']+)["']/i.exec(html)?.[1];
   if (!lang) add('warn', 'html-lang', 'The <html> element has no lang attribute');
-  else if (!page?.content?.lang) add('info', 'html-lang', `No language set in the page settings, so the page declares lang="${lang}". If your content is in another language, set it (page settings -> Idioma)`);
+  else if (!page?.content?.lang) add('info', 'html-lang', `No language set in the page settings, so the page declares lang="${lang}". If your content is in another language, set it (page settings -> Language)`);
   return out;
 }

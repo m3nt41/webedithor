@@ -9,6 +9,8 @@
 // dentro de cada tramo la fija la escena padre ("Transición (% del tramo)"); aquí se hornea en el número, igual en escritorio y móvil.
 // Las reglas solo valen dentro de una escena (`.sc [data-es] > hijo`): fuera de una escena no hacen nada.
 // La opacidad va con !important para que preview y exportado coincidan (la opacidad propia del elemento se ignora).
+import { t } from '../i18n/index.js';
+
 
 // Progreso del cambio del paso j (0..1). `k` = 1 / (fracción del tramo que dura el cambio): con 50 % es 2 (como siempre).
 const Q = (j, k = '2') => `clamp(0,calc((var(--ep,0) * var(--n,3) - ${j - 1}) * ${k}),1)`;
@@ -22,14 +24,14 @@ export function factorTransicion(padre) {
 
 export default {
   id: 'scenestep',
-  titulo: 'Paso de escena',
+  titulo: t('anim.paso_de_escena'),
   principal: 'effect',
   defaults: { effect: 'in', step: 2, move: 'up', distance: 40 },
   campos: [
-    { key: 'effect', label: 'Qué hace', kind: 'select', options: [['', 'Ninguno'], ['in', 'Aparece en el paso'], ['out', 'Se va en el paso'], ['inout', 'Aparece y se va en el siguiente']] },
-    { key: 'step', label: 'Paso', kind: 'num', step: 1, min: 1 },
-    { key: 'move', label: 'Movimiento', kind: 'select', options: [['', 'Solo fundido'], ['up', 'Subir'], ['down', 'Bajar'], ['left', 'Izquierda'], ['right', 'Derecha'], ['zoom', 'Zoom']] },
-    { key: 'distance', label: 'Distancia (px) o zoom (%)', kind: 'num', step: 5, min: 0, cuando: (g) => !!g?.move },
+    { key: 'effect', label: t('anim.que_hace'), kind: 'select', options: [['', t('anim.ninguno')], ['in', t('anim.aparece_en_el_paso')], ['out', t('anim.se_va_en_el_paso')], ['inout', t('anim.aparece_y_se_va_en_el_siguiente')]] },
+    { key: 'step', label: t('anim.paso'), kind: 'num', step: 1, min: 1 },
+    { key: 'move', label: t('anim.movimiento'), kind: 'select', options: [['', t('anim.solo_fundido')], ['up', t('anim.subir')], ['down', t('anim.bajar')], ['left', t('anim.izquierda')], ['right', t('anim.derecha')], ['zoom', t('anim.zoom')]] },
+    { key: 'distance', label: t('anim.distancia_px_o_zoom'), kind: 'num', step: 5, min: 0, cuando: (g) => !!g?.move },
   ],
 
   css(g, sel, node, op = {}) {

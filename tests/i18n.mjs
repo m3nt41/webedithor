@@ -1,6 +1,8 @@
 // Prueba del mecanismo de traducción (src/i18n): elección de idioma, respaldo en español,
 // datos entre llaves y que fuera del navegador siempre sea español. Ejecutar: node tests/i18n.mjs  (Node, sin navegador)
 import assert from 'node:assert/strict';
+import { readFileSync, readdirSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import { BASE, IDIOMAS, elegirIdioma, crearT, idioma, t as traducir, guardarIdioma } from '../src/i18n/index.js';
 
 let ok = 0;
@@ -50,6 +52,34 @@ t('todos los idiomas registrados tienen solo claves que existen en español y te
       assert.equal(typeof texto, 'string', `${codigo}: ${clave} no es texto`);
     }
   }
+});
+
+t('todos los idiomas tienen EXACTAMENTE las claves de español, con los mismos datos entre llaves', () => {
+  const huecos = (s) => [...s.matchAll(/\{\w+\}/g)].map((m) => m[0]).sort().join();
+  for (const [codigo, textos] of Object.entries(IDIOMAS)) {
+    assert.deepEqual(Object.keys(textos).sort(), Object.keys(IDIOMAS[BASE]).sort(), codigo);
+    for (const [clave, texto] of Object.entries(textos)) {
+      assert.equal(huecos(texto), huecos(IDIOMAS[BASE][clave]), `${codigo}: ${clave}: datos distintos`);
+      assert.ok(texto.trim(), `${codigo}: ${clave} vacío`);
+      // muchos textos van dentro de atributos HTML: una comilla doble que el español no tiene los rompería
+      if (!IDIOMAS[BASE][clave].includes('"')) assert.ok(!texto.includes('"'), `${codigo}: ${clave} tiene comillas dobles (usa “ ”)`);
+      assert.ok(!/<[a-z/]/i.test(texto), `${codigo}: ${clave} lleva HTML`);
+    }
+  }
+});
+t('toda clave escrita en el código existe en español', () => {
+  const archivos = (d) => readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? archivos(`${d}/${e.name}`) : [`${d}/${e.name}`]));
+  const raiz = fileURLToPath(new URL('../src', import.meta.url));
+  const faltan = [];
+  for (const f of archivos(raiz)) {
+    if (!f.endsWith('.js') || f.includes('/i18n/') || f.includes('lenis')) continue;
+    const code = readFileSync(f, 'utf8');
+    // t('a.b'), tr('a.b') y las dos ramas de t(cond ? 'a.b' : 'a.c')
+    for (const m of code.matchAll(/(?<![\w.])(?:t|tr)\((?:[^()'`]*\? )?'([a-zA-Z]+\.\w+)'(?: : '([a-zA-Z]+\.\w+)')?/g)) {
+      for (const k of [m[1], m[2]]) if (k && !Object.hasOwn(IDIOMAS[BASE], k)) faltan.push(`${f.slice(raiz.length)}: ${k}`);
+    }
+  }
+  assert.deepEqual(faltan, []);
 });
 
 console.log(`\n${ok} comprobaciones OK`);

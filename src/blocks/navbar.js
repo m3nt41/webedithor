@@ -9,6 +9,7 @@
 // El navbar nace NORMAL (sin sticky). Para pegarlo arriba: selecciona el navbar ->
 // Inspector -> "Posición" -> "Pegado" (y pon la distancia, ej. 0).
 
+import { t as tr } from '../i18n/index.js';
 import { n, texto, boton, fondoModo } from './util.js';
 import { MODOS, FUENTE, botonTema, lado, ANCHO } from './tema.js';
 
@@ -41,22 +42,22 @@ const barra = (m, styles, children) =>
 
 export default {
   id: 'navbar',
-  label: 'Navbar',
+  label: tr('bloque.navbar'),
   alInicio: true, // al insertarlo va arriba de todo
   variants: {
-    claro: { label: 'Claro', crear: () =>
+    claro: { label: tr('bloque.claro'), crear: () =>
       barra(MODOS.claro, {}, [logo(), grupoEnlaces(LINKS), cta('Contacto', MODOS.claro, 'secundario')]) },
 
-    oscuro: { label: 'Oscuro', crear: () =>
+    oscuro: { label: tr('bloque.oscuro'), crear: () =>
       barra(MODOS.oscuro, {}, [logo(), grupoEnlaces(LINKS), cta('Hablemos', MODOS.oscuro)]) },
 
-    centrado: { label: 'Centrado', crear: () =>
+    centrado: { label: tr('bloque.centrado'), crear: () =>
       barra(MODOS.claro2, { flexDirection: 'column', justifyContent: 'center', padding: '24px', gap: '14px' }, [
         logo(),
         grupoEnlaces(LINKS, { gap: '36px' }),
       ]) },
 
-    boton: { label: 'Con botón', crear: () =>
+    boton: { label: tr('bloque.con_boton'), crear: () =>
       barra(MODOS.claro, {}, [logo(), grupoEnlaces(LINKS.slice(1)), cta('Cotizar ahora', MODOS.claro)]) },
   },
 };

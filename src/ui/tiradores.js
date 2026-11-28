@@ -10,6 +10,7 @@
 // taparse entre sí ni tapar el contenido, y el botón "Margen/Padding" va a un lado en vez de encima.
 // Como esta capa no está en el árbol, no entra al export ni a la Vista previa (iframe) ni recibe los efectos hover/parallax.
 
+import { t as tr } from '../i18n/index.js';
 import { getState, subscribe, setEstilosGesto } from '../core/store.js';
 import { effectiveStyles } from '../render/renderer.js';
 import { findNode } from '../core/tree.js';
@@ -28,7 +29,7 @@ export function initTiradores(host, stage) {
   host.appendChild(capa);
 
   const sombras = [0, 1, 2, 3].map((i) => crear('div', 'tir-sombra', { 'data-lado': nombreLado(i) }));
-  const manijas = [0, 1, 2, 3].map((i) => crear('div', 'tir-h', { 'data-lado': nombreLado(i), title: 'Arrastra · Shift = lado opuesto · Alt = 4 lados · Ctrl = múltiplos de 8' }));
+  const manijas = [0, 1, 2, 3].map((i) => crear('div', 'tir-h', { 'data-lado': nombreLado(i), title: tr('tiradores.ayuda') }));
   const etiquetas = [0, 1, 2, 3].map((i) => crear('div', 'tir-et', { 'data-lado': nombreLado(i) }));
   const boton = crear('button', 'tir-modo', { type: 'button' });
   const partes = [...sombras, ...manijas, ...etiquetas, boton];
@@ -131,8 +132,8 @@ export function initTiradores(host, stage) {
     });
 
     // Botón de modo, arriba a la izquierda del nodo (por encima de su margen superior)
-    boton.textContent = prop === 'padding' ? 'Padding' : 'Margen';
-    boton.title = 'Cambiar entre padding y margen · vista ' + (getState().viewMode === 'mobile' ? 'móvil' : 'escritorio');
+    boton.textContent = prop === 'padding' ? 'Padding' : tr('tiradores.margen');
+    boton.title = tr(getState().viewMode === 'mobile' ? 'tiradores.cambiarMovil' : 'tiradores.cambiarEscritorio');
     if (!chico) {
       boton.style.left = `${Math.max(0, X)}px`;
       boton.style.top = `${Math.max(0, Y - (dentro ? 0 : t) - 24)}px`;

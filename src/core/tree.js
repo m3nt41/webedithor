@@ -11,6 +11,7 @@
 //   al abrir un .json se valida con animations/normalizar.js)
 // - children: nodos hijos (layout flex/grid, NUNCA posiciones absolutas)
 
+import { t } from '../i18n/index.js';
 import { normalizarAnimacion } from '../animations/normalizar.js';
 import { normalizarMarquesina } from './marquesina.js';
 import { sanearEstilos, urlPermitida, idSeguro, nivelValido, quitar, leerQuitados } from './seguridad.js';
@@ -196,13 +197,13 @@ export function normalizePage(obj, informe = null) {
 function normalizarNodos(obj) {
   const TIPOS = ['page', 'section', 'container', 'heading', 'text', 'button', 'image', 'icon'];
   function norm(n, esRaiz, padre) {
-    if (!n || typeof n !== 'object') throw new Error('Nodo inválido');
-    if (!TIPOS.includes(n.type)) throw new Error(`Tipo desconocido: ${n.type}`);
-    if (esRaiz && n.type !== 'page') throw new Error('La raíz debe ser de tipo page');
+    if (!n || typeof n !== 'object') throw new Error(t('arbol.nodoInvalido'));
+    if (!TIPOS.includes(n.type)) throw new Error(t('arbol.tipoDesconocido', { tipo: n.type }));
+    if (esRaiz && n.type !== 'page') throw new Error(t('arbol.raiz'));
     if (padre && !canContain(padre.type, n.type)) {
-      throw new Error(`Anidado inválido: "${n.name ?? n.type}" (${n.type}) no puede estar dentro de "${padre.name ?? padre.type}" (${padre.type})`);
+      throw new Error(t('arbol.anidado', { hijo: n.name ?? n.type, tipoHijo: n.type, padre: padre.name ?? padre.type, tipoPadre: padre.type }));
     }
-    if (n.children != null && !Array.isArray(n.children)) throw new Error(`"children" de "${n.name ?? n.type}" debe ser una lista`);
+    if (n.children != null && !Array.isArray(n.children)) throw new Error(t('arbol.children', { nombre: n.name ?? n.type }));
     if (typeof n.id === 'string' && !idSeguro(n.id)) quitar(); // un id raro se cambia por uno nuevo (no puede colarse en selectores ni atributos)
     return {
       id: idSeguro(n.id) ? n.id : newId(),

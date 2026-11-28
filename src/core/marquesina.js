@@ -11,9 +11,11 @@
 // mueve la pista -(100/K)% = justo un grupo. Velocidad = segundos por vuelta (una copia).
 // Sin movimiento: una sola tira estática (.mq-g) centrada y con wrap. prefers-reduced-motion = igual que la estática.
 // Editor: los items se ven UNA vez, quietos, con wrap (editables); la animación se ve en 👁 y en el export.
+import { t } from '../i18n/index.js';
+
 
 export const MQ_DEFECTO = { mov: true, vel: 25, dir: 'izq', pausa: true, gap: 48, copias: 4 };
-export const MQ_VELOCIDADES = [['lenta', 'Lenta', 50], ['media', 'Media', 25], ['rapida', 'Rápida', 12]]; // [clave, texto, segundos por vuelta]
+export const MQ_VELOCIDADES = [['lenta', t('mq.lenta'), 50], ['media', t('sombra.media'), 25], ['rapida', t('mq.rapida'), 12]]; // [clave, texto, segundos por vuelta]
 export const MQ_GAPS = [16, 32, 48, 64, 96];
 export const MQ_COPIAS = [2, 3, 4, 5, 6];
 export const MQ_VEL_MIN = 5, MQ_VEL_MAX = 120;

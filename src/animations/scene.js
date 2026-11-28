@@ -16,6 +16,8 @@
 // o sin JS no hay .sc: el contenedor es `display:contents` y la sección sale normal, con todo visible.
 // El motor (scrollmotor.js) escribe el progreso de la escena (0..1) en --ep del contenedor alto.
 // --alto-v = 100svh en el export; el preview lo fija al alto real de su panel (para verse igual).
+import { t } from '../i18n/index.js';
+
 
 /** CSS general de las escenas (una sola vez por página). */
 export const CSS_ESCENA = [
@@ -42,14 +44,14 @@ const ALIN = { 'flex-start': 'start', center: 'center', 'flex-end': 'end' };
 
 export default {
   id: 'scene',
-  titulo: 'Escena por scroll',
+  titulo: t('anim.escena_por_scroll'),
   principal: 'steps',
   defaults: { steps: '3', length: 4, transition: 40 }, // escenas nuevas desde el inspector (4 pantallas para 3 pasos)
   campos: [
-    { key: 'steps', label: 'Pasos', kind: 'select', options: [['', 'Ninguna'], ['2', '2 pasos'], ['3', '3 pasos'], ['4', '4 pasos']] },
-    { key: 'length', label: 'Duración (pantallas de scroll)', kind: 'num', step: 0.5, min: 1 },
-    { key: 'transition', label: 'Transición (% del tramo)', kind: 'num', step: 5, min: 20, max: 80, relleno: 50 }, // relleno = valor al abrir un .json sin el campo
-    { key: 'top', label: 'Espacio arriba (px, vacío = medir el navbar)', kind: 'num', step: 5, min: 0 },
+    { key: 'steps', label: t('anim.pasos'), kind: 'select', options: [['', t('anim.ninguna')], ['2', t('anim.2_pasos')], ['3', t('anim.3_pasos')], ['4', t('anim.4_pasos')]] },
+    { key: 'length', label: t('anim.duracion_pantallas_de_scroll'), kind: 'num', step: 0.5, min: 1 },
+    { key: 'transition', label: t('anim.transicion_del_tramo'), kind: 'num', step: 5, min: 20, max: 80, relleno: 50 }, // relleno = valor al abrir un .json sin el campo
+    { key: 'top', label: t('anim.espacio_arriba_px_vacio_medir_el_navbar'), kind: 'num', step: 5, min: 0 },
   ],
 
   // Alineación: la sección apila a los hijos en un grid de una celda. Si era flex, su alineación se traduce

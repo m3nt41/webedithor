@@ -1,6 +1,7 @@
 // ANIMACIÓN "AL PASAR EL MOUSE": CSS puro (transition + :hover), sin JS.
 // Datos en node.animation.hover = { effect, duration, ease, color }
 
+import { t as tr } from '../i18n/index.js';
 import { EASES, transicion, camposCurva, sinSpring, DEF_CURVA, modoSombra, sinCaja, esTexto, duracion, curva, filtroConReposo } from './base.js';
 import { cssTextoFijo, sinFondoNiBorde } from './textofijo.js';
 import { textoFijoValido } from '../core/seguridad.js';
@@ -13,45 +14,45 @@ const cuandoFijable = (g, efecto, nodo) => FIJABLES.includes(efecto) && nodo?.ty
 
 // Lista completa (la usa la validación del .json). El orden mostrado depende del nodo: ver opcionesNodo.
 const NUEVOS = [
-  ['underline', 'Subrayado'],
-  ['color', 'Color'],
-  ['soft', 'Fondo suave'],
+  ['underline', tr('anim.subrayado')],
+  ['color', tr('anim.color')],
+  ['soft', tr('anim.fondo_suave')],
 ];
-const RELLENO = ['fill', 'Relleno'];
+const RELLENO = ['fill', tr('anim.relleno')];
 // Fondo que crece (técnica V6 del banco): un ::before de color que crece detrás del texto; el texto NO cambia de tamaño ni se mueve.
-const CRECE = ['bgrow', 'Fondo que crece'];
+const CRECE = ['bgrow', tr('anim.fondo_que_crece')];
 // Relleno: modos y direcciones del barrido. [transform-origin FIJO (reposo y :hover), eje]
-const MODOS = [['fundido', 'Fundido'], ['barrido', 'Barrido']];
+const MODOS = [['fundido', tr('anim.fundido')], ['barrido', tr('anim.barrido')]];
 const BARRIDO = {
-  izq: ['left', 'X', 'Desde la izquierda'], der: ['right', 'X', 'Desde la derecha'],
-  arriba: ['top', 'Y', 'Desde arriba'], abajo: ['bottom', 'Y', 'Desde abajo'],
+  izq: ['left', 'X', tr('anim.desde_la_izquierda')], der: ['right', 'X', tr('anim.desde_la_derecha')],
+  arriba: ['top', 'Y', tr('anim.desde_arriba')], abajo: ['bottom', 'Y', tr('anim.desde_abajo')],
 };
 const DIR_BARRIDO = Object.entries(BARRIDO).map(([k, v]) => [k, v[2]]);
 const CLASICOS = [
-  ['lift', 'Elevar'],
-  ['grow', 'Agrandar'],
-  ['shrink', 'Encoger'],
-  ['tilt', 'Inclinar'],
-  ['glow', 'Resplandor'],
-  ['bright', 'Aclarar'],
+  ['lift', tr('anim.elevar')],
+  ['grow', tr('anim.agrandar')],
+  ['shrink', tr('anim.encoger')],
+  ['tilt', tr('anim.inclinar')],
+  ['glow', tr('anim.resplandor')],
+  ['bright', tr('anim.aclarar')],
 ];
 // Subrayado: [transform-origin en reposo, transform-origin en :hover (null = el mismo)]
 const ORIGEN = { izq: ['left', null], der: ['right', null], centro: ['center', null], pasa: ['right', 'left'] };
 const DIRECCIONES = [
-  ['izq', 'Desde la izquierda'],
-  ['der', 'Desde la derecha'],
-  ['centro', 'Desde el centro'],
-  ['pasa', 'Pasa de lado a lado (puede verse brusca con pasadas rápidas)'],
+  ['izq', tr('anim.desde_la_izquierda')],
+  ['der', tr('anim.desde_la_derecha')],
+  ['centro', tr('anim.desde_el_centro')],
+  ['pasa', tr('anim.pasa_de_lado_a_lado_puede_verse_brusca_c')],
 ];
-const EFECTOS = [['', 'Ninguno'], ...CLASICOS, ...NUEVOS, RELLENO, CRECE];
+const EFECTOS = [['', tr('anim.ninguno')], ...CLASICOS, ...NUEVOS, RELLENO, CRECE];
 
 // Texto, título o botón SIN caja: los 3 efectos que no mueven las letras van primero y el primero se sugiere.
 // Con caja o imagen: el orden de siempre y los nuevos al final. Solo cambia el orden de la lista, no lo guardado.
 // Botón o texto CON caja: "Relleno" va primero y es el sugerido (el relleno de color solo existía como estilo permanente).
 const opcionesNodo = (node) => {
   if (!esTexto(node)) return EFECTOS;
-  if (sinCaja(node)) return [['', 'Ninguno'], ['underline', 'Subrayado (sugerido)'], ...NUEVOS.slice(1), ...CLASICOS, RELLENO, CRECE];
-  return [['', 'Ninguno'], ['fill', 'Relleno (sugerido)'], ...CLASICOS, ...NUEVOS, CRECE];
+  if (sinCaja(node)) return [['', tr('anim.ninguno')], ['underline', tr('anim.subrayado_sugerido')], ...NUEVOS.slice(1), ...CLASICOS, RELLENO, CRECE];
+  return [['', tr('anim.ninguno')], ['fill', tr('anim.relleno_sugerido')], ...CLASICOS, ...NUEVOS, CRECE];
 };
 
 // Qué cambia al hacer hover en cada efecto
@@ -99,30 +100,30 @@ const sinOverflow = (node) => [node?.styles?.base, node?.styles?.mobile]
 export default {
   id: 'hover',
   estado: true, // se ve siempre en el preview
-  titulo: 'Al pasar el mouse',
+  titulo: tr('anim.al_pasar_el_mouse'),
   principal: 'effect',
   defaults: { effect: 'lift', duration: 0.2, ease: 'suave', ...DEF_CURVA, textoFijo: 'no', color: '#7c5cff', lineaColor: 'texto', direccion: 'izq', grosor: 2, separacion: 0, modo: 'fundido', dirRelleno: 'izq', textoCambia: 'no', textoColor: '#ffffff' },
   campos: [
-    { key: 'effect', label: 'Efecto', kind: 'select', options: EFECTOS, opcionesNodo },
-    { key: 'direccion', label: 'Dirección', kind: 'select', options: DIRECCIONES, cuando: (g, efecto) => efecto === 'underline' },
-    { key: 'grosor', label: 'Grosor (px)', kind: 'num', step: 1, min: 1, max: 4, cuando: (g, efecto) => efecto === 'underline' },
-    { key: 'separacion', label: 'Separación del texto (px)', kind: 'num', step: 1, min: 0, max: 8, cuando: (g, efecto) => efecto === 'underline' },
-    { key: 'lineaColor', label: 'Color de la línea', kind: 'select', options: [['texto', 'El del texto'], ['otro', 'Otro color']], cuando: (g, efecto) => efecto === 'underline' },
-    { key: 'modo', label: 'Modo', kind: 'select', options: MODOS, cuando: (g, efecto) => efecto === 'fill' },
-    { key: 'dirRelleno', label: 'Dirección del barrido', kind: 'select', options: DIR_BARRIDO, cuando: (g, efecto) => efecto === 'fill' && g?.modo === 'barrido' },
-    { key: 'textoCambia', label: 'Color del texto al pasar', kind: 'select', options: [['no', 'Sin cambio'], ['si', 'Cambiar']], cuando: (g, efecto) => efecto === 'fill' || efecto === 'bgrow' },
-    { key: 'textoColor', label: 'Color del texto', kind: 'color', cuando: (g, efecto) => (efecto === 'fill' || efecto === 'bgrow') && g?.textoCambia === 'si' },
+    { key: 'effect', label: tr('anim.efecto'), kind: 'select', options: EFECTOS, opcionesNodo },
+    { key: 'direccion', label: tr('anim.direccion'), kind: 'select', options: DIRECCIONES, cuando: (g, efecto) => efecto === 'underline' },
+    { key: 'grosor', label: tr('anim.grosor_px'), kind: 'num', step: 1, min: 1, max: 4, cuando: (g, efecto) => efecto === 'underline' },
+    { key: 'separacion', label: tr('anim.separacion_del_texto_px'), kind: 'num', step: 1, min: 0, max: 8, cuando: (g, efecto) => efecto === 'underline' },
+    { key: 'lineaColor', label: tr('anim.color_de_la_linea'), kind: 'select', options: [['texto', tr('anim.el_del_texto')], ['otro', tr('anim.otro_color')]], cuando: (g, efecto) => efecto === 'underline' },
+    { key: 'modo', label: tr('anim.modo'), kind: 'select', options: MODOS, cuando: (g, efecto) => efecto === 'fill' },
+    { key: 'dirRelleno', label: tr('anim.direccion_del_barrido'), kind: 'select', options: DIR_BARRIDO, cuando: (g, efecto) => efecto === 'fill' && g?.modo === 'barrido' },
+    { key: 'textoCambia', label: tr('anim.color_del_texto_al_pasar'), kind: 'select', options: [['no', tr('anim.sin_cambio')], ['si', tr('anim.cambiar')]], cuando: (g, efecto) => efecto === 'fill' || efecto === 'bgrow' },
+    { key: 'textoColor', label: tr('anim.color_del_texto'), kind: 'color', cuando: (g, efecto) => (efecto === 'fill' || efecto === 'bgrow') && g?.textoCambia === 'si' },
     // Texto fijo (Agrandar, Encoger, Inclinar): el fondo y el borde se mueven en un ::before y el texto no se transforma. Por defecto No.
-    { key: 'textoFijo', label: 'Texto fijo', kind: 'select', options: [['no', 'No'], ['si', 'Sí']], cuando: cuandoFijable },
+    { key: 'textoFijo', label: tr('anim.texto_fijo'), kind: 'select', options: [['no', tr('anim.no')], ['si', tr('anim.si')]], cuando: cuandoFijable },
     // Aviso corto (se pinta con el triángulo de aviso): Agrandar usa scale y en Firefox el texto escalado puede verse raro (se oculta con Texto fijo)
-    { kind: 'nota', cuando: (g, efecto, nodo) => efecto === 'grow' && !fijoActivo(g, nodo), texto: 'En Firefox el texto puede verse raro al agrandarse. Activa «Texto fijo» (el texto no cambia) o usa «Fondo que crece».' },
+    { kind: 'nota', cuando: (g, efecto, nodo) => efecto === 'grow' && !fijoActivo(g, nodo), texto: tr('anim.en_firefox_el_texto_puede_verse_raro_al_') },
     // Texto fijo sin nada que mover: el efecto no se ve (no se escala el texto ni se inventa un fondo)
-    { kind: 'nota', cuando: (g, efecto, nodo) => fijoActivo(g, nodo) && sinFondoNiBorde(nodo), texto: 'Necesita fondo o borde: sin ellos no hay nada que mover y el efecto no se ve. Ponle un fondo o un borde, o desactiva «Texto fijo».' },
-    { key: 'duration', label: 'Duración (s)', kind: 'num', step: 0.05, min: 0.05, cuando: sinSpring },
-    { key: 'ease', label: 'Curva', kind: 'select', options: EASES },
+    { kind: 'nota', cuando: (g, efecto, nodo) => fijoActivo(g, nodo) && sinFondoNiBorde(nodo), texto: tr('anim.necesita_fondo_o_borde_sin_ellos_no_hay_') },
+    { key: 'duration', label: tr('anim.duracion_s'), kind: 'num', step: 0.05, min: 0.05, cuando: sinSpring },
+    { key: 'ease', label: tr('anim.curva'), kind: 'select', options: EASES },
     ...camposCurva,
-    { key: 'color', label: 'Color de relleno', kind: 'color', cuando: (g, efecto) => efecto === 'fill' || efecto === 'bgrow' },
-    { key: 'color', label: 'Color', kind: 'color', cuando: (g, efecto) => ['glow', 'color', 'soft'].includes(efecto) || (efecto === 'underline' && g?.lineaColor === 'otro') },
+    { key: 'color', label: tr('anim.color_de_relleno'), kind: 'color', cuando: (g, efecto) => efecto === 'fill' || efecto === 'bgrow' },
+    { key: 'color', label: tr('anim.color'), kind: 'color', cuando: (g, efecto) => ['glow', 'color', 'soft'].includes(efecto) || (efecto === 'underline' && g?.lineaColor === 'otro') },
   ],
 
   css(h, sel, node, ctx) {

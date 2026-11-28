@@ -1,6 +1,7 @@
 // INTERFAZ DEL CAMINO 1 DE LA IA (sin servidor): "Copiar guía para IA" y "Pegar plan o JSON".
 // La lógica vive en core/plan.js y core/guiaia.js; aquí solo hay diálogo, aviso y portapapeles.
 
+import { t as tr } from '../i18n/index.js';
 import { guiaIA } from '../core/guiaia.js';
 import { leerEntrada } from '../core/plan.js';
 import { aplicarEntrada, getState } from '../core/store.js';
@@ -35,9 +36,9 @@ export async function copiarGuia() {
     document.body.append(ta); ta.select();
     const ok = document.execCommand?.('copy');
     ta.remove();
-    if (!ok) { toast('No se pudo copiar. Abre docs/guia-ia.md y cópiala de ahí.', true); return false; }
+    if (!ok) { toast(tr('ia.noCopiado'), true); return false; }
   }
-  toast('Guía copiada. Pégala en el chat de la IA junto con tu pedido.');
+  toast(tr('ia.copiada'));
   return true;
 }
 
@@ -51,17 +52,17 @@ export function abrirDialogoPlan() {
     dialogo.setAttribute('aria-labelledby', 'dlg-plan-t');
     dialogo.innerHTML = `
       <form method="dialog" id="dlg-plan-f" novalidate>
-        <h2 id="dlg-plan-t">Pegar plan o JSON</h2>
-        <p class="modo">Pega la respuesta de la IA (un plan) o el JSON completo de una página. Si viene con texto alrededor o dentro de \`\`\`, se extrae solo.</p>
-        <textarea id="dlg-plan-txt" rows="12" spellcheck="false" aria-label="Plan o JSON" placeholder='{ "plan": 1, "titulo": "…", "secciones": [ … ] }'></textarea>
-        <div class="dlg-modo" role="radiogroup" aria-label="Qué hacer con lo pegado">
-          <label><input type="radio" name="dlg-plan-modo" value="reemplazar" checked> Reemplazar la página</label>
-          <label><input type="radio" name="dlg-plan-modo" value="anadir"> Añadir al final</label>
+        <h2 id="dlg-plan-t">${tr('ia.pegar')}</h2>
+        <p class="modo">${tr('ia.dlgAyuda')}</p>
+        <textarea id="dlg-plan-txt" rows="12" spellcheck="false" aria-label="${tr('ia.dlgCampo')}" placeholder='{ "plan": 1, "titulo": "…", "secciones": [ … ] }'></textarea>
+        <div class="dlg-modo" role="radiogroup" aria-label="${tr('ia.dlgModo')}">
+          <label><input type="radio" name="dlg-plan-modo" value="reemplazar" checked> ${tr('ia.reemplazar')}</label>
+          <label><input type="radio" name="dlg-plan-modo" value="anadir"> ${tr('ia.anadir')}</label>
         </div>
         <div id="dlg-plan-msg" role="alert" hidden></div>
         <div class="dlg-botones">
-          <button type="button" id="dlg-plan-cancel">Cancelar</button>
-          <button type="submit" id="dlg-plan-ok" class="primario">Aplicar</button>
+          <button type="button" id="dlg-plan-cancel">${tr('comun.cancelar')}</button>
+          <button type="submit" id="dlg-plan-ok" class="primario">${tr('comun.aplicar')}</button>
         </div>
       </form>`;
     document.body.append(dialogo);
@@ -77,9 +78,9 @@ export function abrirDialogoPlan() {
       const lista = (arr) => `<ul>${arr.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>`;
       if (r.errores.length || !r.secciones.length) {
         // No se cambia nada: se muestran los problemas
-        const errs = r.errores.length ? r.errores : ['No hay secciones que aplicar.'];
+        const errs = r.errores.length ? r.errores : [tr('ia.sinSecciones')];
         msg.className = 'error'; msg.hidden = false;
-        msg.innerHTML = `${SVG_AVISO}<strong>No se aplicó nada.</strong>${lista(errs)}`;
+        msg.innerHTML = `${SVG_AVISO}<strong>${tr('ia.nada')}</strong>${lista(errs)}`;
         return;
       }
       aplicarEntrada(r, modo);
@@ -87,13 +88,13 @@ export function abrirDialogoPlan() {
       if (r.avisos.length) {
         // Se aplicó, pero había cosas ignoradas: se muestran sin cerrar para que se lean
         msg.className = 'aviso'; msg.hidden = false;
-        msg.innerHTML = `<strong>Aplicado (${n} sección${n === 1 ? '' : 'es'}) con avisos:</strong>${lista(r.avisos)}`;
-        dialogo.querySelector('#dlg-plan-ok').textContent = 'Listo';
+        msg.innerHTML = `<strong>${tr(n === 1 ? 'ia.conAvisosUno' : 'ia.conAvisos', { n })}</strong>${lista(r.avisos)}`;
+        dialogo.querySelector('#dlg-plan-ok').textContent = tr('comun.listo');
         dialogo.dataset.hecho = '1';
         return;
       }
       dialogo.close();
-      toast(`Aplicado: ${n} sección${n === 1 ? '' : 'es'} ${modo === 'anadir' ? 'añadidas al final' : 'en la página'}.`);
+      toast(tr(`ia.aplicado${modo === 'anadir' ? 'Fin' : 'Pagina'}${n === 1 ? 'Uno' : ''}`, { n }));
     });
     dialogo.addEventListener('close', () => { dialogo.remove(); dialogo = null; });
   }

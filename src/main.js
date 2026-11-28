@@ -1,5 +1,6 @@
 // PUNTO DE ENTRADA: conecta los tres paneles con el store.
 
+import { t as tr, idioma } from './i18n/index.js';
 import './styles/app.css';
 import { initSidebar } from './ui/sidebar.js';
 import { initPreview } from './ui/preview.js';
@@ -37,9 +38,9 @@ const aviso = document.createElement('div');
 aviso.id = 'aviso-pestanas';
 aviso.setAttribute('role', 'alert');
 aviso.hidden = true;
-aviso.innerHTML = '<span>Otra pestaña guardó cambios distintos en este editor.</span>'
-  + '<button type="button" id="aviso-recargar">Recargar con lo guardado</button>'
-  + '<button type="button" id="aviso-seguir">Seguir con esta versión</button>';
+aviso.innerHTML = `<span>${tr('aviso.otraPestana')}</span>`
+  + `<button type="button" id="aviso-recargar">${tr('aviso.recargar')}</button>`
+  + `<button type="button" id="aviso-seguir">${tr('aviso.seguir')}</button>`;
 document.body.append(aviso);
 aviso.querySelector('#aviso-recargar').addEventListener('click', recargarGuardado);
 aviso.querySelector('#aviso-seguir').addEventListener('click', seguirConEsta);
@@ -50,7 +51,7 @@ const avisoGuardado = document.createElement('div');
 avisoGuardado.id = 'aviso-guardado';
 avisoGuardado.setAttribute('role', 'alert');
 avisoGuardado.hidden = true;
-avisoGuardado.innerHTML = `${SVG_AVISO} No se pudo autoguardar: el almacenamiento del navegador está lleno (probablemente por imágenes pesadas). Usa "Guardar JSON" para no perder tu trabajo, o quita/usa una imagen más liviana (o pega su URL).`;
+avisoGuardado.innerHTML = `${SVG_AVISO} ${tr('aviso.sinEspacio')}`;
 document.body.append(avisoGuardado);
 subscribe((s, cambio) => { if (cambio === 'guardado') avisoGuardado.hidden = !s.errorGuardado; });
 
@@ -62,8 +63,8 @@ if (danado) {
   const av = document.createElement('div');
   av.id = 'aviso-danado';
   av.setAttribute('role', 'alert');
-  av.innerHTML = `<span>No se pudo leer la página guardada en este navegador.${danado.copiado ? ' Se apartó una copia.' : ''} Descárgala antes de seguir si te importa.</span>`
-    + '<button type="button" id="danado-bajar">Descargar copia</button><button type="button" id="danado-cerrar">Cerrar</button>';
+  av.innerHTML = `<span>${tr('aviso.danado')}${danado.copiado ? ` ${tr('aviso.danadoCopia')}` : ''} ${tr('aviso.danadoBajar')}</span>`
+    + `<button type="button" id="danado-bajar">${tr('aviso.descargarCopia')}</button><button type="button" id="danado-cerrar">${tr('comun.cerrar')}</button>`;
   document.body.append(av);
   av.querySelector('#danado-bajar').addEventListener('click', () => descargar('pagina-danada.json', danado.texto, 'application/json'));
   av.querySelector('#danado-cerrar').addEventListener('click', () => av.remove());
@@ -72,8 +73,14 @@ if (danado) {
 // Demo web: quien entra sin NADA guardado ve la landing de muestra (una página vacía guardada se respeta).
 if (PAGINA_DEMO && nadaGuardado()) {
   iniciarCon(PAGINA_DEMO);
-  toast('Esto es una demo: haz clic en cualquier cosa para editarla. Las animaciones se ven con el botón del ojo (Vista previa).', false, 12000);
+  toast(tr('aviso.demo'), false, 12000);
 }
+
+// Lo único de index.html que depende del idioma
+document.documentElement.lang = idioma;
+document.getElementById('sidebar').setAttribute('aria-label', tr('html.secciones'));
+document.getElementById('preview').setAttribute('aria-label', tr('html.vistaPrevia'));
+document.getElementById('inspector').setAttribute('aria-label', tr('html.propiedades'));
 
 initToolbar(document.getElementById('toolbar'));
 initSidebar(document.getElementById('sidebar'));

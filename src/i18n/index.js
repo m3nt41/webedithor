@@ -5,11 +5,14 @@
 // y si no tenemos ese idioma, español. Cambiarlo se aplica al recargar.
 // Añadir un idioma = su archivo (copia de es.js) + una línea en IDIOMAS.
 import es from './es.js';
+import en from './en.js';
 
 export const BASE = 'es';
 export const CLAVE_IDIOMA = 'editor-landings:idioma';
 // Nota: el editor compilado es un solo .html, así que todos los idiomas viajan dentro (son solo texto).
-export const IDIOMAS = { es };
+export const IDIOMAS = { es, en };
+/** Cómo se llama cada idioma en el selector (cada uno en su propia lengua). */
+export const NOMBRES = { es: 'Español', en: 'English' };
 
 /** Elige un idioma disponible: el guardado; si no, el del navegador ('en-US' -> 'en'); si no, español. */
 export function elegirIdioma(guardado, delNavegador, disponibles = IDIOMAS) {

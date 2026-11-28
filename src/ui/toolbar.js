@@ -1,6 +1,7 @@
 // BARRA SUPERIOR: deshacer/rehacer, escritorio/móvil, nuevo/abrir/guardar JSON, exportar HTML.
 // También registra los atajos Ctrl+Z / Ctrl+Y (o Ctrl+Shift+Z).
 
+import { t as tr, idioma, IDIOMAS, NOMBRES, guardarIdioma } from '../i18n/index.js';
 import { getState, subscribe, undo, redo, puedeDeshacer, puedeRehacer, setViewMode, replacePage, newPage } from '../core/store.js';
 import { exportHTML, descargar } from '../export/exporter.js';
 import { abrirVistaPrevia } from './vistaprevia.js';
@@ -14,25 +15,30 @@ import { SVG_TIRADORES, SVG_ESCRITORIO, SVG_MOVIL, SVG_OJO, SVG_DESHACER, SVG_RE
 export function initToolbar(host) {
   host.innerHTML = `
     <strong class="marca">WebEdiThor</strong>
-    <button id="btn-undo" class="ico-btn" title="Deshacer (Ctrl+Z)" aria-label="Deshacer">${SVG_DESHACER}</button>
-    <button id="btn-redo" class="ico-btn" title="Rehacer (Ctrl+Y)" aria-label="Rehacer">${SVG_REHACER}</button>
-    <span class="grupo" role="group" aria-label="Modo de edición">
-      <button id="vista-desktop" class="ico-btn" title="Escritorio" aria-label="Escritorio" aria-pressed="true">${SVG_ESCRITORIO}</button>
-      <button id="vista-mobile" class="ico-btn" title="Móvil" aria-label="Móvil" aria-pressed="false">${SVG_MOVIL}</button>
+    <button id="btn-undo" class="ico-btn" title="${tr('barra.deshacerTitulo')}" aria-label="${tr('barra.deshacer')}">${SVG_DESHACER}</button>
+    <button id="btn-redo" class="ico-btn" title="${tr('barra.rehacerTitulo')}" aria-label="${tr('barra.rehacer')}">${SVG_REHACER}</button>
+    <span class="grupo" role="group" aria-label="${tr('barra.modoEdicion')}">
+      <button id="vista-desktop" class="ico-btn" title="${tr('comun.escritorio')}" aria-label="${tr('comun.escritorio')}" aria-pressed="true">${SVG_ESCRITORIO}</button>
+      <button id="vista-mobile" class="ico-btn" title="${tr('comun.movil')}" aria-label="${tr('comun.movil')}" aria-pressed="false">${SVG_MOVIL}</button>
     </span>
     <span class="divisor" aria-hidden="true"></span>
-    <button id="btn-vista-previa" class="ico-btn" title="Vista previa (Esc para cerrar)" aria-label="Vista previa">${SVG_OJO}</button>
+    <button id="btn-vista-previa" class="ico-btn" title="${tr('barra.vistaPreviaTitulo')}" aria-label="${tr('comun.vistaPrevia')}">${SVG_OJO}</button>
     <button id="btn-tiradores" class="ico-btn" aria-pressed="true">${SVG_TIRADORES}</button>
     <span class="espacio"></span>
-    ${PAGINA_DEMO ? '<button id="btn-demo">Ver demo</button>' : ''}
-    <button id="btn-nuevo">Nuevo</button>
-    <button id="btn-abrir">Abrir JSON</button>
-    <button id="btn-guardar">Guardar JSON</button>
-    <button id="btn-exportar" class="primario">Exportar HTML</button>
+    <select id="sel-idioma" aria-label="Idioma / Language" title="Idioma / Language">
+      ${Object.keys(IDIOMAS).map((c) => `<option value="${c}" ${c === idioma ? 'selected' : ''}>${NOMBRES[c]}</option>`).join('')}
+    </select>
+    ${PAGINA_DEMO ? `<button id="btn-demo">${tr('barra.verDemo')}</button>` : ''}
+    <button id="btn-nuevo">${tr('barra.nuevo')}</button>
+    <button id="btn-abrir">${tr('barra.abrir')}</button>
+    <button id="btn-guardar">${tr('barra.guardar')}</button>
+    <button id="btn-exportar" class="primario">${tr('barra.exportar')}</button>
     <input type="file" id="archivo-json" accept=".json,application/json" hidden>
   `;
   const $ = (s) => host.querySelector(s);
 
+  // Idioma del editor: se guarda y se recarga la página (lo editado ya está autoguardado; el historial de deshacer empieza de cero)
+  $('#sel-idioma').addEventListener('change', (e) => { if (guardarIdioma(e.target.value)) location.reload(); });
   $('#btn-undo').addEventListener('click', undo);
   $('#btn-redo').addEventListener('click', redo);
   $('#btn-tiradores').addEventListener('click', alternarTiradores);
@@ -41,12 +47,12 @@ export function initToolbar(host) {
   $('#vista-mobile').addEventListener('click', () => setViewMode('mobile'));
 
   $('#btn-nuevo').addEventListener('click', () => {
-    if (confirm('¿Empezar una página nueva? (Puedes deshacerlo con Ctrl+Z)')) newPage();
+    if (confirm(tr('barra.confirmaNueva'))) newPage();
   });
 
   // Solo en la demo web: recupera la landing de muestra (reemplaza la página, se deshace con Ctrl+Z)
   $('#btn-demo')?.addEventListener('click', () => {
-    if (confirm('¿Cargar la landing de muestra? Reemplaza tu página actual (puedes deshacerlo con Ctrl+Z mientras no recargues).')) replacePage(structuredClone(PAGINA_DEMO));
+    if (confirm(tr('barra.confirmaDemo'))) replacePage(structuredClone(PAGINA_DEMO));
   });
 
   $('#btn-guardar').addEventListener('click', () => {
@@ -66,7 +72,7 @@ export function initToolbar(host) {
       const quitados = replacePage(datos.page ?? datos); // acepta el formato con envoltorio o la página sola
       if (quitados > 0) toast(avisoQuitados(quitados), true, 9000); // largo: es un aviso de seguridad
     } catch (err) {
-      alert(`No se pudo abrir el archivo: ${err.message}`);
+      alert(tr('barra.errorAbrir', { error: err.message }));
     }
   });
 
@@ -80,8 +86,8 @@ export function initToolbar(host) {
     const b = $('#btn-tiradores');
     b.classList.toggle('activo', on);
     b.setAttribute('aria-pressed', String(on));
-    const t = 'Tiradores de espaciado: ' + (on ? 'encendidos' : 'apagados') + ' (T)';
-    b.title = t; b.setAttribute('aria-label', t);
+    const titulo = tr(on ? 'barra.tiradoresOn' : 'barra.tiradoresOff');
+    b.title = titulo; b.setAttribute('aria-label', titulo);
   }
   alCambiarTiradores(pintarTiradores);
   pintarTiradores();

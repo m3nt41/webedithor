@@ -17,39 +17,40 @@
 //   clic -> un script mínimo (SCRIPT_CLIC) alterna la clase `.on`; solo viaja en el export si algún
 //        estado usa el clic.
 
+import { t } from '../i18n/index.js';
 import { EASES, camposCurva, sinSpring, DEF_CURVA, curva, duracion, animEntrada } from './base.js';
 import { newId } from '../core/tree.js';
 
 export const DISPAROS_VARIANT = [
-  ['hover', 'Al pasar el mouse'],
-  ['press', 'Al presionar'],
-  ['focus', 'Al enfocar (solo botones)'],
-  ['click', 'Al hacer clic (alterna)'],
-  ['load', 'Al cargar la página'],
-  ['scroll', 'Al entrar en pantalla'],
+  ['hover', t('anim.al_pasar_el_mouse')],
+  ['press', t('anim.al_presionar')],
+  ['focus', t('anim.al_enfocar_solo_botones')],
+  ['click', t('anim.al_hacer_clic_alterna')],
+  ['load', t('anim.al_cargar_la_pagina')],
+  ['scroll', t('anim.al_entrar_en_pantalla')],
 ];
 
 /** Qué puede cambiar un estado. kind: num | color | text. */
 export const CAMPOS_PROPS = [
-  { key: 'opacity', label: 'Opacidad (0–1)', kind: 'num', step: 0.1 },
-  { key: 'x', label: 'Mover X (px)', kind: 'num', step: 5 },
-  { key: 'y', label: 'Mover Y (px)', kind: 'num', step: 5 },
-  { key: 'scale', label: 'Escala (1 = igual)', kind: 'num', step: 0.05 },
-  { key: 'rotate', label: 'Rotación (°)', kind: 'num', step: 5 },
-  { key: 'blur', label: 'Desenfoque (px)', kind: 'num', step: 1 },
-  { key: 'brightness', label: 'Brillo (1 = igual)', kind: 'num', step: 0.1 },
-  { key: 'color', label: 'Color de texto', kind: 'color' },
-  { key: 'bg', label: 'Color de fondo', kind: 'color' },
-  { key: 'borderColor', label: 'Color de borde', kind: 'color' },
-  { key: 'radius', label: 'Radio de borde (px)', kind: 'num', step: 2 },
-  { key: 'shadow', label: 'Sombra', kind: 'text', placeholder: '0 10px 30px rgba(0,0,0,.3)' },
+  { key: 'opacity', label: t('anim.opacidad_0_1'), kind: 'num', step: 0.1 },
+  { key: 'x', label: t('anim.mover_x_px'), kind: 'num', step: 5 },
+  { key: 'y', label: t('anim.mover_y_px'), kind: 'num', step: 5 },
+  { key: 'scale', label: t('anim.escala_1_igual'), kind: 'num', step: 0.05 },
+  { key: 'rotate', label: t('anim.rotacion'), kind: 'num', step: 5 },
+  { key: 'blur', label: t('anim.desenfoque_px'), kind: 'num', step: 1 },
+  { key: 'brightness', label: t('anim.brillo_1_igual'), kind: 'num', step: 0.1 },
+  { key: 'color', label: t('anim.color_de_texto'), kind: 'color' },
+  { key: 'bg', label: t('anim.color_de_fondo'), kind: 'color' },
+  { key: 'borderColor', label: t('anim.color_de_borde'), kind: 'color' },
+  { key: 'radius', label: t('anim.radio_de_borde_px'), kind: 'num', step: 2 },
+  { key: 'shadow', label: t('anim.sombra'), kind: 'text', placeholder: '0 10px 30px rgba(0,0,0,.3)' },
 ];
 
 /** Campos de tiempo de cada estado (mismos que el resto de animaciones). */
 export const CAMPOS_TIEMPO = [
-  { key: 'duration', label: 'Duración (s)', kind: 'num', step: 0.1, min: 0.05, cuando: sinSpring },
-  { key: 'delay', label: 'Retraso (s)', kind: 'num', step: 0.1, min: 0 },
-  { key: 'ease', label: 'Curva', kind: 'select', options: EASES },
+  { key: 'duration', label: t('anim.duracion_s'), kind: 'num', step: 0.1, min: 0.05, cuando: sinSpring },
+  { key: 'delay', label: t('anim.retraso_s'), kind: 'num', step: 0.1, min: 0 },
+  { key: 'ease', label: t('anim.curva'), kind: 'select', options: EASES },
   ...camposCurva,
 ];
 
@@ -126,7 +127,7 @@ export default {
   id: 'variants',
   estado: true, // hover/press/focus se ven siempre en el preview; el resto solo en Vista previa
   propio: true, // el inspector lo dibuja con su propia sección (lista de estados), no con el formato genérico
-  titulo: 'Estados (variants)',
+  titulo: t('anim.estados_variants'),
   principal: null,
   defaults: {},
   campos: [],

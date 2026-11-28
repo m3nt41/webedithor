@@ -6,28 +6,30 @@
 //   0 % = el elemento asoma por abajo de la pantalla · 100 % = sale por arriba.
 //   Antes de `start` está en el valor inicial; después de `end`, en el final.
 // Ojo: no combinar con "Al aparecer" sobre la misma propiedad (la animación de entrada pisa a esta).
+import { t } from '../i18n/index.js';
+
 
 const EFECTOS = [
-  ['', 'Ninguno'],
-  ['fade-in', 'Aparecer (opacidad 0 → 1)'],
-  ['fade-out', 'Desaparecer (opacidad 1 → 0)'],
-  ['zoom-in', 'Crecer hasta su tamaño'],
-  ['zoom-out', 'Encoger'],
-  ['rotate', 'Girar hasta enderezarse'],
+  ['', t('anim.ninguno')],
+  ['fade-in', t('anim.aparecer_opacidad_0_1')],
+  ['fade-out', t('anim.desaparecer_opacidad_1_0')],
+  ['zoom-in', t('anim.crecer_hasta_su_tamano')],
+  ['zoom-out', t('anim.encoger')],
+  ['rotate', t('anim.girar_hasta_enderezarse')],
 ];
 
 const conIntensidad = (g, efecto) => efecto === 'zoom-in' || efecto === 'zoom-out' || efecto === 'rotate';
 
 export default {
   id: 'scrolllink',
-  titulo: 'Ligado al scroll',
+  titulo: t('anim.ligado_al_scroll'),
   principal: 'effect',
   defaults: { effect: 'fade-in', amount: 20, start: 0, end: 50 },
   campos: [
-    { key: 'effect', label: 'Efecto', kind: 'select', options: EFECTOS },
-    { key: 'amount', label: 'Intensidad (% de tamaño / grados)', kind: 'num', step: 5, min: -360, cuando: conIntensidad },
-    { key: 'start', label: 'Empieza (% del recorrido)', kind: 'num', step: 5, min: 0 },
-    { key: 'end', label: 'Termina (% del recorrido)', kind: 'num', step: 5, min: 0 },
+    { key: 'effect', label: t('anim.efecto'), kind: 'select', options: EFECTOS },
+    { key: 'amount', label: t('anim.intensidad_de_tamano_grados'), kind: 'num', step: 5, min: -360, cuando: conIntensidad },
+    { key: 'start', label: t('anim.empieza_del_recorrido'), kind: 'num', step: 5, min: 0 },
+    { key: 'end', label: t('anim.termina_del_recorrido'), kind: 'num', step: 5, min: 0 },
   ],
 
   css(g, sel) {

@@ -2,6 +2,7 @@
 // El botón apunta a https://wa.me/NUMERO (código de país + número, sin + ni espacios).
 // Cambia el número desde el Inspector (campo "Enlace" del botón).
 
+import { t } from '../i18n/index.js';
 import { n, texto, boton, columna, seccion, icono, tit, lead, pequeno, etiqueta, fondoModo } from './util.js';
 import { MODOS, botonTema, tarjetaTema, lado, ANCHO, AIRE } from './tema.js';
 
@@ -18,9 +19,9 @@ const botonWa = (m, extra = {}) => boton('Escríbenos por WhatsApp', WA, { ...bo
 export default {
   ancla: 'contacto',
   id: 'contact',
-  label: 'Contacto WhatsApp',
+  label: t('bloque.contacto_whatsapp'),
   variants: {
-    simple: { label: 'Centrado', crear: () => {
+    simple: { label: t('bloque.centrado'), crear: () => {
       const m = MODOS.claro;
       return seccion('Contacto', { gap: '24px', alignItems: 'center', textAlign: 'center', ...fondoModo(m) }, [
         tit(2, '¿Hablamos?', { fontSize: '48px' }, { fontSize: '34px' }),
@@ -29,7 +30,7 @@ export default {
       ]);
     } },
 
-    tarjeta: { label: 'Tarjeta', crear: () => {
+    tarjeta: { label: t('bloque.tarjeta'), crear: () => {
       const m = MODOS.claro2;
       return seccion('Contacto', { alignItems: 'center', ...fondoModo(m) }, [
         columna('Tarjeta', tarjetaTema(MODOS.claro, { gap: '20px', alignItems: 'center', textAlign: 'center', padding: '64px 48px', maxWidth: '640px', width: '100%' }), [
@@ -41,7 +42,7 @@ export default {
       ], { padding: `${AIRE.m} 16px` });
     } },
 
-    dividido: { label: 'Texto + datos', crear: () => {
+    dividido: { label: t('bloque.texto_datos'), crear: () => {
       const m = MODOS.claro;
       return n('section', {
         name: 'Contacto',
@@ -62,7 +63,7 @@ export default {
       });
     } },
 
-    oscuro: { label: 'Oscuro', crear: () => {
+    oscuro: { label: t('bloque.oscuro'), crear: () => {
       const m = MODOS.oscuro;
       return seccion('Contacto', { gap: '24px', alignItems: 'center', textAlign: 'center', ...fondoModo(m) }, [
         tit(2, 'Empecemos hoy', { fontSize: '52px' }, { fontSize: '36px' }),

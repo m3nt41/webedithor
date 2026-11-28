@@ -3,6 +3,7 @@
 // crear() devuelve un árbol de nodos NUEVO (ids nuevos) cada vez que se llama.
 // Estilo: ver tema.js (claras: oscuro/claro alternables; botones Grande en el hero).
 
+import { t } from '../i18n/index.js';
 import { n, boton, imagen, placeholder, columna, seccion, tit, lead, etiqueta, fondoModo } from './util.js';
 import { C, MODOS, botonTema, colorPh, AIRE, lado, ANCHO } from './tema.js';
 
@@ -18,9 +19,9 @@ const filaBotones = (m) =>
 export default {
   ancla: 'inicio',
   id: 'hero',
-  label: 'Hero',
+  label: t('bloque.hero'),
   variants: {
-    oscuro: { label: 'Oscuro', crear: () => {
+    oscuro: { label: t('bloque.oscuro'), crear: () => {
       const m = MODOS.oscuro;
       return seccion('Hero', { ...CENTRADO, ...fondoModo(m) }, [
         tit(1, 'Tu idea, en una landing inolvidable', { maxWidth: '16ch', fontSize: '72px' }, { fontSize: '42px' }),
@@ -29,7 +30,7 @@ export default {
       ], MOVIL);
     } },
 
-    claro: { label: 'Claro', crear: () => {
+    claro: { label: t('bloque.claro'), crear: () => {
       const m = MODOS.claro;
       return seccion('Hero', { ...CENTRADO, ...fondoModo(m) }, [
         etiqueta('Nuevo', m),
@@ -39,7 +40,7 @@ export default {
       ], MOVIL);
     } },
 
-    dividido: { label: 'Texto + imagen', crear: () => {
+    dividido: { label: t('bloque.texto_imagen'), crear: () => {
       const m = MODOS.claro2;
       return n('section', {
         name: 'Hero',
@@ -60,7 +61,7 @@ export default {
     } },
 
     // Hero con imagen de fondo + capa oscura (campos fondoImagen/fondoCapa: CSS puro en el export)
-    fondo: { label: 'Con fondo', crear: () => {
+    fondo: { label: t('bloque.con_fondo'), crear: () => {
       const m = MODOS.oscuro;
       return seccion('Hero', {
         alignItems: 'center', justifyContent: 'center', gap: '28px', textAlign: 'center',
@@ -74,7 +75,7 @@ export default {
     } },
 
     // Antes "degradado" (violeta-rosa): ahora editorial oscuro con una línea de acento
-    degradado: { label: 'Acento', crear: () => {
+    degradado: { label: t('bloque.acento'), crear: () => {
       const m = MODOS.oscuro2;
       return seccion('Hero', {
         ...CENTRADO, alignItems: 'flex-start', textAlign: 'left', ...fondoModo(m),

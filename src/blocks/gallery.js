@@ -1,6 +1,7 @@
 // BLOQUE GALERÍA
 // Fotos de relleno en grises cálidos; todo recto y sin sombras (ver tema.js).
 
+import { t as tr } from '../i18n/index.js';
 import { n, imagen, placeholder, seccion, tit, etiqueta, fondoModo } from './util.js';
 import { MODOS, colorPh, C } from './tema.js';
 
@@ -11,9 +12,9 @@ const cabecera = (t) => tit(2, t, { textAlign: 'center' });
 
 export default {
   id: 'gallery',
-  label: 'Galería',
+  label: tr('bloque.galeria'),
   variants: {
-    cuadricula: { label: 'Cuadrícula 3', crear: () => {
+    cuadricula: { label: tr('bloque.cuadricula_3'), crear: () => {
       const m = MODOS.claro;
       return seccion('Galería', { gap: '56px', ...fondoModo(m) }, [
         cabecera('Galería'),
@@ -22,7 +23,7 @@ export default {
       ]);
     } },
 
-    destacada: { label: 'Foto destacada', crear: () => {
+    destacada: { label: tr('bloque.foto_destacada'), crear: () => {
       const m = MODOS.claro2;
       return seccion('Galería', { gap: '56px', ...fondoModo(m) }, [
         cabecera('Nuestro trabajo'),
@@ -34,7 +35,7 @@ export default {
       ]);
     } },
 
-    fila: { label: 'Fila de 4', crear: () => {
+    fila: { label: tr('bloque.fila_de_4'), crear: () => {
       const m = MODOS.claro;
       return seccion('Galería', { gap: '48px', ...fondoModo(m) }, [
         cabecera('Momentos'),
@@ -43,7 +44,7 @@ export default {
       ]);
     } },
 
-    oscura: { label: 'Oscura', crear: () => {
+    oscura: { label: tr('bloque.oscura'), crear: () => {
       const m = MODOS.oscuro;
       return seccion('Galería', { gap: '56px', ...fondoModo(m) }, [
         cabecera('Portafolio'),

@@ -2,14 +2,15 @@
 // Solo tiene sentido en botones (enlaces), que son lo enfocable de la página.
 // Datos en node.animation.focus = { effect, duration, ease, color }
 
+import { t } from '../i18n/index.js';
 import { EASES, transicion, camposCurva, sinSpring, DEF_CURVA, modoSombra, filtroConReposo } from './base.js';
 
 const EFECTOS = [
-  ['', 'Ninguno'],
-  ['ring', 'Anillo'],
-  ['glow', 'Resplandor'],
-  ['grow', 'Agrandar'],
-  ['bright', 'Aclarar'],
+  ['', t('anim.ninguno')],
+  ['ring', t('anim.anillo')],
+  ['glow', t('anim.resplandor')],
+  ['grow', t('anim.agrandar')],
+  ['bright', t('anim.aclarar')],
 ];
 
 const REGLAS = {
@@ -27,15 +28,15 @@ const REGLAS = {
 export default {
   id: 'focus',
   estado: true,
-  titulo: 'Al enfocar (teclado)',
+  titulo: t('anim.al_enfocar_teclado'),
   principal: 'effect',
   defaults: { effect: 'ring', duration: 0.2, ease: 'suave', ...DEF_CURVA, color: '#7c5cff' },
   campos: [
-    { key: 'effect', label: 'Efecto', kind: 'select', options: EFECTOS },
-    { key: 'duration', label: 'Duración (s)', kind: 'num', step: 0.05, min: 0.05, cuando: sinSpring },
-    { key: 'ease', label: 'Curva', kind: 'select', options: EASES },
+    { key: 'effect', label: t('anim.efecto'), kind: 'select', options: EFECTOS },
+    { key: 'duration', label: t('anim.duracion_s'), kind: 'num', step: 0.05, min: 0.05, cuando: sinSpring },
+    { key: 'ease', label: t('anim.curva'), kind: 'select', options: EASES },
     ...camposCurva,
-    { key: 'color', label: 'Color', kind: 'color', cuando: (g, efecto) => efecto === 'ring' || efecto === 'glow' },
+    { key: 'color', label: t('anim.color'), kind: 'color', cuando: (g, efecto) => efecto === 'ring' || efecto === 'glow' },
   ],
 
   css(f, sel, node) {

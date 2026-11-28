@@ -24,6 +24,7 @@ export function opcionesFirefox() {
   mkdirSync(DESCARGAS, { recursive: true });
   return new firefox.Options().addArguments('-headless')
     .setBinary(process.env.FIREFOX_BIN || 'C:/Program Files/Mozilla Firefox/firefox.exe')
+    .setPreference('intl.accept_languages', 'es') // el editor elige idioma por el navegador: los tests miran textos en español
     .setPreference('browser.download.folderList', 2)
     .setPreference('browser.download.dir', DESCARGAS)
     .setPreference('browser.download.useDownloadDir', true)
@@ -72,6 +73,7 @@ export const SUITE = [ // [nombre, comando, timeout en segundos]
   ['iconos', 'node tests/iconos.mjs', 180],
   ['tema', 'node tests/tema.mjs', 60],
   ['i18n', 'node tests/i18n.mjs', 60],
+  ['i18n-ui', 'node tests/i18n-ui.mjs', 240],
   ['plan-ia', 'node tests/plan-ia.mjs', 60],
   ['plan-ia-ui', 'node tests/plan-ia-ui.mjs', 180],
   ['menu-movil', 'node tests/menu-movil.mjs', 240],

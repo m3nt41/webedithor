@@ -3,6 +3,7 @@
 // Arrastrar una fila: suéltala en el borde de arriba/abajo de otra (= antes/después)
 // o en el centro de un contenedor/sección (= dentro). Funciona entre contenedores.
 
+import { t as tr } from '../i18n/index.js';
 import { getState, subscribe, select, addNode, addElement, removeNode, duplicateNode, moveNode, puedeMover } from '../core/store.js';
 import { findNode, findParent, canContain } from '../core/tree.js';
 import { BLOCKS, createBlock } from '../blocks/index.js';
@@ -21,17 +22,17 @@ const SVG_BLOQ = svg('<rect x="2" y="2.5" width="12" height="4" rx="1"/><rect x=
 // Hoja con la esquina doblada y tres líneas de texto = "ajustes de esta página"
 const SVG_AJUSTES = svg('<path d="M3.5 1.8h6l3 3v9.4h-9Z"/><path d="M9.5 1.8v3h3"/><path d="M5.5 8h5M5.5 10.2h5M5.5 12.2h3"/>');
 const PESTANAS = [
-  { id: 'bloques', texto: 'Bloques', icono: SVG_BLOQ },
-  { id: 'capas', texto: 'Capas', icono: SVG_CAPAS },
-  { id: 'elementos', texto: 'Elem.', icono: SVG_ELEM },
+  { id: 'bloques', texto: tr('lateral.bloques'), icono: SVG_BLOQ },
+  { id: 'capas', texto: tr('lateral.capas'), icono: SVG_CAPAS },
+  { id: 'elementos', texto: tr('lateral.elementos'), icono: SVG_ELEM },
 ];
 
 export function initSidebar(host) {
   host.innerHTML = `
     <div class="sb-contenido">
       <div class="sb-barra">
-        <div class="sb-tabs" role="tablist" aria-label="Paneles"></div>
-        <button type="button" id="btn-pagina" class="sb-icono" title="Ajustes de la página" aria-label="Ajustes de la página">${SVG_AJUSTES}</button>
+        <div class="sb-tabs" role="tablist" aria-label="${tr('lateral.paneles')}"></div>
+        <button type="button" id="btn-pagina" class="sb-icono" title="${tr('lateral.ajustesPagina')}" aria-label="${tr('lateral.ajustesPagina')}">${SVG_AJUSTES}</button>
       </div>
       <div class="sb-panel" role="tabpanel" id="panel-capas" aria-labelledby="tab-capas">
         <ul class="lista arbol" id="arbol"></ul>
@@ -108,7 +109,7 @@ export function initSidebar(host) {
     let n = selectedId ? findNode(page, selectedId) : null;
     while (n && n.type !== 'page' && !canContain(n.type, 'text')) n = findParent(page, n.id);
     const destino = n && n.type !== 'page' ? n : null;
-    hint.textContent = destino ? `Se añadirá dentro de: ${destino.name}` : 'Se añadirá al final de la página';
+    hint.textContent = destino ? tr('lateral.dentroDe', { nombre: destino.name }) : tr('lateral.alFinal');
   }
 
   // ---- Bloques: acordeón de UN solo bloque abierto a la vez ----
@@ -227,12 +228,12 @@ export function initSidebar(host) {
 
     const dup = document.createElement('button');
     dup.textContent = '⧉';
-    dup.title = 'Duplicar';
+    dup.title = tr('comun.duplicar');
     dup.addEventListener('click', (e) => { e.stopPropagation(); duplicateNode(nodo.id); });
 
     const borrar = document.createElement('button');
     borrar.textContent = '✕';
-    borrar.title = 'Borrar';
+    borrar.title = tr('comun.borrar');
     borrar.className = 'borrar';
     borrar.addEventListener('click', (e) => { e.stopPropagation(); removeNode(nodo.id); });
 
@@ -280,7 +281,7 @@ export function initSidebar(host) {
 
     arbol.replaceChildren();
     if (!page.children.length) {
-      arbol.innerHTML = '<li class="vacio">Aún no hay secciones. Añade un bloque.</li>';
+      arbol.innerHTML = `<li class="vacio">${tr('lateral.sinSecciones')}</li>`;
       return;
     }
     const recorrer = (nodos, nivel) => nodos.forEach((n) => {

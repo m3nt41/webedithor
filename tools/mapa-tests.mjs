@@ -27,7 +27,7 @@ export const MAPA = {
   'src/core/seo.js': ['seo-pagina', 'xss-import', 'export-igual-vista'],
 
   // ---- Traducción de la interfaz ----
-  'src/i18n/': ['i18n'],
+  'src/i18n/': ['i18n', 'i18n-ui', 'inspector', 'inspector-inventario', 'plan-ia-ui'],
   'tools/png.mjs': ['sombra-reposo'],
 
   // ---- Menú hamburguesa del navbar ----

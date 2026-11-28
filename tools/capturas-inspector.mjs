@@ -28,7 +28,7 @@ const casos = [
   ['text', elegir('text')], ['button', elegir('button')], ['image', elegir('image')], ['icon', iconoNodo],
 ];
 
-const d = await new Builder().forBrowser('firefox').setFirefoxOptions(new firefox.Options().addArguments('-headless').setBinary(FIREFOX)).build();
+const d = await new Builder().forBrowser('firefox').setFirefoxOptions(new firefox.Options().addArguments('-headless').setBinary(FIREFOX).setPreference('intl.accept_languages', 'es')).build();
 try {
   await d.manage().window().setRect({ width: ANCHO, height: 1000 });
   const url = pathToFileURL(resolve('dist/editor.html')).href;

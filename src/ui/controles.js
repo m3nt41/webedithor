@@ -11,6 +11,7 @@
 // modo = 'desktop' | 'mobile'. En móvil, '' significa "igual que escritorio", así que las opciones que en
 // escritorio equivalen a "nada" escriben aquí un valor explícito (none, 0, auto).
 
+import { t as tr } from '../i18n/index.js';
 import { C } from '../blocks/tema.js'; // colores del tema (acento y tinta/papel para el fallback del estilo de botón)
 
 const norm = (v) => String(v ?? '').trim();
@@ -82,10 +83,10 @@ export function leerProporcion(v) {
 // ---- Forma (border-radius) ----
 // Recto 0 · Suave 6px · Redondo 12px · Pastilla 999px. "0 0 0 0" y "0px" cuentan como Recto; vacío también (no hay redondeo).
 export const FORMAS = [
-  { k: 'recto', txt: 'Recto', val: '0', r: 0 },
-  { k: 'suave', txt: 'Suave', val: '6px', r: 6 },
-  { k: 'redondo', txt: 'Redondo', val: '12px', r: 12 },
-  { k: 'pastilla', txt: 'Pastilla', val: '999px', r: 999 },
+  { k: 'recto', txt: tr('forma.recto'), val: '0', r: 0 },
+  { k: 'suave', txt: tr('forma.suave'), val: '6px', r: 6 },
+  { k: 'redondo', txt: tr('forma.redondo'), val: '12px', r: 12 },
+  { k: 'pastilla', txt: tr('forma.pastilla'), val: '999px', r: 999 },
 ];
 
 export function leerForma(v) {
@@ -101,9 +102,9 @@ export function leerForma(v) {
 
 // ---- Tamaño de botón (padding + font-size juntos) ----
 export const TAMANOS_BOTON = [
-  { k: 's', txt: 'Pequeño', padding: '8px 16px', fontSize: '14px' },
-  { k: 'm', txt: 'Mediano', padding: '12px 24px', fontSize: '16px' },
-  { k: 'l', txt: 'Grande', padding: '16px 32px', fontSize: '18px' },
+  { k: 's', txt: tr('tam.chico'), padding: '8px 16px', fontSize: '14px' },
+  { k: 'm', txt: tr('tam.mediano'), padding: '12px 24px', fontSize: '16px' },
+  { k: 'l', txt: tr('tam.grande'), padding: '16px 32px', fontSize: '18px' },
 ];
 
 /** Compara padding sin importar espacios ni atajos: "8px 16px" == "8px 16px 8px 16px". */
@@ -128,9 +129,9 @@ export function leerTamanoBoton(v) {
 // C (el color base) sale del botón actual; si no se puede deducir, el acento del tema.
 export const SUAVE_PCT = 14;
 export const ESTILOS_BOTON = [
-  { k: 'relleno', txt: 'Relleno' },
-  { k: 'contorno', txt: 'Contorno' },
-  { k: 'suave', txt: 'Suave' },
+  { k: 'relleno', txt: tr('estiloBoton.relleno') },
+  { k: 'contorno', txt: tr('comun.contorno') },
+  { k: 'suave', txt: tr('forma.suave') },
 ];
 
 const TRANSPARENTE = ['', 'transparent', 'none'];
@@ -231,12 +232,12 @@ export function modeloControl(f, v, modo = 'desktop') {
   if (f.kind === 'columnas') {
     const l = leerColumnas(v);
     const opciones = Array.from({ length: COLUMNAS_MAX }, (_, i) => ({ txt: String(i + 1), val: columnasN(i + 1), on: l.tipo === 'n' && l.n === i + 1 }));
-    opciones.push({ txt: 'Auto', val: columnasAuto(l.tipo === 'auto' ? l.min : 240), on: l.tipo === 'auto' });
+    opciones.push({ txt: tr('comun.auto'), val: columnasAuto(l.tipo === 'auto' ? l.min : 240), on: l.tipo === 'auto' });
     return { opciones, personalizado: l.tipo === 'otro', min: l.tipo === 'auto' ? l.min : null };
   }
   if (f.kind === 'anchoMax') {
     const l = leerAnchoMax(v);
-    const opciones = [{ txt: 'Completo', val: movil ? 'none' : '', on: l.tipo === 'completo' }];
+    const opciones = [{ txt: tr('control.completo'), val: movil ? 'none' : '', on: l.tipo === 'completo' }];
     for (const n of ANCHOS) opciones.push({ txt: String(n), val: `${n}px`, on: l.tipo === 'preset' && l.n === n });
     return { opciones, personalizado: l.tipo === 'otro', min: null };
   }
@@ -244,8 +245,8 @@ export function modeloControl(f, v, modo = 'desktop') {
     const l = leerCentrar(v);
     return {
       opciones: [
-        { txt: 'Centrado', val: '0 auto', on: l.tipo === 'si' },
-        { txt: 'Sin centrar', val: movil ? '0' : '', on: l.tipo === 'no' || l.tipo === 'vacio' },
+        { txt: tr('control.centrado'), val: '0 auto', on: l.tipo === 'si' },
+        { txt: tr('control.sinCentrar'), val: movil ? '0' : '', on: l.tipo === 'no' || l.tipo === 'vacio' },
       ],
       personalizado: l.tipo === 'otro', min: null,
     };
@@ -255,7 +256,7 @@ export function modeloControl(f, v, modo = 'desktop') {
     // Imagen: "Auto" escribe 'auto' explícito (así gana a la proporción de su grid). Hijos del grid: "Auto" = sin forzar nada.
     const autoVal = f.autoVacio ? (movil ? 'auto' : '') : 'auto';
     const opciones = PROPORCIONES.map((k) => ({ txt: k.replace('/', ':'), val: k.replace('/', ' / '), on: l.tipo === 'preset' && l.k === k }));
-    opciones.push({ txt: 'Auto', val: autoVal, on: l.tipo === 'auto' || (!!f.autoVacio && l.tipo === 'vacio') });
+    opciones.push({ txt: tr('comun.auto'), val: autoVal, on: l.tipo === 'auto' || (!!f.autoVacio && l.tipo === 'vacio') });
     return { opciones, personalizado: l.tipo === 'otro', min: null };
   }
   if (f.kind === 'forma') {
@@ -279,8 +280,8 @@ export function modeloControl(f, v, modo = 'desktop') {
   throw new Error('kind de control desconocido: ' + f.kind);
 }
 
-const FONDO_AJUSTES_UI = [['cover', 'Cubrir'], ['contain', 'Contener']];
-const FONDO_POSICIONES_UI = [['center', 'Centro'], ['top', 'Arriba'], ['bottom', 'Abajo'], ['left', 'Izquierda'], ['right', 'Derecha']];
+const FONDO_AJUSTES_UI = [['cover', tr('control.cubrir')], ['contain', tr('control.contener')]];
+const FONDO_POSICIONES_UI = [['center', tr('comun.centro')], ['top', tr('comun.arriba')], ['bottom', tr('comun.abajo')], ['left', tr('comun.izquierda')], ['right', tr('comun.derecha')]];
 export const KINDS_BOTONES = ['fondoAjuste', 'fondoPosicion'];
 
 export const KINDS_CONTROL = ['columnas', 'anchoMax', 'centrar', 'proporcion', 'forma', 'tamanoBoton'];

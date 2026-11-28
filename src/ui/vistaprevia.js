@@ -11,6 +11,7 @@
 //   nunca van juntos. Consecuencia: el editor ya no puede tocar el documento del iframe (contentDocument es null), así que Esc y las
 //   anclas # las atiende un script puente que SOLO se añade al srcdoc de la vista previa (no al export) y avisa con postMessage.
 
+import { t } from '../i18n/index.js';
 import { getState } from '../core/store.js';
 import { exportHTML } from '../export/exporter.js';
 import { SVG_ESCRITORIO, SVG_MOVIL, SVG_REINICIAR, SVG_OJO } from './iconos.js';
@@ -36,21 +37,21 @@ export function abrirVistaPrevia() {
   capa = document.createElement('div');
   capa.id = 'vista-previa';
   capa.innerHTML = `
-    <div class="vp-barra" role="toolbar" aria-label="Vista previa">
+    <div class="vp-barra" role="toolbar" aria-label="${t('comun.vistaPrevia')}">
       <span class="vp-izq">
-        <span class="grupo" role="group" aria-label="Modo de la vista previa">
-          <button type="button" id="vp-desktop" class="ico-btn activo" title="Escritorio" aria-label="Escritorio" aria-pressed="true">${SVG_ESCRITORIO}</button>
-          <button type="button" id="vp-mobile" class="ico-btn" title="Móvil" aria-label="Móvil" aria-pressed="false">${SVG_MOVIL}</button>
+        <span class="grupo" role="group" aria-label="${t('previa.modo')}">
+          <button type="button" id="vp-desktop" class="ico-btn activo" title="${t('comun.escritorio')}" aria-label="${t('comun.escritorio')}" aria-pressed="true">${SVG_ESCRITORIO}</button>
+          <button type="button" id="vp-mobile" class="ico-btn" title="${t('comun.movil')}" aria-label="${t('comun.movil')}" aria-pressed="false">${SVG_MOVIL}</button>
         </span>
         <span class="divisor" aria-hidden="true"></span>
       </span>
-      <button type="button" id="vp-ojo" class="ico-btn activo" title="Salir de la vista previa (Esc)" aria-label="Salir de la vista previa (Esc)" aria-pressed="true">${SVG_OJO}</button>
+      <button type="button" id="vp-ojo" class="ico-btn activo" title="${t('previa.salir')}" aria-label="${t('previa.salir')}" aria-pressed="true">${SVG_OJO}</button>
       <span class="vp-der">
         <span class="divisor" aria-hidden="true"></span>
-        <button type="button" id="vp-reiniciar" class="ico-btn" title="Reiniciar" aria-label="Reiniciar">${SVG_REINICIAR}</button>
+        <button type="button" id="vp-reiniciar" class="ico-btn" title="${t('previa.reiniciar')}" aria-label="${t('previa.reiniciar')}">${SVG_REINICIAR}</button>
       </span>
     </div>
-    <div class="vp-escenario"><iframe id="vp-frame" title="Vista previa de la página" sandbox="allow-scripts"></iframe></div>
+    <div class="vp-escenario"><iframe id="vp-frame" title="${t('previa.marco')}" sandbox="allow-scripts"></iframe></div>
   `;
   document.body.appendChild(capa);
   const frame = capa.querySelector('#vp-frame');

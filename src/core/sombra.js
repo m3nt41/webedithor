@@ -8,6 +8,8 @@
 //   modo 'plano' (icono/imagen sin caja) -> filter: drop-shadow(...)  (sigue la forma; en una imagen con transparencia, la silueta)
 //   modo false   (con caja)              -> box-shadow   (sigue la caja y sus esquinas)
 // text-shadow y drop-shadow no tienen "expansión": se ignora, salvo en el Contorno (0 0 0 Npx color), que se dibuja con 8 copias desplazadas.
+import { t as tr } from '../i18n/index.js';
+
 
 const L = '(?:0|-?\\d{1,3}(?:\\.\\d{1,3})?(?:px|em|rem))';                                      // longitud: 0 o número con unidad
 const COLOR = '(?:#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})'                          // #rgb #rgba #rrggbb #rrggbbaa
@@ -109,11 +111,11 @@ export function filtroReposo(valor) {
 // ---- Presets del inspector (valores en sintaxis box-shadow) ----
 export const SOMBRA_COLOR_CONTORNO = '#7c5cff';
 export const PRESETS_SOMBRA = [
-  { k: 'ninguna', txt: 'Ninguna', val: '', ayuda: 'Sin sombra' },
-  { k: 'suave', txt: 'Suave', val: '0 2px 8px 0 rgba(0,0,0,0.15)', ayuda: 'Sombra pequeña y discreta' },
-  { k: 'media', txt: 'Media', val: '0 6px 18px 0 rgba(0,0,0,0.22)', ayuda: 'Sombra normal, como una tarjeta' },
-  { k: 'elevada', txt: 'Elevada', val: '0 16px 40px 0 rgba(0,0,0,0.30)', ayuda: 'Sombra grande: el elemento parece flotar' },
-  { k: 'contorno', txt: 'Contorno', val: `0 0 0 2px ${SOMBRA_COLOR_CONTORNO}`, ayuda: 'Un borde de color alrededor, sin desenfoque' },
+  { k: 'ninguna', txt: tr('sombra.ninguna'), val: '', ayuda: tr('sombra.sin') },
+  { k: 'suave', txt: tr('forma.suave'), val: '0 2px 8px 0 rgba(0,0,0,0.15)', ayuda: tr('sombra.suaveAyuda') },
+  { k: 'media', txt: tr('sombra.media'), val: '0 6px 18px 0 rgba(0,0,0,0.22)', ayuda: tr('sombra.mediaAyuda') },
+  { k: 'elevada', txt: tr('sombra.elevada'), val: '0 16px 40px 0 rgba(0,0,0,0.30)', ayuda: tr('sombra.elevadaAyuda') },
+  { k: 'contorno', txt: tr('comun.contorno'), val: `0 0 0 2px ${SOMBRA_COLOR_CONTORNO}`, ayuda: tr('sombra.contornoAyuda') },
 ];
 export const SOMBRA_PERSONALIZADA = '0 4px 14px 0 rgba(0,0,0,0.25)'; // punto de partida de "Personalizada"
 

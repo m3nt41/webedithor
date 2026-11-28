@@ -8,6 +8,7 @@
 //   - Hover Relleno en texto o botón sin caja (no hay fondo que rellenar)              -> se omite el hover
 //   - estados (variants) con disparo "foco" en algo que no es botón                    -> se omite ese estado
 
+import { t } from '../i18n/index.js';
 import { GRUPOS_ANIM } from './index.js';
 import { normalizarAnimacion } from './normalizar.js';
 import { sinCaja, esTexto } from './base.js';
@@ -30,8 +31,8 @@ function etiqueta(g, datos) {
 
 /** ¿Por qué el hover de `datos` no vale en `nodo`? Devuelve el motivo o null si vale. */
 function motivoHover(datos, nodo) {
-  if (EFECTOS_CON_PSEUDO.includes(datos?.effect) && nodo.type === 'image') return 'las imágenes no admiten pseudo-elementos';
-  if (datos?.effect === 'fill' && esTexto(nodo) && sinCaja(nodo)) return 'sin caja (fondo) no hay nada que rellenar';
+  if (EFECTOS_CON_PSEUDO.includes(datos?.effect) && nodo.type === 'image') return t('efectos.motivoImagen');
+  if (datos?.effect === 'fill' && esTexto(nodo) && sinCaja(nodo)) return t('efectos.motivoSinCaja');
   return null;
 }
 
@@ -55,7 +56,7 @@ export function efectosParaNodo(copiada, nodo, padre) {
     }
     if (g.id === 'variants' && nodo.type !== 'button') {
       const buenos = datos.filter((s) => s.trigger !== 'focus');
-      if (buenos.length !== datos.length) omitidos.push('Estados con disparo "foco" (solo botones)');
+      if (buenos.length !== datos.length) omitidos.push(t('efectos.motivoFoco'));
       if (buenos.length) entrada.variants = buenos; else delete entrada.variants;
     }
   }

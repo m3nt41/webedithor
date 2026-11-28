@@ -5,6 +5,7 @@
 // Solo se ve en la Vista previa y en el exportado; al editar, los hijos salen uno bajo otro.
 // Los pasos y la duración se cambian en el inspector ("Escena por scroll" / "Paso de escena").
 
+import { t } from '../i18n/index.js';
 import { n, texto, boton, imagen, placeholder, tit, fondoModo } from './util.js';
 import { MODOS, CITA, botonTema, colorPh } from './tema.js';
 
@@ -30,9 +31,9 @@ const t56 = (text, name) => tit(2, text, { fontSize: '56px', maxWidth: '16ch' },
 
 export default {
   id: 'scene',
-  label: 'Escena',
+  label: t('bloque.escena'),
   variants: {
-    textos: { label: 'Tres mensajes', crear: () => {
+    textos: { label: t('bloque.tres_mensajes'), crear: () => {
       const m = MODOS.oscuro;
       return escena('Escena', fondoModo(m), [
         paso(t56('Primero, una idea', 'Paso 1'), 'out', 2),
@@ -44,7 +45,7 @@ export default {
       ]);
     } },
 
-    imagenes: { label: 'Texto + imagen', crear: () => {
+    imagenes: { label: t('bloque.texto_imagen'), crear: () => {
       const m = MODOS.claro2;
       return escena('Escena', fondoModo(m), [
         paso(texto('Mira cómo cambia mientras bajas', { ...CITA.d, maxWidth: '18ch' }, CITA.m, 'Texto inicial'), 'out', 2),

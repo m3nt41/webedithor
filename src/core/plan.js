@@ -9,6 +9,7 @@
 // que aparece al recorrer el árbol de createBlock(). Los iconos, estilos y animaciones no los toca la IA.
 // Todo es lógica pura (sin DOM): se prueba en Node.
 
+import { t as tr } from '../i18n/index.js';
 import { BLOCKS, createBlock } from '../blocks/index.js';
 import { walk, normalizePage } from './tree.js';
 import { avisoQuitados } from './seguridad.js';
@@ -46,7 +47,7 @@ export function avisosEnlaces(secciones) {
     walk(s, (x) => {
       const h = x.type === 'button' ? String(x.content?.href ?? '').trim() : '';
       if (h.length > 1 && h.startsWith('#') && !anclas.has(h.slice(1))) {
-        avisos.push(`El enlace «${String(x.content.text ?? '').replace(/\s+/g, ' ').trim()}» apunta a ${h} y no hay sección con ese ancla.`);
+        avisos.push(tr('plan.enlaceRoto', { texto: String(x.content.text ?? '').replace(/\s+/g, ' ').trim(), destino: h }));
       }
     });
   }
@@ -78,7 +79,7 @@ export function extraerJSON(texto) {
 /** Pone un valor (texto u objeto) en un nodo hueco. Devuelve un aviso (string) si algo se ignoró, o null. */
 function aplicarValor(nodo, num, valor, ctx) {
   const t = nodo.type;
-  const aviso = (m) => `${ctx}, hueco ${num} (${nodo.name}): ${m}`;
+  const aviso = (m) => tr('plan.hueco', { ctx, num, nombre: nodo.name, mensaje: m });
   const av = [];
   let texto, enlace, src, alt;
   if (typeof valor === 'string') {
@@ -86,21 +87,21 @@ function aplicarValor(nodo, num, valor, ctx) {
   } else if (esObjeto(valor)) {
     texto = valor.texto ?? valor.text; enlace = valor.enlace ?? valor.href; src = valor.src; alt = valor.alt;
   } else {
-    return aviso('el valor debe ser un texto o un objeto; se ignoró.');
+    return aviso(tr('plan.valorTipo'));
   }
 
   if (t === 'image') {
-    if (texto !== undefined) av.push('las imágenes usan "src" y "alt", no "texto"; se ignoró "texto".');
-    if (src !== undefined) { if (srcValido(src)) nodo.content.src = src.trim(); else av.push('"src" no es una dirección válida (https://… o data:image); se dejó la imagen de relleno.'); }
+    if (texto !== undefined) av.push(tr('plan.imagenTexto'));
+    if (src !== undefined) { if (srcValido(src)) nodo.content.src = src.trim(); else av.push(tr('plan.srcInvalido')); }
     if (alt !== undefined) nodo.content.alt = limpiar(String(alt));
-    if (enlace !== undefined) av.push('las imágenes no tienen enlace; se ignoró.');
+    if (enlace !== undefined) av.push(tr('plan.imagenEnlace'));
   } else {
-    if (src !== undefined || alt !== undefined) av.push('"src"/"alt" solo valen en imágenes; se ignoraron.');
-    if (texto !== undefined) { if (typeof texto === 'string') nodo.content.text = limpiar(texto); else av.push('"texto" debe ser un texto; se ignoró.'); }
+    if (src !== undefined || alt !== undefined) av.push(tr('plan.soloImagen'));
+    if (texto !== undefined) { if (typeof texto === 'string') nodo.content.text = limpiar(texto); else av.push(tr('plan.textoTipo')); }
     if (enlace !== undefined) {
-      if (t !== 'button') av.push('"enlace" solo vale en botones; se ignoró.');
+      if (t !== 'button') av.push(tr('plan.soloBotones'));
       else if (enlaceValido(enlace)) nodo.content.href = enlace.trim();
-      else av.push(`el enlace "${String(enlace).slice(0, 40)}" no es válido (usa #ancla, https://…, mailto: o tel:); se dejó el original.`);
+      else av.push(tr('plan.enlaceInvalido', { enlace: String(enlace).slice(0, 40) }));
     }
   }
   return av.length ? av.map(aviso).join(' ') : null;
@@ -109,24 +110,24 @@ function aplicarValor(nodo, num, valor, ctx) {
 /** Valida un plan y construye sus secciones. Devuelve { nodos, errores, avisos, titulo }. Si hay errores no se aplica nada. */
 export function construirPlan(plan) {
   const errores = [], avisos = [], nodos = [];
-  if (!esObjeto(plan) || plan.plan !== 1) { return { nodos, errores: ['No es un plan: falta "plan": 1.'], avisos, titulo: null }; }
-  if (!Array.isArray(plan.secciones) || !plan.secciones.length) { return { nodos, errores: ['El plan no tiene "secciones" (debe ser una lista con al menos una).'], avisos, titulo: null }; }
+  if (!esObjeto(plan) || plan.plan !== 1) { return { nodos, errores: [tr('plan.noEsPlan')], avisos, titulo: null }; }
+  if (!Array.isArray(plan.secciones) || !plan.secciones.length) { return { nodos, errores: [tr('plan.sinSecciones')], avisos, titulo: null }; }
 
   plan.secciones.forEach((s, i) => {
-    const ctx = `Sección ${i + 1}`;
-    if (!esObjeto(s)) { errores.push(`${ctx}: debe ser un objeto con "bloque".`); return; }
+    const ctx = tr('plan.seccion', { n: i + 1 });
+    if (!esObjeto(s)) { errores.push(tr('plan.noObjeto', { ctx })); return; }
     const b = bloqueDe(s.bloque);
-    if (!b) { errores.push(`${ctx}: el bloque "${s.bloque}" no existe. Bloques válidos: ${bloquesIA().map((x) => x.id).join(', ')}.`); return; }
+    if (!b) { errores.push(tr('plan.bloqueNoExiste', { ctx, bloque: s.bloque, lista: bloquesIA().map((x) => x.id).join(', ') })); return; }
     const claves = Object.keys(b.variants);
-    if (s.variante != null && !claves.includes(s.variante)) { errores.push(`${ctx} (${b.id}): la variante "${s.variante}" no existe. Variantes válidas: ${claves.join(', ')}.`); return; }
-    if (s.valores != null && !esObjeto(s.valores)) { errores.push(`${ctx} (${b.id}): "valores" debe ser un objeto {"1": "texto", ...}.`); return; }
+    if (s.variante != null && !claves.includes(s.variante)) { errores.push(tr('plan.varianteNoExiste', { ctx: `${ctx} (${b.id})`, variante: s.variante, lista: claves.join(', ') })); return; }
+    if (s.valores != null && !esObjeto(s.valores)) { errores.push(tr('plan.valoresTipo', { ctx: `${ctx} (${b.id})` })); return; }
     const nodo = createBlock(b.id, s.variante ?? claves[0]);
     delete nodo.content.alInicio; // marca solo para "Añadir bloque" del editor: el plan ya fija el orden
     const huecos = huecosDe(nodo);
     for (const [k, v] of Object.entries(s.valores ?? {})) {
       const num = Number(k);
       if (!Number.isInteger(num) || num < 1 || num > huecos.length) {
-        avisos.push(`${ctx} (${b.id}/${s.variante ?? claves[0]}): el hueco "${k}" no existe (esta variante tiene ${huecos.length}); se ignoró.`);
+        avisos.push(tr('plan.huecoNoExiste', { ctx: `${ctx} (${b.id}/${s.variante ?? claves[0]})`, hueco: k, total: huecos.length }));
         continue;
       }
       const a = aplicarValor(huecos[num - 1], num, v, `${ctx} (${b.id})`);
@@ -134,7 +135,7 @@ export function construirPlan(plan) {
     }
     if (s.fondo !== undefined) {
       if (fondoValido(s.fondo)) nodo.styles.base.fondoImagen = s.fondo.trim(); // ajuste y capa: los de la variante
-      else avisos.push(`${ctx} (${b.id}): "fondo" debe ser una dirección https://… o una ruta que empiece con /; se descartó.`);
+      else avisos.push(tr('plan.fondoInvalido', { ctx: `${ctx} (${b.id})` }));
     }
     nodos.push(nodo);
   });
@@ -147,7 +148,7 @@ export function construirPlan(plan) {
  *  Devuelve { tipo: 'plan'|'pagina', secciones: nodos[], titulo, pagina?, errores, avisos }. No toca el editor. */
 export function leerEntrada(texto, existentes = []) {
   const obj = extraerJSON(texto);
-  if (!obj) return { tipo: null, secciones: [], titulo: null, errores: ['No encontré ningún JSON en el texto pegado. Pega la respuesta de la IA completa.'], avisos: [] };
+  if (!obj) return { tipo: null, secciones: [], titulo: null, errores: [tr('plan.sinJson')], avisos: [] };
   if (obj.plan !== undefined) {
     const r = construirPlan(obj);
     const avisos = r.errores.length ? r.avisos : [...r.avisos, ...avisosEnlaces([...existentes, ...r.nodos])];
@@ -161,8 +162,8 @@ export function leerEntrada(texto, existentes = []) {
       if (informe.quitados > 0) avisos.unshift(avisoQuitados(informe.quitados));
       return { tipo: 'pagina', secciones: pagina.children, titulo: pagina.content?.title ?? null, pagina, errores: [], avisos };
     } catch (e) {
-      return { tipo: 'pagina', secciones: [], titulo: null, errores: [`La página no es válida: ${e.message}`], avisos: [] };
+      return { tipo: 'pagina', secciones: [], titulo: null, errores: [tr('plan.paginaInvalida', { error: e.message })], avisos: [] };
     }
   }
-  return { tipo: null, secciones: [], titulo: null, errores: ['El JSON no es un plan ("plan": 1) ni una página completa ("type": "page").'], avisos: [] };
+  return { tipo: null, secciones: [], titulo: null, errores: [tr('plan.jsonRaro')], avisos: [] };
 }

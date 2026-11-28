@@ -1,5 +1,6 @@
 // BLOQUE FOOTER
 
+import { t as tr } from '../i18n/index.js';
 import { n, texto, columna, etiqueta, cuerpo, pequeno, fondoModo } from './util.js';
 import { MODOS, FUENTE, lado, ANCHO } from './tema.js';
 
@@ -11,9 +12,9 @@ const marca = (t = 'Mi Marca') => texto(t, { fontFamily: FUENTE.titulo, fontWeig
 
 export default {
   id: 'footer',
-  label: 'Footer',
+  label: tr('bloque.footer'),
   variants: {
-    simple: { label: 'Simple', crear: () => {
+    simple: { label: tr('bloque.simple'), crear: () => {
       const m = MODOS.oscuro;
       return n('section', {
         name: 'Footer',
@@ -26,7 +27,7 @@ export default {
       });
     } },
 
-    columnas: { label: 'Columnas', crear: () => {
+    columnas: { label: tr('bloque.columnas'), crear: () => {
       const m = MODOS.oscuro;
       return n('section', {
         name: 'Footer',
@@ -43,7 +44,7 @@ export default {
       });
     } },
 
-    centrado: { label: 'Centrado', crear: () => {
+    centrado: { label: tr('bloque.centrado'), crear: () => {
       const m = MODOS.claro2;
       return n('section', {
         name: 'Footer',
@@ -56,7 +57,7 @@ export default {
       });
     } },
 
-    minimo: { label: 'Mínimo', crear: () => {
+    minimo: { label: tr('bloque.minimo'), crear: () => {
       const m = MODOS.claro;
       return n('section', {
         name: 'Footer',

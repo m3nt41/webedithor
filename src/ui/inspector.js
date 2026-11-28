@@ -5,6 +5,7 @@
 //   página mientras el foco está dentro (salvo que cambie la selección o un
 //   select altere qué campos se muestran: ahí se fuerza).
 
+import { t as tr } from '../i18n/index.js';
 import { getState, subscribe, gestoActivo, setStyle, setStyles, setPosicion, setContent, setName, setAnimation, moveBy, duplicateNode, removeNode, addVariant, removeVariant, moveVariant, setVariant, setVariantProp, verEstado, setIconSize, setMarquesina, setEstilosGesto } from '../core/store.js';
 import { findNode, findParent, anchorValido, contarAncla, aspectoValido, capaValida } from '../core/tree.js';
 import { reducirImagen } from './imagen.js';
@@ -26,7 +27,7 @@ import { DISPAROS_VARIANT, CAMPOS_PROPS, CAMPOS_TIEMPO, DEF_TIEMPO } from '../an
 // Los 3 acordeones del panel, por TAREA: Contenido (qué dice/muestra), Estilo (cómo se ve) y Movimiento (cómo se mueve).
 // Contenido y Estilo abiertos de fábrica; Movimiento plegado. Lo que el usuario deja abierto se guarda.
 // (El texto y el enlace del elemento van fijos arriba, fuera de los acordeones.)
-const ACORDEONES = [['contenido', 'Contenido'], ['estilo', 'Estilo'], ['movimiento', 'Movimiento']];
+const ACORDEONES = [['contenido', tr('insp.contenido')], ['estilo', tr('insp.estilo')], ['movimiento', tr('insp.movimiento')]];
 const LS_NIVELES = 'editor-landings:niveles';
 const NIVELES_DEF = { contenido: true, estilo: true, movimiento: false };
 function leerNiveles() {
@@ -41,7 +42,7 @@ function leerNiveles() {
 }
 function guardarNiveles(o) { try { localStorage.setItem(LS_NIVELES, JSON.stringify(o)); } catch { /* sin localStorage: no pasa nada */ } }
 // Cabecera del panel: nombre del tipo y su icono (los mismos glifos del árbol de capas)
-const TIPO_ES = { page: 'Página', section: 'Sección', container: 'Contenedor', heading: 'Título', text: 'Texto', button: 'Botón', image: 'Imagen', icon: 'Icono' };
+const TIPO_ES = { page: tr('tipo.pagina'), section: tr('tipo.seccion'), container: tr('tipo.contenedor'), heading: tr('tipo.titulo'), text: tr('tipo.texto'), button: tr('tipo.boton'), image: tr('tipo.imagen'), icon: tr('tipo.icono') };
 const GLIFO_TIPO = { page: '▤', section: '▭', container: '▢', heading: 'H', text: '¶', button: '⬭', image: '▣', icon: '✦' };
 
 const esc =(s) => String(s ?? '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
@@ -58,14 +59,14 @@ function avisoCss(key, v) {
   v = String(v ?? '').trim();
   if (!v) return '';
   const ok = key === 'aspectRatio' || key === 'hijosAspectRatio' ? aspectoValido(v) : typeof CSS === 'undefined' || CSS.supports(kebab(key), v);
-  return ok ? '' : 'El navegador no entiende este valor y lo ignora (¿falta la unidad? ej. 900px).';
+  return ok ? '' : tr('insp.cssInvalido');
 }
 
 /** Mensaje de aviso con su triángulo SVG (el texto va escapado). */
 const avisoHtml = (msg) => `${SVG_AVISO}${esc(msg)}`;
 
 /** Etiqueta de un campo; en móvil marca con ● los que tienen un valor propio (pisan el de escritorio). */
-const etiqueta = (texto, ov) => `<label${ov ? ' class="ov" title="Solo en móvil: este valor pisa el de escritorio"' : ''}>${texto}</label>`;
+const etiqueta = (texto, ov) => `<label${ov ? ` class="ov" title="${tr('insp.soloMovil')}"` : ''}>${texto}</label>`;
 
 /** Campo de texto con valor CSS crudo + su aviso de validez. */
 function htmlTexto(key, v, placeholder, texto, ov, compacto = false) {
@@ -93,13 +94,13 @@ function htmlControl(f, v, modo, ov, tieneValor) {
   } else {
     botones = m.opciones.map((o) => `<button type="button" data-ctl="${f.key}" data-val="${esc(o.val)}" class="${o.on ? 'on' : ''}">${o.txt}</button>`).join('');
   }
-  const otro = m.sinOtro ? '' : `<button type="button" data-ctl-otro="${f.key}" class="${m.personalizado ? 'on' : ''}" title="Escribir otro valor CSS (en Avanzado)">Otro</button>`;
-  const min = m.min != null ? `<span class="mini">mín. <input type="number" min="50" step="10" data-ctl-min="${f.key}" value="${m.min}"> px</span>` : '';
+  const otro = m.sinOtro ? '' : `<button type="button" data-ctl-otro="${f.key}" class="${m.personalizado ? 'on' : ''}" title="${tr('insp.otroCss')}">${tr('insp.otro')}</button>`;
+  const min = m.min != null ? `<span class="mini">${tr('insp.min')} <input type="number" min="50" step="10" data-ctl-min="${f.key}" value="${m.min}"> px</span>` : '';
   const quitar = !tieneValor ? '' : f.kind === 'tamanoBoton'
-    ? `<button type="button" class="quitar" data-tam="">${modo === 'mobile' ? '↺ igual que escritorio' : '✕ quitar'}</button>`
+    ? `<button type="button" class="quitar" data-tam="">${modo === 'mobile' ? tr('insp.igualDesk') : tr('insp.quitar')}</button>`
     : f.kind === 'estiloBoton'
-    ? `<button type="button" class="quitar" data-est="">${modo === 'mobile' ? '↺ igual que escritorio' : '✕ quitar'}</button>`
-    :`<button type="button" class="quitar" data-ctl="${f.key}" data-val="">${modo === 'mobile' ? '↺ igual que escritorio' : '✕ quitar'}</button>`;
+    ? `<button type="button" class="quitar" data-est="">${modo === 'mobile' ? tr('insp.igualDesk') : tr('insp.quitar')}</button>`
+    :`<button type="button" class="quitar" data-ctl="${f.key}" data-val="">${modo === 'mobile' ? tr('insp.igualDesk') : tr('insp.quitar')}</button>`;
   return `<div class="campo ctl">${etiqueta(f.label, ov)}<div class="botones${modo === 'mobile' && !ov ? ' heredado' : ''}">${botones}${otro}${min}${quitar}</div></div>`;
 }
 
@@ -109,25 +110,25 @@ function htmlSombra(f, v, modo, ov, tieneValor, nodo) {
   const movil = modo === 'mobile';
   const l = leerSombraUi(v);
   const tecnica = modoSombra(nodo); // 'texto' | 'plano' | false
-  const donde = tecnica === 'texto' ? 'Sigue las letras (text-shadow).' : tecnica === 'plano' ? 'Sigue la forma del icono o la imagen (si la imagen tiene transparencia, sigue su silueta; si es un rectángulo opaco, un rectángulo).' : 'Sigue la caja del elemento y sus esquinas.';
+  const donde = tecnica === 'texto' ? tr('insp.sombraTexto') : tecnica === 'plano' ? tr('insp.sombraPlano') : tr('insp.sombraCaja');
   const botones = PRESETS_SOMBRA.map((p) => {
     const val = p.k === 'ninguna' ? (movil ? 'none' : '') : p.val;
     const on = p.k === 'ninguna' ? l.tipo === 'ninguna' && (!movil || ov || v !== '') : l.tipo === 'preset' && l.k === p.k;
     return `<button type="button" data-ctl="sombra" data-val="${esc(val)}" class="${on ? 'on' : ''}" title="${esc(p.ayuda)}">${p.txt}</button>`;
   }).join('');
-  const custom = `<button type="button" data-sh-custom class="${l.tipo === 'custom' ? 'on' : ''}" title="Elegir tú el desplazamiento, el desfoque y el color">Personalizada</button>`;
-  const quitar = tieneValor ? `<button type="button" class="quitar" data-ctl="sombra" data-val="">${movil ? '↺ igual que escritorio' : '✕ quitar'}</button>` : '';
+  const custom = `<button type="button" data-sh-custom class="${l.tipo === 'custom' ? 'on' : ''}" title="${tr('insp.sombraPersAyuda')}">${tr('insp.personalizada')}</button>`;
+  const quitar = tieneValor ? `<button type="button" class="quitar" data-ctl="sombra" data-val="">${movil ? tr('insp.igualDesk') : tr('insp.quitar')}</button>` : '';
   let h = `<div class="campo ctl">${etiqueta(f.label, ov)}<div class="botones${movil && !ov ? ' heredado' : ''}">${botones}${custom}${quitar}</div></div>`;
-  if (l.tipo === 'otro') return h + '<p class="modo">Esta sombra tiene varias capas o un formato especial: se respeta tal cual. Elige un preset para reemplazarla.</p>';
+  if (l.tipo === 'otro') return h + `<p class="modo">${tr('insp.sombraRara')}</p>`;
   if (l.tipo === 'ninguna') return h;
   const c = l.capa, col = colorSombra(c.color);
   const px = (t) => Math.round(parseFloat(t) || 0);
   const anillo = px(c.x) === 0 && px(c.y) === 0 && px(c.blur) === 0;
   const campoNum = (k, txt, val, min, max) => `<label class="sh-n">${txt}<input type="number" data-sh="${k}" min="${min}" max="${max}" step="1" value="${val}"></label>`;
   h += `<div class="sombra-ed" data-sombra-ed>` +
-    `<div class="fila" style="--n:${tecnica === false || anillo ? 4 : 3}">${campoNum('x', 'Horizontal', px(c.x), -200, 200)}${campoNum('y', 'Vertical', px(c.y), -200, 200)}${campoNum('blur', 'Desfoque', px(c.blur), 0, 200)}${tecnica === false || anillo ? campoNum('spread', anillo && tecnica ? 'Grosor' : 'Expansión', px(c.spread), -100, 100) : ''}</div>` +
-    `<div class="campo"><label>Color</label><span class="color"><input type="color" data-sh="hex" value="${col.hex}" aria-label="Color de la sombra"></span></div>` +
-    `<div class="campo rango"><label>Opacidad</label><span class="rango-fila"><input type="range" min="0" max="100" step="1" data-sh="alfa" value="${Math.round(col.alfa * 100)}"><output data-sh-out>${Math.round(col.alfa * 100)}%</output></span></div>` +
+    `<div class="fila" style="--n:${tecnica === false || anillo ? 4 : 3}">${campoNum('x', tr('insp.horizontal'), px(c.x), -200, 200)}${campoNum('y', tr('insp.vertical'), px(c.y), -200, 200)}${campoNum('blur', tr('insp.desenfoqueSombra'), px(c.blur), 0, 200)}${tecnica === false || anillo ? campoNum('spread', anillo && tecnica ? tr('campo.grosorBorde') : tr('insp.expansion'), px(c.spread), -100, 100) : ''}</div>` +
+    `<div class="campo"><label>${tr('comun.color')}</label><span class="color"><input type="color" data-sh="hex" value="${col.hex}" aria-label="${tr('insp.colorSombra')}"></span></div>` +
+    `<div class="campo rango"><label>${tr('comun.opacidad')}</label><span class="rango-fila"><input type="range" min="0" max="100" step="1" data-sh="alfa" value="${Math.round(col.alfa * 100)}"><output data-sh-out>${Math.round(col.alfa * 100)}%</output></span></div>` +
     `<p class="modo">${donde}</p></div>`;
   return h;
 }
@@ -138,17 +139,17 @@ function htmlMarq(mq, abierto) {
   const fila = (label, botones, extra = '') => `<div class="campo ctl"><label>${label}</label><div class="botones">${botones}${extra}</div></div>`;
   const velPreset = MQ_VELOCIDADES.some(([, , seg]) => seg === mq.vel);
   const reps = MQ_COPIAS.map((n) => b('copias', n, n, mq.copias === n)).join('');
-  return '<h3>Marquesina</h3>' +
-    fila('Movimiento', b('mov', 1, 'Con movimiento', mq.mov) + b('mov', 0, 'Sin movimiento (fija)', !mq.mov)) +
-    (mq.mov ? fila('Velocidad', MQ_VELOCIDADES.map(([, txt, seg]) => b('vel', seg, txt, mq.vel === seg, `${seg} s por vuelta`)).join('')) +
-      `<div class="campo"><label>Segundos por vuelta</label><input type="number" min="${MQ_VEL_MIN}" max="${MQ_VEL_MAX}" step="1" data-mq-num="vel" value="${mq.vel}" class="${velPreset ? '' : 'on'}"></div>` +
-      fila('Dirección', b('dir', 'izq', '← Izquierda', mq.dir === 'izq') + b('dir', 'der', 'Derecha →', mq.dir === 'der')) +
-      fila('Pausa al pasar el ratón', b('pausa', 1, 'Sí', mq.pausa) + b('pausa', 0, 'No', !mq.pausa)) : '') +
-    fila('Separación', MQ_GAPS.map((g) => b('gap', g, `${g}`, mq.gap === g)).join(''), '<span class="mini">px</span>') +
-    (mq.mov ? `<details class="avanzado" data-g="Marquesina"${abierto ? ' open' : ''}><summary>Más opciones</summary>` +
-      fila('Repetición (copias de la tira)', reps) +
-      '<p class="modo">Cuántas veces se repite la tira para que no queden huecos en pantallas anchas. Con pocos items o items cortos, sube el número. Solo cuenta en el HTML exportado y en la Vista previa. Los botones o enlaces de las copias repetidas no se pueden pulsar (solo los de la primera tira).</p></details>' : '') +
-    '<p class="modo">En el editor la marquesina se ve quieta, con todos los items a la vista para editarlos; la animación se ve en 👁 Vista previa y en el export. Cada item es un elemento normal (selecciónalo en Capas o en el preview).</p>';
+  return `<h3>${tr('tipo.marquesina')}</h3>` +
+    fila(tr('insp.movimiento'), b('mov', 1, tr('mq.conMov'), mq.mov) + b('mov', 0, tr('mq.sinMov'), !mq.mov)) +
+    (mq.mov ? fila(tr('mq.velocidad'), MQ_VELOCIDADES.map(([, txt, seg]) => b('vel', seg, txt, mq.vel === seg, tr('mq.segPorVuelta', { seg }))).join('')) +
+      `<div class="campo"><label>${tr('mq.segundos')}</label><input type="number" min="${MQ_VEL_MIN}" max="${MQ_VEL_MAX}" step="1" data-mq-num="vel" value="${mq.vel}" class="${velPreset ? '' : 'on'}"></div>` +
+      fila(tr('comun.direccion'), b('dir', 'izq', tr('mq.izq'), mq.dir === 'izq') + b('dir', 'der', tr('mq.der'), mq.dir === 'der')) +
+      fila(tr('mq.pausa'), b('pausa', 1, tr('comun.si'), mq.pausa) + b('pausa', 0, tr('comun.no'), !mq.pausa)) : '') +
+    fila(tr('mq.separacion'), MQ_GAPS.map((g) => b('gap', g, `${g}`, mq.gap === g)).join(''), '<span class="mini">px</span>') +
+    (mq.mov ? `<details class="avanzado" data-g="Marquesina"${abierto ? ' open' : ''}><summary>${tr('insp.masOpciones')}</summary>` +
+      fila(tr('mq.repeticion'), reps) +
+      `<p class="modo">${tr('mq.notaRepeticion')}</p></details>` : '') +
+    `<p class="modo">${tr('mq.notaEditor')}</p>`;
 }
 
 /** Sección "Estados (variants)": lista de estados con su disparo, lo que cambian y su tiempo. */
@@ -156,32 +157,32 @@ function htmlEstados(nodo, verActual) {
   const lista = nodo.animation?.variants ?? [];
   // "Enfocar" solo tiene sentido en botones (los únicos que reciben foco de teclado)
   const disparos = DISPAROS_VARIANT.filter(([v]) => v !== 'focus' || nodo.type === 'button');
-  let h = `<h3>Estados (hover, clic…)</h3>
-    <p class="modo"><strong>reposo</strong> = el aspecto normal del elemento. Cada estado cambia solo lo que rellenes; si dos coinciden, gana el de más abajo.</p>`;
+  let h = `<h3>${tr('estados.titulo')}</h3>
+    <p class="modo"><strong>${tr('estados.reposo')}</strong> ${tr('estados.ayuda')}</p>`;
   lista.forEach((s, i) => {
     const viendo = verActual?.id === nodo.id && verActual.estado === s.id;
     const opts = disparos.map(([v, t]) => `<option value="${v}" ${v === s.trigger ? 'selected' : ''}>${t}</option>`).join('');
     h += `<div class="variante" data-vs="${esc(s.id)}">
       <div class="vhead">
-        <input data-v="name" value="${esc(s.name)}" title="Nombre del estado">
-        <button data-vact="ver" class="${viendo ? 'on' : ''}" title="Ver este estado en el preview (no se exporta)">${viendo ? 'Dejar de ver' : 'Ver'}</button>
-        <button data-vact="vup" title="Subir" ${i === 0 ? 'disabled' : ''}>↑</button>
-        <button data-vact="vdown" title="Bajar" ${i === lista.length - 1 ? 'disabled' : ''}>↓</button>
-        <button data-vact="vdel" class="borrar" title="Borrar estado">✕</button>
+        <input data-v="name" value="${esc(s.name)}" title="${tr('estados.nombre')}">
+        <button data-vact="ver" class="${viendo ? 'on' : ''}" title="${tr('estados.verAyuda')}">${viendo ? tr('estados.dejarVer') : tr('estados.ver')}</button>
+        <button data-vact="vup" title="${tr('comun.subir')}" ${i === 0 ? 'disabled' : ''}>↑</button>
+        <button data-vact="vdown" title="${tr('comun.bajar')}" ${i === lista.length - 1 ? 'disabled' : ''}>↓</button>
+        <button data-vact="vdel" class="borrar" title="${tr('estados.borrar')}">✕</button>
       </div>
-      <div class="campo"><label>Se dispara</label><select data-v="trigger">${opts}</select></div>
-      <p class="modo">Qué cambia (vacío = no cambia)</p>`;
+      <div class="campo"><label>${tr('estados.disparo')}</label><select data-v="trigger">${opts}</select></div>
+      <p class="modo">${tr('estados.queCambia')}</p>`;
     for (const f of CAMPOS_PROPS) {
       const v = s.props?.[f.key] ?? '';
       if (f.kind === 'color') {
-        h += `<div class="campo"><label>${f.label}</label><span class="color"><input type="color" data-vpick="${f.key}" value="${aHex(v) ?? '#000000'}"><input data-vp="${f.key}" value="${esc(v)}" placeholder="sin cambio"></span></div>`;
+        h += `<div class="campo"><label>${f.label}</label><span class="color"><input type="color" data-vpick="${f.key}" value="${aHex(v) ?? '#000000'}"><input data-vp="${f.key}" value="${esc(v)}" placeholder="${tr('estados.sinCambio')}"></span></div>`;
       } else if (f.kind === 'text') {
         h += `<div class="campo"><label>${f.label}</label><input data-vp="${f.key}" value="${esc(v)}" placeholder="${esc(f.placeholder)}"></div>`;
       } else {
-        h += `<div class="campo"><label>${f.label}</label><input type="number" data-vp="${f.key}" data-num step="${f.step ?? 1}" value="${v}" placeholder="sin cambio"></div>`;
+        h += `<div class="campo"><label>${f.label}</label><input type="number" data-vp="${f.key}" data-num step="${f.step ?? 1}" value="${v}" placeholder="${tr('estados.sinCambio')}"></div>`;
       }
     }
-    h += '<p class="modo">Cómo viaja</p>';
+    h += `<p class="modo">${tr('estados.comoViaja')}</p>`;
     for (const f of CAMPOS_TIEMPO) {
       if (f.cuando && !f.cuando(s)) continue;
       const v = s[f.key] ?? DEF_TIEMPO[f.key] ?? '';
@@ -192,18 +193,18 @@ function htmlEstados(nodo, verActual) {
         h += `<div class="campo"><label>${f.label}</label><input type="number" data-v="${f.key}" data-num step="${f.step ?? 1}" min="${f.min ?? 0}" value="${v}"></div>`;
       }
     }
-    if (s.trigger === 'click') h += '<p class="modo">Un clic activa el estado y otro clic vuelve a reposo. El .html exportado lleva un script de unas líneas.</p>';
+    if (s.trigger === 'click') h += `<p class="modo">${tr('estados.notaClic')}</p>`;
     h += '</div>';
   });
-  return h + '<button class="vadd" data-vact="add">+ Añadir estado</button>';
+  return h + `<button class="vadd" data-vact="add">${tr('estados.anadir')}</button>`;
 }
 
 /** Mensaje de validación del ancla (vacío si todo bien). */
 function avisoAncla(page, nodo, valor) {
-  if (!valor) return 'Para enlazar: <code>#nombre</code>';
-  if (!anchorValido(valor)) return SVG_AVISO + 'Inválida: empieza con letra; solo letras, números y guiones. No se guarda.';
-  if (contarAncla(page, valor, nodo.id) > 0) return `${SVG_AVISO}"${esc(valor)}" ya existe en otra parte de la página (se repite).`;
-  return `Enlace: <code>#${esc(valor)}</code>`;
+  if (!valor) return `${tr('ancla.paraEnlazar')} <code>#nombre</code>`;
+  if (!anchorValido(valor)) return SVG_AVISO + tr('ancla.invalida');
+  if (contarAncla(page, valor, nodo.id) > 0) return `${SVG_AVISO}"${esc(valor)}" ${tr('ancla.repetida')}`;
+  return `${tr('ancla.enlace')} <code>#${esc(valor)}</code>`;
 }
 
 export function initInspector(host) {
@@ -221,7 +222,7 @@ export function initInspector(host) {
     if ((nodo?.id ?? null) !== idDibujado) abiertos.clear();
     idDibujado = nodo?.id ?? null;
     if (!nodo) {
-      host.innerHTML = '<div class="insp-cuerpo"><h2>Propiedades</h2><p class="vacio">Haz clic en un elemento del preview.<br><br>Doble clic en un texto para escribir directamente.</p></div>';
+      host.innerHTML = `<div class="insp-cuerpo"><h2>${tr('html.propiedades')}</h2><p class="vacio">${tr('insp.haz')}<br><br>${tr('insp.dobleClic')}</p></div>`;
       return;
     }
     const estilos = effectiveStyles(nodo, viewMode);
@@ -233,15 +234,15 @@ export function initInspector(host) {
       const padre = findParent(page, nodo.id);
       const i = padre.children.indexOf(nodo);
       acciones = `<div class="acciones">
-        <button data-act="up" title="Subir (Alt+↑)" ${i === 0 ? 'disabled' : ''}>↑</button>
-        <button data-act="down" title="Bajar (Alt+↓)" ${i === padre.children.length - 1 ? 'disabled' : ''}>↓</button>
-        <button data-act="dup" title="Duplicar (Ctrl+D)">⧉</button>
-        <button data-act="del" class="borrar" title="Borrar (Supr)">✕</button>
+        <button data-act="up" title="${tr('insp.subir')}" ${i === 0 ? 'disabled' : ''}>↑</button>
+        <button data-act="down" title="${tr('insp.bajar')}" ${i === padre.children.length - 1 ? 'disabled' : ''}>↓</button>
+        <button data-act="dup" title="${tr('insp.duplicar')}">⧉</button>
+        <button data-act="del" class="borrar" title="${tr('insp.borrar')}">✕</button>
       </div>`;
     }
     const cabecera = `<header class="insp-cab"><span class="insp-ico" aria-hidden="true">${GLIFO_TIPO[nodo.type] ?? '▭'}</span>
-      <div class="insp-nom"><input data-name value="${esc(nodo.name)}" aria-label="Nombre del elemento" title="Nombre del elemento">
-      <span class="insp-tipo">${TIPO_ES[nodo.type] ?? nodo.type} · <b>${viewMode === 'mobile' ? 'Móvil' : 'Escritorio'}</b></span></div>${acciones}</header>`;
+      <div class="insp-nom"><input data-name value="${esc(nodo.name)}" aria-label="${tr('insp.nombre')}" title="${tr('insp.nombre')}">
+      <span class="insp-tipo">${TIPO_ES[nodo.type] ?? nodo.type} · <b>${viewMode === 'mobile' ? tr('comun.movil') : tr('comun.escritorio')}</b></span></div>${acciones}</header>`;
 
     // ---- Los 3 acordeones (Contenido / Estilo / Movimiento): cada pieza se añade al que le toca ----
     const N = { contenido: '', estilo: '', movimiento: '' };
@@ -251,52 +252,52 @@ export function initInspector(host) {
     const c = nodo.content;
     let cont = '', contAv = '';
     if (nodo.type === 'page') {
-      cont += `<div class="campo"><label>Título</label><input data-c="title" value="${esc(c.title)}"></div>`;
-      contAv += `<h3>Página</h3><div class="campo"><label>Scroll suave</label><select data-c="smoothScroll" data-bool><option value="no" ${c.smoothScroll ? '' : 'selected'}>No</option><option value="si" ${c.smoothScroll ? 'selected' : ''}>Sí</option></select></div>
-        <p class="modo">Solo la rueda del mouse en escritorio (táctil, teclado, barra y anclas quedan nativos). Se ve en el HTML exportado, no en este preview.</p>
-        <h3>Buscadores y redes</h3>
-        <div class="campo v"><label>Descripción</label><textarea data-c="description" rows="3" maxlength="500" placeholder="Qué ofrece esta página, en una o dos frases">${esc(c.description)}</textarea></div>
-        <p class="modo">Es el texto que Google suele mostrar bajo el título y lo que se ve al compartir el enlace. Entre 50 y 160 caracteres es lo ideal.</p>
-        <div class="campo"><label>Imagen para compartir</label><input data-c="ogImage" value="${esc(c.ogImage)}" placeholder="https://..."></div>
-        <p class="modo">Dirección completa (https://…) de la imagen que se ve al compartir el enlace en redes. Sin ella no se añade imagen. Se ve en el HTML exportado, no en este preview.</p>
-        <div class="campo"><label>Idioma</label><input data-c="lang" list="idiomas-pagina" maxlength="12" value="${esc(c.lang)}" placeholder="es"><datalist id="idiomas-pagina"><option value="es"><option value="en"><option value="pt"><option value="fr"><option value="de"><option value="it"><option value="ca"></datalist></div>
-        <p class="modo">Código del idioma del texto de la página (es, en, pt-BR…). Ayuda a los lectores de pantalla y a los buscadores. Vacío = es.</p>`;
+      cont += `<div class="campo"><label>${tr('tipo.titulo')}</label><input data-c="title" value="${esc(c.title)}"></div>`;
+      contAv += `<h3>${tr('tipo.pagina')}</h3><div class="campo"><label>${tr('pagina.scrollSuave')}</label><select data-c="smoothScroll" data-bool><option value="no" ${c.smoothScroll ? '' : 'selected'}>${tr('comun.no')}</option><option value="si" ${c.smoothScroll ? 'selected' : ''}>${tr('comun.si')}</option></select></div>
+        <p class="modo">${tr('pagina.notaScroll')}</p>
+        <h3>${tr('pagina.seo')}</h3>
+        <div class="campo v"><label>${tr('pagina.descripcion')}</label><textarea data-c="description" rows="3" maxlength="500" placeholder="${tr('pagina.descripcionEj')}">${esc(c.description)}</textarea></div>
+        <p class="modo">${tr('pagina.notaDescripcion')}</p>
+        <div class="campo"><label>${tr('pagina.ogImage')}</label><input data-c="ogImage" value="${esc(c.ogImage)}" placeholder="https://..."></div>
+        <p class="modo">${tr('pagina.notaOg')}</p>
+        <div class="campo"><label>${tr('pagina.idioma')}</label><input data-c="lang" list="idiomas-pagina" maxlength="12" value="${esc(c.lang)}" placeholder="es"><datalist id="idiomas-pagina"><option value="es"><option value="en"><option value="pt"><option value="fr"><option value="de"><option value="it"><option value="ca"></datalist></div>
+        <p class="modo">${tr('pagina.notaIdioma')}</p>`;
     }
     if (nodo.type === 'icon') {
       const botones = Object.entries(ICONOS).map(([k, ic]) => `<button type="button" data-icono="${k}" title="${esc(ic.t)}" aria-label="${esc(ic.t)}" aria-pressed="${c.name === k}" class="${c.name === k ? 'on' : ''}">${iconoSvg(k, 18)}</button>`).join('');
-      cont += `<div class="campo"><label>Icono</label></div><div class="icono-grid" role="group" aria-label="Elegir icono">${botones}</div>`;
+      cont += `<div class="campo"><label>${tr('tipo.icono')}</label></div><div class="icono-grid" role="group" aria-label="${tr('insp.elegirIcono')}">${botones}</div>`;
     }
-    if (TIPOS_TEXTO.includes(nodo.type)) cima += `<div class="campo v"><label>Texto</label><textarea data-c="text" rows="3">${esc(c.text)}</textarea></div>`;
+    if (TIPOS_TEXTO.includes(nodo.type)) cima += `<div class="campo v"><label>${tr('tipo.texto')}</label><textarea data-c="text" rows="3">${esc(c.text)}</textarea></div>`;
     if (nodo.type === 'heading') {
-      cima += `<div class="campo"><label>Nivel</label><select data-c="level" data-num>${[1, 2, 3, 4].map((n) => `<option value="${n}" ${+c.level === n ? 'selected' : ''}>H${n}</option>`).join('')}</select></div>`;
+      cima += `<div class="campo"><label>${tr('insp.nivel')}</label><select data-c="level" data-num>${[1, 2, 3, 4].map((n) => `<option value="${n}" ${+c.level === n ? 'selected' : ''}>H${n}</option>`).join('')}</select></div>`;
     }
-    if (nodo.type === 'button') cima += `<div class="campo"><label>Enlace</label><input data-c="href" value="${esc(c.href)}" placeholder="https://wa.me/506..."></div>`;
+    if (nodo.type === 'button') cima += `<div class="campo"><label>${tr('insp.enlace')}</label><input data-c="href" value="${esc(c.href)}" placeholder="https://wa.me/506..."></div>`;
     if (nodo.type === 'image') {
       cont += `<div class="campo"><label>URL</label><input data-c="src" value="${esc(c.src?.startsWith('data:') ? '' : c.src)}" placeholder="https://..."></div>
-        <div class="campo v"><label>Archivo</label><input type="file" accept="image/*" data-file></div>
-        <div class="campo"><label>Texto alterno</label><input data-c="alt" value="${esc(c.alt)}"></div>`;
+        <div class="campo v"><label>${tr('insp.archivo')}</label><input type="file" accept="image/*" data-file></div>
+        <div class="campo"><label>${tr('insp.alt')}</label><input data-c="alt" value="${esc(c.alt)}"></div>`;
     }
     if (nodo.type === 'section' || nodo.type === 'container') {
-      contAv += `<h3>Ancla</h3><div class="campo"><label>Ancla (id)</label><input data-anchor value="${esc(c.anchor)}" placeholder="contacto"></div>
+      contAv += `<h3>${tr('ancla.titulo')}</h3><div class="campo"><label>${tr('ancla.id')}</label><input data-anchor value="${esc(c.anchor)}" placeholder="${tr('ancla.ejemplo')}"></div>
         <p class="modo" data-aviso-ancla>${avisoAncla(page, nodo, c.anchor ?? '')}</p>`;
     }
     if (cont && nodo.type !== 'page') N.contenido += cont;
     let iaPage = '';
     if (nodo.type === 'page') {
-      iaPage = `<h3>Landing con IA</h3>
-        <p class="modo">Pídele a cualquier IA de chat una landing: pégale la guía y carga aquí lo que devuelva.</p>
-        <div class="ia-botones"><button type="button" data-ia="copiar">${SVG_COPIAR} Copiar guía para IA</button><button type="button" data-ia="pegar">${SVG_PEGAR} Pegar plan o JSON</button></div>`;
+      iaPage = `<h3>${tr('ia.titulo')}</h3>
+        <p class="modo">${tr('ia.ayuda')}</p>
+        <div class="ia-botones"><button type="button" data-ia="copiar">${SVG_COPIAR} ${tr('ia.copiar')}</button><button type="button" data-ia="pegar">${SVG_PEGAR} ${tr('ia.pegar')}</button></div>`;
     }
     // Menú hamburguesa en móvil: solo en el Navbar (sección con "nav" en el nombre o que ya lo tiene activado)
     if (nodo.type === 'section' && (c.menuMovil === true || /nav/i.test(nodo.name))) {
-      contAv += `<h3>Menú en móvil</h3><div class="campo"><label>Menú hamburguesa en móvil</label><select data-c="menuMovil" data-bool><option value="no" ${c.menuMovil ? '' : 'selected'}>No</option><option value="si" ${c.menuMovil ? 'selected' : ''}>Sí</option></select></div>
-        <p class="modo">En móvil el primer elemento (el logo) queda visible y todo lo demás va al panel de la hamburguesa. El panel se superpone al contenido. En la vista móvil del editor empieza cerrado: ábrelo con la hamburguesa o seleccionando un enlace desde Capas.</p>`;
+      contAv += `<h3>${tr('menu.titulo')}</h3><div class="campo"><label>${tr('menu.campo')}</label><select data-c="menuMovil" data-bool><option value="no" ${c.menuMovil ? '' : 'selected'}>${tr('comun.no')}</option><option value="si" ${c.menuMovil ? 'selected' : ''}>${tr('comun.si')}</option></select></div>
+        <p class="modo">${tr('menu.nota')}</p>`;
     }
 
     // El nodo page NO usa acordeones: vista plana con todo visible (Contenido, Página, IA y luego los grupos de estilo en orden)
     const planoPage = nodo.type === 'page';
     let planoCab = '', planoEstilos = '';
-    if (planoPage) planoCab = (cont ? `<h3>Contenido</h3>${cont}` : '') + contAv + iaPage;
+    if (planoPage) planoCab = (cont ? `<h3>${tr('insp.contenido')}</h3>${cont}` : '') + contAv + iaPage;
     else N.contenido += contAv; // ancla y menú móvil (solo secciones/contenedores) van en el acordeón Contenido
 
     const mq = usaMarquesina(nodo);
@@ -323,22 +324,22 @@ export function initInspector(host) {
         const ov = viewMode === 'mobile' && f.key in nodo.styles.mobile; // en móvil: ¿tiene valor propio?
         let h = '';
         if (f.kind === 'fondoImagen') {
-          const quitar = `<button type="button" class="quitar" data-ctl="fondoImagen" data-val="">${viewMode === 'mobile' ? '↺ igual que escritorio' : '✕ Quitar'}</button>`;
+          const quitar = `<button type="button" class="quitar" data-ctl="fondoImagen" data-val="">${viewMode === 'mobile' ? tr('insp.igualDesk') : tr('insp.quitarMayus')}</button>`;
           h = `<div class="campo ctl">${etiqueta(f.label, ov)}<div class="botones${viewMode === 'mobile' && !ov ? ' heredado' : ''}">` +
-            `<label class="subir">Subir imagen<input type="file" accept="image/*" data-fondo-file style="position:absolute;width:1px;height:1px;opacity:0"></label>${quitar}</div></div>` +
-            `<div class="campo"><label>…o pega una URL</label><input data-fondo-url value="${esc(v.startsWith('data:') ? '' : v)}" placeholder="${v.startsWith('data:') ? '(imagen subida)' : 'https://…'}"></div>` +
+            `<label class="subir">${tr('insp.subirImagen')}<input type="file" accept="image/*" data-fondo-file style="position:absolute;width:1px;height:1px;opacity:0"></label>${quitar}</div></div>` +
+            `<div class="campo"><label>${tr('insp.pegaUrl')}</label><input data-fondo-url value="${esc(v.startsWith('data:') ? '' : v)}" placeholder="${v.startsWith('data:') ? tr('insp.imagenSubida') : 'https://…'}"></div>` +
             '<p class="fondo-msg" data-fondo-msg hidden></p>';
         } else if (f.kind === 'iconoTamano') {
           const px = parseFloat(v) || TAMANO_ICONO_DEFECTO; // efectivo (en móvil: ya mezclado con escritorio)
           const tieneValor = viewMode === 'mobile' ? ov : f.key in nodo.styles.base;
           const preset = TAMANOS_ICONO.includes(px) && (v === '' || /^\d+(\.\d+)?px$/.test(String(v)));
           const bs = TAMANOS_ICONO.map((t) => `<button type="button" data-isz="${t}" class="${preset && t === px ? 'on' : ''}">${t}</button>`).join('');
-          const quitar = tieneValor ? `<button type="button" class="quitar" data-isz="">${viewMode === 'mobile' ? '↺ igual que escritorio' : '✕ quitar'}</button>` : '';
-          h = `<div class="campo ctl">${etiqueta(f.label, ov)}<div class="botones${viewMode === 'mobile' && !ov ? ' heredado' : ''}">${bs}<button type="button" data-isz-otro class="${preset ? '' : 'on'}" title="Escribir otro tamaño">Otro</button><span class="mini"><input type="number" min="4" max="512" step="1" data-isz-num value="${Math.round(px)}" aria-label="Tamaño en px"> px</span>${quitar}</div></div>`;
+          const quitar = tieneValor ? `<button type="button" class="quitar" data-isz="">${viewMode === 'mobile' ? tr('insp.igualDesk') : tr('insp.quitar')}</button>` : '';
+          h = `<div class="campo ctl">${etiqueta(f.label, ov)}<div class="botones${viewMode === 'mobile' && !ov ? ' heredado' : ''}">${bs}<button type="button" data-isz-otro class="${preset ? '' : 'on'}" title="${tr('insp.otroTam')}">${tr('insp.otro')}</button><span class="mini"><input type="number" min="4" max="512" step="1" data-isz-num value="${Math.round(px)}" aria-label="${tr('insp.tamPx')}"> px</span>${quitar}</div></div>`;
         } else if (f.kind === 'fondoCapa') {
           const n = capaValida(v) ?? 0;
           h = `<div class="campo rango">${etiqueta(f.label, ov)}<span class="rango-fila"><input type="range" min="0" max="80" step="1" data-capa value="${n}"><output data-capa-out>${n}%</output></span></div>` +
-            (ov || (viewMode !== 'mobile' && f.key in nodo.styles.base) ? `<div class="campo ctl"><label></label><div class="botones"><button type="button" class="quitar" data-ctl="fondoCapa" data-val="">${viewMode === 'mobile' ? '↺ igual que escritorio' : '✕ quitar'}</button></div></div>` : '');
+            (ov || (viewMode !== 'mobile' && f.key in nodo.styles.base) ? `<div class="campo ctl"><label></label><div class="botones"><button type="button" class="quitar" data-ctl="fondoCapa" data-val="">${viewMode === 'mobile' ? tr('insp.igualDesk') : tr('insp.quitar')}</button></div></div>` : '');
         } else if (f.kind === 'sombra') {
           h = htmlSombra(f, v, viewMode, ov, viewMode === 'mobile' ? ov : f.key in nodo.styles.base, nodo);
         } else if (KINDS_BOTONES.includes(f.kind)) {
@@ -365,14 +366,14 @@ export function initInspector(host) {
           // (sin override) y el valor explícito (ej. static) = "Normal en móvil". El valor mostrado es solo el override móvil.
           let opciones = f.options, vSel = v;
           if (viewMode === 'mobile' && f.vacioMovil) {
-            opciones = [['', 'Igual que escritorio'], [f.vacioMovil, f.vacioTexto ?? f.options[0][1]], ...f.options.slice(1)];
+            opciones = [['', tr('insp.igualDeskOpcion')], [f.vacioMovil, f.vacioTexto ?? f.options[0][1]], ...f.options.slice(1)];
             vSel = nodo.styles.mobile[f.key] ?? '';
           }
           const opts = opciones.map(([val, txt]) => `<option value="${esc(val)}" ${val === String(vSel) ? 'selected' : ''}>${txt}</option>`).join('');
           h = `<div class="campo${f.fila ? ' v' : ''}">${etiqueta(f.label, ov)}<select data-s="${f.key}">${opts}</select></div>`;
         } else if (f.kind === 'color') {
           const av = avisoCss(f.key, v);
-          h = `<div class="campo${f.fila ? ' v' : ''}">${etiqueta(f.label, ov)}<span class="color"><input type="color" data-pick="${f.key}" class="${aHex(v) ? '' : 'sin-valor'}" value="${aHex(v) ?? '#000000'}" aria-label="Elegir color: ${esc(f.label)}"><input data-s="${f.key}" class="${av ? 'invalido' : ''}" value="${esc(v)}" placeholder="#ffffff"></span></div><p class="aviso-css" data-aviso-css${av ? '' : ' hidden'}>${av ? avisoHtml(av) : ''}</p>`;
+          h = `<div class="campo${f.fila ? ' v' : ''}">${etiqueta(f.label, ov)}<span class="color"><input type="color" data-pick="${f.key}" class="${aHex(v) ? '' : 'sin-valor'}" value="${aHex(v) ?? '#000000'}" aria-label="${tr('insp.elegirColor')} ${esc(f.label)}"><input data-s="${f.key}" class="${av ? 'invalido' : ''}" value="${esc(v)}" placeholder="#ffffff"></span></div><p class="aviso-css" data-aviso-css${av ? '' : ' hidden'}>${av ? avisoHtml(av) : ''}</p>`;
         } else {
           h = htmlTexto(f.key, v, f.placeholder, f.label, ov, !!f.fila);
         }
@@ -385,7 +386,7 @@ export function initInspector(host) {
         const crudosDe = (c) => (c.f.crudos ?? [{ key: c.f.key, label: c.f.crudo ?? c.f.label, placeholder: c.f.placeholder }])
           .map((r) => ({ ...r, v: c.estilos[r.key] ?? '', ov: viewMode === 'mobile' && r.key in nodo.styles.mobile }));
         const abrir = abiertos.has(g.titulo) || conControl.some((c) => c.personalizado || crudosDe(c).some((r) => avisoCss(r.key, r.v)));
-        G += `<details class="avanzado" data-g="${esc(g.titulo)}"${abrir ? ' open' : ''}><summary>Escribir el valor a mano</summary>` +
+        G += `<details class="avanzado" data-g="${esc(g.titulo)}"${abrir ? ' open' : ''}><summary>${tr('insp.aMano')}</summary>` +
           conControl.map((c) => crudosDe(c).map((r) => htmlTexto(r.key, r.v, r.placeholder, r.label, r.ov)).join('')).join('') + '</details>';
       }
       if (!G) continue;
@@ -402,10 +403,10 @@ export function initInspector(host) {
       if (g.propio) { N.movimiento += htmlEstados(nodo, getState().verEstado); continue; } // los estados tienen su propia sección
       const datos = nodo.animation?.[g.id]; // undefined = grupo apagado
       let h = `<h3>${g.titulo}</h3>`;
-      if (g.id === 'scene' && datos) h += '<p class="modo">La sección se queda fija y sus hijos se apilan en el mismo lugar: se respetan Alineación y Justificar (y su fondo, borde y padding); Dirección, Separación y Columnas no se usan. Una vez creada, cada hijo directo tiene su "Paso de escena". Solo se ve en Vista previa y en el exportado. "Transición (% del tramo)" = cuánto dura el cambio entre pasos dentro de cada tramo (el resto del tramo el paso queda quieto). Un navbar pegado arriba se mide solo (o escribe "Espacio arriba").</p>';
+      if (g.id === 'scene' && datos) h += `<p class="modo">${tr('escena.nota')}</p>`;
       // Parallax: si un ancestro tiene scroll real (overflow auto/scroll) el efecto nativo no se mueve ahí (solo se avisa)
       if (g.id === 'parallax' && datos?.effect && ancestrosConScroll(page, nodo.id, viewMode).length) {
-        h += `<p class="modo aviso-parallax">${SVG_AVISO} Un contenedor de arriba tiene scroll propio (overflow auto/scroll): ahí el parallax no se moverá. Quita ese scroll o usa "Recortar contenido".</p>`;
+        h += `<p class="modo aviso-parallax">${SVG_AVISO} ${tr('insp.notaParallax')}</p>`;
       }
       for (const f of g.campos) {
         if (f.key !== g.principal && !datos) continue; // apagado: solo se ve el selector principal
@@ -426,14 +427,14 @@ export function initInspector(host) {
       N.movimiento += h;
     }
     N.movimiento += gruposMov; // Pegado al hacer scroll
-    if (nodo.type !== 'page') N.movimiento += '<h3>Copiar y pegar efectos</h3><div class="efectos-acciones">'
-      + '<button type="button" data-efectos="copiar" title="Ctrl+Alt+C">Copiar efectos</button>'
-      + '<button type="button" data-efectos="pegar" title="Ctrl+Alt+V">Pegar efectos</button>'
-      + '<button type="button" data-efectos="hermanos" title="Pega en este y en sus hermanos del mismo tipo">Pegar en hermanos del mismo tipo</button></div>';
+    if (nodo.type !== 'page') N.movimiento += `<h3>${tr('efectos.titulo')}</h3><div class="efectos-acciones">`
+      + `<button type="button" data-efectos="copiar" title="Ctrl+Alt+C">${tr('efectos.copiar')}</button>`
+      + `<button type="button" data-efectos="pegar" title="Ctrl+Alt+V">${tr('efectos.pegar')}</button>`
+      + `<button type="button" data-efectos="hermanos" title="${tr('efectos.hermanosAyuda')}">${tr('efectos.hermanos')}</button></div>`;
 
     // JSON del nodo, plegado (útil para depurar); fuera de los acordeones, al final
     const { children, ...resto } = nodo;
-    const jsonNodo = `<details class="json"><summary>JSON del nodo</summary><pre>${esc(JSON.stringify(resto, null, 2))}</pre></details>`;
+    const jsonNodo = `<details class="json"><summary>${tr('insp.json')}</summary><pre>${esc(JSON.stringify(resto, null, 2))}</pre></details>`;
 
     // ---- Montaje: texto/enlace fijos arriba, luego un <details> por acordeón (se recuerda cuáles dejó abiertos el usuario) ----
     const niveles = leerNiveles();
@@ -673,7 +674,7 @@ export function initInspector(host) {
     if (t.dataset.fondoFile !== undefined && t.files[0]) {
       const id = idDibujado, archivo = t.files[0];
       const msg = (txt, aviso = false) => { const p = host.querySelector('[data-fondo-msg]'); if (p) { if (aviso) p.innerHTML = avisoHtml(txt); else p.textContent = txt; p.hidden = !txt; } };
-      msg('Procesando imagen…');
+      msg(tr('insp.procesando'));
       reducirImagen(archivo).then((url) => { forzar = true; setStyle(id, 'fondoImagen', url); })
         .catch((err) => msg(err.message, true));
       return;

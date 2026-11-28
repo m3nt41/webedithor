@@ -1,5 +1,6 @@
 // BLOQUE TESTIMONIOS
 
+import { t as tr } from '../i18n/index.js';
 import { n, texto, imagen, placeholder, columna, seccion, tit, cuerpo, pequeno, etiqueta, fondoModo } from './util.js';
 import { MODOS, CITA, tarjetaTema, colorPh } from './tema.js';
 
@@ -17,9 +18,9 @@ const opinion = (m, cita, autor, rol) =>
 
 export default {
   id: 'testimonials',
-  label: 'Testimonios',
+  label: tr('bloque.testimonios'),
   variants: {
-    tarjetas: { label: 'Tarjetas', crear: () => {
+    tarjetas: { label: tr('bloque.tarjetas'), crear: () => {
       const m = MODOS.claro;
       return seccion('Testimonios', { gap: '56px', ...fondoModo(m) }, [
         cabecera('Lo que dicen de nosotros'),
@@ -31,7 +32,7 @@ export default {
       ]);
     } },
 
-    cita: { label: 'Cita grande', crear: () => {
+    cita: { label: tr('bloque.cita_grande'), crear: () => {
       const m = MODOS.claro2;
       return seccion('Testimonio', { gap: '28px', alignItems: 'center', textAlign: 'center', ...fondoModo(m) }, [
         texto('“Pasamos de tener una página olvidada a recibir clientes cada semana.”', { ...CITA.d, maxWidth: '24ch' }, CITA.m, 'Cita'),
@@ -39,7 +40,7 @@ export default {
       ]);
     } },
 
-    avatares: { label: 'Con foto', crear: () => {
+    avatares: { label: tr('bloque.con_foto'), crear: () => {
       const m = MODOS.claro;
       const persona = (i, cita, nombre) =>
         columna('Testimonio', { gap: '16px', alignItems: 'center', textAlign: 'center', padding: '24px' }, [
@@ -57,7 +58,7 @@ export default {
       ]);
     } },
 
-    oscuro: { label: 'Oscuro', crear: () => {
+    oscuro: { label: tr('bloque.oscuro'), crear: () => {
       const m = MODOS.oscuro;
       return seccion('Testimonios', { gap: '56px', ...fondoModo(m) }, [
         cabecera('Opiniones'),

@@ -3,6 +3,7 @@
 // solo pone la clase .in al hacer scroll (igual que "aparecer").
 // Datos en node.animation.text = { mode, effect, duration, delay, stagger, ease, distance }
 
+import { t as tr } from '../i18n/index.js';
 import { EFECTOS, camposComunes, campoDisparo, animEntrada, cargaInmediata, curva, duracion, DEF_CURVA } from './base.js';
 
 /** Cascada total máxima (s) entre la primera y la última pieza de un texto partido. Un título de hasta ~34 letras
@@ -25,14 +26,14 @@ export const usaContenedor = (t) => porPiezas(t) && VERTICALES.includes(t.effect
 
 export default {
   id: 'text',
-  titulo: 'Animación de texto',
+  titulo: tr('anim.animacion_de_texto'),
   principal: 'mode',
   defaults: { mode: 'words', effect: 'up', trigger: 'scroll', duration: 0.7, delay: 0, stagger: 0.06, ease: 'suave', ...DEF_CURVA, distance: 30, angle: -90 },
   campos: [
-    { key: 'mode', label: 'Partir por', kind: 'select', options: [['', 'Ninguna'], ['words', 'Palabras'], ['chars', 'Letras'], ['lines', 'Por línea (mis saltos)'], ['linesm', 'Por línea (medida)']] },
-    { key: 'effect', label: 'Efecto', kind: 'select', options: EFECTOS.slice(1) },
+    { key: 'mode', label: tr('anim.partir_por'), kind: 'select', options: [['', tr('anim.ninguna')], ['words', tr('anim.palabras')], ['chars', tr('anim.letras')], ['lines', tr('anim.por_linea_mis_saltos')], ['linesm', tr('anim.por_linea_medida')]] },
+    { key: 'effect', label: tr('anim.efecto'), kind: 'select', options: EFECTOS.slice(1) },
     campoDisparo,
-    { key: 'stagger', label: 'Cascada (s)', kind: 'num', step: 0.01, min: 0 },
+    { key: 'stagger', label: tr('anim.cascada_s'), kind: 'num', step: 0.01, min: 0 },
     ...camposComunes,
   ],
 

@@ -6,25 +6,26 @@
 // inicial hasta que recibe la clase .in; al terminar vuelve a su estilo normal.
 // Así no pelea con el hover (que usa transform/transition).
 
+import { t as tr } from '../i18n/index.js';
 import { haySombra, sombraDeclaraciones, filtroReposo } from '../core/sombra.js';
 
 export const EFECTOS = [
-  ['', 'Ninguna'],
-  ['fade', 'Aparecer (fade)'],
-  ['up', 'Subir'],
-  ['down', 'Bajar'],
-  ['left', 'Desde la izquierda'],
-  ['right', 'Desde la derecha'],
-  ['zoom', 'Zoom'],
-  ['blur', 'Desenfoque'],
-  ['flip', 'Voltear'],
-  ['rotate', 'Rotar'],
+  ['', tr('anim.ninguna')],
+  ['fade', tr('anim.aparecer_fade')],
+  ['up', tr('anim.subir')],
+  ['down', tr('anim.bajar')],
+  ['left', tr('anim.desde_la_izquierda')],
+  ['right', tr('anim.desde_la_derecha')],
+  ['zoom', tr('anim.zoom')],
+  ['blur', tr('anim.desenfoque')],
+  ['flip', tr('anim.voltear')],
+  ['rotate', tr('anim.rotar')],
 ];
 
 // Qué dispara la entrada: al entrar en pantalla (scroll) o apenas carga la página.
 export const DISPAROS = [
-  ['scroll', 'Al entrar en pantalla'],
-  ['load', 'Al cargar la página'],
+  ['scroll', tr('anim.al_entrar_en_pantalla')],
+  ['load', tr('anim.al_cargar_la_pagina')],
 ];
 export const cargaInmediata = (a) => a?.trigger === 'load';
 
@@ -33,12 +34,12 @@ export const animEntrada = (efecto, d, curva, retraso, a) =>
   `a-${efecto} ${d}s ${curva} ${retraso} backwards${cargaInmediata(a) ? '' : ' paused'}`;
 
 export const EASES = [
-  ['suave', 'Suave'],
-  ['spring', 'Rebote (fijo)'],
-  ['springreal', 'Spring (rigidez/amortiguación/masa)'],
-  ['bezier', 'Cubic-bezier (editable)'],
-  ['rapido', 'Rápido al inicio'],
-  ['lineal', 'Lineal'],
+  ['suave', tr('anim.suave')],
+  ['spring', tr('anim.rebote_fijo')],
+  ['springreal', tr('anim.spring_rigidez_amortiguacion_masa')],
+  ['bezier', tr('anim.cubic_bezier_editable')],
+  ['rapido', tr('anim.rapido_al_inicio')],
+  ['lineal', tr('anim.lineal')],
 ];
 
 // "spring" = curva con rebote hecha con linear() (CSS puro, sin JS).
@@ -107,13 +108,13 @@ export const duracion = (g, def) => (g?.ease === 'springreal' ? resorte(g).dur :
 
 /** Campos de la curva editable (bezier / spring real); van justo después del select "Curva". */
 export const camposCurva = [
-  { key: 'bx1', label: 'Bezier x1 (0–1)', kind: 'num', step: 0.05, min: 0, cuando: (g) => g.ease === 'bezier' },
-  { key: 'by1', label: 'Bezier y1', kind: 'num', step: 0.05, min: -3, cuando: (g) => g.ease === 'bezier' },
-  { key: 'bx2', label: 'Bezier x2 (0–1)', kind: 'num', step: 0.05, min: 0, cuando: (g) => g.ease === 'bezier' },
-  { key: 'by2', label: 'Bezier y2', kind: 'num', step: 0.05, min: -3, cuando: (g) => g.ease === 'bezier' },
-  { key: 'stiffness', label: 'Rigidez', kind: 'num', step: 10, min: 1, cuando: (g) => g.ease === 'springreal' },
-  { key: 'damping', label: 'Amortiguación', kind: 'num', step: 1, min: 0.1, cuando: (g) => g.ease === 'springreal' },
-  { key: 'mass', label: 'Masa', kind: 'num', step: 0.1, min: 0.1, cuando: (g) => g.ease === 'springreal' },
+  { key: 'bx1', label: tr('anim.bezier_x1_0_1'), kind: 'num', step: 0.05, min: 0, cuando: (g) => g.ease === 'bezier' },
+  { key: 'by1', label: tr('anim.bezier_y1'), kind: 'num', step: 0.05, min: -3, cuando: (g) => g.ease === 'bezier' },
+  { key: 'bx2', label: tr('anim.bezier_x2_0_1'), kind: 'num', step: 0.05, min: 0, cuando: (g) => g.ease === 'bezier' },
+  { key: 'by2', label: tr('anim.bezier_y2'), kind: 'num', step: 0.05, min: -3, cuando: (g) => g.ease === 'bezier' },
+  { key: 'stiffness', label: tr('anim.rigidez'), kind: 'num', step: 10, min: 1, cuando: (g) => g.ease === 'springreal' },
+  { key: 'damping', label: tr('anim.amortiguacion'), kind: 'num', step: 1, min: 0.1, cuando: (g) => g.ease === 'springreal' },
+  { key: 'mass', label: tr('anim.masa'), kind: 'num', step: 0.1, min: 0.1, cuando: (g) => g.ease === 'springreal' },
 ];
 /** Con spring real la duración sale de la física: el campo "Duración" se oculta. */
 export const sinSpring = (g) => g.ease !== 'springreal';
@@ -190,11 +191,11 @@ export const KEYFRAMES = `@keyframes a-fade{from{opacity:0}}
 
 /** Campos comunes (duración, retraso, curva, distancia). */
 export const camposComunes = [
-  { key: 'duration', label: 'Duración (s)', kind: 'num', step: 0.1, min: 0.1, cuando: sinSpring },
-  { key: 'delay', label: 'Retraso (s)', kind: 'num', step: 0.1, min: 0 },
-  { key: 'ease', label: 'Curva', kind: 'select', options: EASES },
+  { key: 'duration', label: tr('anim.duracion_s'), kind: 'num', step: 0.1, min: 0.1, cuando: sinSpring },
+  { key: 'delay', label: tr('anim.retraso_s'), kind: 'num', step: 0.1, min: 0 },
+  { key: 'ease', label: tr('anim.curva'), kind: 'select', options: EASES },
   ...camposCurva,
-  { key: 'distance', label: 'Distancia (px)', kind: 'num', step: 5, min: 0, cuando: (g, efecto) => ['up', 'down', 'left', 'right'].includes(efecto) },
-  { key: 'angle', label: 'Ángulo (°)', kind: 'num', step: 5, min: -720, cuando: (g, efecto) => efecto === 'rotate' },
+  { key: 'distance', label: tr('anim.distancia_px'), kind: 'num', step: 5, min: 0, cuando: (g, efecto) => ['up', 'down', 'left', 'right'].includes(efecto) },
+  { key: 'angle', label: tr('anim.angulo'), kind: 'num', step: 5, min: -720, cuando: (g, efecto) => efecto === 'rotate' },
 ];
-export const campoDisparo = { key: 'trigger', label: 'Se dispara', kind: 'select', options: DISPAROS };
+export const campoDisparo = { key: 'trigger', label: tr('anim.se_dispara'), kind: 'select', options: DISPAROS };

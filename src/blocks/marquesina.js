@@ -3,6 +3,7 @@
 // También exporta las tiras sueltas (contornoTira, cintaTira, logosTira) para el elemento "Marquesina" de la pestaña Elem.
 // excluidoIA: la guía y el plan de la IA no lo ofrecen por ahora (ver PROGRESS.md, Pendientes).
 
+import { t as tr } from '../i18n/index.js';
 import { n, texto, icono, fondoModo } from './util.js';
 import { MODOS, FUENTE, BORDE } from './tema.js';
 import { MQ_DEFECTO } from '../core/marquesina.js';
@@ -43,14 +44,14 @@ const seccion = (m, nombre, hijo, pad) => n('section', {
 
 export default {
   id: 'marquesina',
-  label: 'Marquesina',
+  label: tr('bloque.marquesina'),
   excluidoIA: true,
   variants: {
-    contornoClaro:  { label: 'Contorno · claro',  crear: () => seccion(MODOS.claro, 'Marquesina', contornoTira(MODOS.claro), 56) },
-    contornoOscuro: { label: 'Contorno · oscuro', crear: () => seccion(MODOS.oscuro, 'Marquesina', contornoTira(MODOS.oscuro), 56) },
-    cintaClaro:     { label: 'Cinta · clara',     crear: () => seccion(MODOS.claro2, 'Marquesina', cintaTira(MODOS.claro2), 0) },
-    cintaOscuro:    { label: 'Cinta · oscura',    crear: () => seccion(MODOS.oscuro, 'Marquesina', cintaTira(MODOS.oscuro), 0) },
-    logosClaro:     { label: 'Logos · claro',     crear: () => seccion(MODOS.claro, 'Marquesina', logosTira(MODOS.claro), 56) },
-    logosOscuro:    { label: 'Logos · oscuro',    crear: () => seccion(MODOS.oscuro2, 'Marquesina', logosTira(MODOS.oscuro2), 56) },
+    contornoClaro:  { label: tr('bloque.contorno_claro'),  crear: () => seccion(MODOS.claro, 'Marquesina', contornoTira(MODOS.claro), 56) },
+    contornoOscuro: { label: tr('bloque.contorno_oscuro'), crear: () => seccion(MODOS.oscuro, 'Marquesina', contornoTira(MODOS.oscuro), 56) },
+    cintaClaro:     { label: tr('bloque.cinta_clara'),     crear: () => seccion(MODOS.claro2, 'Marquesina', cintaTira(MODOS.claro2), 0) },
+    cintaOscuro:    { label: tr('bloque.cinta_oscura'),    crear: () => seccion(MODOS.oscuro, 'Marquesina', cintaTira(MODOS.oscuro), 0) },
+    logosClaro:     { label: tr('bloque.logos_claro'),     crear: () => seccion(MODOS.claro, 'Marquesina', logosTira(MODOS.claro), 56) },
+    logosOscuro:    { label: tr('bloque.logos_oscuro'),    crear: () => seccion(MODOS.oscuro2, 'Marquesina', logosTira(MODOS.oscuro2), 56) },
   },
 };

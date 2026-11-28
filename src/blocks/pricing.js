@@ -1,6 +1,7 @@
 // BLOQUE PRECIOS
 // El plan recomendado se destaca invirtiendo colores (oscuro sobre claro, claro sobre oscuro): sin sombras ni badges.
 
+import { t as tr } from '../i18n/index.js';
 import { n, texto, boton, columna, seccion, icono, tit, pequeno, etiqueta, fondoModo } from './util.js';
 import { MODOS, PRECIO, botonTema, tarjetaTema, padSeccion, ANCHO_TEXTO } from './tema.js';
 
@@ -25,9 +26,9 @@ const plan = (m, nombre, precio, ventajas, destacado = false) => {
 export default {
   ancla: 'precios',
   id: 'pricing',
-  label: 'Precios',
+  label: tr('bloque.precios'),
   variants: {
-    tres: { label: '3 planes', crear: () => {
+    tres: { label: tr('bloque.3_planes'), crear: () => {
       const m = MODOS.claro;
       return seccion('Precios', { gap: '56px', ...fondoModo(m) }, [
         cabecera('Planes y precios'),
@@ -39,7 +40,7 @@ export default {
       ]);
     } },
 
-    dos: { label: '2 planes', crear: () => {
+    dos: { label: tr('bloque.2_planes'), crear: () => {
       const m = MODOS.claro2;
       return seccion('Precios', { gap: '56px', ...fondoModo(m) }, [
         cabecera('Elige tu plan'),
@@ -50,7 +51,7 @@ export default {
       ]);
     } },
 
-    oscuro: { label: 'Oscuro', crear: () => {
+    oscuro: { label: tr('bloque.oscuro'), crear: () => {
       const m = MODOS.oscuro;
       return seccion('Precios', { gap: '56px', ...fondoModo(m) }, [
         cabecera('Precios'),
@@ -62,7 +63,7 @@ export default {
       ]);
     } },
 
-    lista: { label: 'Lista simple', crear: () => {
+    lista: { label: tr('bloque.lista_simple'), crear: () => {
       const m = MODOS.claro;
       const fila = (t, txt, precio) =>
         n('container', {

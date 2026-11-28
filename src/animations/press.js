@@ -1,15 +1,16 @@
 // ANIMACIÓN "AL PRESIONAR": mientras se mantiene el clic / el toque (:active). CSS puro.
 // Datos en node.animation.press = { effect, duration, ease }
 
+import { t } from '../i18n/index.js';
 import { EASES, transicion, camposCurva, sinSpring, DEF_CURVA, filtroConReposo } from './base.js';
 
 const EFECTOS = [
-  ['', 'Ninguno'],
-  ['shrink', 'Encoger'],
-  ['sink', 'Hundir'],
-  ['grow', 'Agrandar'],
-  ['dim', 'Oscurecer'],
-  ['bright', 'Aclarar'],
+  ['', t('anim.ninguno')],
+  ['shrink', t('anim.encoger')],
+  ['sink', t('anim.hundir')],
+  ['grow', t('anim.agrandar')],
+  ['dim', t('anim.oscurecer')],
+  ['bright', t('anim.aclarar')],
 ];
 
 const REGLAS = {
@@ -23,13 +24,13 @@ const REGLAS = {
 export default {
   id: 'press',
   estado: true, // se ve siempre en el preview (como hover)
-  titulo: 'Al presionar',
+  titulo: t('anim.al_presionar'),
   principal: 'effect',
   defaults: { effect: 'shrink', duration: 0.12, ease: 'suave' },
   campos: [
-    { key: 'effect', label: 'Efecto', kind: 'select', options: EFECTOS },
-    { key: 'duration', label: 'Duración (s)', kind: 'num', step: 0.05, min: 0.05, cuando: sinSpring },
-    { key: 'ease', label: 'Curva', kind: 'select', options: EASES },
+    { key: 'effect', label: t('anim.efecto'), kind: 'select', options: EFECTOS },
+    { key: 'duration', label: t('anim.duracion_s'), kind: 'num', step: 0.05, min: 0.05, cuando: sinSpring },
+    { key: 'ease', label: t('anim.curva'), kind: 'select', options: EASES },
     ...camposCurva,
   ],
 

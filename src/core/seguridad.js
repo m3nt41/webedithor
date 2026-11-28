@@ -5,6 +5,7 @@
 // propiedad; validar URLs con lista permitida de esquemas; atributos siempre entre comillas y escapados) y MDN
 // (atributo sandbox del iframe, ver ui/vistaprevia.js).
 //
+import { t } from '../i18n/index.js';
 import { sombraValida } from './sombra.js';
 
 // Regla de oro: lo que no pasa se DESCARTA (ese valor, no la página) y se CUENTA (quitar() → "se quitaron N valores").
@@ -16,7 +17,7 @@ export const leerQuitados = () => quitados;
 
 /** Mensaje corto para el usuario ('' si no se quitó nada). */
 export const avisoQuitados = (n) => (n > 0
-  ? `Se quitaron ${n} valor${n === 1 ? '' : 'es'} peligroso${n === 1 ? '' : 's'} del archivo (código o enlaces que no son seguros). El resto de la página se conservó.`
+  ? t(n === 1 ? 'seguridad.quitadoUno' : 'seguridad.quitados', { n })
   : '');
 
 // ---- 1) Propiedades CSS (camelCase) permitidas en styles.base / styles.mobile ----

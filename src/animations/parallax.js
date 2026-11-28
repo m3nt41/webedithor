@@ -14,6 +14,7 @@
 // padre), `animation` es una sola propiedad y el parallax nativo la pisaría; en ese caso se queda el sistema 2 siempre.
 // Sin `will-change`: las animaciones de scroll del navegador ya se componen solas y no lo necesitan.
 
+import { t as tr } from '../i18n/index.js';
 import { estadosEntrada } from './variants.js';
 
 /** ¿Este nodo puede usar el parallax nativo? (no si su `animation` ya la ocupa otra animación de entrada) */
@@ -56,12 +57,12 @@ const num = (v) => (Number.isFinite(v) ? v : 60);
 
 export default {
   id: 'parallax',
-  titulo: 'Parallax (scroll)',
+  titulo: tr('anim.parallax_scroll'),
   principal: 'effect',
   defaults: { effect: 'y', amount: 60 },
   campos: [
-    { key: 'effect', label: 'Dirección', kind: 'select', options: [['', 'Ninguno'], ['y', 'Vertical'], ['x', 'Horizontal']] },
-    { key: 'amount', label: 'Recorrido (px, negativo = más rápido)', kind: 'num', step: 5, min: -2000 },
+    { key: 'effect', label: tr('anim.direccion'), kind: 'select', options: [['', tr('anim.ninguno')], ['y', tr('anim.vertical')], ['x', tr('anim.horizontal')]] },
+    { key: 'amount', label: tr('anim.recorrido_px_negativo_mas_rapido'), kind: 'num', step: 5, min: -2000 },
   ],
 
   css(g, sel, node, { padre = null } = {}) {

@@ -1,6 +1,7 @@
 // BLOQUE SERVICIOS / BENEFICIOS
 // repeat(auto-fit, minmax()) hace que el grid se adapte solo a móvil.
 
+import { t as tr } from '../i18n/index.js';
 import { n, texto, columna, seccion, icono, tit, cuerpo, etiqueta, fondoModo } from './util.js';
 import { MODOS, FUENTE, tarjetaTema, padSeccion, ANCHO_TEXTO } from './tema.js';
 
@@ -24,9 +25,9 @@ const cabecera = (t, m, extra = {}) => tit(2, t, { textAlign: 'center', ...extra
 export default {
   ancla: 'servicios',
   id: 'services',
-  label: 'Servicios',
+  label: tr('bloque.servicios'),
   variants: {
-    tarjetas: { label: 'Tarjetas', crear: () => {
+    tarjetas: { label: tr('bloque.tarjetas'), crear: () => {
       const m = MODOS.claro;
       return seccion('Servicios', { gap: '56px', ...fondoModo(m) }, [
         cabecera('Lo que hacemos', m),
@@ -38,7 +39,7 @@ export default {
       ]);
     } },
 
-    iconos: { label: 'Con iconos', crear: () => {
+    iconos: { label: tr('bloque.con_iconos'), crear: () => {
       const m = MODOS.claro2;
       return seccion('Servicios', { gap: '56px', ...fondoModo(m) }, [
         cabecera('Por qué elegirnos', m),
@@ -50,7 +51,7 @@ export default {
       ]);
     } },
 
-    oscuro: { label: 'Oscuro', crear: () => {
+    oscuro: { label: tr('bloque.oscuro'), crear: () => {
       const m = MODOS.oscuro;
       return seccion('Servicios', { gap: '56px', ...fondoModo(m) }, [
         cabecera('Nuestros servicios', m),
@@ -62,7 +63,7 @@ export default {
       ]);
     } },
 
-    lista: { label: 'Lista numerada', crear: () => {
+    lista: { label: tr('bloque.lista_numerada'), crear: () => {
       const m = MODOS.claro;
       const fila = (num, t, txt) =>
         n('container', {

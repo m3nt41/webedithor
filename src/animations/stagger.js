@@ -5,6 +5,7 @@
 // y NO entran en la cascada.
 // Datos en node.animation.stagger = { effect, trigger, duration, delay, step, ease, distance, angle }
 
+import { t } from '../i18n/index.js';
 import { estadosEntrada } from './variants.js';
 import { EFECTOS, camposComunes, campoDisparo, animEntrada, cargaInmediata, curva, duracion, DEF_CURVA } from './base.js';
 
@@ -14,13 +15,13 @@ const tieneEntradaPropia = (n) => Boolean(n.animation?.appear?.effect || n.anima
 
 export default {
   id: 'stagger',
-  titulo: 'Cascada de hijos',
+  titulo: t('anim.cascada_de_hijos'),
   principal: 'effect',
   defaults: { effect: 'up', trigger: 'scroll', duration: 0.7, delay: 0, step: 0.12, ease: 'suave', ...DEF_CURVA, distance: 40, angle: -90 },
   campos: [
-    { key: 'effect', label: 'Efecto', kind: 'select', options: EFECTOS },
+    { key: 'effect', label: t('anim.efecto'), kind: 'select', options: EFECTOS },
     campoDisparo,
-    { key: 'step', label: 'Cascada entre hijos (s)', kind: 'num', step: 0.01, min: 0 },
+    { key: 'step', label: t('anim.cascada_entre_hijos_s'), kind: 'num', step: 0.01, min: 0 },
     ...camposComunes,
   ],
 

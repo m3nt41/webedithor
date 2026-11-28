@@ -10,7 +10,7 @@ import { avisoQuitados } from '../core/seguridad.js';
 import { PAGINA_DEMO } from '../core/demo.js';
 
 import { tiradoresEncendidos, alternarTiradores, alCambiarTiradores } from './tiradores-pref.js';
-import { SVG_TIRADORES, SVG_ESCRITORIO, SVG_MOVIL, SVG_OJO, SVG_DESHACER, SVG_REHACER } from './iconos.js'; // iconos compartidos con la Vista previa
+import { SVG_TIRADORES, SVG_OJO, SVG_DESHACER, SVG_REHACER } from './iconos.js'; // iconos compartidos con la Vista previa
 
 export function initToolbar(host) {
   host.innerHTML = `
@@ -18,8 +18,8 @@ export function initToolbar(host) {
     <button id="btn-undo" class="ico-btn" title="${tr('barra.deshacerTitulo')}" aria-label="${tr('barra.deshacer')}">${SVG_DESHACER}</button>
     <button id="btn-redo" class="ico-btn" title="${tr('barra.rehacerTitulo')}" aria-label="${tr('barra.rehacer')}">${SVG_REHACER}</button>
     <span class="grupo" role="group" aria-label="${tr('barra.modoEdicion')}">
-      <button id="vista-desktop" class="ico-btn" title="${tr('comun.escritorio')}" aria-label="${tr('comun.escritorio')}" aria-pressed="true">${SVG_ESCRITORIO}</button>
-      <button id="vista-mobile" class="ico-btn" title="${tr('comun.movil')}" aria-label="${tr('comun.movil')}" aria-pressed="false">${SVG_MOVIL}</button>
+      <button id="vista-desktop" class="vista" title="${tr('comun.escritorio')}" aria-label="${tr('comun.escritorio')}" aria-pressed="true">${tr('comun.escritorio')}</button>
+      <button id="vista-mobile" class="vista" title="${tr('comun.movil')}" aria-label="${tr('comun.movil')}" aria-pressed="false">${tr('comun.movil')}</button>
     </span>
     <span class="divisor" aria-hidden="true"></span>
     <button id="btn-vista-previa" class="ico-btn" title="${tr('barra.vistaPreviaTitulo')}" aria-label="${tr('comun.vistaPrevia')}">${SVG_OJO}</button>

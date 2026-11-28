@@ -26,7 +26,7 @@ try {
   // 1. Empieza en Capas, con 3 pestañas y solo su panel visible
   v((await $$('[role=tab]')).length === 3, '3 pestañas');
   v(await sel('#tab-capas') === 'true' && await visible('#arbol') && !(await visible('#botones-elementos')) && !(await visible('#botones-bloques')), 'arranca en Capas');
-  v(await ancho('#sidebar') === 210, 'panel de 210px: ' + await ancho('#sidebar'));
+  v(await ancho('#sidebar') === 232, 'panel de 232px: ' + await ancho('#sidebar'));
   v(await visible('#btn-pagina'), 'icono de ajustes visible junto a las pestañas');
   const orden = await d.executeScript('return [...document.querySelectorAll("[role=tab]")].map(t=>t.id).join()');
   v(orden === 'tab-bloques,tab-capas,tab-elementos', 'orden de pestañas: Bloques, Capas, Elem.: ' + orden);
@@ -102,7 +102,7 @@ try {
   v(await d.executeScript('const s=document.querySelector("#sidebar").getBoundingClientRect(),p=document.querySelector("#preview").getBoundingClientRect(),i=document.querySelector("#inspector").getBoundingClientRect();return s.right<=p.left+1&&p.right<=i.left+1&&document.documentElement.scrollWidth<=innerWidth'), 'vista móvil: las 3 columnas no se pisan y no hay scroll horizontal');
   await $('#btn-vista-previa').click(); await esperar(700);
   await d.actions().sendKeys(Key.ESCAPE).perform(); await esperar(300);
-  v(await ancho('#sidebar') === 210, 'tras abrir/cerrar Vista previa el panel sigue en 210px');
+  v(await ancho('#sidebar') === 232, 'tras abrir/cerrar Vista previa el panel sigue en 232px');
 
   v(!(await d.executeScript('return localStorage.getItem("editor-landings:pagina")||""')).includes('pestana'), 'la pestaña activa no se guarda con la landing');
   const errs = await d.executeScript('return __err');

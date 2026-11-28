@@ -10,21 +10,19 @@ import { BLOCKS, createBlock } from '../blocks/index.js';
 import { ELEMENTS } from '../blocks/elements.js';
 import { iconoSvg } from '../core/icono.js';
 
-const ICONOS = { section: '▭', container: '▢', heading: 'H', text: '¶', button: '⬭', image: '▣' };
+// Etiqueta corta del tipo que se ve junto al nombre en Capas (los títulos muestran su nivel: h1, h2…)
+const ETIQUETAS = { section: 'sec', container: 'div', text: 'p', button: 'btn', image: 'img', icon: 'svg' };
 
 // Estado de la vista (solo mientras la página esté abierta; no va a localStorage con la landing)
 let pestanaActiva = 'capas';
 
 const svg = (d) => `<svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
-const SVG_CAPAS = svg('<path d="M8 2 14 5.2 8 8.4 2 5.2Z"/><path d="m2 8 6 3.2L14 8"/><path d="m2 10.8 6 3.2 6-3.2"/>');
-const SVG_ELEM = svg('<rect x="2" y="2" width="5" height="5" rx="1"/><rect x="9" y="2" width="5" height="5" rx="1"/><rect x="2" y="9" width="5" height="5" rx="1"/><path d="M11.5 9.5v4M9.5 11.5h4"/>');
-const SVG_BLOQ = svg('<rect x="2" y="2.5" width="12" height="4" rx="1"/><rect x="2" y="9.5" width="12" height="4" rx="1"/>');
 // Hoja con la esquina doblada y tres líneas de texto = "ajustes de esta página"
 const SVG_AJUSTES = svg('<path d="M3.5 1.8h6l3 3v9.4h-9Z"/><path d="M9.5 1.8v3h3"/><path d="M5.5 8h5M5.5 10.2h5M5.5 12.2h3"/>');
 const PESTANAS = [
-  { id: 'bloques', texto: tr('lateral.bloques'), icono: SVG_BLOQ },
-  { id: 'capas', texto: tr('lateral.capas'), icono: SVG_CAPAS },
-  { id: 'elementos', texto: tr('lateral.elementos'), icono: SVG_ELEM },
+  { id: 'bloques', texto: tr('lateral.bloques') },
+  { id: 'capas', texto: tr('lateral.capas') },
+  { id: 'elementos', texto: tr('lateral.elementos') },
 ];
 
 export function initSidebar(host) {
@@ -69,7 +67,7 @@ export function initSidebar(host) {
     b.id = `tab-${p.id}`;
     b.setAttribute('role', 'tab');
     b.setAttribute('aria-controls', `panel-${p.id}`);
-    b.innerHTML = `${p.icono}<span>${p.texto}</span>`;
+    b.textContent = p.texto;
     b.addEventListener('click', () => activar(p.id));
     b.addEventListener('keydown', (e) => {
       const i = PESTANAS.findIndex((x) => x.id === pestanaActiva);
@@ -219,12 +217,12 @@ export function initSidebar(host) {
       dibujar();
     });
 
-    const icono = document.createElement('i');
-    if (nodo.type === 'icon') icono.innerHTML = iconoSvg(nodo.content.name, 14); // en capas se ve el icono elegido
-    else icono.textContent = ICONOS[nodo.type] ?? '·';
     const nombre = document.createElement('span');
     nombre.textContent = nodo.name;
     nombre.title = nodo.name;
+    const etiqueta = document.createElement('em');
+    etiqueta.className = 'etq';
+    etiqueta.textContent = nodo.type === 'heading' ? `h${nodo.content.level || 2}` : ETIQUETAS[nodo.type] ?? nodo.type;
 
     const dup = document.createElement('button');
     dup.textContent = '⧉';
@@ -237,7 +235,18 @@ export function initSidebar(host) {
     borrar.className = 'borrar';
     borrar.addEventListener('click', (e) => { e.stopPropagation(); removeNode(nodo.id); });
 
-    li.append(plegar, icono, nombre, dup, borrar);
+    li.append(plegar, nombre, etiqueta, dup, borrar);
+    if (nodo.type === 'icon') { // en capas se ve el icono elegido
+      const icono = document.createElement('i');
+      icono.innerHTML = iconoSvg(nodo.content.name, 14);
+      nombre.before(icono);
+    }
+    for (let n = 0; n < nivel; n++) { // una línea por cada nivel de profundidad
+      const guia = document.createElement('b');
+      guia.className = 'guia';
+      guia.style.left = `${13 + n * 14}px`;
+      li.appendChild(guia);
+    }
     li.addEventListener('click', () => select(nodo.id));
 
     // ---- Arrastrar y soltar ----

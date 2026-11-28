@@ -14,7 +14,7 @@
 import { t } from '../i18n/index.js';
 import { getState } from '../core/store.js';
 import { exportHTML } from '../export/exporter.js';
-import { SVG_ESCRITORIO, SVG_MOVIL, SVG_REINICIAR, SVG_OJO } from './iconos.js';
+import { SVG_REINICIAR, SVG_OJO } from './iconos.js';
 
 let capa = null;
 let alMensaje = null;
@@ -40,8 +40,8 @@ export function abrirVistaPrevia() {
     <div class="vp-barra" role="toolbar" aria-label="${t('comun.vistaPrevia')}">
       <span class="vp-izq">
         <span class="grupo" role="group" aria-label="${t('previa.modo')}">
-          <button type="button" id="vp-desktop" class="ico-btn activo" title="${t('comun.escritorio')}" aria-label="${t('comun.escritorio')}" aria-pressed="true">${SVG_ESCRITORIO}</button>
-          <button type="button" id="vp-mobile" class="ico-btn" title="${t('comun.movil')}" aria-label="${t('comun.movil')}" aria-pressed="false">${SVG_MOVIL}</button>
+          <button type="button" id="vp-desktop" class="vista activo" title="${t('comun.escritorio')}" aria-label="${t('comun.escritorio')}" aria-pressed="true">${t('comun.escritorio')}</button>
+          <button type="button" id="vp-mobile" class="vista" title="${t('comun.movil')}" aria-label="${t('comun.movil')}" aria-pressed="false">${t('comun.movil')}</button>
         </span>
         <span class="divisor" aria-hidden="true"></span>
       </span>

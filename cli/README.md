@@ -2,7 +2,7 @@
 
 A small companion for the [WebEdiThor](../README.md) visual editor. It **complements** the editor, it does not replace it: you design in the editor and use the CLI to check, export and prepare the result.
 
-> **Status: early (v0.3.0), published on npm as [`webedithor`](https://www.npmjs.com/package/webedithor).** Expect rough edges; see [Pending](#pending).
+> **Status: early (v0.4.0), published on npm as [`webedithor`](https://www.npmjs.com/package/webedithor).** Expect rough edges; see [Pending](#pending).
 
 No runtime dependencies: just Node.js 20.19+. The package bundles the editor's own exporter, validator and blocks (and the compiled editor, in English and Spanish, for `dev`), so what the CLI exports is identical to the editor's **Export HTML** button.
 

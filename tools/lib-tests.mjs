@@ -71,6 +71,7 @@ export const SUITE = [ // [nombre, comando, timeout en segundos]
   ['sidebar', 'node tests/sidebar-pestanas.mjs', 180],
   ['iconos', 'node tests/iconos.mjs', 180],
   ['tema', 'node tests/tema.mjs', 60],
+  ['i18n', 'node tests/i18n.mjs', 60],
   ['plan-ia', 'node tests/plan-ia.mjs', 60],
   ['plan-ia-ui', 'node tests/plan-ia-ui.mjs', 180],
   ['menu-movil', 'node tests/menu-movil.mjs', 240],

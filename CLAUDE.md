@@ -34,6 +34,7 @@ src/
   core/                tree.js (nodos, canContain, normalizePage), store.js (estado, mutate, undo/redo, autoguardado, acciones),
                        icono.js, marquesina.js, menumovil.js (generadores compartidos), plan.js + guiaia.js + guiaia-ejemplos.js (IA camino 1)
   blocks/              un archivo por bloque + index.js (registro), tema.js (estilo único), util.js (atajos), elements.js (elementos sueltos), iconos-data.js
+  i18n/                traducción de la interfaz: index.js (t(), idioma) + es.js (base y respaldo)
   render/renderer.js   árbol -> DOM del preview
   ui/                  sidebar, preview, inspector, fields, controles (lógica pura de los controles visuales), toolbar, vistaprevia, plania, imagen, iconos
   animations/          un módulo por animación (appear, hover, press, focus, text, stagger, variants, parallax, scrolllink, scene, scenestep),

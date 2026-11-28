@@ -25,6 +25,9 @@ export const MAPA = {
   // ---- Sombra en reposo ----
   'src/core/sombra.js': ['sombra-reposo', 'xss-import', 'hover'],
   'src/core/seo.js': ['seo-pagina', 'xss-import', 'export-igual-vista'],
+
+  // ---- Traducción de la interfaz ----
+  'src/i18n/': ['i18n'],
   'tools/png.mjs': ['sombra-reposo'],
 
   // ---- Menú hamburguesa del navbar ----

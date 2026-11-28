@@ -30,7 +30,7 @@
   </tr>
 </table>
 
-> 🚀 **Try it now, nothing to install: [webedithor.m3nt41.com](https://webedithor.m3nt41.com).** Your work stays in your browser, so use **Guardar JSON** to keep a copy. On your first visit it opens with a sample animated landing: click anything to edit it, and press the eye button (preview) to see the scroll animations. **Ver demo** brings it back at any time.
+> 🚀 **Try it now, nothing to install: [webedithor.m3nt41.com](https://webedithor.m3nt41.com).** Your work stays in your browser, so use **Save JSON** to keep a copy. On your first visit it opens with a sample animated landing: click anything to edit it, and press the eye button (preview) to see the scroll animations. **Show demo** brings it back at any time.
 
 ---
 
@@ -80,13 +80,13 @@ npm run build
 
 Then open `dist/editor.html` (on Windows, `abrir-editor.bat` does it for you).
 
-> 💾 **Where is my work saved?** In your browser's `localStorage`, plus **Guardar JSON / Abrir JSON** for files. `localStorage` is per address, so the dev server (`http://localhost:5173`) and the standalone `file://` editor don't share pages: move work between them with a JSON file.
+> 💾 **Where is my work saved?** In your browser's `localStorage`, plus **Save JSON / Open JSON** for files. `localStorage` is per address, so the dev server (`http://localhost:5173`) and the standalone `file://` editor don't share pages: move work between them with a JSON file.
 
 **Exporting:** use the export button in the toolbar to download your page as a single `.html`.
 
 ## 🧰 The CLI (early)
 
-A small companion that **complements** the editor: scaffold a project, audit the result, export, and prepare it for publishing. It has no dependencies and reuses the editor's own exporter, so its output is identical to the **Exportar HTML** button.
+A small companion that **complements** the editor: scaffold a project, audit the result, export, and prepare it for publishing. It has no dependencies and reuses the editor's own exporter, so its output is identical to the **Export HTML** button.
 
 ```bash
 npx webedithor create my-site --template landing
@@ -144,7 +144,7 @@ WebEdiThor started as a personal tool for building heavily animated landing page
 
 Things you should know before you try it:
 
-- 🌐 **The editor interface is currently in Spanish** (`Guardar JSON`, `Vista previa`...). Translating it is on the [roadmap](ROADMAP.md); the exported pages contain whatever language *you* write.
+- 🌐 **The editor interface is available in English and Spanish** (it follows your browser language; switch it in the top bar). Template sample texts, the demo landing page and element names are in Spanish.
 - 🖼️ Uploaded images are embedded as data URLs, which can make the `.html` and the JSON heavy. Prefer image URLs for big assets.
 - 🔤 Only system fonts are used, so exports never depend on the internet.
 - 🧪 Requires a modern browser (2023+): individual `translate` / `scale` and `linear()` easing. Developed and tested mostly in **Firefox**; Chrome works too.

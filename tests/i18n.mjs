@@ -2,6 +2,10 @@
 // datos entre llaves y que fuera del navegador siempre sea español. Ejecutar: node tests/i18n.mjs  (Node, sin navegador)
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { createPage } from '../src/core/tree.js';
+import { createBlock } from '../src/blocks/index.js';
+import { exportHTML } from '../src/export/exporter.js';
 import { fileURLToPath } from 'node:url';
 import { BASE, IDIOMAS, elegirIdioma, crearT, idioma, t as traducir, guardarIdioma } from '../src/i18n/index.js';
 
@@ -80,6 +84,30 @@ t('toda clave escrita en el código existe en español', () => {
     }
   }
   assert.deepEqual(faltan, []);
+});
+
+t('la guía de IA en inglés sale en inglés y respeta el mismo tope de longitud (17 900)', () => {
+  // proceso aparte: el idioma se decide una sola vez al cargar, así que se finge un navegador en inglés
+  const codigo = `globalThis.window = { localStorage: { getItem: () => 'en' }, navigator: { language: 'en' } };
+    const { guiaIA } = await import('./src/core/guiaia.js'); process.stdout.write(guiaIA());`;
+  const r = spawnSync(process.execPath, ['--input-type=module', '-e', codigo], { cwd: fileURLToPath(new URL('..', import.meta.url)), encoding: 'utf8' });
+  assert.equal(r.status, 0, r.stderr);
+  assert.ok(r.stdout.startsWith('# Guide to building'), r.stdout.slice(0, 80));
+  assert.ok(r.stdout.length <= 17900, `mide ${r.stdout.length}`);
+  assert.ok(!/## Reglas|botón ≤|· fondo /.test(r.stdout), 'quedan restos en español');
+});
+
+t('el menú hamburguesa exportado habla el idioma de la página', () => {
+  const pagina = createPage();
+  pagina.children.push(createBlock('navbar'));
+  const normal = exportHTML(pagina);
+  assert.ok(normal.includes('aria-label="Abrir menú"') && normal.includes("'Cerrar menú':'Abrir menú'"), 'sin idioma: español, como siempre');
+  for (const lang of ['es', 'es-CR']) { pagina.content.lang = lang; assert.ok(exportHTML(pagina).includes('Cerrar menú'), lang); }
+  for (const lang of ['en', 'en-US', 'fr']) {
+    pagina.content.lang = lang;
+    const html = exportHTML(pagina);
+    assert.ok(html.includes('aria-label="Open menu"') && html.includes("'Close menu':'Open menu'") && !html.includes('menú\''), lang);
+  }
 });
 
 console.log(`\n${ok} comprobaciones OK`);

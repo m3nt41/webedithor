@@ -25,7 +25,7 @@ export default {
   help: `Options:
   -o, --out <file>   Output file (default: <page name>.html in the current folder)
 
-The output is byte-for-byte what the editor's "Exportar HTML" button produces.
+The output is byte-for-byte what the editor's "Export HTML" button produces.
 Only static HTML is supported: there is no React/framework export by design.`,
   run(values, [archivo]) {
     if (!archivo) throw new CliError('missing <page.json>. Usage: webedithor export <page.json> [-o out.html]', 2);

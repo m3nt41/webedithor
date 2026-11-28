@@ -163,7 +163,7 @@ export function checkSeo(html, page) {
 
   // Meta description: el texto que muestran los buscadores. Se mide ya sin escapes HTML (&quot; etc. cuentan como 1 carácter).
   const desc = /<meta[^>]+name=["']description["'][^>]*content=["']([^"']*)["']/i.exec(html)?.[1];
-  if (desc === undefined) add('warn', 'meta-description', 'No meta description. Add one in the editor: page settings (select the page) -> "Buscadores y redes" -> Descripción');
+  if (desc === undefined) add('warn', 'meta-description', 'No meta description. Add one in the editor: page settings (select the page) -> "Search and social" -> Description');
   else {
     const largo = desc.replace(/&(quot|amp|lt|gt|#39);/g, '_').length;
     if (largo < LIMITES.descripcionMin) add('warn', 'description-short', `The meta description is only ${largo} characters; around ${LIMITES.descripcionMin}-${LIMITES.descripcionMax} works best`);

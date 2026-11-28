@@ -9,7 +9,7 @@ import { anchorValido, walk, aspectoValido, CLAVES_PROPIAS, fondoDeclaraciones, 
 import { tagFor, TIPOS_TEXTO } from '../render/renderer.js';
 import { iconoSvg, estilosIcono } from '../core/icono.js';
 import { propiedadPermitida, valorCss, valorSombraOk, hrefSeguro, srcSeguro } from '../core/seguridad.js';
-import { usaMenuMovil, paginaUsaMenuMovil, cssMenuMovil, varsMenu, necesitaAncla, SCRIPT_MENU } from '../core/menumovil.js';
+import { usaMenuMovil, paginaUsaMenuMovil, cssMenuMovil, varsMenu, necesitaAncla, scriptMenu, textosMenu } from '../core/menumovil.js';
 import { usaMarquesina, cssMarquesina, htmlMarquesina, keyframesMarquesina } from '../core/marquesina.js';
 import { langDePagina, metaSeoHtml } from '../core/seo.js';
 import { declaracionesSombra } from '../animations/base.js';
@@ -46,6 +46,7 @@ export function exportHTML(page) {
   const cssMqReducido = []; // reglas de la marquesina para prefers-reduced-motion
   const kfMarquesina = new Set(); // @keyframes de marquesina usados (uno por número de copias)
   let contador = 0;
+  const menu = textosMenu(page.content.lang);
 
   function nodoAHtml(node, nivel, padre = null) {
     const clase = `n${contador++}`;
@@ -113,7 +114,7 @@ export function exportHTML(page) {
       const s2 = '  '.repeat(nivel + 1);
       const resto = partes.splice(1);
       partes.push(
-        `${s2}<input type="checkbox" class="mm-chk" id="${idChk}" aria-label="Abrir menú" aria-expanded="false">`,
+        `${s2}<input type="checkbox" class="mm-chk" id="${idChk}" aria-label="${menu.abrir}" aria-expanded="false">`,
         `${s2}<label class="mm-btn" for="${idChk}" aria-hidden="true"></label>`,
         `${s2}<div class="mm-pn">`,
         ...resto,
@@ -172,7 +173,7 @@ export function exportHTML(page) {
   const noscript = usaRv ? '<noscript><style>[data-rv],[data-rv] .w,[data-rv] .tw,[data-rv]>*{animation:none!important}</style></noscript>\n' : '';
   // El script de medición solo viaja si algún texto usa "Por línea (medida)"
   // (y el de clic solo si algún estado "al hacer clic" lo necesita)
-  const scripts = [paginaUsaMedida(page) ? SCRIPT_LINEAS : '', usaRv ? SCRIPT_SCROLL : '', paginaUsaClic(page) ? SCRIPT_CLIC : '', paginaUsaScrollLink(page) ? SCRIPT_SCROLLMOTOR : '', paginaUsaScrollSuave(page) ? SCRIPT_SCROLLSUAVE : '', paginaUsaMenuMovil(page) ? SCRIPT_MENU : ''].filter(Boolean).join('\n');
+  const scripts = [paginaUsaMedida(page) ? SCRIPT_LINEAS : '', usaRv ? SCRIPT_SCROLL : '', paginaUsaClic(page) ? SCRIPT_CLIC : '', paginaUsaScrollLink(page) ? SCRIPT_SCROLLMOTOR : '', paginaUsaScrollSuave(page) ? SCRIPT_SCROLLSUAVE : '', paginaUsaMenuMovil(page) ? scriptMenu(menu) : ''].filter(Boolean).join('\n');
   const script = scripts ? `<script>\n${scripts}\n</script>\n` : '';
 
   // Último filtro del CSS: un "<" jamás puede estar en el CSS de la página (no hay ninguno legítimo fuera de comillas; urlCss ya lo

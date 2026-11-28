@@ -38,13 +38,13 @@ A small command-line tool that **complements** the visual editor instead of repl
 
 What is still open:
 
-- **Save into the project folder.** The editor keeps your page in the browser (`localStorage` + JSON files) and cannot write to disk, so today `dev` + `create` rely on **Abrir JSON / Guardar JSON**. Fixing it means either a small local save endpoint or the File System Access API (Chromium only). Opinions welcome.
+- **Save into the project folder.** The editor keeps your page in the browser (`localStorage` + JSON files) and cannot write to disk, so today `dev` + `create` rely on **Open JSON / Save JSON**. Fixing it means either a small local save endpoint or the File System Access API (Chromium only). Opinions welcome.
 - **Real templates** (SaaS, portfolio...). Today `create` offers `minimal` and `landing`, built from the editor's blocks with example text.
 - **More audit rules** and **more `publish` targets** (Vercel, Netlify, Cloudflare Pages), as explicit opt-ins. `publish` only prepares a folder today and never uploads.
 
 ## 🌍 Polish and reach
 
-- Translate the editor interface (it is Spanish-only today) and add English.
+- More interface languages (English and Spanish are in; a language is one file in `src/i18n/`).
 - Public demo / playground.
 - Logo, README GIFs and screenshots.
 - Optional AI inside the editor: bring your own API key.

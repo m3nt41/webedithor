@@ -136,9 +136,14 @@ export function cssMenuMovil(sel, vars, { important = false, editor = false, anc
 
 /** Script mínimo (solo viaja si la página usa el menú): Enter abre/cierra; un enlace del panel, Esc o un clic fuera del navbar lo cierran;
  *  actualiza aria-expanded y el alto del navbar (--mm-h, para el max-height del panel). Sin JS el checkbox sigue abriendo y cerrando (Espacio / clic). */
-export const SCRIPT_MENU = `(function(){
+/** Textos del menú EXPORTADO: siguen el idioma de la PÁGINA (content.lang), no el del editor. Sin idioma o 'es…' = español; otro = inglés. */
+export function textosMenu(lang) {
+  return !lang || /^es(-|$)/i.test(lang) ? { abrir: 'Abrir menú', cerrar: 'Cerrar menú' } : { abrir: 'Open menu', cerrar: 'Close menu' };
+}
+
+export const scriptMenu = ({ abrir, cerrar }) => `(function(){
 var ks=document.querySelectorAll('.mm-chk');
-function s(k){k.setAttribute('aria-expanded',k.checked?'true':'false');k.setAttribute('aria-label',k.checked?'Cerrar menú':'Abrir menú');if(k.checked)k.parentNode.style.setProperty('--mm-h',k.parentNode.offsetHeight+'px')}
+function s(k){k.setAttribute('aria-expanded',k.checked?'true':'false');k.setAttribute('aria-label',k.checked?'${cerrar}':'${abrir}');if(k.checked)k.parentNode.style.setProperty('--mm-h',k.parentNode.offsetHeight+'px')}
 ks.forEach(function(k){
 var p=k.parentNode;
 k.addEventListener('change',function(){s(k)});

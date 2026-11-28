@@ -11,7 +11,7 @@ A WebEdiThor project. The page lives in \`page.json\`.
 
 \`\`\`bash
 webedithor dev                          # open the visual editor
-                                        # then "Abrir JSON" -> page.json, edit, "Guardar JSON" over page.json
+                                        # then "Open JSON" -> page.json, edit, "Save JSON" over page.json
 webedithor audit page.json              # accessibility, links, heavy assets, basic SEO
 webedithor export page.json -o dist/index.html
 webedithor publish page.json --to static   # prepares ./site, ready to upload to any static host

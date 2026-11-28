@@ -34,7 +34,7 @@ src/
   core/                tree.js (nodos, canContain, normalizePage), store.js (estado, mutate, undo/redo, autoguardado, acciones),
                        icono.js, marquesina.js, menumovil.js (generadores compartidos), plan.js + guiaia.js + guiaia-ejemplos.js (IA camino 1)
   blocks/              un archivo por bloque + index.js (registro), tema.js (estilo único), util.js (atajos), elements.js (elementos sueltos), iconos-data.js
-  i18n/                traducción de la interfaz: index.js (t(), idioma) + es.js (base y respaldo)
+  i18n/                traducción de la interfaz: index.js (t(), idioma) + es.js (base y respaldo) + en.js
   render/renderer.js   árbol -> DOM del preview
   ui/                  sidebar, preview, inspector, fields, controles (lógica pura de los controles visuales), toolbar, vistaprevia, plania, imagen, iconos
   animations/          un módulo por animación (appear, hover, press, focus, text, stagger, variants, parallax, scrolllink, scene, scenestep),
@@ -50,6 +50,7 @@ dist/editor.html       editor compilado en un solo archivo (doble clic)
 ## Reglas de trabajo
 - Entregar archivos completos, no fragmentos. Explicar qué cambia y dónde. Código simple y comentado; el usuario lo modificará a mano.
 - El usuario es m3nt41: español informal, Windows + VS Code, prefiere CSS puro antes que JS, guía paso a paso en terminal.
+- **Textos de la interfaz:** siempre con `t('clave')`, y la clave en `src/i18n/es.js` Y `en.js` (lo vigila `tests/i18n.mjs`).
 - **Inspector: leer nunca escribe.** Abrir un nodo con un valor raro lo marca "Otro" y no lo toca; solo se escribe cuando m3nt41 pulsa o teclea algo.
 - **Guía de IA**: se genera sola del código. Al cambiar bloques o variantes, correr `npm run gen:guia-ia` (regenera `docs/guia-ia.md` y `docs/plan-ejemplo.json`). La guía tiene tope de longitud (≤17 900 caracteres, lo vigila `tests/plan-ia.mjs`). Un bloque con `excluidoIA: true` (hoy la marquesina) no entra en la guía y el plan lo rechaza.
 - **Después de los cambios, `npm run build`** para que `dist/editor.html` (el de doble clic) quede al día.

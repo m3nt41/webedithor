@@ -39,7 +39,7 @@ export default {
       --open       Open the editor in your default browser
 
 Serves the compiled editor (dist/editor.html, built with "npm run build" in the repository).
-The editor stores your page in the browser; use "Guardar JSON" / "Abrir JSON" to move it to and from your project folder.`,
+The editor stores your page in the browser; use "Save JSON" / "Open JSON" to move it to and from your project folder.`,
   run(values) {
     const puerto = Number(values.port ?? 5180);
     if (!Number.isInteger(puerto) || puerto < 1 || puerto > 65535) throw new CliError(`invalid port "${values.port}"`, 2);
@@ -61,7 +61,7 @@ The editor stores your page in the browser; use "Guardar JSON" / "Abrir JSON" to
       servidor.listen(puerto, '127.0.0.1', () => {
         const url = `http://127.0.0.1:${puerto}`;
         console.log(`Editor running at ${url}  (Ctrl+C to stop)`);
-        console.log('Reminder: your page lives in the browser. Use "Guardar JSON" to save it into your project folder.');
+        console.log('Reminder: your page lives in the browser. Use "Save JSON" to save it into your project folder.');
         if (values.open) abrirNavegador(url);
       });
       process.once('SIGINT', () => { servidor.close(); fin(0); });

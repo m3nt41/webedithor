@@ -6,7 +6,7 @@ Issues and PRs can be written in **English or Spanish**.
 
 ## Ways to help
 
-- 🐞 **Report a bug**: use the bug template. Say which browser you saw it in (Firefox and Chrome behave differently here) and, if you can, attach the page JSON (**Guardar JSON**).
+- 🐞 **Report a bug**: use the bug template. Say which browser you saw it in (Firefox and Chrome behave differently here) and, if you can, attach the page JSON (**Save JSON**).
 - 💡 **Suggest a feature**: open an issue first. The animation list in [`FEATURES.md`](FEATURES.md) is the official scope and is curated by the maintainer, so changes to it are discussed before any code.
 - 🧱 **Add a block variant**: the easiest contribution. See [Adding things](#adding-things).
 - 🎬 **Add or improve an animation**: one module per animation in `src/animations/`.

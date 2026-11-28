@@ -4,7 +4,7 @@ A small companion for the [WebEdiThor](../README.md) visual editor. It **complem
 
 > **Status: early (v0.1.0), published on npm as [`webedithor`](https://www.npmjs.com/package/webedithor).** Expect rough edges; see [Pending](#pending).
 
-No runtime dependencies: just Node.js 20.19+. The package bundles the editor's own exporter, validator and blocks (and the compiled editor, for `dev`), so what the CLI exports is identical to the editor's **Exportar HTML** button.
+No runtime dependencies: just Node.js 20.19+. The package bundles the editor's own exporter, validator and blocks (and the compiled editor, for `dev`), so what the CLI exports is identical to the editor's **Export HTML** button.
 
 ## Try it
 
@@ -55,8 +55,8 @@ It audits the page JSON (the source of truth) plus the HTML the editor would exp
 The editor keeps your page in the browser (`localStorage`) and cannot write to your project folder. So the workflow is:
 
 1. `webedithor dev` → open the editor.
-2. **Abrir JSON** → pick `page.json`, edit visually.
-3. **Guardar JSON** → save it back over `page.json`.
+2. **Open JSON** → pick `page.json`, edit visually.
+3. **Save JSON** → save it back over `page.json`.
 4. `audit`, `export`, `publish` work on that file.
 
 Making `dev` save straight into the folder needs a design decision (a tiny local save endpoint, or the File System Access API, which is Chromium-only). It is listed in the [roadmap](../ROADMAP.md).

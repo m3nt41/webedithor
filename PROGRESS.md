@@ -50,6 +50,8 @@ Estado al día. El detalle de las etapas 1 a 7 y de las mini-etapas del 13 y 14 
 - **Limitación de localStorage**: se guarda por dirección. El editor abierto como `file://…/editor.html` y el de `http://localhost:5173` tienen almacenamientos separados (y cada ruta de archivo distinta también), así que NO ven la misma página guardada. Para pasar trabajo de uno a otro: **Guardar JSON** en uno y **Abrir JSON** en el otro.
 
 ## Próxima etapa
+**Dónde quedamos (2026-11-28):** publicados la traducción es/en (demo y CLI 0.3.0) y el GIF del README; m3nt41 deja que fluya a ver si alguien lo usa. Candidato recomendado al volver (sin comprometer): arreglar el cambio entre pasos de las escenas y regenerar el GIF. **Sin comprobar:** el GIF visto en la página de GitHub, el inglés en la demo desplegada, `webedithor dev` de la 0.3.0 en el navegador y que los textos en inglés no se corten en el panel derecho.
+
 **Etapa 8 — Movimiento avanzado**: layout animations, drag con límites y rebote, inercia, 3D transforms (perspectiva, rotación X/Y). Después, **Etapa 9 — Extras**: cursor personalizado y page transitions (el marquee/ticker ya se hizo como mini-etapa; falta tu OK para marcarlo `[x]` en `FEATURES.md`). Asignación en `FEATURES.md`. Una etapa a la vez; al terminar: revisar bugs, actualizar este archivo, commit y detenerse.
 
 ## Pendientes y bugs conocidos
